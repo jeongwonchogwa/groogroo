@@ -1,0 +1,26 @@
+# Subject: 50자 이내로 명료하게 작성
+# -- Type --
+#   - Init      → 프로젝트 생성
+#   - Feat      → 새로운 기능 추가
+#   - Fix       → 버그 수정
+#   - Docs      → 문서 수정
+#   - Style     → 코드 포맷팅, ';' 누락, 기타 기능 외 수정
+#   - Refactor  → 기능 수정이 없는 리펙토링
+#   - Test      → 테스트 관련 모든 추가
+#   - Rename    → 파일의 이름, 오타만 수정
+#   - Move      → 파일 이동 삭제 기타등등
+#   - Remove    → 파일 삭제만 하는 경우
+#   - Chore     → 애매한 부분
+#  
+# (Part/Epic) Type: Content(내용)
+# 예시 - (FE/Login)Feat: 로그인 기능 구현
+# 위 형식으로 작성
+#   - Type은 첫 글자 대문자
+#   - Part는 FE(Front-end), BE(Back-end), AI
+#       - 첫 글자 대문자
+#       - (Part) Type 이후 띄어쓰기 없이 ':'
+#   - Subject는 제목을 50자 이내로 설명
+#       - ':' 뒤 띄어쓰기
+#       - 첫 글자 대문자
+#       - 개조식 구문으로 작성
+#       - 제목 끝에 (.)은 없도록 작성
