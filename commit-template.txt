@@ -16,7 +16,7 @@
 # 예시 - (FE/Login)Feat: 로그인 기능 구현
 # 위 형식으로 작성
 #   - Type은 첫 글자 대문자
-#   - Part는 FE(Front-end), BE(Back-end), AI
+#   - Part는 FE(Front-end), BE(Back-end)
 #       - 첫 글자 대문자
 #       - (Part) Type 이후 띄어쓰기 없이 ':'
 #   - Subject는 제목을 50자 이내로 설명
