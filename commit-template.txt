@@ -1,3 +1,5 @@
+# (Part/Epic) Type: Content(내용)
+# 
 # Subject: 50자 이내로 명료하게 작성
 # -- Type --
 #   - Init      → 프로젝트 생성
@@ -11,8 +13,7 @@
 #   - Move      → 파일 이동 삭제 기타등등
 #   - Remove    → 파일 삭제만 하는 경우
 #   - Chore     → 애매한 부분
-#  
-# (Part/Epic) Type: Content(내용)
+# 
 # 예시 - (FE/Login)Feat: 로그인 기능 구현
 # 위 형식으로 작성
 #   - Type은 첫 글자 대문자
