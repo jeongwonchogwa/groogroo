@@ -1,4 +1,4 @@
-# (Part/Epic) Type: Content(내용)
+# (Part/Epic)Type: Content(내용)
 # 예시 - (FE/Login)Feat: 로그인 기능 구현
 # 
 # Subject: 50자 이내로 명료하게 작성
