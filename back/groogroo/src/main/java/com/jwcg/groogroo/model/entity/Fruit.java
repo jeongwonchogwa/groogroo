@@ -18,16 +18,16 @@ public class Fruit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "flower_id")
+    @Column(name = "fruit_id")
     private Long id;
 
-    @Column(name = "from")
-    private Long from;
+    @Column(name = "writer")
+    private Long writerId;
 
     @Column(name = "content")
     private String content;
 
-    @Column(name = "type")
+    @Column(name = "fruit_type")
     private int type;
 
     @ManyToOne
