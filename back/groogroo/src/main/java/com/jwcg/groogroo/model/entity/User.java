@@ -37,8 +37,8 @@ public class User {
     @Column(name = "role")
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "user")
-    private final List<Tree> trees = new ArrayList<>();
+    @OneToOne(mappedBy = "user")
+    private Tree tree;
 
     @OneToMany(mappedBy = "user")
     private final List<UserGarden> userGardens = new ArrayList<>();

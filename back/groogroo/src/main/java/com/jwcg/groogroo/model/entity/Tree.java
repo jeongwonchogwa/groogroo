@@ -24,29 +24,16 @@ public class Tree {
     @Column(name = "tree_id")
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "garden_id")
-    private Long gardenId;
-
     @Column(name = "image_url")
     private String imageUrl;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "tree")
     private final List<Fruit> fruits = new ArrayList<>();
 
-    // setter
-    public void setUser(User user) {
-        if (user != null) {
-            user.getTrees().remove(this);
-        }
-        this.user = user;
-        assert user != null;
-        user.getTrees().add(this);
-    }
+    @OneToMany(mappedBy = "tree")
+    private final List<TreeGarden> treeGardens = new ArrayList<>();
 }

@@ -7,43 +7,44 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "flower")
-@Schema(description = "Flower")
-public class Flower {
+@Table(name = "tree_garden")
+@Schema(description = "Tree_garden")
+public class TreeGarden {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "flower_id")
+    @Column(name = "tree_garden_id")
     private Long id;
 
-    @Column(name = "content")
-    private String content;
-
-    @Column(name = "image_url")
-    private String imageUrl;
+    @ManyToOne
+    @JoinColumn(name = "tree_id")
+    private Tree tree;
 
     @ManyToOne
     @JoinColumn(name = "garden_id")
     private Garden garden;
 
-    @OneToMany(mappedBy = "flower")
-    private final List<UserFlower> userFlowers = new ArrayList<>();
+    // 양방향 매핑을 위한 setter
+    public void setTree(Tree tree) {
+        if (tree != null) {
+            tree.getTreeGardens().remove(this);
+        }
+        this.tree = tree;
+        assert tree != null;
+        tree.getTreeGardens().add(this);
+    }
 
-    // setter
     public void setGarden(Garden garden) {
         if (garden != null) {
-            garden.getFlowers().remove(this);
+            garden.getTreeGardens().remove(this);
         }
         this.garden = garden;
         assert garden != null;
-        garden.getFlowers().add(this);
+        garden.getTreeGardens().add(this);
     }
 }

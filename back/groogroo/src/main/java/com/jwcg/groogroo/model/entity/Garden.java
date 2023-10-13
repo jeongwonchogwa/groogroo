@@ -37,5 +37,8 @@ public class Garden {
     private final List<UserGarden> userGardens = new ArrayList<>();
 
     @OneToMany(mappedBy = "garden")
+    private final List<TreeGarden> treeGardens = new ArrayList<>();
+
+    @OneToMany(mappedBy = "garden")
     private final List<Flower> flowers = new ArrayList<>();
 }
