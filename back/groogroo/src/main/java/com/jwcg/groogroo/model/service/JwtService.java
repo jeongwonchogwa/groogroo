@@ -104,7 +104,7 @@ public class JwtService {
              String secretKey, long expirationHours) {
         User user = (User) userDetails;
         extraClaims.put("userId", user.getId());
-        extraClaims.put("username", user.getName());
+//        extraClaims.put("username", user.getName());
 
         return Jwts
                 .builder()

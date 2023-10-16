@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,15 +28,18 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "name")
-    private String name;
-
     @Column(name = "cancel")
     private boolean cancel;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private UserRole userRole;
+
+    @Column(name = "create_time")
+    private LocalDateTime createTime;
+
+    @Column(name = "provider")
+    private String provider;
 
     @OneToOne(mappedBy = "user")
     private Tree tree;
@@ -45,5 +49,6 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private final List<UserFlower> userFlowers = new ArrayList<>();
+
 
 }
