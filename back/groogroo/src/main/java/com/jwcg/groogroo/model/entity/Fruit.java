@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -35,6 +37,9 @@ public class Fruit {
 
     @Column(name = "y")
     private int y;
+
+    @Column(name = "create_time")
+    private LocalDateTime createTime;
 
     @ManyToOne
     @JoinColumn(name = "tree_id")

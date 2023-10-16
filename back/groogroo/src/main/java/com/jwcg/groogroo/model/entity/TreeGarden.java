@@ -21,6 +21,9 @@ public class TreeGarden {
     @Column(name = "tree_garden_id")
     private Long id;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "x")
     private int x;
 
