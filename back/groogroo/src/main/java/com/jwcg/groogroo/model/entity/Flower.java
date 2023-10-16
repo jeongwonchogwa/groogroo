@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,9 @@ public class Flower {
 
     @Column(name = "y")
     private int y;
+
+    @Column(name = "create_time")
+    private LocalDateTime createTime;
 
     @ManyToOne
     @JoinColumn(name = "garden_id")
