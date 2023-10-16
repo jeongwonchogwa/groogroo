@@ -1,0 +1,5 @@
+access-token-secret-key: 6A3711D7E2D4AD678B83F7D7FEE1AE64DE41C4DC54E5273A416E51CB2A
+refresh-token-secret-key: 37K711D7E2D4AD6293B3F7D7FEE1AE64DE41C4DC54E5273A416L43CB2F
+access-token-expiration-hours: 2160
+refresh-token-expiration-hours : 168
+issuer: a309

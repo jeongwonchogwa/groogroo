@@ -15,35 +15,30 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "user")
-@Schema(description = "User")
-public class User {
+@Table(name = "garden")
+@Schema(description = "Garden")
+public class Garden {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "garden_id")
     private Long id;
-
-    @Column(name = "email")
-    private String email;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "cancel")
-    private boolean cancel;
+    @Column(name = "description")
+    private String description;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role")
-    private UserRole userRole;
+    @Column(name = "url")
+    private String url;
 
-    @OneToOne(mappedBy = "user")
-    private Tree tree;
-
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "garden")
     private final List<UserGarden> userGardens = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private final List<UserFlower> userFlowers = new ArrayList<>();
+    @OneToMany(mappedBy = "garden")
+    private final List<TreeGarden> treeGardens = new ArrayList<>();
 
+    @OneToMany(mappedBy = "garden")
+    private final List<Flower> flowers = new ArrayList<>();
 }

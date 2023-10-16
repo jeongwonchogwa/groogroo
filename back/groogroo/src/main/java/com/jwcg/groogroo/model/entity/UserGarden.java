@@ -1,0 +1,62 @@
+package com.jwcg.groogroo.model.entity;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Table(name = "user_garden")
+@Schema(description = "User_garden")
+public class UserGarden {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_garden_id")
+    private Long id;
+
+    @Column(name = "tree_img_url")
+    private String treeImgUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private GardenRole gardenRole;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state")
+    private JoinState joinState;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "garden_id")
+    private Garden garden;
+
+    // 양방향 매핑을 위한 setter
+    public void setUser(User user) {
+        if (user != null) {
+            user.getUserGardens().remove(this);
+        }
+        this.user = user;
+        assert user != null;
+        user.getUserGardens().add(this);
+    }
+
+    public void setGarden(Garden garden) {
+        if (garden != null) {
+            garden.getUserGardens().remove(this);
+        }
+        this.garden = garden;
+        assert garden != null;
+        garden.getUserGardens().add(this);
+    }
+
+}
