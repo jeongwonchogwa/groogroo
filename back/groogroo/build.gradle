@@ -63,6 +63,9 @@ dependencies {
 
 	// WebClient
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// json parsing
+	implementation 'org.json:json:20210307'
 }
 
 tasks.named('test') {

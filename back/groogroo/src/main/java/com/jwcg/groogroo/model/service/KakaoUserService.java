@@ -8,6 +8,7 @@ import com.jwcg.groogroo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -26,16 +27,12 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class KakaoUserService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     private final RestTemplate restTemplate;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String CLIENT_ID;
-
-    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
-    private String CLIENT_SECRET;
 
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private  String REDIRECT_URI;
@@ -50,7 +47,7 @@ public class KakaoUserService {
     /**
      * 카카오로 부터 토큰을 받는 함수
      */
-    public void getToken(String code){
+    public User getToken(String code){
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -59,7 +56,6 @@ public class KakaoUserService {
         body.add("grant_type","authorization_code");
         body.add("client_id", CLIENT_ID);
         body.add("redirect_uri",REDIRECT_URI);
-        body.add("client_secret", CLIENT_SECRET);
         body.add("code",code);
 
         KakaoTokenResponse kakaoTokenResponse = restTemplate.postForObject(
@@ -67,14 +63,17 @@ public class KakaoUserService {
                 new HttpEntity<>(body,headers),
                 KakaoTokenResponse.class);
 
-        System.out.println(kakaoTokenResponse);
+        log.info("토큰 - {}",kakaoTokenResponse);
+        String email = getUserInfo(kakaoTokenResponse.getAccess_token());
+
+        return saveUser(email);
     }
 
 
     /**
      * 사용자 정보 가져오기
      */
-    protected void getUserInfo(String token) {
+    protected String getUserInfo(String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded; charset=utf-8");
         headers.add("Authorization", "Bearer "+token);
@@ -85,29 +84,36 @@ public class KakaoUserService {
                         new HttpEntity<>(null, headers),
                         String.class);
 
-        String body = response.getBody();
-        System.out.println(body);
+        String responseBody = response.getBody();
+
+        // JSON 파싱을 통해 이메일 추출
+        JSONObject json = new JSONObject(responseBody);
+        String email = json.getJSONObject("kakao_account").getString("email");
+        log.info("이메일 - {}",email);
+        return email;
     }
 
     /**
      * DB 확인 후 기존 회원이 아니면 DB에 저장
      */
     @Transactional
-    public User saveUser(UserInfo userInfo) {
+    public User saveUser(String email) {
 
-        User user = userRepository.findByEmail(userInfo.getEmail());
+        User user = userRepository.findByEmail(email);
 
         //기존 회원이 아니면 DB에 저장
         if(user ==null) {
+            log.info("기존 회원 아님");
             user = User.builder()
-                    .email(userInfo.getEmail())
+                    .email(email)
                     .cancel(false)
                     .userRole(UserRole.USER)
                     .createTime(LocalDateTime.now())
-                    .provider(userInfo.getProvider())
+                    .provider("kakao")
                     .build();
 
             userRepository.save(user);
+            log.info("회원가입 완료");
         }
 
         return user;

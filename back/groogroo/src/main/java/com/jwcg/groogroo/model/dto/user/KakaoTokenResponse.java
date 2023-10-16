@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Schema(description = "카카오 token response")
 public class KakaoTokenResponse {
-    private String tokenType;
+    private String token_type;
     private String access_token;
     private int expires_in;
     private String refresh_token;
