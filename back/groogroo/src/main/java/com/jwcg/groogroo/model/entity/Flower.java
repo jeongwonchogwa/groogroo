@@ -30,6 +30,12 @@ public class Flower {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "x")
+    private int x;
+
+    @Column(name = "y")
+    private int y;
+
     @ManyToOne
     @JoinColumn(name = "garden_id")
     private Garden garden;

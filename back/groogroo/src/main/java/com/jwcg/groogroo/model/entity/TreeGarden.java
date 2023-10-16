@@ -21,6 +21,12 @@ public class TreeGarden {
     @Column(name = "tree_garden_id")
     private Long id;
 
+    @Column(name = "x")
+    private int x;
+
+    @Column(name = "y")
+    private int y;
+
     @ManyToOne
     @JoinColumn(name = "tree_id")
     private Tree tree;

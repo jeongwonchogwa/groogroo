@@ -30,6 +30,12 @@ public class Fruit {
     @Column(name = "fruit_type")
     private int type;
 
+    @Column(name = "x")
+    private int x;
+
+    @Column(name = "y")
+    private int y;
+
     @ManyToOne
     @JoinColumn(name = "tree_id")
     private Tree tree;
