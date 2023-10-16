@@ -1,6 +1,10 @@
-## Back-End
+## Front-End
 
-(예시)
-- 23.10.11 KMJ
+- 23.10.16 JJW
   - 최초 프로젝트 생성
-  - 회원가입 API 구현
+  - Node.js 버전 업데이트
+  - Next.js
+  - TypeScript
+  - Zustand
+  - React Query
+  - TailwindCSS
