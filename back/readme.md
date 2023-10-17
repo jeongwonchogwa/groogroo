@@ -17,3 +17,8 @@
   - 메인 나무 및 열매 조회 API 구현
   - 메인 나무 이미지 변경 API 구현
   - 메인 나무 생성 API 구현
+
+- 23.10.17 CKH
+  - user_flower table 삭제
+  - flower, fruit에 writer_nickname 추가
+  - 매핑관계 조정
