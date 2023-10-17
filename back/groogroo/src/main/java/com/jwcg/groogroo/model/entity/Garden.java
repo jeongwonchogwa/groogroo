@@ -2,10 +2,7 @@ package com.jwcg.groogroo.model.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +14,7 @@ import java.util.List;
 @Builder
 @Table(name = "garden")
 @Schema(description = "Garden")
+@ToString(exclude = {"userGardens", "treeGardens"})
 public class Garden {
 
     @Id
@@ -34,11 +32,9 @@ public class Garden {
     private String url;
 
     @OneToMany(mappedBy = "garden")
-    private final List<UserGarden> userGardens = new ArrayList<>();
+    private List<UserGarden> userGardens = new ArrayList<>();
 
     @OneToMany(mappedBy = "garden")
-    private final List<TreeGarden> treeGardens = new ArrayList<>();
+    private List<TreeGarden> treeGardens = new ArrayList<>();
 
-    @OneToMany(mappedBy = "garden")
-    private final List<Flower> flowers = new ArrayList<>();
 }

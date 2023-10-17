@@ -2,10 +2,10 @@ package com.jwcg.groogroo.model.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Table(name = "user_garden")
 @Schema(description = "User_garden")
+@ToString(exclude = "flowers")
 public class UserGarden {
 
     @Id
@@ -31,6 +32,9 @@ public class UserGarden {
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private JoinState joinState;
+
+    @OneToMany(mappedBy = "userGarden")
+    private List<Flower> flowers = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")

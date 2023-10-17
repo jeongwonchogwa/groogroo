@@ -2,14 +2,9 @@ package com.jwcg.groogroo.model.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
@@ -31,6 +26,9 @@ public class Flower {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "writer_nickname")
+    private String writerNickname;
+
     @Column(name = "x")
     private int x;
 
@@ -41,19 +39,17 @@ public class Flower {
     private LocalDateTime createTime;
 
     @ManyToOne
-    @JoinColumn(name = "garden_id")
-    private Garden garden;
-
-    @OneToMany(mappedBy = "flower")
-    private final List<UserFlower> userFlowers = new ArrayList<>();
+    @JoinColumn(name = "user_garden_id")
+    private UserGarden userGarden;
 
     // setter
-    public void setGarden(Garden garden) {
-        if (garden != null) {
-            garden.getFlowers().remove(this);
+    public void setUserGarden(UserGarden userGarden) {
+        if (userGarden != null) {
+            userGarden.getFlowers().remove(this);
         }
-        this.garden = garden;
-        assert garden != null;
-        garden.getFlowers().add(this);
+        this.userGarden = userGarden;
+        assert userGarden != null;
+        userGarden.getFlowers().add(this);
     }
+
 }

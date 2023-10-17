@@ -23,11 +23,14 @@ public class Fruit {
     @Column(name = "fruit_id")
     private Long id;
 
-    @Column(name = "writer")
+    @Column(name = "writer_id")
     private Long writerId;
 
     @Column(name = "content")
     private String content;
+
+    @Column(name = "writer_nickname")
+    private String writerNickname;
 
     @Column(name = "fruit_type")
     private int type;

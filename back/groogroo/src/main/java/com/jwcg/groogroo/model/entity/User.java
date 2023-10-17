@@ -2,10 +2,7 @@ package com.jwcg.groogroo.model.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +15,7 @@ import java.util.List;
 @Builder
 @Table(name = "user")
 @Schema(description = "User")
+@ToString(exclude = "userGardens")
 public class User {
 
     @Id
@@ -45,10 +43,7 @@ public class User {
     private Tree tree;
 
     @OneToMany(mappedBy = "user")
-    private final List<UserGarden> userGardens = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private final List<UserFlower> userFlowers = new ArrayList<>();
+    private List<UserGarden> userGardens = new ArrayList<>();
 
 
 }

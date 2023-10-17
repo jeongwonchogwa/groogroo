@@ -7,6 +7,7 @@ import com.jwcg.groogroo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -35,6 +36,7 @@ public class TreeService {
         treeRepository.save(tree);
     }
 
+    @Transactional(readOnly = true)
     public Tree getMainTreeContents(long userId) {
         return treeRepository.findTreeByUserId(userId);
     }
