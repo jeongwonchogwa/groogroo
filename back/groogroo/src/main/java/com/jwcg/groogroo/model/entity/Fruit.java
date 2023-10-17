@@ -35,12 +35,6 @@ public class Fruit {
     @Column(name = "fruit_type")
     private int type;
 
-    @Column(name = "x")
-    private int x;
-
-    @Column(name = "y")
-    private int y;
-
     @Column(name = "create_time")
     private LocalDateTime createTime;
 

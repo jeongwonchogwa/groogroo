@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestTreeGenerationDto {
-    private long userId;
     private String imageUrl;
+    private String name;
 }

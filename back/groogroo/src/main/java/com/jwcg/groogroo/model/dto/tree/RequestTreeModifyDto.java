@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestTreeModifyDto {
-    private long userId;
     private String imageUrl;
 }

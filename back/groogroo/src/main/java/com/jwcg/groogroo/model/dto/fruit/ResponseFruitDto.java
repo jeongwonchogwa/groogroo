@@ -14,7 +14,5 @@ public class ResponseFruitDto {
     private long writerId;
     private String content;
     private int type;
-    private int x;
-    private int y;
     private String createTime;
 }

@@ -25,6 +25,9 @@ public class Tree {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "name")
+    private String name;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

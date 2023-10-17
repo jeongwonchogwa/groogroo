@@ -15,5 +15,7 @@ import java.util.List;
 public class ResponseTreeDto {
     private Long id;
     private String imageUrl;
+    private String name;
     private List<ResponseFruitDto> fruits;
+    private int fruitsCount;
 }
