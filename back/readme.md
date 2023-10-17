@@ -22,3 +22,6 @@
   - user_flower table 삭제
   - flower, fruit에 writer_nickname 추가
   - 매핑관계 조정
+  - 나무 이름 중복 확인 API 추가 
+  - 나의 메인 나무 조회 API 변경(열매 개수 포함), 컨트롤러 DTO생성 과정 서비스 로직으로 이관 
+  - 나무 검색 API 추가(자신이 작성한 열매 데이터만 포함, 총 개수 포함)
