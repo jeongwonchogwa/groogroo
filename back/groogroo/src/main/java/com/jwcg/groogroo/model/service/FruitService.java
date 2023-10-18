@@ -1,6 +1,7 @@
 package com.jwcg.groogroo.model.service;
 
 import com.jwcg.groogroo.model.dto.fruit.ResponseFruitPresetDto;
+import com.jwcg.groogroo.model.entity.ContentType;
 import com.jwcg.groogroo.model.entity.Fruit;
 import com.jwcg.groogroo.model.entity.Preset;
 import com.jwcg.groogroo.model.entity.Tree;
@@ -30,7 +31,7 @@ public class FruitService {
         return fruitRepository.findAllByTreeId(treeId);
     }
 
-    public void makeFruit(long treeId, long userId, String writerNickname, String imageUrl, String content){
+    public void makeFruit(long userId, long treeId, String writerNickname, String imageUrl, String content){
         Tree tree = treeRepository.findTreeById(treeId);
 
         Fruit fruit = Fruit.builder()
@@ -63,7 +64,7 @@ public class FruitService {
 
     @Transactional(readOnly = true)
     public List<Preset> getFruitPreset(){
-        return presetRepository.findAllByType("FRUIT");
+        return presetRepository.findAllByContentType(ContentType.FRUIT);
     }
 
 

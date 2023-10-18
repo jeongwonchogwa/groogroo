@@ -74,7 +74,9 @@ public class TreeController {
         try {
             log.info("Tree Controller - 메인 나무 생성");
             Long userId = jwtService.extractUserId(token);
-            treeService.makeMainTree(userId, requestTreeGenerationDto.getImageUrl(), requestTreeGenerationDto.getName());
+            treeService.makeMainTree(userId,
+                    requestTreeGenerationDto.getImageUrl(),
+                    requestTreeGenerationDto.getName());
 
             response.put("httpStatus", SUCCESS);
             response.put("message", "메인 나무 생성 성공");
@@ -103,7 +105,9 @@ public class TreeController {
         try {
             log.info("Tree Controller - 메인 나무 수정");
             Long userId = jwtService.extractUserId(token);
-            treeService.modifyMainTree(userId, requestTreeModifyDto.getImageUrl(), requestTreeModifyDto.getName());
+            treeService.modifyMainTree(userId,
+                    requestTreeModifyDto.getImageUrl(),
+                    requestTreeModifyDto.getName());
 
             response.put("httpStatus", SUCCESS);
             response.put("message", "메인 나무 수정 성공");
@@ -184,7 +188,7 @@ public class TreeController {
             @ApiResponse(responseCode = "200", description = "나무 프리셋 조회 성공"),
             @ApiResponse(responseCode = "500", description = "나무 프리셋 조회 실패 - 내부 서버 오류"),
     })
-    @GetMapping()
+    @GetMapping("/preset")
     public ResponseEntity<Map<String, Object>> getTreePreset() {
         Map<String,Object> response = new HashMap<>();
 

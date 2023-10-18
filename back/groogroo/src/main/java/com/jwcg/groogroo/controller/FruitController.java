@@ -51,7 +51,12 @@ public class FruitController {
         try {
             log.info("Fruit Controller - 열매 생성");
             Long userId = jwtService.extractUserId(token);
-            fruitService.makeFruit(requestFruitGenerationDto.getTreeId(), userId, requestFruitGenerationDto.getWriterNickname(), requestFruitGenerationDto.getImageUrl(), requestFruitGenerationDto.getContent());
+
+            fruitService.makeFruit(userId,
+                    requestFruitGenerationDto.getTreeId(),
+                    requestFruitGenerationDto.getWriterNickname(),
+                    requestFruitGenerationDto.getImageUrl(),
+                    requestFruitGenerationDto.getContent());
 
             response.put("httpStatus", SUCCESS);
             response.put("message", "열매 생성 성공");
@@ -77,7 +82,9 @@ public class FruitController {
 
         try {
             log.info("Fruit Controller - 열매 삭제");
-            fruitService.deleteFruit(requestFruitDeleteDto.getTreeId(), requestFruitDeleteDto.getFruitId());
+
+            fruitService.deleteFruit(requestFruitDeleteDto.getTreeId(),
+                    requestFruitDeleteDto.getFruitId());
 
             response.put("httpStatus", SUCCESS);
             response.put("message", "열매 삭제 성공");

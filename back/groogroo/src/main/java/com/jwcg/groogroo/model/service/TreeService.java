@@ -135,6 +135,6 @@ public class TreeService {
 
     @Transactional(readOnly = true)
     public List<Preset> getTreePreset() {
-        return presetRepository.findAllByType("TREE");
+        return presetRepository.findAllByContentType(ContentType.TREE);
     }
 }

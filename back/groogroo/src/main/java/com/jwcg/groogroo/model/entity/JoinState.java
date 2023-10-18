@@ -4,4 +4,6 @@ public enum JoinState {
     WAIT,
     ACCEPT,
     REFUSE,
+    WITHDRAWAL,
+    KICK,
 }

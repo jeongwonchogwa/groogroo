@@ -22,9 +22,6 @@ public class UserGarden {
     @Column(name = "user_garden_id")
     private Long id;
 
-    @Column(name = "tree_img_url")
-    private String treeImgUrl;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private GardenRole gardenRole;
