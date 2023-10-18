@@ -58,11 +58,8 @@ dependencies {
 	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
 	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
-	// social login
+	// OAuth2
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
-	// WebClient
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 	// json parsing
 	implementation 'org.json:json:20210307'
