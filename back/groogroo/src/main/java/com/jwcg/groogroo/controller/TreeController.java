@@ -1,11 +1,11 @@
 package com.jwcg.groogroo.controller;
 
-import com.jwcg.groogroo.model.dto.fruit.ResponseFruitDto;
+import com.jwcg.groogroo.model.dto.fruit.ResponseFruitPresetDto;
 import com.jwcg.groogroo.model.dto.tree.RequestTreeGenerationDto;
 import com.jwcg.groogroo.model.dto.tree.RequestTreeModifyDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseTreeDto;
-import com.jwcg.groogroo.model.entity.Fruit;
-import com.jwcg.groogroo.model.entity.Tree;
+import com.jwcg.groogroo.model.dto.tree.ResponseTreePresetDto;
+import com.jwcg.groogroo.model.entity.Preset;
 import com.jwcg.groogroo.model.service.JwtService;
 import com.jwcg.groogroo.model.service.TreeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,10 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,29 +90,29 @@ public class TreeController {
         }
     }
 
-    @Operation(summary = "메인 나무 이미지 변경", description = "메인 나무의 이미지를 변경하는 API")
+    @Operation(summary = "메인 나무 수정", description = "메인 나무의 이미지나 이름을 변경하는 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "메인 나무 이미지 변경 성공"),
-            @ApiResponse(responseCode = "500", description = "메인 나무 이미지 변경 실패 - 내부 서버 오류"),
+            @ApiResponse(responseCode = "200", description = "메인 나무 수정 성공"),
+            @ApiResponse(responseCode = "500", description = "메인 나무 수정 실패 - 내부 서버 오류"),
     })
-    @PutMapping()
+    @PatchMapping()
     public ResponseEntity<Map<String, Object>> modifyMainTreeImage(@RequestHeader String token, @RequestBody RequestTreeModifyDto requestTreeModifyDto) {
         token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 
         try {
-            log.info("Tree Controller - 메인 나무 이미지 변경");
+            log.info("Tree Controller - 메인 나무 수정");
             Long userId = jwtService.extractUserId(token);
-            treeService.modifyMainTreeImage(userId, requestTreeModifyDto.getImageUrl());
+            treeService.modifyMainTree(userId, requestTreeModifyDto.getImageUrl(), requestTreeModifyDto.getName());
 
             response.put("httpStatus", SUCCESS);
-            response.put("message", "메인 나무 이미지 변경 성공");
+            response.put("message", "메인 나무 수정 성공");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (Exception e) {
-            log.info("Tree Controller - 메인 나무 이미지 변경 실패");
+            log.info("Tree Controller - 메인 나무 수정 실패");
             response.put("httpStatus", FAIL);
-            response.put("message", "메인 나무 이미지 변경 실패");
+            response.put("message", "메인 나무 수정 실패");
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -178,6 +174,42 @@ public class TreeController {
             log.info("Tree Controller - 나무 검색 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "나무 검색 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "나무 프리셋 조회", description = "나무를 생성할 때 선택할 프리셋을 조회하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "나무 프리셋 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "나무 프리셋 조회 실패 - 내부 서버 오류"),
+    })
+    @GetMapping()
+    public ResponseEntity<Map<String, Object>> getTreePreset() {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("Tree Controller - 나무 프리셋 조회");
+            List<Preset> presets = treeService.getTreePreset();
+            List<ResponseTreePresetDto> returnData = new ArrayList<>();
+
+            for (Preset preset : presets) {
+                ResponseTreePresetDto responseTreePresetDto = ResponseTreePresetDto.builder()
+                        .imageUrl(preset.getImageUrl())
+                        .build();
+
+                returnData.add(responseTreePresetDto);
+            }
+
+            response.put("presets", returnData);
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "나무 프리셋 조회 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("Tree Controller - 나무 프리셋 조회 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "나무 프리셋 조회 실패");
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }

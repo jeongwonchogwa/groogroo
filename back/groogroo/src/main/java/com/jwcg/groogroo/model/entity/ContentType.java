@@ -1,7 +1,8 @@
 package com.jwcg.groogroo.model.entity;
 
-public enum ReportType {
+public enum ContentType {
     FLOWER,
     FRUIT,
-    GARDEN
+    GARDEN,
+    TREE
 }

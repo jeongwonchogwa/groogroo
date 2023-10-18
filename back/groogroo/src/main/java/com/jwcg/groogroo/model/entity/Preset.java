@@ -12,25 +12,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "report")
-@Schema(description = "Report")
-public class Report {
-
+@Table(name = "preset")
+@Schema(description = "Preset")
+public class Preset {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "report_id")
+    @Column(name = "preset_id")
     private Long id;
 
-    @Column(name = "reporter_id")
-    private Long reporterId;
-
-    @Column(name = "content")
-    private String content;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private ContentType contentType;
-
-    @Column(name = "target_id")
-    private Long targetId;
 }

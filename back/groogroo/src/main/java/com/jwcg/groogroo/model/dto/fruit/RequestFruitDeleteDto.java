@@ -1,4 +1,4 @@
-package com.jwcg.groogroo.model.dto.tree;
+package com.jwcg.groogroo.model.dto.fruit;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestTreeModifyDto {
-    private String imageUrl;
-    private String name;
+public class RequestFruitDeleteDto {
+    private long treeId;
+    private long fruitId;
 }

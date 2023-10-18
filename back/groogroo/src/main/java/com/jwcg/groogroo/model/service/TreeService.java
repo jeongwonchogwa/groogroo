@@ -2,9 +2,8 @@ package com.jwcg.groogroo.model.service;
 
 import com.jwcg.groogroo.model.dto.fruit.ResponseFruitDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseTreeDto;
-import com.jwcg.groogroo.model.entity.Fruit;
-import com.jwcg.groogroo.model.entity.Tree;
-import com.jwcg.groogroo.model.entity.User;
+import com.jwcg.groogroo.model.entity.*;
+import com.jwcg.groogroo.repository.PresetRepository;
 import com.jwcg.groogroo.repository.TreeRepository;
 import com.jwcg.groogroo.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -24,6 +23,7 @@ public class TreeService {
 
     private final UserRepository userRepository;
     private final TreeRepository treeRepository;
+    private final PresetRepository presetRepository;
 
     public boolean checkNameDuplicate(String name) {
         return treeRepository.existsByName(name);
@@ -42,9 +42,10 @@ public class TreeService {
         treeRepository.save(tree);
     }
 
-    public void modifyMainTreeImage(long userId, String imageUrl) {
+    public void modifyMainTree(long userId, String imageUrl, String name) {
         Tree tree = treeRepository.findTreeByUserId(userId);
         tree.setImageUrl(imageUrl);
+        tree.setName(name);
 
         treeRepository.save(tree);
     }
@@ -67,12 +68,13 @@ public class TreeService {
                     .id(fruit.getId())
                     .writerId(fruit.getWriterId())
                     .content(fruit.getContent())
-                    .type(fruit.getType())
+                    .imageUrl(fruit.getImageUrl())
+                    .writerNickname(fruit.getWriterNickname())
                     .build();
 
             LocalDateTime cur = LocalDateTime.now();
             LocalDateTime target = fruit.getCreateTime();
-            if (cur.isEqual(target)) {
+            if (cur.toLocalDate().isEqual(target.toLocalDate())) {
                 now.setCreateTime(target.format(DateTimeFormatter.ofPattern("HH:MM")));
             }else {
                 now.setCreateTime(target.format(DateTimeFormatter.ofPattern("YY.MM.dd")));
@@ -107,12 +109,13 @@ public class TreeService {
                             .id(fruit.getId())
                             .writerId(fruit.getWriterId())
                             .content(fruit.getContent())
-                            .type(fruit.getType())
+                            .imageUrl(fruit.getImageUrl())
+                            .writerNickname(fruit.getWriterNickname())
                             .build();
 
                     LocalDateTime cur = LocalDateTime.now();
                     LocalDateTime target = fruit.getCreateTime();
-                    if (cur.isEqual(target)) {
+                    if (cur.toLocalDate().isEqual(target.toLocalDate())) {
                         now.setCreateTime(target.format(DateTimeFormatter.ofPattern("HH:MM")));
                     }else {
                         now.setCreateTime(target.format(DateTimeFormatter.ofPattern("YY.MM.dd")));
@@ -128,5 +131,10 @@ public class TreeService {
         }
 
         return returnData;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Preset> getTreePreset() {
+        return presetRepository.findAllByType("TREE");
     }
 }

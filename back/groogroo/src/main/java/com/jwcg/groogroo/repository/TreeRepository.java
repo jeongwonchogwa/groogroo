@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface TreeRepository extends JpaRepository<Tree, Long> {
 
+    Tree findTreeById(long treeId);
     Tree findTreeByUserId(long userId);
 
     boolean existsByName(String name);

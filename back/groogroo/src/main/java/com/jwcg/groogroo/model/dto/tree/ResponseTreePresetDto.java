@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestTreeModifyDto {
+public class ResponseTreePresetDto {
+
     private String imageUrl;
-    private String name;
 }

@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 public class ResponseFruitDto {
     private long id;
     private long writerId;
+    private String writerNickname;
     private String content;
-    private int type;
+    private String imageUrl;
     private String createTime;
 }
