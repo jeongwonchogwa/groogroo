@@ -1,12 +1,14 @@
 package com.jwcg.groogroo.repository;
 
-import com.jwcg.groogroo.model.entity.RefreshToken;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.jwcg.groogroo.model.dto.jwt.RefreshToken;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
+import java.util.Optional;
 
-    public RefreshToken findByToken(String token);
+@Repository
+public interface RefreshTokenRepository extends CrudRepository<RefreshToken, String> {
 
-    public void deleteByToken(String token);
-
+    // accessToken으로 RefreshToken 조회
+    Optional<RefreshToken> findByAccessToken(String accessToken);
 }

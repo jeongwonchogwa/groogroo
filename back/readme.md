@@ -18,6 +18,17 @@
   - 메인 나무 이미지 변경 API 구현
   - 메인 나무 생성 API 구현
 
+- 23.10.16 KJW
+  - SecurityConfig 추가
+  - RestTemplateConfig 추가
+  - user name 삭제, provider, createTime 추가
+  - 카카로 로그인 api 구현
+	  - code로 token 받아오기
+	  - token으로 유저 정보 받아오기
+	  - DB에 없는 이메일이면 회원가입
+  - jwt 토큰 발급 및 redis에 refreshToken 저장하는 부분 추가로 구현해야함
+  - KakaoUserService 생성
+
 - 23.10.17 CKH
   - user_flower table 삭제
   - flower, fruit에 writer_nickname 추가
@@ -26,6 +37,7 @@
   - 나의 메인 나무 조회 API 변경(열매 개수 포함), 컨트롤러 DTO생성 과정 서비스 로직으로 이관 
   - 나무 검색 API 추가(자신이 작성한 열매 데이터만 포함, 총 개수 포함)
 
+<<<<<<< HEAD
 - 23.10.18 CKH
   - 열매 생성 API 추가
   - 열매 삭제 API 추가
@@ -35,3 +47,18 @@
   - 정원 생성 시 난수를 통해 URL 생성후 저장
   - 난수는 중복되지 않게 설정 -> 사용자가 많은 상황이라면 난수 길이를 늘리거나 Open Address 나 Chaining을 적용해야 할수도 있음
   - 정원 생성 시 UserGarden, TreeGarden에 생성자의 정보를 포함시킴
+=======
+- 23.10.17 KJW
+  - OAuth2 무작정 따라하기
+
+- 23.10.18 KJW
+  - 카카로 로그인 API, Service 삭제
+  - RestTemplateConfig 삭제, gradle에서 webClient 삭제(카카오 로그인 API 구현시 사용했던 것)
+  - OAuth2을 활용한 소셜 로그인 구현
+  - JWT 적용
+  - RedisConfig, RedisTemplate 추가
+  - 토큰 정보 Redis에 저장
+  - 로그아웃 API
+  - 토큰 재발급 API
+  - SecurityConfig 수정
+>>>>>>> 8d012e4 ((BE/JWT)Feat: JWT 적용)

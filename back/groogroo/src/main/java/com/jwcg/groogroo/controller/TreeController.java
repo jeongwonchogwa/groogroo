@@ -1,5 +1,6 @@
 package com.jwcg.groogroo.controller;
 
+<<<<<<< HEAD
 import com.jwcg.groogroo.model.dto.fruit.ResponseFruitPresetDto;
 import com.jwcg.groogroo.model.dto.tree.RequestTreeGenerationDto;
 import com.jwcg.groogroo.model.dto.tree.RequestTreeModifyDto;
@@ -7,7 +8,13 @@ import com.jwcg.groogroo.model.dto.tree.ResponseTreeDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseTreePresetDto;
 import com.jwcg.groogroo.model.entity.Preset;
 import com.jwcg.groogroo.model.service.JwtService;
+=======
+import com.jwcg.groogroo.model.dto.tree.RequestTreeGenerationDto;
+import com.jwcg.groogroo.model.dto.tree.RequestTreeModifyDto;
+import com.jwcg.groogroo.model.dto.tree.ResponseTreeDto;
+>>>>>>> 8d012e4 ((BE/JWT)Feat: JWT 적용)
 import com.jwcg.groogroo.model.service.TreeService;
+import com.jwcg.groogroo.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,7 +25,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+>>>>>>> 8d012e4 ((BE/JWT)Feat: JWT 적용)
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +43,7 @@ public class TreeController {
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
 
-    private final JwtService jwtService;
+    private final JwtUtil jwtUtil;
     private final TreeService treeService;
 
     @Operation(summary = "나무 이름 중복 확인", description = "메인 나무를 생성할 때 나무 이름 중복 확인에 사용되는 API : true: 중복, false: 중복 아님")
@@ -73,10 +83,15 @@ public class TreeController {
 
         try {
             log.info("Tree Controller - 메인 나무 생성");
+<<<<<<< HEAD
             Long userId = jwtService.extractUserId(token);
             treeService.makeMainTree(userId,
                     requestTreeGenerationDto.getImageUrl(),
                     requestTreeGenerationDto.getName());
+=======
+            Long userId = jwtUtil.getId(token);
+            treeService.makeMainTree(userId, requestTreeGenerationDto.getImageUrl(), requestTreeGenerationDto.getName());
+>>>>>>> 8d012e4 ((BE/JWT)Feat: JWT 적용)
 
             response.put("httpStatus", SUCCESS);
             response.put("message", "메인 나무 생성 성공");
@@ -103,11 +118,17 @@ public class TreeController {
         Map<String,Object> response = new HashMap<>();
 
         try {
+<<<<<<< HEAD
             log.info("Tree Controller - 메인 나무 수정");
             Long userId = jwtService.extractUserId(token);
             treeService.modifyMainTree(userId,
                     requestTreeModifyDto.getImageUrl(),
                     requestTreeModifyDto.getName());
+=======
+            log.info("Tree Controller - 메인 나무 이미지 변경");
+            Long userId = jwtUtil.getId(token);
+            treeService.modifyMainTreeImage(userId, requestTreeModifyDto.getImageUrl());
+>>>>>>> 8d012e4 ((BE/JWT)Feat: JWT 적용)
 
             response.put("httpStatus", SUCCESS);
             response.put("message", "메인 나무 수정 성공");
@@ -129,12 +150,13 @@ public class TreeController {
     })
     @GetMapping("")
     public ResponseEntity<Map<String, Object>> getMainTreeContents(@RequestHeader String token) {
-        token = token.split(" ")[1];
+//        token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 
         try {
             log.info("Tree Controller - 메인 나무 조회");
-            Long userId = jwtService.extractUserId(token);
+            Long userId = jwtUtil.getId(token);
+            log.info("id: {}", userId);
             ResponseTreeDto tree = treeService.getMainTreeContents(userId);
 
             response.put("tree", tree);
@@ -165,7 +187,7 @@ public class TreeController {
 
         try {
             log.info("Tree Controller - 나무 검색");
-            Long userId = jwtService.extractUserId(token);
+            Long userId = jwtUtil.getId(token);
             List<ResponseTreeDto> trees = treeService.searchTree(userId, name);
 
             response.put("trees", trees);

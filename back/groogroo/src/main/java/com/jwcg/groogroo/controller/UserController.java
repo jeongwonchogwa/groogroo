@@ -1,8 +1,6 @@
 package com.jwcg.groogroo.controller;
 
-import com.jwcg.groogroo.model.dto.tree.RequestTreeGenerationDto;
-import com.jwcg.groogroo.model.entity.User;
-import com.jwcg.groogroo.model.service.KakaoUserService;
+import com.jwcg.groogroo.model.service.RefreshTokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -26,28 +24,56 @@ public class UserController {
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
 
-    private final KakaoUserService kakaoUserService;
 
-    @Operation(summary = "카카오 로그인", description = "카카오 로그인 요청 API")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "카카오 로그인 성공"),
-            @ApiResponse(responseCode = "500", description = "카카오 로그인 실패 - 서버 오류")
+    private final RefreshTokenService tokenService;
+
+    @Operation(summary = "로그아웃", description = "accessToken으로 로그아웃하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
+            @ApiResponse(responseCode = "500", description = "로그아웃 실패 - 내부 서버 오류"),
     })
-    @GetMapping("/kakao")
-    public ResponseEntity<Map<String, Object>> kakao(@RequestParam("code") String code){
+    @PostMapping()
+    public ResponseEntity<Map<String, Object>> logout(@RequestHeader String token) {
         Map<String,Object> response = new HashMap<>();
+
         try {
-            log.info("카카오 로그인");
-            User user = kakaoUserService.getToken(code);
+            log.info("accessToken으로 Redis에 있는 정보 삭제");
+//            tokenService.deleteRefreshToken(token, SecurityUtil.getUser());
+            tokenService.deleteRefreshToken(token);
+            log.info("로그아웃 성공");
             response.put("httpStatus", SUCCESS);
-            response.put("message", "카카오 로그인 성공");
-            response.put("email", user.getEmail());
+            response.put("message", "로그아웃 성공");
+
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (Exception e) {
-            log.info("User Controller - 카카오 로그인 실패");
+            log.info("User Controller - 로그아웃 실패");
             response.put("httpStatus", FAIL);
+            response.put("message", "로그아웃 실패");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
+    @Operation(summary = "토큰 재발급", description = "refreshToken으로 accessToken 재발급하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "토큰 재발급 성공"),
+            @ApiResponse(responseCode = "500", description = "토큰 재발급 실패 - 내부 서버 오류"),
+    })
+    @PostMapping("/refresh")
+    public ResponseEntity<Map<String, Object>> refresh(@RequestHeader String token) {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("accessToken 재발급");
+            String newAccessToken = tokenService.republishAccessToken(token);
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "accessToken 재발급 성공");
+            response.put("accessToken", newAccessToken);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("User Controller - accessToken 재발급 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "accessToken 재발급 실패");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
