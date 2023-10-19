@@ -3,10 +3,7 @@ package com.jwcg.groogroo.util;
 import com.jwcg.groogroo.model.dto.jwt.GeneratedToken;
 import com.jwcg.groogroo.model.dto.jwt.RefreshToken;
 import com.jwcg.groogroo.repository.RefreshTokenRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
@@ -211,6 +208,7 @@ public class JwtUtil {
         if (refreshToken.isPresent() && verifyToken(refreshToken.get().getRefreshToken())) {
             // RefreshToken 객체를 꺼내온다.
             RefreshToken resultToken = refreshToken.get();
+            log.info("refreshToken: {}", resultToken);
             // UserId, Email, Role을 추출해 새로운 액세스토큰을 만든다.
             Long userId = getId(resultToken.getAccessToken());
             String newAccessToken = generateAccessToken(userId, resultToken.getId(), getRole(resultToken.getRefreshToken()));
@@ -219,8 +217,8 @@ public class JwtUtil {
             tokenRepository.save(resultToken);
             // 새로운 액세스 토큰을 반환해준다.
             return newAccessToken;
+        } else {
+            throw new JwtException("accessToken 재발급 실패 - 유효하지 않은 토큰, 재로그인 필요");
         }
-
-        return null;
     }
 }

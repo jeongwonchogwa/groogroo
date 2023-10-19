@@ -1,6 +1,7 @@
 package com.jwcg.groogroo.controller;
 
 import com.jwcg.groogroo.util.JwtUtil;
+import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -29,7 +30,7 @@ public class UserController {
     @Operation(summary = "로그아웃", description = "accessToken으로 로그아웃하는 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
-            @ApiResponse(responseCode = "500", description = "로그아웃 실패 - 내부 서버 오류"),
+            @ApiResponse(responseCode = "500", description = "로그아웃 실패 - 내부 서버 오류")
     })
     @PostMapping()
     public ResponseEntity<Map<String, Object>> logout(@RequestHeader("Authorization") String token) {
@@ -54,7 +55,8 @@ public class UserController {
     @Operation(summary = "토큰 재발급", description = "refreshToken으로 accessToken 재발급하는 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "토큰 재발급 성공"),
-            @ApiResponse(responseCode = "500", description = "토큰 재발급 실패 - 내부 서버 오류"),
+            @ApiResponse(responseCode = "401", description = "토큰 재발급 실패 - 유효하지 않은 토큰, 재로그인 필요"),
+            @ApiResponse(responseCode = "500", description = "토큰 재발급 실패 - 내부 서버 오류")
     })
     @PostMapping("/refresh")
     public ResponseEntity<Map<String, Object>> refresh(@RequestHeader("Authorization") String token) {
@@ -68,8 +70,13 @@ public class UserController {
             response.put("message", "accessToken 재발급 성공");
             response.put("accessToken", newAccessToken);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e) {
-            log.info("User Controller - accessToken 재발급 실패");
+        } catch (JwtException e){
+            log.info(e.getMessage());
+            response.put("httpStatus", FAIL);
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            log.info("accessToken 재발급 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "accessToken 재발급 실패");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -75,9 +75,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-//        log.info("JWT Filter");
         String token = parseJwt(request);
-//        log.info("AccessToken: {}",token);
 
         // 토큰 검사 생략(모두 허용 URL의 경우 토큰 검사 통과)
         if (token==null) {
