@@ -7,7 +7,7 @@ import com.jwcg.groogroo.model.dto.fruit.ResponseFruitPresetDto;
 import com.jwcg.groogroo.model.entity.Fruit;
 import com.jwcg.groogroo.model.entity.Preset;
 import com.jwcg.groogroo.model.service.FruitService;
-import com.jwcg.groogroo.model.service.JwtService;
+import com.jwcg.groogroo.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -35,7 +35,7 @@ public class FruitController {
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
 
-    private final JwtService jwtService;
+    private final JwtUtil jwtUtil;
     private final FruitService fruitService;
 
     @Operation(summary = "열매 생성", description = "특정 나무에 열매를 생성할 때 사용되는 API")
@@ -50,7 +50,7 @@ public class FruitController {
 
         try {
             log.info("Fruit Controller - 열매 생성");
-            Long userId = jwtService.extractUserId(token);
+            Long userId = jwtUtil.getId(token);
 
             fruitService.makeFruit(userId,
                     requestFruitGenerationDto.getTreeId(),

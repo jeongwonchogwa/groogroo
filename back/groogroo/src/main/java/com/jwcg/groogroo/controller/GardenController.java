@@ -4,7 +4,7 @@ import com.jwcg.groogroo.model.dto.Garden.RequestGardenGenerationDto;
 import com.jwcg.groogroo.model.dto.Garden.ResponseGardenInfoDto;
 import com.jwcg.groogroo.model.dto.tree.RequestTreeGenerationDto;
 import com.jwcg.groogroo.model.service.GardenService;
-import com.jwcg.groogroo.model.service.JwtService;
+import com.jwcg.groogroo.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -28,7 +28,7 @@ public class GardenController {
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
 
-    private final JwtService jwtService;
+    private final JwtUtil jwtUtil;
     private final GardenService gardenService;
 
     @Operation(summary = "정원 생성", description = "정원을 새로 생성하는 API")
@@ -43,7 +43,7 @@ public class GardenController {
 
         try {
             log.info("Garden Controller - 정원 생성");
-            Long userId = jwtService.extractUserId(token);
+            Long userId = jwtUtil.getId(token);
 
             gardenService.makeGarden(userId,
                     requestGardenGenerationDto.getName(),
@@ -77,7 +77,7 @@ public class GardenController {
 
         try {
             log.info("Garden Controller - 정원 조회");
-            Long userId = jwtService.extractUserId(token);
+            Long userId = jwtUtil.getId(token);
 
             ResponseGardenInfoDto returnData = gardenService.getGardenInfo(gardenId);
             response.put("gardenInfo", returnData);
@@ -106,7 +106,7 @@ public class GardenController {
 
         try {
             log.info("Garden Controller - 정원 가입");
-            Long userId = jwtService.extractUserId(token);
+            Long userId = jwtUtil.getId(token);
 
 
             response.put("httpStatus", SUCCESS);
