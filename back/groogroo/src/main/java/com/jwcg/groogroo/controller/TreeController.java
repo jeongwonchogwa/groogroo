@@ -126,7 +126,6 @@ public class TreeController {
     })
     @GetMapping("")
     public ResponseEntity<Map<String, Object>> getMainTreeContents(@RequestHeader String token) {
-//        token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 
         try {

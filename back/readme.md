@@ -60,3 +60,13 @@
   - 로그아웃 API
   - 토큰 재발급 API
   - SecurityConfig 수정
+
+- 23.10.19 KJW
+  - RedisConfig에 TTL 만료 시 보조 인덱스도 삭제되도록 설정 추가
+  - 사용하지 않는 RefreshToken.java 파일 삭제
+  - AccessTokenService와 RefresTokenService를 JwtUtil에 통합
+  - JwtUtil에 토큰 만료 시간 application.properties에서 받아오도록 수정
+  - Header에 있는 accessToken 유효성 검증 실패하는 오류 해결
+    - JwtAuthFilter 수정
+    - 컨트롤러 @RequestHeader("Authorization")로 수정
+  - SwaggerConfig에 Swagger에서도 JWT 사용할 수 있도록 설정 추가

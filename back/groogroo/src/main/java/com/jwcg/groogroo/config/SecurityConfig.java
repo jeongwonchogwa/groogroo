@@ -41,7 +41,7 @@ public class SecurityConfig {
         //요청에 대한 권한 설정
         http.authorizeRequests()
                 //접속 허용할 url
-                .requestMatchers( "/**","/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers( "/**","/login","/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 //나머지 요청은 인증 필요
                 .anyRequest().authenticated();
 

@@ -59,9 +59,10 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         Long userId = userRepository.findByEmail(email).getId();
 
-        // jwt token 발행을 시작한다.
+        // accessToken과 refreshToken을 발행한다.
         GeneratedToken token = jwtUtil.generateToken(userId, email, role);
-        log.info("jwtToken = {}", token.getAccessToken());
+        log.info("AccessToken: {}", token.getAccessToken());
+        log.info("RefreshToken: {}", token.getRefreshToken());
 
     }
 
