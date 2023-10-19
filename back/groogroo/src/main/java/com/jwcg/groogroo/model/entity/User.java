@@ -39,7 +39,7 @@ public class User {
     @Column(name = "provider")
     private String provider;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
     private Tree tree;
 
     @OneToMany(mappedBy = "user")
