@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Getter
 @AllArgsConstructor
-@RedisHash(value = "JWT", timeToLive = 60 * 60 * 24 * 14)
+@RedisHash(value = "RefreshToken", timeToLive = 60 * 60 * 24 * 14)
 public class RefreshToken implements Serializable {
 
     @Id

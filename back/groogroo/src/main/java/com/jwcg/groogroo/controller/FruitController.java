@@ -44,7 +44,7 @@ public class FruitController {
             @ApiResponse(responseCode = "500", description = "열매 생성 실패 - 내부 서버 오류"),
     })
     @PostMapping()
-    public ResponseEntity<Map<String, Object>> makeFruit(@RequestHeader String token, @RequestBody RequestFruitGenerationDto requestFruitGenerationDto) {
+    public ResponseEntity<Map<String, Object>> makeFruit(@RequestHeader("Authorization") String token, @RequestBody RequestFruitGenerationDto requestFruitGenerationDto) {
         token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 

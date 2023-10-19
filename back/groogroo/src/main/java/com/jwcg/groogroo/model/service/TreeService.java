@@ -36,10 +36,12 @@ public class TreeService {
                 .imageUrl(imageUrl)
                 .name(name)
                 .build();
-        user.setTree(tree);
+//        user.setTree(tree);
 
-        userRepository.save(user);
+//        userRepository.save(user);
+        log.info("=========== 저장 전 ===========");
         treeRepository.save(tree);
+        log.info("=========== 저장 성공 ===========");
     }
 
     public void modifyMainTree(long userId, String imageUrl, String name) {
@@ -91,7 +93,8 @@ public class TreeService {
     @Transactional(readOnly = true)
     public List<ResponseTreeDto> searchTree(long userId, String name) {
 
-        List<Tree> trees = treeRepository.findByNameLike(name);
+        log.info("========검색어: " + name + "==========");
+        List<Tree> trees = treeRepository.findByNameContains(name);
         List<ResponseTreeDto> returnData = new ArrayList<>();
 
         for (Tree tree : trees) {

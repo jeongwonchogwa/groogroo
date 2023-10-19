@@ -67,7 +67,7 @@ public class TreeController {
             @ApiResponse(responseCode = "500", description = "메인 나무 생성 실패 - 내부 서버 오류"),
     })
     @PostMapping()
-    public ResponseEntity<Map<String, Object>> makeMainTree(@RequestHeader String token, @RequestBody RequestTreeGenerationDto requestTreeGenerationDto) {
+    public ResponseEntity<Map<String, Object>> makeMainTree(@RequestHeader("Authorization") String token, @RequestBody RequestTreeGenerationDto requestTreeGenerationDto) {
         token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 
@@ -96,7 +96,7 @@ public class TreeController {
             @ApiResponse(responseCode = "500", description = "메인 나무 수정 실패 - 내부 서버 오류"),
     })
     @PatchMapping()
-    public ResponseEntity<Map<String, Object>> modifyMainTreeImage(@RequestHeader String token, @RequestBody RequestTreeModifyDto requestTreeModifyDto) {
+    public ResponseEntity<Map<String, Object>> modifyMainTreeImage(@RequestHeader("Authorization") String token, @RequestBody RequestTreeModifyDto requestTreeModifyDto) {
         token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 
@@ -125,8 +125,8 @@ public class TreeController {
             @ApiResponse(responseCode = "500", description = "메인 나무 조회 실패 - 내부 서버 오류"),
     })
     @GetMapping("")
-    public ResponseEntity<Map<String, Object>> getMainTreeContents(@RequestHeader String token) {
-//        token = token.split(" ")[1];
+    public ResponseEntity<Map<String, Object>> getMainTreeContents(@RequestHeader("Authorization") String token) {
+        token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 
         try {
@@ -156,7 +156,7 @@ public class TreeController {
             @ApiResponse(responseCode = "500", description = "나무 검색 실패 - 내부 서버 오류"),
     })
     @GetMapping("/{name}")
-    public ResponseEntity<Map<String, Object>> searchTree(@RequestHeader String token, @PathVariable String name) {
+    public ResponseEntity<Map<String, Object>> searchTree(@RequestHeader("Authorization") String token, @PathVariable String name) {
 
         token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();

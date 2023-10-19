@@ -32,27 +32,69 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserRepository userRepository;
 
 
+//    @Override
+//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+//        // request Header에서 AccessToken을 가져온다.
+//        String accessToken = request.getHeader("Authorization");
+//
+//        System.out.println("accessToken: "+accessToken);
+//        // 토큰 검사 생략(모두 허용 URL의 경우 토큰 검사 통과)
+//        if (!StringUtils.hasText(accessToken)) {
+//            doFilter(request, response, filterChain);
+//            return;
+//        }
+//
+//        // AccessToken을 검증하고, 만료되었을경우 예외를 발생시킨다.
+//        if (!jwtUtil.verifyToken(accessToken)) {
+//            log.info("토큰: {}", accessToken);
+//            throw new JwtException("Access Token 만료!");
+//        }
+//
+//        // AccessToken의 값이 있고, 유효한 경우에 진행한다.
+//        if (jwtUtil.verifyToken(accessToken)) {
+//
+//            // AccessToken 내부의 payload에 있는 email로 user를 조회한다. 없다면 예외를 발생시킨다 -> 정상 케이스가 아님
+//            User findUser = userRepository.findByEmail(jwtUtil.getEmail(accessToken));
+//            if(findUser == null) throw new IllegalStateException();
+//
+//            // SecurityContext에 등록할 User 객체를 만들어준다.
+//            SecurityUser userDto = SecurityUser.builder()
+//                    .id(findUser.getId())
+//                    .email(findUser.getEmail())
+//                    .role("ROLE_".concat(findUser.getUserRole().toString()))
+//                    .build();
+//
+//            // SecurityContext에 인증 객체를 등록해준다.
+//            Authentication auth = getAuthentication(userDto);
+//            SecurityContextHolder.getContext().setAuthentication(auth);
+//        }
+//
+//        filterChain.doFilter(request, response);
+//    }
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // request Header에서 AccessToken을 가져온다.
-        String atc = request.getHeader("Authorization");
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+//        log.info("JWT Filter");
+        String token = parseJwt(request);
+//        log.info("AccessToken: {}",token);
 
         // 토큰 검사 생략(모두 허용 URL의 경우 토큰 검사 통과)
-        if (!StringUtils.hasText(atc)) {
+        if (token==null) {
             doFilter(request, response, filterChain);
             return;
         }
 
         // AccessToken을 검증하고, 만료되었을경우 예외를 발생시킨다.
-        if (!jwtUtil.verifyToken(atc)) {
-            throw new JwtException("Access Token 만료!");
+        if (!jwtUtil.verifyToken(token)) {
+            throw new JwtException("Access Token 만료");
         }
 
         // AccessToken의 값이 있고, 유효한 경우에 진행한다.
-        if (jwtUtil.verifyToken(atc)) {
+        if (jwtUtil.verifyToken(token)) {
 
             // AccessToken 내부의 payload에 있는 email로 user를 조회한다. 없다면 예외를 발생시킨다 -> 정상 케이스가 아님
-            User findUser = userRepository.findByEmail(jwtUtil.getEmail(atc));
+            User findUser = userRepository.findByEmail(jwtUtil.getEmail(token));
             if(findUser == null) throw new IllegalStateException();
 
             // SecurityContext에 등록할 User 객체를 만들어준다.
@@ -70,6 +112,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    private String parseJwt(HttpServletRequest request) {
+        String headerAuth = request.getHeader("Authorization");
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            return headerAuth.substring(7, headerAuth.length());
+        }
+        return null;
+    }
 
 
     public Authentication getAuthentication(SecurityUser user) {
