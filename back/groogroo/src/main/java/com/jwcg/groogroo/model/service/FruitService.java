@@ -41,10 +41,9 @@ public class FruitService {
                 .writerNickname(writerNickname)
                 .imageUrl(imageUrl)
                 .build();
-        log.info(fruit.toString());
         fruit.setTree(tree);
-        log.info(fruit.toString());
 
+        fruitRepository.save(fruit);
     }
 
     public void deleteFruit(long treeId, long fruitId){

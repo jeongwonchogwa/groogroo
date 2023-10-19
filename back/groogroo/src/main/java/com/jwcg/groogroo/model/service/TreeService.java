@@ -74,6 +74,7 @@ public class TreeService {
                     .writerNickname(fruit.getWriterNickname())
                     .build();
 
+            log.info(now.toString());
             LocalDateTime cur = LocalDateTime.now();
             LocalDateTime target = fruit.getCreateTime();
             if (cur.toLocalDate().isEqual(target.toLocalDate())) {
@@ -94,7 +95,9 @@ public class TreeService {
     public List<ResponseTreeDto> searchTree(long userId, String name) {
 
         log.info("========검색어: " + name + "==========");
-        List<Tree> trees = treeRepository.findByNameContains(name);
+        String word = "%" + name + "%";
+        log.info(word);
+        List<Tree> trees = treeRepository.findByNameLike(word);
         List<ResponseTreeDto> returnData = new ArrayList<>();
 
         for (Tree tree : trees) {

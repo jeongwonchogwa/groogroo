@@ -70,3 +70,7 @@
     - JwtAuthFilter 수정
     - 컨트롤러 @RequestHeader("Authorization")로 수정
   - SwaggerConfig에 Swagger에서도 JWT 사용할 수 있도록 설정 추가
+
+- 23.10.19 CKH
+  - 나무, 열매 API 테스트 진행 및 버그 수정
+  - findTreeByNameLike의 파라미터에 와일드카드(%) 추가

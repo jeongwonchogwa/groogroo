@@ -12,5 +12,5 @@ public interface TreeRepository extends JpaRepository<Tree, Long> {
 
     boolean existsByName(String name);
 
-    List<Tree> findByNameContains(String name);
+    List<Tree> findByNameLike(String name);
 }

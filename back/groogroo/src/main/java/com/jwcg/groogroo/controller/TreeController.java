@@ -156,7 +156,7 @@ public class TreeController {
             @ApiResponse(responseCode = "500", description = "나무 검색 실패 - 내부 서버 오류"),
     })
     @GetMapping("/{name}")
-    public ResponseEntity<Map<String, Object>> searchTree(@RequestHeader("Authorization") String token, @PathVariable String name) {
+    public ResponseEntity<Map<String, Object>> searchTree(@RequestHeader("Authorization") String token, @PathVariable("name") String name) {
 
         token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
