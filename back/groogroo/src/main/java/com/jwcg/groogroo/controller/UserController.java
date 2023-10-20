@@ -1,5 +1,6 @@
 package com.jwcg.groogroo.controller;
 
+import com.jwcg.groogroo.model.service.UserService;
 import com.jwcg.groogroo.util.JwtUtil;
 import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,7 @@ public class UserController {
     private static final String FAIL = "fail";
 
     private final JwtUtil jwtUtil;
+    private  final UserService userService;
 
     @Operation(summary = "로그아웃", description = "accessToken으로 로그아웃하는 API")
     @ApiResponses({
@@ -45,7 +47,7 @@ public class UserController {
             response.put("message", "로그아웃 성공");
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (Exception e) {
-            log.info("User Controller - 로그아웃 실패");
+            log.info("로그아웃 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "로그아웃 실패");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -79,6 +81,35 @@ public class UserController {
             log.info("accessToken 재발급 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "accessToken 재발급 실패");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공"),
+            @ApiResponse(responseCode = "500", description = "회원 탈퇴 실패 - 내부 서버 오류")
+    })
+    @PatchMapping()
+    public ResponseEntity<Map<String, Object>> withdraw(@RequestHeader("Authorization") String token) {
+        token = token.split(" ")[1];
+        Long userId = jwtUtil.getId(token);
+
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("회원 탈퇴");
+            userService.updateStatus(userId,1);
+            log.info("회원 탈퇴 성공 => 로그아웃");
+            jwtUtil.deleteRefreshToken(token);
+            log.info("로그아웃 성공");
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "회원 탈퇴 성공");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("회원 탈퇴 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "회원 탈퇴 실패");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

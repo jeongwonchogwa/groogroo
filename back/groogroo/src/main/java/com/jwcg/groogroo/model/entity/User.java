@@ -3,6 +3,7 @@ package com.jwcg.groogroo.model.entity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,8 +27,9 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "cancel")
-    private boolean cancel;
+    @Column(name = "status")
+    @Comment("0: 일반 회원, 1: 탈퇴, 2: 차단")
+    private int status;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")

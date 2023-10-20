@@ -48,7 +48,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         if(!isExist){
             User user = User.builder()
                     .email(email)
-                    .cancel(false)
+                    .status(0)
                     .userRole(UserRole.USER)
                     .createTime(LocalDateTime.now())
                     .provider(provider)
