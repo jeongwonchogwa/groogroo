@@ -43,7 +43,9 @@
   - 나무 검색 API 추가(자신이 작성한 열매 데이터만 포함, 총 개수 포함)
 
 - 23.10.17 KJW
+
   - OAuth2 무작정 따라하기
+
 - 23.10.18 CKH
 
   - 열매 생성 API 추가
@@ -84,10 +86,14 @@
   - findTreeByNameLike의 파라미터에 와일드카드(%) 추가
 
 - 23.10.20 KJW
+
   - S3Config 추가
   - S3UploadService 추가
   - 테스트용 S3 Controller 추가
+  - 회원 탈퇴 api 구현
+  - User의 boolean cancel을 int status로 변경해서 탈퇴 유저와 차단 유저 구분할 수 있게 변경 (0:일반 회원, 1:탈퇴, 2:차단)
 
 - 23.10.20 KHN
+
   - 꽃 API 생성, 조회, 삭제 추가
   - 꽃 삭제 시 관리자 및 작성자 입력 5분 내에만 삭제 가능하도록 변경 필요
