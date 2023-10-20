@@ -8,3 +8,11 @@
   - Zustand
   - React Query
   - TailwindCSS
+
+- 23.10.17 KHN
+  - next.js LocalFont 추가
+  - TailwindCSS 폰트 추가
+
+- 23.10.20 KHN
+  - next.js LocalFont에 NeoDunggeunmo Pro 폰트 추가
+  - TailwindCSS에 NeoDunggeunmo Pro 폰트 추가

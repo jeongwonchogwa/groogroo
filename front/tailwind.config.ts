@@ -19,6 +19,7 @@ const config: Config = {
         nexonGothic_Light: ["var(--font-nexonGothic-Light)"],
         nexonGothic_Medium: ["var(--font-nexonGothic-Medium)"],
         nexonGothic_Bold: ["var(--font-nexonGothic-Bold)"],
+        neoDunggeunmo_Pro: ["var(--font-neoDuggeunmo_Pro)"],
       },
     },
   },
