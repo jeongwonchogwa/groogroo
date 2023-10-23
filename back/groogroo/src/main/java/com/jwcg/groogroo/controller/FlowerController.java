@@ -73,7 +73,7 @@ public class FlowerController {
         try {
             log.info("Flower Controller - 꽃 삭제");
             Long userId = jwtUtil.getId(token);
-            flowerService.deleteFlower(userId, flowerId);
+            flowerService.deleteFlower(flowerId);
             log.info("flower 정보 {}", flowerId);
 
             response.put("httpStatus", SUCCESS);

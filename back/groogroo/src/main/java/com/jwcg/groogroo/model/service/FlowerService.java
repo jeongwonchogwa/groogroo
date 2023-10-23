@@ -35,22 +35,20 @@ public class FlowerService {
                 .x(x)
                 .y(y)
                 .build();
-
-
         // userGarden 객체의 flowers 리스트에 flower 추가
         userGarden.getFlowers().add(flower);
 
         flowerRepository.save(flower);
     }
 
-    public void deleteFlower(long flowerId, long userId){
+    public void deleteFlower(long flowerId){
         Flower flower = flowerRepository.findFlowerById(flowerId);
-        UserGarden userGarden = userGardenRepository.findUserGardenByUserIdAndFlowerId(userId, flowerId);
-        UserRole userRole = flower.getUserGarden().getUser().getUserRole();
+        UserGarden userGarden = flower.getUserGarden();
+        GardenRole gardenRole = userGarden.getGardenRole();
         LocalDateTime currentTime = LocalDateTime.now();
         long minutesSinceCreation = ChronoUnit.MINUTES.between(flower.getCreateTime(), currentTime);
         if(flower == null){throw new ResponseStatusException(HttpStatus.NO_CONTENT);}
-        if(!userRole.equals(UserRole.ADMIN) && minutesSinceCreation > 5){throw new ResponseStatusException(HttpStatus.FORBIDDEN);}
+        if(!gardenRole.equals(GardenRole.ADMIN) && minutesSinceCreation > 5){throw new ResponseStatusException(HttpStatus.FORBIDDEN);}
         userGarden.getFlowers().remove(flower);
         flowerRepository.delete(flower);
     }
