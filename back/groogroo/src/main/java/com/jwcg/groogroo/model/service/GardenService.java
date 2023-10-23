@@ -179,7 +179,25 @@ public class GardenService {
         return returnData;
     }
 
-    public void changeRoleFromMaster(String role, long gardenId, long targetId){
-//        UserGarden userGarden = userGardenRepository.findUserGardenByUserId()
+    public void changeRoleFromMaster(long userId, String role, long gardenId, long targetId){
+
+        UserGarden userGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId);
+        UserGarden targetUserGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(targetId, gardenId);
+
+        log.info("Garden Service - 직책 변경 " + gardenId + " -> "+ role);
+        if(role == "MASTER") {
+            userGarden.setGardenRole(GardenRole.MEMBER);
+            targetUserGarden.setGardenRole(GardenRole.MASTER);
+        }else if(role == "ADMIN") {
+            targetUserGarden.setGardenRole(GardenRole.ADMIN);
+        }else {
+            targetUserGarden.setGardenRole(GardenRole.MEMBER);
+        }
+
+        log.info(userGarden.getGardenRole().toString());
+        log.info(targetUserGarden.getGardenRole().toString());
+
+        userGardenRepository.save(userGarden);
+        userGardenRepository.save(targetUserGarden);
     }
 }

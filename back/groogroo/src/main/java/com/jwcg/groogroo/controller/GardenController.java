@@ -137,13 +137,18 @@ public class GardenController {
             @ApiResponse(responseCode = "500", description = "정원 마스터 권한 지정 실패 - 내부 서버 오류"),
     })
     @PatchMapping("/master")
-    public ResponseEntity<Map<String, Object>> changeRoleFromMaster(@RequestBody RequestGardenRoleDto requestGardenRoleDto) {
+    public ResponseEntity<Map<String, Object>> changeRoleFromMaster(@RequestHeader("Authorization") String token, @RequestBody RequestGardenRoleDto requestGardenRoleDto) {
+        token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 
         try {
             log.info("Garden Controller - 정원 마스터 권한 지정");
+            Long userId = jwtUtil.getId(token);
 
-            gardenService.changeRoleFromMaster(requestGardenRoleDto.getRole(), requestGardenRoleDto.getGardenId(), requestGardenRoleDto.getTargetId());
+            gardenService.changeRoleFromMaster(userId,
+                    requestGardenRoleDto.getRole(),
+                    requestGardenRoleDto.getGardenId(),
+                    requestGardenRoleDto.getTargetId());
 
             response.put("httpStatus", SUCCESS);
             response.put("message", "정원 마스터 권한 지정 성공");
