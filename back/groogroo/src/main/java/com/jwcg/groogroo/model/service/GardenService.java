@@ -65,6 +65,8 @@ public class GardenService {
                 .description(description)
                 .url(url)
                 .build();
+        log.info("garden 저장 성공");
+        gardenRepository.save(garden);
 
         // 생성한 사람과 그 나무를 해당 정원에 등록(관리자)
         UserGarden userGarden = UserGarden.builder()
@@ -75,19 +77,37 @@ public class GardenService {
         userGarden.setUser(user);
         userGarden.setGarden(garden);
 
+        log.info("userGarden 생성 성공");
+        log.info(userGarden.getUser().toString());
+        log.info(userGarden.getGarden().toString());
+        try {
+            userGardenRepository.save(userGarden);
+            log.info("userGarden 저장 성공");
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
+
+
         TreeGarden treeGarden = TreeGarden.builder()
                 .x(x)
                 .y(y)
                 .imageUrl(imageUrl)
                 .build();
 
+        log.info("treeGarden setGarden");
         treeGarden.setGarden(garden);
+        log.info("treeGarden setTree");
         treeGarden.setTree(user.getTree());
 
-        userRepository.save(user);
-        userGardenRepository.save(userGarden);
-        treeGardenRepository.save(treeGarden);
-        gardenRepository.save(garden);
+        log.info("treeGarden 생성 성공" + treeGarden.getGarden().toString());
+        log.info(treeGarden.getTree().toString());
+
+        try {
+            treeGardenRepository.save(treeGarden);
+            log.info("treeGarden 저장 성공");
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)

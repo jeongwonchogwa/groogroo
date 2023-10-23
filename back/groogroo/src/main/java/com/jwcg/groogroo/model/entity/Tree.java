@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Table(name = "tree")
 @Schema(description = "Tree")
-@ToString(exclude = {"fruits", "treeGardens"})
+@ToString(exclude = {"fruits", "treeGardens", "user"})
 public class Tree {
 
     @Id
@@ -28,8 +29,7 @@ public class Tree {
     @Column(name = "name")
     private String name;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne(mappedBy = "tree")
     private User user;
 
     @OneToMany(mappedBy = "tree")

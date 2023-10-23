@@ -10,13 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Table(name = "user")
 @Schema(description = "User")
-@ToString(exclude = "userGardens")
+@ToString(exclude = {"userGardens", "tree"})
 public class User {
 
     @Id
@@ -41,7 +42,8 @@ public class User {
     @Column(name = "provider")
     private String provider;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tree_id")
     private Tree tree;
 
     @OneToMany(mappedBy = "user")

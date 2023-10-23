@@ -125,7 +125,7 @@ public class TreeController {
             @ApiResponse(responseCode = "500", description = "메인 나무 조회 실패 - 내부 서버 오류"),
     })
     @GetMapping("")
-    public ResponseEntity<Map<String, Object>> getMainTreeContents(@RequestHeader String token) {
+    public ResponseEntity<Map<String, Object>> getMainTreeContents(@RequestHeader("Authorization") String token) {
        token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 

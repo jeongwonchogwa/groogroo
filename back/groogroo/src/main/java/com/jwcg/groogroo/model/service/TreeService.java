@@ -36,11 +36,12 @@ public class TreeService {
                 .imageUrl(imageUrl)
                 .name(name)
                 .build();
-//        user.setTree(tree);
 
-//        userRepository.save(user);
-        log.info("=========== 저장 전 ===========");
         treeRepository.save(tree);
+        log.info("=========== 저장 성공 ===========");
+        user.setTree(tree);
+
+        userRepository.save(user);
         log.info("=========== 저장 성공 ===========");
     }
 

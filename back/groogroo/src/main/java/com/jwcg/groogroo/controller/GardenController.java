@@ -37,7 +37,7 @@ public class GardenController {
             @ApiResponse(responseCode = "500", description = "정원 생성 실패 - 내부 서버 오류"),
     })
     @PostMapping()
-    public ResponseEntity<Map<String, Object>> makeGarden(@RequestHeader String token, @RequestBody RequestGardenGenerationDto requestGardenGenerationDto) {
+    public ResponseEntity<Map<String, Object>> makeGarden(@RequestHeader("Authorization") String token, @RequestBody RequestGardenGenerationDto requestGardenGenerationDto) {
         token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 

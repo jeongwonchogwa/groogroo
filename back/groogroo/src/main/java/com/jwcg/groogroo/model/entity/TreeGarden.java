@@ -2,18 +2,19 @@ package com.jwcg.groogroo.model.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.ArrayList;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Table(name = "tree_garden")
 @Schema(description = "Tree_garden")
+@ToString(exclude = {"tree", "garden"})
 public class TreeGarden {
 
     @Id
@@ -41,6 +42,9 @@ public class TreeGarden {
     // 양방향 매핑을 위한 setter
     public void setTree(Tree tree) {
         if (tree != null) {
+            if (tree.getTreeGardens() == null) {
+                tree.setTreeGardens(new ArrayList<>());
+            }
             tree.getTreeGardens().remove(this);
         }
         this.tree = tree;
@@ -50,6 +54,9 @@ public class TreeGarden {
 
     public void setGarden(Garden garden) {
         if (garden != null) {
+            if (garden.getTreeGardens() == null) {
+                garden.setTreeGardens(new ArrayList<>());
+            }
             garden.getTreeGardens().remove(this);
         }
         this.garden = garden;
