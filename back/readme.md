@@ -1,14 +1,17 @@
 ## Back-End
 
 - 23.10.12 KJW
+
   - 최초 프로젝트 생성
   - application.properties 설정, 의존성 추가, 프로젝트 구조 정립
 
 - 23.10.13 CKH
+
   - 모든 엔티티 생성
   - 양방향 매핑 진행
 
 - 23.10.16 CKH
+
   - 나무, 열매, 꽃의 x, y 좌표 추가
   - 현재 정수형인 상태(변경 가능성 있음)
   - JWT 관련 레포지토리, 서비스, 필터 추가 -> 프로젝트에 맞게 수정 필요
@@ -19,6 +22,7 @@
   - 메인 나무 생성 API 구현
 
 - 23.10.16 KJW
+
   - SecurityConfig 추가
   - RestTemplateConfig 추가
   - user name 삭제, provider, createTime 추가
@@ -30,6 +34,7 @@
   - KakaoUserService 생성
 
 - 23.10.17 CKH
+
   - user_flower table 삭제
   - flower, fruit에 writer_nickname 추가
   - 매핑관계 조정
@@ -38,9 +43,11 @@
   - 나무 검색 API 추가(자신이 작성한 열매 데이터만 포함, 총 개수 포함)
 
 - 23.10.17 KJW
+
   - OAuth2 무작정 따라하기
 
 - 23.10.18 CKH
+
   - 열매 생성 API 추가
   - 열매 삭제 API 추가
   - 열매, 나무 프리셋 조회 API 추가
@@ -51,6 +58,7 @@
   - 정원 생성 시 UserGarden, TreeGarden에 생성자의 정보를 포함시킴
 
 - 23.10.18 KJW
+
   - 카카로 로그인 API, Service 삭제
   - RestTemplateConfig 삭제, gradle에서 webClient 삭제(카카오 로그인 API 구현시 사용했던 것)
   - OAuth2을 활용한 소셜 로그인 구현
@@ -62,6 +70,7 @@
   - SecurityConfig 수정
 
 - 23.10.19 KJW
+
   - RedisConfig에 TTL 만료 시 보조 인덱스도 삭제되도록 설정 추가
   - 사용하지 않는 RefreshToken.java 파일 삭제
   - AccessTokenService와 RefresTokenService를 JwtUtil에 통합
@@ -72,10 +81,12 @@
   - SwaggerConfig에 Swagger에서도 JWT 사용할 수 있도록 설정 추가
 
 - 23.10.19 CKH
+
   - 나무, 열매 API 테스트 진행 및 버그 수정
   - findTreeByNameLike의 파라미터에 와일드카드(%) 추가
 
 - 23.10.20 KJW
+
   - S3Config 추가
   - S3UploadService 추가
   - 테스트용 S3 Controller 추가
@@ -83,16 +94,19 @@
   - User의 boolean cancel을 int status로 변경해서 탈퇴 유저와 차단 유저 구분할 수 있게 변경 (0:일반 회원, 1:탈퇴, 2:차단)
 
 - 23.10.20 KHN
+
   - 꽃 API 생성, 조회, 삭제 추가
   - 꽃 삭제 시 관리자 및 작성자 입력 5분 내에만 삭제 가능하도록 변경 필요
 
 - 23.10.23 KJW
+
   - 신고하기 API 구현
   - 내 신고내역 조회 API 구현
   - CustomAuthenticationSuccessHandler에 로그인 성공 시 프론트로 redirect하는 부분 추가
     - redirect uri 추후 변경 필요
 
 - 23.10.23 CKH
+
   - 정원 생성 API 구현
     - 정원 생성 시, 생성자는 관리자로 가입되고 자신의 나무의 정원 상 위치 정보 필요
   - 엔티티의 @Data 어노테이션 @Getter, @Setter로 변경 -> 해시코드 무한루프 이슈(트러블 슈팅 참조)
@@ -108,3 +122,9 @@
     - 타겟을 멤버로 지정할 시, 타겟을 멤버로 갱신
   - 정원 초대 링크 조회 API 구현
     - 링크는 랜덤의 영어 대, 소문자, 숫자로 구성되어 있음
+
+- 23.10.23 KHN
+  - Flower API 구현
+  - Flower 삭제 시 5분 이내 및 관리자만 가능
+    - 5분 초과시 일반 유저의 경우, 403에러 발생
+  - Flower 생성 시 x, y 좌표 같이 받아서 처리
