@@ -1,6 +1,7 @@
 package com.jwcg.groogroo.model.service;
 
 import com.jwcg.groogroo.model.dto.Garden.ResponseGardenInfoDto;
+import com.jwcg.groogroo.model.dto.Garden.ResponseUserGardenDto;
 import com.jwcg.groogroo.model.dto.flower.ResponseFlowerPosDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseTreePosDto;
 import com.jwcg.groogroo.model.entity.*;
@@ -126,8 +127,10 @@ public class GardenService {
         // 나무 위치 정보 삽입
         for (TreeGarden treeGarden : treeInfo) {
             ResponseTreePosDto responseTreePosDto = ResponseTreePosDto.builder()
+                    .id(treeGarden.getTree().getId())
                     .x(treeGarden.getX())
                     .y(treeGarden.getY())
+                    .imageUrl(treeGarden.getImageUrl())
                     .build();
 
             log.info("나무 위치 정보: " + responseTreePosDto.toString());
@@ -139,8 +142,10 @@ public class GardenService {
         for (UserGarden userGarden : flowerInfo) {
             for (Flower flower : userGarden.getFlowers()){
                 ResponseFlowerPosDto responseFlowerPosDto = ResponseFlowerPosDto.builder()
+                        .id(flower.getId())
                         .x(flower.getX())
                         .y(flower.getY())
+                        .imageUrl(flower.getImageUrl())
                         .build();
                 responseGardenInfoDto.setFlowerPos(new ArrayList<>());
                 responseGardenInfoDto.getFlowerPos().add(responseFlowerPosDto);
@@ -152,4 +157,29 @@ public class GardenService {
         return responseGardenInfoDto;
     }
 
+    @Transactional(readOnly = true)
+    public List<ResponseUserGardenDto> getUserGarden(long userId) {
+        List<UserGarden> userGardens = userGardenRepository.findUserGardenByUserId(userId);
+        List<ResponseUserGardenDto> returnData = new ArrayList<>();
+
+        for(UserGarden userGarden : userGardens) {
+            JoinState joinState = userGarden.getJoinState();
+            if (joinState.equals(JoinState.WAIT) || joinState.equals(JoinState.ACCEPT)){
+                ResponseUserGardenDto responseUserGardenDto = ResponseUserGardenDto.builder()
+                        .gardenId(userGarden.getGarden().getId())
+                        .name(userGarden.getGarden().getName())
+                        .description(userGarden.getGarden().getDescription())
+                        .state(joinState.toString())
+                        .build();
+
+                returnData.add(responseUserGardenDto);
+            }
+        }
+
+        return returnData;
+    }
+
+    public void changeRoleFromMaster(String role, long gardenId, long targetId){
+//        UserGarden userGarden = userGardenRepository.findUserGardenByUserId()
+    }
 }

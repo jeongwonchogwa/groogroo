@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseFlowerPosDto {
+    private long id;
     private int x;
     private int y;
+    private String imageUrl;
 }
