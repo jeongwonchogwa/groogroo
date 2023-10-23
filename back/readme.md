@@ -79,9 +79,12 @@
   - S3Config 추가
   - S3UploadService 추가
   - 테스트용 S3 Controller 추가
-  - 회원 탈퇴 api 구현
+  - 회원 탈퇴 API 구현
   - User의 boolean cancel을 int status로 변경해서 탈퇴 유저와 차단 유저 구분할 수 있게 변경 (0:일반 회원, 1:탈퇴, 2:차단)
 
 - 23.10.20 KHN
   - 꽃 API 생성, 조회, 삭제 추가
   - 꽃 삭제 시 관리자 및 작성자 입력 5분 내에만 삭제 가능하도록 변경 필요
+
+- 23.10.23 KJW
+  - 신고하기 API 구현

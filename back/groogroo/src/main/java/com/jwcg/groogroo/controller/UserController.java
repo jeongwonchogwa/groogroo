@@ -1,5 +1,8 @@
 package com.jwcg.groogroo.controller;
 
+import com.jwcg.groogroo.model.dto.user.RequestReportDto;
+import com.jwcg.groogroo.model.entity.Report;
+import com.jwcg.groogroo.model.service.ReportService;
 import com.jwcg.groogroo.model.service.UserService;
 import com.jwcg.groogroo.util.JwtUtil;
 import io.jsonwebtoken.JwtException;
@@ -28,6 +31,7 @@ public class UserController {
 
     private final JwtUtil jwtUtil;
     private  final UserService userService;
+    private final ReportService reportService;
 
     @Operation(summary = "로그아웃", description = "accessToken으로 로그아웃하는 API")
     @ApiResponses({
@@ -110,6 +114,31 @@ public class UserController {
             log.info("회원 탈퇴 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "회원 탈퇴 실패");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "신고하기", description = "신고 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "신고 성공"),
+            @ApiResponse(responseCode = "500", description = "신고 실패 - 내부 서버 오류")
+    })
+    @PostMapping("/report")
+    public ResponseEntity<Map<String, Object>> report(@RequestHeader("Authorization") String token, @RequestBody Report report) {
+        token = token.split(" ")[1];
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("신고하기");
+            reportService.report(report);
+            log.info("신고 성공");
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "신고 성공");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("신고 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "신고 실패");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

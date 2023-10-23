@@ -1,7 +1,7 @@
 package com.jwcg.groogroo.filter;
 
 
-import com.jwcg.groogroo.model.dto.user.SecurityUser;
+import com.jwcg.groogroo.model.dto.user.SecurityUserDto;
 import com.jwcg.groogroo.model.entity.User;
 import com.jwcg.groogroo.repository.UserRepository;
 import com.jwcg.groogroo.util.JwtUtil;
@@ -96,7 +96,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if(findUser == null) throw new IllegalStateException();
 
             // SecurityContext에 등록할 User 객체를 만들어준다.
-            SecurityUser userDto = SecurityUser.builder()
+            SecurityUserDto userDto = SecurityUserDto.builder()
                     .id(findUser.getId())
                     .email(findUser.getEmail())
                     .role("ROLE_".concat(findUser.getUserRole().toString()))
@@ -119,7 +119,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
 
-    public Authentication getAuthentication(SecurityUser user) {
+    public Authentication getAuthentication(SecurityUserDto user) {
         return new UsernamePasswordAuthenticationToken(user, "",
                 List.of(new SimpleGrantedAuthority(user.getRole())));
     }
