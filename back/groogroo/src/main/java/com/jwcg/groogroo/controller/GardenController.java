@@ -163,6 +163,33 @@ public class GardenController {
         }
     }
 
+    @Operation(summary = "정원 초대 링크 조회", description = "사용자가 초대하고자 하는 정원의 링크를 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정원 초대 링크 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "정원 초대 링크 조회 실패 - 내부 서버 오류"),
+    })
+    @GetMapping("/invite/{gardenId}")
+    public ResponseEntity<Map<String, Object>> getGardenLink(@PathVariable long gardenId) {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("Garden Controller - 정원 초대 링크 조회");
+
+            String URL = gardenService.getGardenLink(gardenId);
+            response.put("url", URL);
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "정원 초대 링크 조회 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("Garden Controller - 정원 초대 링크 조회 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "정원 초대 링크 조회 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @Operation(summary = "정원 가입 신청", description = "해당 정원에 가입신청한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정원 가입 신청 성공"),

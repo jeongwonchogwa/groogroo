@@ -200,4 +200,11 @@ public class GardenService {
         userGardenRepository.save(userGarden);
         userGardenRepository.save(targetUserGarden);
     }
+
+    @Transactional(readOnly = true)
+    public String getGardenLink(long gardenId) {
+        Garden garden = gardenRepository.findGardenById(gardenId);
+        
+        return garden.getUrl();
+    }
 }
