@@ -88,6 +88,9 @@
 
 - 23.10.23 KJW
   - 신고하기 API 구현
+  - 내 신고내역 조회 API 구현
+  - CustomAuthenticationSuccessHandler에 로그인 성공 시 프론트로 redirect하는 부분 추가
+    - redirect uri 추후 변경 필요
 
 - 23.10.23 CKH
   - 정원 생성 API 구현
