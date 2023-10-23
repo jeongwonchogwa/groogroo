@@ -47,7 +47,8 @@ public class FlowerController {
         Map<String, Object> response = new HashMap<>();
 
         try{
-            flowerService.makeFlower(requestFlowerGenerationDto.getGardenId(), requestFlowerGenerationDto.getWriterNickname(), requestFlowerGenerationDto.getImageUrl(), requestFlowerGenerationDto.getContent());
+            Long userId = jwtUtil.getId(token);
+            flowerService.makeFlower(userId, requestFlowerGenerationDto.getGardenId(), requestFlowerGenerationDto.getWriterNickname(), requestFlowerGenerationDto.getImageUrl(), requestFlowerGenerationDto.getContent(), requestFlowerGenerationDto.getX(), requestFlowerGenerationDto.getY());
 
             response.put("httpStatus", SUCCESS);
             response.put("message", "꽃 생성 성공");
@@ -69,17 +70,18 @@ public class FlowerController {
     public ResponseEntity<Map<String, Object>> deleteFlower(@RequestHeader("Authorization") String token, @PathVariable long flowerId){
         Map<String, Object> response = new HashMap<>();
         token = token.split(" ")[1];
-
         try {
             log.info("Flower Controller - 꽃 삭제");
+            Long userId = jwtUtil.getId(token);
+            flowerService.deleteFlower(userId, flowerId);
+            log.info("flower 정보 {}", flowerId);
 
-            flowerService.deleteFlower(flowerId);
             response.put("httpStatus", SUCCESS);
             response.put("message", "꽃 삭제 성공");
-
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (Exception e){
             log.info("Flower Controller - 꽃 삭제 실패");
+            log.info(e.getMessage());
             response.put("httpStatus", FAIL);
             response.put("message", "꽃 삭제 실패");
 
@@ -112,7 +114,7 @@ public class FlowerController {
             LocalDateTime target = flower.getCreateTime();
             if (cur.toLocalDate().isEqual(target.toLocalDate())) {
                 // set보단 build를 써보아요
-                responseFlowerDto.setCreateTime(target.format(DateTimeFormatter.ofPattern("HH:MM")));
+                responseFlowerDto.setCreateTime(target.format(DateTimeFormatter.ofPattern("HH:mm")));
             }else {
                 responseFlowerDto.setCreateTime(target.format(DateTimeFormatter.ofPattern("YY.MM.dd")));
             }

@@ -14,4 +14,6 @@ public class RequestFlowerGenerationDto {
     private String writerNickname;
     private String imageUrl;
     private String content;
+    private int x;
+    private int y;
 }
