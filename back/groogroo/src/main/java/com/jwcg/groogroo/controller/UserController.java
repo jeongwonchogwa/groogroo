@@ -15,8 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.webjars.NotFoundException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -121,24 +123,58 @@ public class UserController {
     @Operation(summary = "신고하기", description = "신고 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "신고 성공"),
+            @ApiResponse(responseCode = "404", description = "신고 실패 - 존재하지 않는 컨텐츠"),
             @ApiResponse(responseCode = "500", description = "신고 실패 - 내부 서버 오류")
     })
     @PostMapping("/report")
-    public ResponseEntity<Map<String, Object>> report(@RequestHeader("Authorization") String token, @RequestBody Report report) {
+    public ResponseEntity<Map<String, Object>> report(@RequestHeader("Authorization") String token, @RequestBody RequestReportDto requestReportDto) {
         token = token.split(" ")[1];
+        Long userId = jwtUtil.getId(token);
         Map<String,Object> response = new HashMap<>();
 
         try {
             log.info("신고하기");
-            reportService.report(report);
+            reportService.report(userId, requestReportDto);
             log.info("신고 성공");
             response.put("httpStatus", SUCCESS);
             response.put("message", "신고 성공");
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e) {
+        } catch(NotFoundException e){
+            log.info(e.getMessage());
+            response.put("httpStatus", FAIL);
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch(Exception e) {
             log.info("신고 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "신고 실패");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "내 신고 내역 조회", description = "내 신고내역 조회 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "내 신고 내역 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "내 신고 내역 조회 실패 - 내부 서버 오류")
+    })
+    @GetMapping()
+    public ResponseEntity<Map<String, Object>> getMyReports(@RequestHeader("Authorization") String token) {
+        token = token.split(" ")[1];
+        Long userId = jwtUtil.getId(token);
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("내 신고 내역 조회");
+            List<Report> list = reportService.getMyReports(userId);
+            log.info("내 신고 내역 조회 성공");
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "내 신고 내역 조회 성공");
+            response.put("reportList", list);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("내 신고 내역 조회 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "내 신고 내역 조회 실패");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

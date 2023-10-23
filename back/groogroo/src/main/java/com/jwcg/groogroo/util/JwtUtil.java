@@ -4,7 +4,6 @@ import com.jwcg.groogroo.model.dto.jwt.GeneratedToken;
 import com.jwcg.groogroo.model.dto.jwt.RefreshToken;
 import com.jwcg.groogroo.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;

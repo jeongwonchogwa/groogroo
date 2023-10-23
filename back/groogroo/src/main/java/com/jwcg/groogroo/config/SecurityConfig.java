@@ -28,7 +28,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // Rest API & JWT 사용을 위한 설정
-        http.cors(cors->cors.disable())// CORS 활성화
+        http.cors(cors->cors.disable())// CORS 비활성화
                 .csrf(csrf->csrf.disable())// CSRF 보호 기능 비활성화
                 .httpBasic(httpBasic->httpBasic.disable())// HTTP 기본 인증을 비활성화
                 .formLogin(formLogin->formLogin.disable())
