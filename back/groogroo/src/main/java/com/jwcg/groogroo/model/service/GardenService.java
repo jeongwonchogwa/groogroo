@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -121,12 +122,16 @@ public class GardenService {
                 .description(garden.getDescription())
                 .build();
 
+        log.info("나무, 꽃 정보 확인 + 정원 dto 생성");
         // 나무 위치 정보 삽입
         for (TreeGarden treeGarden : treeInfo) {
             ResponseTreePosDto responseTreePosDto = ResponseTreePosDto.builder()
                     .x(treeGarden.getX())
                     .y(treeGarden.getY())
                     .build();
+
+            log.info("나무 위치 정보: " + responseTreePosDto.toString());
+            responseGardenInfoDto.setTreePos(new ArrayList<>());
             responseGardenInfoDto.getTreePos().add(responseTreePosDto);
         }
 
@@ -137,7 +142,10 @@ public class GardenService {
                         .x(flower.getX())
                         .y(flower.getY())
                         .build();
+                responseGardenInfoDto.setFlowerPos(new ArrayList<>());
                 responseGardenInfoDto.getFlowerPos().add(responseFlowerPosDto);
+                log.info("꽃 위치 정보: " + responseFlowerPosDto.toString());
+
             }
         }
 

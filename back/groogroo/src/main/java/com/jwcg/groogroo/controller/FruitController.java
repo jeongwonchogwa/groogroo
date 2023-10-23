@@ -76,15 +76,14 @@ public class FruitController {
             @ApiResponse(responseCode = "200", description = "열매 삭제 성공"),
             @ApiResponse(responseCode = "500", description = "열매 삭제 실패 - 내부 서버 오류"),
     })
-    @DeleteMapping()
-    public ResponseEntity<Map<String, Object>> deleteFruit(@RequestBody RequestFruitDeleteDto requestFruitDeleteDto) {
+    @DeleteMapping("/{fruitId}")
+    public ResponseEntity<Map<String, Object>> deleteFruit(@PathVariable long fruitId) {
         Map<String,Object> response = new HashMap<>();
 
         try {
             log.info("Fruit Controller - 열매 삭제");
 
-            fruitService.deleteFruit(requestFruitDeleteDto.getTreeId(),
-                    requestFruitDeleteDto.getFruitId());
+            fruitService.deleteFruit(fruitId);
 
             response.put("httpStatus", SUCCESS);
             response.put("message", "열매 삭제 성공");

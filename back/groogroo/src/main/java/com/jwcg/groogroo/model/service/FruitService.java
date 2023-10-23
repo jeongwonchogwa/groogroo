@@ -46,13 +46,12 @@ public class FruitService {
         fruitRepository.save(fruit);
     }
 
-    public void deleteFruit(long treeId, long fruitId){
-        Tree tree = treeRepository.findTreeById(treeId);
+    public void deleteFruit(long fruitId){
 
         Fruit fruit = fruitRepository.findFruitById(fruitId);
 
         if (fruit != null){
-            tree.getFruits().remove(fruit);
+            fruit.getTree().getFruits().remove(fruit);
             fruitRepository.delete(fruit);
         }
     }

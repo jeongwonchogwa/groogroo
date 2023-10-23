@@ -71,7 +71,7 @@ public class GardenController {
             @ApiResponse(responseCode = "500", description = "정원 조회 실패 - 내부 서버 오류"),
     })
     @GetMapping("/{gardenId}")
-    public ResponseEntity<Map<String, Object>> getGardenInfo(@RequestHeader String token, @PathVariable long gardenId) {
+    public ResponseEntity<Map<String, Object>> getGardenInfo(@RequestHeader("Authorization") String token, @PathVariable long gardenId) {
         token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 
