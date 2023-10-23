@@ -185,10 +185,10 @@ public class GardenService {
         UserGarden targetUserGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(targetId, gardenId);
 
         log.info("Garden Service - 직책 변경 " + gardenId + " -> "+ role);
-        if(role == "MASTER") {
+        if(role.equals("MASTER")) {
             userGarden.setGardenRole(GardenRole.MEMBER);
             targetUserGarden.setGardenRole(GardenRole.MASTER);
-        }else if(role == "ADMIN") {
+        }else if(role.equals("ADMIN")) {
             targetUserGarden.setGardenRole(GardenRole.ADMIN);
         }else {
             targetUserGarden.setGardenRole(GardenRole.MEMBER);
