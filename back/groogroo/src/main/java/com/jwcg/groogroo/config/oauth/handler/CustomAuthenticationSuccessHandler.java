@@ -1,6 +1,7 @@
 package com.jwcg.groogroo.config.oauth.handler;
 
 import com.jwcg.groogroo.model.dto.jwt.GeneratedToken;
+import com.jwcg.groogroo.model.entity.UserStatus;
 import com.jwcg.groogroo.util.JwtUtil;
 import com.jwcg.groogroo.model.entity.User;
 import com.jwcg.groogroo.model.entity.UserRole;
@@ -47,14 +48,13 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         // 회원이 존재하지 않을 경우 DB에 저장
         if(!isExist){
-            User user = User.builder()
+                User user = User.builder()
                     .email(email)
-                    .status(0)
+                    .userStatus(UserStatus.USER)
                     .userRole(UserRole.USER)
                     .createTime(LocalDateTime.now())
                     .provider(provider)
                     .build();
-
             userRepository.save(user);
         }
 

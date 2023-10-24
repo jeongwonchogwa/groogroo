@@ -25,6 +25,9 @@ public class Report {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "completed")
+    private boolean completed;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private ContentType contentType;

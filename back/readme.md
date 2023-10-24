@@ -117,3 +117,13 @@
 
 - 23.10.24 CKH
   - 나무 이미지 저장 API 구현
+  
+- 23.10.24 KJW
+  - report에 completed(처리 완료 여부) 추가
+  - user에 status int에서 enum으로 변경
+  - Admin API는 UserRole이 ADMIN인 경우에만 접속 가능하도록 설정
+  - 신고 접수 내역 조회 API 구현
+  - 회원 차단 API 구현
+  - 회원 조회 API 구현
+  - flower, fruit, garden, userGarden, treeGarden 에 deleteDate(삭제 날짜) 추가
+    - 삭제일로 부터 며칠 지나면 DB에서 완전 삭제

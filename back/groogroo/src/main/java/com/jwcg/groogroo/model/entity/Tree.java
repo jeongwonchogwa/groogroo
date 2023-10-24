@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,9 @@ public class Tree {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "delete_date")
+    private LocalDate deleteDate;
 
     @OneToOne(mappedBy = "tree")
     private User user;

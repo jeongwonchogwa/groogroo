@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Entity
@@ -30,6 +31,9 @@ public class TreeGarden {
 
     @Column(name = "y")
     private int y;
+
+    @Column(name = "delete_date")
+    private LocalDate deleteDate;
 
     @ManyToOne
     @JoinColumn(name = "tree_id")

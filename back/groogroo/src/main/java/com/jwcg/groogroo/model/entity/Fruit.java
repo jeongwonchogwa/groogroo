@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,6 +36,9 @@ public class Fruit {
 
     @Column(name = "create_time")
     private LocalDateTime createTime;
+
+    @Column(name = "delete_date")
+    private LocalDate deleteDate;
 
     @ManyToOne
     @JoinColumn(name = "tree_id")

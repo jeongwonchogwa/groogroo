@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,9 @@ public class Garden {
 
     @Column(name = "url")
     private String url;
+
+    @Column(name = "delete_date")
+    private LocalDate deleteDate;
 
     @OneToMany(mappedBy = "garden")
     private List<UserGarden> userGardens = new ArrayList<>();

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -34,6 +35,9 @@ public class Flower {
 
     @Column(name = "y")
     private int y;
+
+    @Column(name = "delete_date")
+    private LocalDate deleteDate;
 
     @Column(name = "create_time")
     private LocalDateTime createTime;

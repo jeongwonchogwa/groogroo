@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,9 @@ public class UserGarden {
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private JoinState joinState;
+
+    @Column(name = "delete_date")
+    private LocalDate deleteDate;
 
     @OneToMany(mappedBy = "userGarden")
     private List<Flower> flowers = new ArrayList<>();

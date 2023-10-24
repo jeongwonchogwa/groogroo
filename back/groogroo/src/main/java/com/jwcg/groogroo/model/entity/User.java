@@ -28,9 +28,9 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    @Comment("0: 일반 회원, 1: 탈퇴, 2: 차단")
-    private int status;
+    private UserStatus userStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")

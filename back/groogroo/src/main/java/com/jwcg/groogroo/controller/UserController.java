@@ -2,6 +2,7 @@ package com.jwcg.groogroo.controller;
 
 import com.jwcg.groogroo.model.dto.user.RequestReportDto;
 import com.jwcg.groogroo.model.entity.Report;
+import com.jwcg.groogroo.model.entity.UserStatus;
 import com.jwcg.groogroo.model.service.ReportService;
 import com.jwcg.groogroo.model.service.UserService;
 import com.jwcg.groogroo.util.JwtUtil;
@@ -105,7 +106,7 @@ public class UserController {
 
         try {
             log.info("회원 탈퇴");
-            userService.updateStatus(userId,1);
+            userService.updateStatus(userId, UserStatus.WITHDRAWAL);
             log.info("회원 탈퇴 성공 => 로그아웃");
             jwtUtil.deleteRefreshToken(token);
             log.info("로그아웃 성공");

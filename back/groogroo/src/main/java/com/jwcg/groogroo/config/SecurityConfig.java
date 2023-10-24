@@ -5,6 +5,7 @@ import com.jwcg.groogroo.config.oauth.handler.CustomAuthenticationFailureHandler
 import com.jwcg.groogroo.config.oauth.handler.CustomAuthenticationSuccessHandler;
 import com.jwcg.groogroo.filter.JwtAuthFilter;
 import com.jwcg.groogroo.filter.JwtExceptionFilter;
+import com.jwcg.groogroo.model.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +42,10 @@ public class SecurityConfig {
         //요청에 대한 권한 설정
         http.authorizeRequests()
                 //접속 허용할 url
-                .requestMatchers( "/**","/login","/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/login", "/flower/**", "/fruit/**", "/garden/**").permitAll()
+                // /admin은 관리자만 접속 가능
+                .requestMatchers("/admin/**").hasRole(UserRole.ADMIN.toString())
                 //나머지 요청은 인증 필요
                 .anyRequest().authenticated();
 
