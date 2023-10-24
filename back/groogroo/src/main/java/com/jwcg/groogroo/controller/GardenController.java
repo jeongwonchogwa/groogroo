@@ -195,15 +195,15 @@ public class GardenController {
             @ApiResponse(responseCode = "200", description = "정원 가입 신청 성공"),
             @ApiResponse(responseCode = "500", description = "정원 가입 신청 실패 - 내부 서버 오류"),
     })
-    @PostMapping("/process/{gardenId}")
-    public ResponseEntity<Map<String, Object>> joinGarden(@RequestHeader("Authorization") String token, @PathVariable long gardenId) {
+    @PostMapping("/process")
+    public ResponseEntity<Map<String, Object>> joinGarden(@RequestHeader("Authorization") String token, @RequestBody long gardenId) {
         token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 
         try {
             log.info("Garden Controller - 정원 가입");
             Long userId = jwtUtil.getId(token);
-
+            gardenService.joinGarden(userId, gardenId);
 
             response.put("httpStatus", SUCCESS);
             response.put("message", "정원 가입 성공");
