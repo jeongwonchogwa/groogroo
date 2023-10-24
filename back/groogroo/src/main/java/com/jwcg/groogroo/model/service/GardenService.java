@@ -249,4 +249,14 @@ public class GardenService {
                 .build();
         userGardenRepository.save(updatedUserGarden);
     }
+
+    public void joinGarden(Long userId, long gardenId) {
+        UserGarden userGarden = UserGarden.builder()
+                .gardenRole(GardenRole.MEMBER)
+                .joinState(JoinState.WAIT)
+                .user(userRepository.findUserById(userId))
+                .garden(gardenRepository.findGardenById(gardenId))
+                .build();
+        userGardenRepository.save(userGarden);
+    }
 }

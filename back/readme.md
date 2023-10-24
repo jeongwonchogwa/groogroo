@@ -127,9 +127,9 @@
   - 회원 조회 API 구현
   - flower, fruit, garden, userGarden, treeGarden 에 deleteDate(삭제 날짜) 추가
     - 삭제일로 부터 며칠 지나면 DB에서 완전 삭제되게 해야함
-    - 해당 entity build할 때 deleteDate 추가해야함
     - 해당 entity 조회할 때 deleteDate = null 조건 추가해야함
   - 정원에서 추방시키는 API 구현
   - 신고 대상 삭제하는 API 구현
     - 꽃, 열매 삭제는 기존 service에 있던 것 사용해서 delete됨 수정 필요
     - 삭제하면 같은 대상에 대한 신고내역 모두 처리 완료로 변경
+  - 정원 가입 신청 API 구현
