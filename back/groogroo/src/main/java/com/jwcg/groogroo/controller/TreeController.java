@@ -6,6 +6,7 @@ import com.jwcg.groogroo.model.dto.tree.RequestTreeModifyDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseTreeDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseTreePresetDto;
 import com.jwcg.groogroo.model.entity.Preset;
+import com.jwcg.groogroo.model.service.S3UploadService;
 import com.jwcg.groogroo.model.service.TreeService;
 import com.jwcg.groogroo.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,8 +16,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +38,7 @@ public class TreeController {
 
     private final JwtUtil jwtUtil;
     private final TreeService treeService;
+    private final S3UploadService s3UploadService;
 
     @Operation(summary = "나무 이름 중복 확인", description = "메인 나무를 생성할 때 나무 이름 중복 확인에 사용되는 API : true: 중복, false: 중복 아님")
     @ApiResponses({
@@ -56,6 +60,33 @@ public class TreeController {
             log.info("Tree Controller - 나무 이름 중복 확인 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "나무 이름 중복 확인 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "나무 이미지 저장", description = "나무의 이미지를 저장할 때 사용되는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "나무 이미지 저장 성공"),
+            @ApiResponse(responseCode = "500", description = "나무 이미지 저장 실패 - 내부 서버 오류"),
+    })
+    @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> makeTreeImage(@RequestPart MultipartFile multipartFile) {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("Tree Controller - 나무 이미지 저장");
+            String fileUrl = s3UploadService.upload(multipartFile, "tree");
+            response.put("imageUrl", fileUrl);
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "나무 이미지 저장 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("Tree Controller - 나무 이미지 저장 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "나무 이미지 저장 실패");
+
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }

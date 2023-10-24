@@ -17,7 +17,7 @@ import java.util.List;
 @Builder
 @Table(name = "user")
 @Schema(description = "User")
-@ToString(exclude = {"userGardens", "tree"})
+@ToString(exclude = {"userGardens", "treeUserPresets", "tree"})
 public class User {
 
     @Id
@@ -49,5 +49,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<UserGarden> userGardens = new ArrayList<>();
 
-
+    @OneToMany(mappedBy = "user")
+    private List<TreeUserPreset> treeUserPresets = new ArrayList<>();
 }

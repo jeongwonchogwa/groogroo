@@ -159,7 +159,7 @@ public class GardenService {
 
     @Transactional(readOnly = true)
     public List<ResponseUserGardenDto> getUserGarden(long userId) {
-        List<UserGarden> userGardens = userGardenRepository.findUserGardenByUserId(userId);
+        List<UserGarden> userGardens = userGardenRepository.findAllByUserId(userId);
         List<ResponseUserGardenDto> returnData = new ArrayList<>();
 
         for(UserGarden userGarden : userGardens) {
