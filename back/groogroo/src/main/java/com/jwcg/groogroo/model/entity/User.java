@@ -1,5 +1,6 @@
 package com.jwcg.groogroo.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,7 +43,8 @@ public class User {
     @Column(name = "provider")
     private String provider;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @OneToOne
     @JoinColumn(name = "tree_id")
     private Tree tree;
 

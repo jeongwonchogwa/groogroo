@@ -1,13 +1,17 @@
 package com.jwcg.groogroo.model.service;
 
+import com.jwcg.groogroo.model.dto.admin.RequestDeleteReportedContent;
+import com.jwcg.groogroo.model.dto.admin.RequestReportListDto;
 import com.jwcg.groogroo.model.dto.user.RequestReportDto;
 import com.jwcg.groogroo.model.entity.ContentType;
-import com.jwcg.groogroo.model.entity.Garden;
-import com.jwcg.groogroo.model.entity.GardenRole;
 import com.jwcg.groogroo.model.entity.Report;
 import com.jwcg.groogroo.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -59,5 +63,21 @@ public class ReportService {
     // 내 신고 내역 조회
     public List<Report> getMyReports(Long userId) {
         return reportRepository.findAllByReporterId(userId);
+    }
+
+    // 접수된 신고내역 10개씩 오래된 순으로 조회
+    public List<Report> getReportList(RequestReportListDto requestReportListDto) {
+        Pageable pageable = PageRequest.of(requestReportListDto.getPageNumber(), 10, Sort.by(Sort.Order.asc("id")));
+        if (requestReportListDto.getCompleted() == null) {
+            return reportRepository.findAll(pageable).getContent();
+        }else{
+            return reportRepository.findByCompleted(requestReportListDto.getCompleted(),pageable);
+        }
+    }
+
+    // 처리 완료한 신고 내역 & 동일한 신고내역 목록 한번에 처리 완료로 업데이트
+    @Transactional
+    public void updateCompleted(RequestDeleteReportedContent reportedContent) {
+        reportRepository.completeReport(reportedContent.getTargetId(), reportedContent.getContentType());
     }
 }

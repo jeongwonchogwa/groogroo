@@ -1,7 +1,7 @@
 package com.jwcg.groogroo.util;
 
 import com.jwcg.groogroo.model.dto.jwt.GeneratedToken;
-import com.jwcg.groogroo.model.dto.jwt.RefreshToken;
+import com.jwcg.groogroo.model.entity.RefreshToken;
 import com.jwcg.groogroo.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;

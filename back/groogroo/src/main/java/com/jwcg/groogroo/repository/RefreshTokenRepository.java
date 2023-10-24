@@ -1,6 +1,6 @@
 package com.jwcg.groogroo.repository;
 
-import com.jwcg.groogroo.model.dto.jwt.RefreshToken;
+import com.jwcg.groogroo.model.entity.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -143,5 +144,22 @@ public class TreeService {
     @Transactional(readOnly = true)
     public List<Preset> getTreePreset() {
         return presetRepository.findAllByContentType(ContentType.TREE);
+    }
+
+    public void deleteTree(Long treeId) {
+        Tree tree = treeRepository.findTreeById(treeId);
+        log.info("나무: {}", tree);
+        if (tree != null){
+            Tree deletedTree = Tree.builder()
+                    .id(tree.getId())
+                    .imageUrl(tree.getImageUrl())
+                    .name(tree.getName())
+                    .deleteDate(LocalDate.now())
+                    .user(tree.getUser())
+                    .fruits(tree.getFruits())
+                    .treeGardens(tree.getTreeGardens())
+                    .build();
+            treeRepository.save(deletedTree);
+        }
     }
 }

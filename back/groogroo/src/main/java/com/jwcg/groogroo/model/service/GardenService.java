@@ -2,6 +2,7 @@ package com.jwcg.groogroo.model.service;
 
 import com.jwcg.groogroo.model.dto.Garden.ResponseGardenInfoDto;
 import com.jwcg.groogroo.model.dto.Garden.ResponseUserGardenDto;
+import com.jwcg.groogroo.model.dto.admin.RequestBanishFromGardenDto;
 import com.jwcg.groogroo.model.dto.flower.ResponseFlowerPosDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseTreePosDto;
 import com.jwcg.groogroo.model.entity.*;
@@ -11,13 +12,12 @@ import com.jwcg.groogroo.repository.UserGardenRepository;
 import com.jwcg.groogroo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 @Service
@@ -52,11 +52,11 @@ public class GardenService {
             }
         }
 
-        if(!gardenRepository.existsByUrl(URL.toString())) return URL.toString();
+        if (!gardenRepository.existsByUrl(URL.toString())) return URL.toString();
         else return makeURL();
     }
 
-    public void makeGarden(long userId, String name, String description, int x, int y, String imageUrl){
+    public void makeGarden(long userId, String name, String description, int x, int y, String imageUrl) {
 
         // url 생성
         String url = makeURL();
@@ -140,7 +140,7 @@ public class GardenService {
 
         // 꽃 위치 정보 삽입
         for (UserGarden userGarden : flowerInfo) {
-            for (Flower flower : userGarden.getFlowers()){
+            for (Flower flower : userGarden.getFlowers()) {
                 ResponseFlowerPosDto responseFlowerPosDto = ResponseFlowerPosDto.builder()
                         .id(flower.getId())
                         .x(flower.getX())
@@ -162,9 +162,9 @@ public class GardenService {
         List<UserGarden> userGardens = userGardenRepository.findAllByUserId(userId);
         List<ResponseUserGardenDto> returnData = new ArrayList<>();
 
-        for(UserGarden userGarden : userGardens) {
+        for (UserGarden userGarden : userGardens) {
             JoinState joinState = userGarden.getJoinState();
-            if (joinState.equals(JoinState.WAIT) || joinState.equals(JoinState.ACCEPT)){
+            if (joinState.equals(JoinState.WAIT) || joinState.equals(JoinState.ACCEPT)) {
                 ResponseUserGardenDto responseUserGardenDto = ResponseUserGardenDto.builder()
                         .gardenId(userGarden.getGarden().getId())
                         .name(userGarden.getGarden().getName())
@@ -179,18 +179,18 @@ public class GardenService {
         return returnData;
     }
 
-    public void changeRoleFromMaster(long userId, String role, long gardenId, long targetId){
+    public void changeRoleFromMaster(long userId, String role, long gardenId, long targetId) {
 
         UserGarden userGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId);
         UserGarden targetUserGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(targetId, gardenId);
 
-        log.info("Garden Service - 직책 변경 " + gardenId + " -> "+ role);
-        if(role.equals("MASTER")) {
+        log.info("Garden Service - 직책 변경 " + gardenId + " -> " + role);
+        if (role.equals("MASTER")) {
             userGarden.setGardenRole(GardenRole.MEMBER);
             targetUserGarden.setGardenRole(GardenRole.MASTER);
-        }else if(role.equals("ADMIN")) {
+        } else if (role.equals("ADMIN")) {
             targetUserGarden.setGardenRole(GardenRole.ADMIN);
-        }else {
+        } else {
             targetUserGarden.setGardenRole(GardenRole.MEMBER);
         }
 
@@ -204,7 +204,49 @@ public class GardenService {
     @Transactional(readOnly = true)
     public String getGardenLink(long gardenId) {
         Garden garden = gardenRepository.findGardenById(gardenId);
-        
+
         return garden.getUrl();
+    }
+
+    public void deleteGarden(Long gardenId) {
+        Garden garden = gardenRepository.findGardenById(gardenId);
+        List<UserGarden> userGardens = garden.getUserGardens();
+        List<TreeGarden> treeGardens = garden.getTreeGardens();
+
+        LocalDate now = LocalDate.now();
+
+        for (UserGarden userGarden : userGardens) {
+            userGarden.setDeleteDate(now);
+        }
+
+        for (TreeGarden treeGarden : treeGardens) {
+            treeGarden.setDeleteDate(now);
+        }
+
+        Garden deletedGarden = Garden.builder()
+                .id(garden.getId())
+                .name(garden.getName())
+                .description(garden.getDescription())
+                .url(garden.getUrl())
+                .deleteDate(garden.getDeleteDate())
+                .userGardens(garden.getUserGardens())
+                .treeGardens(garden.getTreeGardens())
+                .build();
+
+        gardenRepository.save(deletedGarden);
+    }
+
+    public void updateUserGardenState(Long userId, Long gardenId) {
+        UserGarden userGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId);
+        UserGarden updatedUserGarden = UserGarden.builder()
+                .id(userGarden.getId())
+                .gardenRole(userGarden.getGardenRole())
+                .joinState(JoinState.KICK)
+                .deleteDate(null)
+                .flowers(userGarden.getFlowers())
+                .user(userGarden.getUser())
+                .garden(userGarden.getGarden())
+                .build();
+        userGardenRepository.save(updatedUserGarden);
     }
 }

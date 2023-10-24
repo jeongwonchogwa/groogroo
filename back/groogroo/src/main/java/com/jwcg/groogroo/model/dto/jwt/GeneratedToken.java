@@ -7,7 +7,8 @@ import lombok.ToString;
 
 @Getter
 @AllArgsConstructor
-@Builder @ToString
+@Builder
+@ToString
 public class GeneratedToken {
 
     private String accessToken;

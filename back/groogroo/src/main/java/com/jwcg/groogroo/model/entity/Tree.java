@@ -1,5 +1,6 @@
 package com.jwcg.groogroo.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,6 +34,7 @@ public class Tree {
     @Column(name = "delete_date")
     private LocalDate deleteDate;
 
+    @JsonManagedReference
     @OneToOne(mappedBy = "tree")
     private User user;
 

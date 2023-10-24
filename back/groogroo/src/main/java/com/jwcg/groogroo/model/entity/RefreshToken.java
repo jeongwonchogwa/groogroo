@@ -1,4 +1,4 @@
-package com.jwcg.groogroo.model.dto.jwt;
+package com.jwcg.groogroo.model.entity;
 
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;

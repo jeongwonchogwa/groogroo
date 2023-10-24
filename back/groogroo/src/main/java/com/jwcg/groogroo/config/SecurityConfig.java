@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/login", "/flower/**", "/fruit/**", "/garden/**").permitAll()
                 // /admin은 관리자만 접속 가능
-                .requestMatchers("/admin/**").hasRole(UserRole.ADMIN.toString())
+                .requestMatchers("/admin","/admin/**").hasRole(UserRole.ADMIN.toString())
                 //나머지 요청은 인증 필요
                 .anyRequest().authenticated();
 
