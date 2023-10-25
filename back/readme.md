@@ -146,3 +146,11 @@
     - memberCnt -> 현인원
     - capacity -> 정원
   - 정원 정보 조회 서비스 로직에 추가된 속성 및 좋아요 정보 포함
+
+  - 23.10.25 KJW
+    - 정원 가입 처리 API 구현
+      - gardenRole MEMBER면 403 반환
+    - 정원 가입 결과 조회 API 구현
+    - 정원 탈퇴 API 구현
+      - gardenRole MASTER면 403 반환
+    - BadRequestException 삭제, CustomException 추가
