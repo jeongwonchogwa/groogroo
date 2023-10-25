@@ -1,17 +1,14 @@
 package com.jwcg.groogroo.model.service;
 
-import com.jwcg.groogroo.model.dto.Garden.ResponseGardenInfoDto;
-import com.jwcg.groogroo.model.dto.Garden.ResponseUserGardenDto;
-import com.jwcg.groogroo.model.dto.admin.RequestBanishFromGardenDto;
+import com.jwcg.groogroo.model.dto.garden.ResponseGardenInfoDto;
+import com.jwcg.groogroo.model.dto.garden.ResponseUserGardenDto;
 import com.jwcg.groogroo.model.dto.flower.ResponseFlowerPosDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseTreePosDto;
 import com.jwcg.groogroo.model.entity.*;
-import com.jwcg.groogroo.repository.GardenRepository;
-import com.jwcg.groogroo.repository.TreeGardenRepository;
-import com.jwcg.groogroo.repository.UserGardenRepository;
-import com.jwcg.groogroo.repository.UserRepository;
+import com.jwcg.groogroo.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +22,13 @@ import java.util.Random;
 @AllArgsConstructor
 public class GardenService {
 
+    private final int PAGESIZE = 10;
+
     private final GardenRepository gardenRepository;
     private final UserRepository userRepository;
     private final UserGardenRepository userGardenRepository;
     private final TreeGardenRepository treeGardenRepository;
+    private final GardenLikeRepository gardenLikeRepository;
 
     public String makeURL() {
         StringBuffer URL = new StringBuffer();
@@ -56,7 +56,7 @@ public class GardenService {
         else return makeURL();
     }
 
-    public void makeGarden(long userId, String name, String description, int x, int y, String imageUrl) {
+    public void makeGarden(long userId, String name, String description, int x, int y, String imageUrl, int capacity){
 
         // url 생성
         String url = makeURL();
@@ -66,6 +66,8 @@ public class GardenService {
                 .name(name)
                 .description(description)
                 .url(url)
+                .capacity(capacity)
+                .memberCnt(1)
                 .build();
         log.info("garden 저장 성공");
         gardenRepository.save(garden);
@@ -80,15 +82,7 @@ public class GardenService {
         userGarden.setGarden(garden);
 
         log.info("userGarden 생성 성공");
-        log.info(userGarden.getUser().toString());
-        log.info(userGarden.getGarden().toString());
-        try {
-            userGardenRepository.save(userGarden);
-            log.info("userGarden 저장 성공");
-        } catch (Exception e) {
-            log.info(e.getMessage());
-        }
-
+        userGardenRepository.save(userGarden);
 
         TreeGarden treeGarden = TreeGarden.builder()
                 .x(x)
@@ -104,24 +98,28 @@ public class GardenService {
         log.info("treeGarden 생성 성공" + treeGarden.getGarden().toString());
         log.info(treeGarden.getTree().toString());
 
-        try {
-            treeGardenRepository.save(treeGarden);
-            log.info("treeGarden 저장 성공");
-        } catch (Exception e) {
-            log.info(e.getMessage());
-        }
+        treeGardenRepository.save(treeGarden);
+        log.info("treeGarden 저장 성공");
+
     }
 
     @Transactional(readOnly = true)
-    public ResponseGardenInfoDto getGardenInfo(long gardenId) {
+    public ResponseGardenInfoDto getGardenInfo(long userId, long gardenId) {
         Garden garden = gardenRepository.findGardenById(gardenId);
         List<TreeGarden> treeInfo = garden.getTreeGardens();
         List<UserGarden> flowerInfo = garden.getUserGardens();
 
+
         ResponseGardenInfoDto responseGardenInfoDto = ResponseGardenInfoDto.builder()
+                .gardenId(gardenId)
                 .name(garden.getName())
                 .description(garden.getDescription())
+                .likes(gardenLikeRepository.countByGardenId(gardenId))
+                .capacity(garden.getCapacity())
+                .memberCnt(garden.getMemberCnt())
+                .state(userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId).getJoinState().toString())
                 .build();
+
 
         log.info("나무, 꽃 정보 확인 + 정원 dto 생성");
         // 나무 위치 정보 삽입
@@ -157,26 +155,43 @@ public class GardenService {
         return responseGardenInfoDto;
     }
 
+    /*
+    사용자의 정원 목록 조회 (페이징)
+    페이지 번호와 페이지 크기를 받아 10개씩 사용자의 정원 목록을 반환
+    */
     @Transactional(readOnly = true)
-    public List<ResponseUserGardenDto> getUserGarden(long userId) {
+    public Page<ResponseUserGardenDto> getUserGardenByPagination(long userId, int page) {
+        Pageable pageable = PageRequest.of(page, PAGESIZE, Sort.by(Sort.Order.asc("state")));
+
         List<UserGarden> userGardens = userGardenRepository.findAllByUserId(userId);
         List<ResponseUserGardenDto> returnData = new ArrayList<>();
 
         for (UserGarden userGarden : userGardens) {
+        for (UserGarden userGarden : userGardens) {
             JoinState joinState = userGarden.getJoinState();
             if (joinState.equals(JoinState.WAIT) || joinState.equals(JoinState.ACCEPT)) {
+                Garden garden = userGarden.getGarden();
                 ResponseUserGardenDto responseUserGardenDto = ResponseUserGardenDto.builder()
-                        .gardenId(userGarden.getGarden().getId())
+                        .gardenId(garden.getId())
                         .name(userGarden.getGarden().getName())
                         .description(userGarden.getGarden().getDescription())
                         .state(joinState.toString())
+                        .capacity(userGarden.getGarden().getCapacity())
+                        .memberCnt(userGarden.getGarden().getMemberCnt())
+                        .likes(gardenLikeRepository.countByGardenId(garden.getId()))
                         .build();
 
                 returnData.add(responseUserGardenDto);
             }
         }
 
-        return returnData;
+        // 페이지네이션 적용
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), returnData.size());
+
+        List<ResponseUserGardenDto> userGardensOnPage = returnData.subList(start, end);
+
+        return new PageImpl<>(userGardensOnPage, pageable, returnData.size());
     }
 
     public void changeRoleFromMaster(long userId, String role, long gardenId, long targetId) {

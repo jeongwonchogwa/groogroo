@@ -1,10 +1,7 @@
 package com.jwcg.groogroo.controller;
 
 import com.jwcg.groogroo.model.dto.fruit.ResponseFruitPresetDto;
-import com.jwcg.groogroo.model.dto.tree.RequestTreeGenerationDto;
-import com.jwcg.groogroo.model.dto.tree.RequestTreeModifyDto;
-import com.jwcg.groogroo.model.dto.tree.ResponseTreeDto;
-import com.jwcg.groogroo.model.dto.tree.ResponseTreePresetDto;
+import com.jwcg.groogroo.model.dto.tree.*;
 import com.jwcg.groogroo.model.entity.Preset;
 import com.jwcg.groogroo.model.service.S3UploadService;
 import com.jwcg.groogroo.model.service.TreeService;
@@ -212,18 +209,50 @@ public class TreeController {
         }
     }
 
+    @Operation(summary = "나무 프리셋 추가", description = "마음에 드는 나무 이미지를 자신의 프리셋에 추가하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "나무 프리셋 추가"),
+            @ApiResponse(responseCode = "500", description = "나무 프리셋 추가 실패 - 내부 서버 오류"),
+    })
+    @PostMapping("/preset")
+    public ResponseEntity<Map<String, Object>> addTreePreset(@RequestHeader("Authorization") String token, @RequestBody RequestTreePresetDto requestTreePresetDto) {
+        token = token.split(" ")[1];
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("Tree Controller - 나무 프리셋 추가");
+            Long userId = jwtUtil.getId(token);
+            treeService.addTreePreset(userId, requestTreePresetDto.getImageUrl());
+
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "나무 프리셋 추가 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("Tree Controller - 나무 프리셋 추가 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "나무 프리셋 추가 실패");
+
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     @Operation(summary = "나무 프리셋 조회", description = "나무를 생성할 때 선택할 프리셋을 조회하는 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "나무 프리셋 조회 성공"),
             @ApiResponse(responseCode = "500", description = "나무 프리셋 조회 실패 - 내부 서버 오류"),
     })
     @GetMapping("/preset")
-    public ResponseEntity<Map<String, Object>> getTreePreset() {
+    public ResponseEntity<Map<String, Object>> getTreePreset(@RequestHeader("Authorization") String token) {
+        token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 
         try {
             log.info("Tree Controller - 나무 프리셋 조회");
-            List<Preset> presets = treeService.getTreePreset();
+            long userId = jwtUtil.getId(token);
+            List<Preset> presets = treeService.getTreePreset(userId);
             List<ResponseTreePresetDto> returnData = new ArrayList<>();
 
             for (Preset preset : presets) {
@@ -248,4 +277,29 @@ public class TreeController {
         }
     }
 
+    @Operation(summary = "나무 프리셋 삭제", description = "나무 프리셋을 삭제하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "나무 프리셋 삭제 성공"),
+            @ApiResponse(responseCode = "500", description = "나무 프리셋 삭제 실패 - 내부 서버 오류"),
+    })
+    @DeleteMapping("/preset/{treeUserPresetId}")
+    public ResponseEntity<Map<String, Object>> deleteTreePreset(@PathVariable long treeUserPresetId) {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("Tree Controller - 나무 프리셋 삭제");
+            treeService.deleteTreePreset(treeUserPresetId);
+
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "나무 프리셋 삭제 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("Tree Controller - 나무 프리셋 삭제 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "나무 프리셋 삭제 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

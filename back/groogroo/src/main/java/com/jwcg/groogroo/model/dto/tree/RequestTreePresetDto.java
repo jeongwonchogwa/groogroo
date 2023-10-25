@@ -1,4 +1,4 @@
-package com.jwcg.groogroo.model.dto.Garden;
+package com.jwcg.groogroo.model.dto.tree;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestGardenRoleDto {
+public class RequestTreePresetDto {
 
-    private long gardenId;
-    private long targetId;
-    private String Role;
+    private String imageUrl;
 }

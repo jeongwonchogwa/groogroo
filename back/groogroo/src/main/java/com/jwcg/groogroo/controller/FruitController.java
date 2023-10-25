@@ -157,7 +157,7 @@ public class FruitController {
             LocalDateTime cur = LocalDateTime.now();
             LocalDateTime target = fruit.getCreateTime();
             if (cur.toLocalDate().isEqual(target.toLocalDate())) {
-                responseFruitDto.setCreateTime(target.format(DateTimeFormatter.ofPattern("HH:MM")));
+                responseFruitDto.setCreateTime(target.format(DateTimeFormatter.ofPattern("HH:mm")));
             }else {
                 responseFruitDto.setCreateTime(target.format(DateTimeFormatter.ofPattern("YY.MM.dd")));
             }

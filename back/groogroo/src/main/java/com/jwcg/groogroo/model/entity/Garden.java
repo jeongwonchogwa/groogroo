@@ -33,6 +33,12 @@ public class Garden {
     @Column(name = "url")
     private String url;
 
+    @Column(name = "capacity")
+    private int capacity;
+
+    @Column(name = "member_count")
+    private int memberCnt;
+
     @Column(name = "delete_date")
     private LocalDate deleteDate;
 

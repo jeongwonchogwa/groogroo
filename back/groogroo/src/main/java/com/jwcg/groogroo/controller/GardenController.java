@@ -1,10 +1,9 @@
 package com.jwcg.groogroo.controller;
 
-import com.jwcg.groogroo.model.dto.Garden.RequestGardenGenerationDto;
-import com.jwcg.groogroo.model.dto.Garden.RequestGardenRoleDto;
-import com.jwcg.groogroo.model.dto.Garden.ResponseGardenInfoDto;
-import com.jwcg.groogroo.model.dto.Garden.ResponseUserGardenDto;
-import com.jwcg.groogroo.model.dto.tree.RequestTreeGenerationDto;
+import com.jwcg.groogroo.model.dto.garden.RequestGardenGenerationDto;
+import com.jwcg.groogroo.model.dto.garden.RequestGardenRoleDto;
+import com.jwcg.groogroo.model.dto.garden.ResponseGardenInfoDto;
+import com.jwcg.groogroo.model.dto.garden.ResponseUserGardenDto;
 import com.jwcg.groogroo.model.service.GardenService;
 import com.jwcg.groogroo.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,12 +12,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -53,7 +52,8 @@ public class GardenController {
                     requestGardenGenerationDto.getDescription(),
                     requestGardenGenerationDto.getX(),
                     requestGardenGenerationDto.getY(),
-                    requestGardenGenerationDto.getImageUrl());
+                    requestGardenGenerationDto.getImageUrl(),
+                    requestGardenGenerationDto.getCapacity());
 
             response.put("httpStatus", SUCCESS);
             response.put("message", "정원 생성 성공");
@@ -82,7 +82,7 @@ public class GardenController {
             log.info("Garden Controller - 정원 조회");
             Long userId = jwtUtil.getId(token);
 
-            ResponseGardenInfoDto returnData = gardenService.getGardenInfo(gardenId);
+            ResponseGardenInfoDto returnData = gardenService.getGardenInfo(userId, gardenId);
             response.put("gardenInfo", returnData);
             response.put("httpStatus", SUCCESS);
             response.put("message", "정원 조회 성공");
@@ -102,8 +102,8 @@ public class GardenController {
             @ApiResponse(responseCode = "200", description = "소속 정원 목록 조회 성공"),
             @ApiResponse(responseCode = "500", description = "소속 정원 목록 조회 실패 - 내부 서버 오류"),
     })
-    @GetMapping()
-    public ResponseEntity<Map<String, Object>> getUserGarden(@RequestHeader("Authorization") String token) {
+    @GetMapping("/list/{page}")
+    public ResponseEntity<Map<String, Object>> getUserGarden(@RequestHeader("Authorization") String token, @PathVariable int page) {
         token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 
@@ -111,7 +111,7 @@ public class GardenController {
             log.info("Garden Controller - 소속 정원 목록 조회");
             Long userId = jwtUtil.getId(token);
 
-            List<ResponseUserGardenDto> returnData = gardenService.getUserGarden(userId);
+            Page<ResponseUserGardenDto> returnData = gardenService.getUserGardenByPagination(userId, page);
             response.put("gardenInfo", returnData);
             response.put("httpStatus", SUCCESS);
             response.put("message", "소속 정원 목록 조회 성공");

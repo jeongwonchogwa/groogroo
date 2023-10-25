@@ -1,4 +1,4 @@
-package com.jwcg.groogroo.model.dto.Garden;
+package com.jwcg.groogroo.model.dto.garden;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseUserGardenDto {
+public class RequestGardenRoleDto {
 
     private long gardenId;
-    private String name;
-    private String description;
-    private String state;
+    private long targetId;
+    private String Role;
 }
