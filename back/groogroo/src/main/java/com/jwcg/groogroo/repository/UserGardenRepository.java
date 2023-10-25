@@ -9,4 +9,6 @@ public interface UserGardenRepository extends JpaRepository<UserGarden, Long> {
     UserGarden findUserGardenByUserIdAndGardenId(long userId, long gardenId);
 
     List<UserGarden> findAllByUserId(long userId);
+
+    UserGarden findUserGardenById(Long userGardenId);
 }

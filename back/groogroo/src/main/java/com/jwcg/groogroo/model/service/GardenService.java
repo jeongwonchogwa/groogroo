@@ -1,5 +1,6 @@
 package com.jwcg.groogroo.model.service;
 
+import com.jwcg.groogroo.exception.CustomException;
 import com.jwcg.groogroo.model.dto.garden.ResponseGardenInfoDto;
 import com.jwcg.groogroo.model.dto.garden.ResponseUserGardenDto;
 import com.jwcg.groogroo.model.dto.flower.ResponseFlowerPosDto;
@@ -9,6 +10,8 @@ import com.jwcg.groogroo.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
+import com.jwcg.groogroo.util.JwtUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,7 @@ public class GardenService {
     private final UserGardenRepository userGardenRepository;
     private final TreeGardenRepository treeGardenRepository;
     private final GardenLikeRepository gardenLikeRepository;
+    private final JwtUtil jwtUtil;
 
     public String makeURL() {
         StringBuffer URL = new StringBuffer();
@@ -250,18 +254,34 @@ public class GardenService {
         gardenRepository.save(deletedGarden);
     }
 
-    public void updateUserGardenState(Long userId, Long gardenId) {
+    public void updateOthersJoinState(String token, Long userId, Long gardenId, String joinState) {
+        token = token.split(" ")[1];
+        Long id = jwtUtil.getId(token);
+        String userRole = jwtUtil.getRole(token);
+
+        // ADMIN계정이 아닌 일반 USER 계정인 경우 gardenRole 확인하기
+        if(userRole.equals("USER")){
+            GardenRole gardenRole = userGardenRepository.findUserGardenByUserIdAndGardenId(id, gardenId).getGardenRole();
+            // GardenRole이 MASTER나 ADMIN이어야 joinState 변경 가능
+            if(gardenRole == GardenRole.MEMBER){
+                throw new CustomException(HttpStatus.FORBIDDEN, "JoinState 변경 실패 - 권한 없음");
+            }
+        }
+
         UserGarden userGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId);
-        UserGarden updatedUserGarden = UserGarden.builder()
-                .id(userGarden.getId())
-                .gardenRole(userGarden.getGardenRole())
-                .joinState(JoinState.KICK)
-                .deleteDate(null)
-                .flowers(userGarden.getFlowers())
-                .user(userGarden.getUser())
-                .garden(userGarden.getGarden())
-                .build();
-        userGardenRepository.save(updatedUserGarden);
+        JoinState state = JoinState.WAIT;
+        switch(joinState){
+            case "ACCEPT":
+                state = JoinState.ACCEPT;
+                break;
+            case "REFUSE":
+                state = JoinState.REFUSE;
+                break;
+            case "KICK":
+                state = JoinState.KICK;
+        }
+
+        updateJoinState(userGarden, state);
     }
 
     public void joinGarden(Long userId, long gardenId) {
@@ -272,5 +292,54 @@ public class GardenService {
                 .garden(gardenRepository.findGardenById(gardenId))
                 .build();
         userGardenRepository.save(userGarden);
+    }
+
+    // 정원 가입 결과 조회 - WAIT, ACCEPT, REFUSE 인 정원 목록 반환
+    public List<ResponseUserGardenDto> getGardenJoinStateList(Long userId) {
+
+        List<UserGarden> userGardens = userGardenRepository.findAllByUserId(userId);
+        List<ResponseUserGardenDto> list = new ArrayList<>();
+
+        for (UserGarden userGarden : userGardens) {
+            JoinState joinState = userGarden.getJoinState();
+            if (joinState.equals(JoinState.WAIT) || joinState.equals(JoinState.ACCEPT) || joinState.equals(JoinState.REFUSE)) {
+                ResponseUserGardenDto responseUserGardenDto = ResponseUserGardenDto.builder()
+                        .gardenId(userGarden.getGarden().getId())
+                        .name(userGarden.getGarden().getName())
+                        .description(userGarden.getGarden().getDescription())
+                        .state(joinState.toString())
+                        .build();
+
+                list.add(responseUserGardenDto);
+            }
+        }
+
+        return list;
+    }
+
+    // 정원 탈퇴
+    public void withdrawFromGarden(Long userId, Long gardenId) {
+        UserGarden userGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId);
+        GardenRole gardenRole = userGarden.getGardenRole();
+        // MASTER면 탈퇴 불가 (다른 사람에게 위임해줘야함)
+        if(gardenRole == GardenRole.MASTER) {
+            throw new CustomException(HttpStatus.FORBIDDEN, "정원 탈퇴 실패 - MASTER는 탈퇴 불가");
+        }
+        updateJoinState(userGarden, JoinState.WITHDRAWAL);
+    }
+
+    // joinState를 변환하는 메서드
+    private void updateJoinState(UserGarden userGarden, JoinState joinState) {
+        UserGarden updatedUserGarden = UserGarden.builder()
+                .id(userGarden.getId())
+                .gardenRole(userGarden.getGardenRole())
+                .joinState(joinState)
+                .deleteDate(null)
+                .flowers(userGarden.getFlowers())
+                .user(userGarden.getUser())
+                .garden(userGarden.getGarden())
+                .build();
+
+        userGardenRepository.save(updatedUserGarden);
     }
 }

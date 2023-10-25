@@ -1,12 +1,13 @@
 package com.jwcg.groogroo.controller;
 
-import com.jwcg.groogroo.model.dto.admin.RequestBanishFromGardenDto;
-import com.jwcg.groogroo.model.dto.admin.RequestDeleteReportedContent;
-import com.jwcg.groogroo.model.dto.admin.RequestReportListDto;
-import com.jwcg.groogroo.model.dto.admin.ResponseUserDto;
+import com.jwcg.groogroo.model.dto.garden.RequestUpdateJoinStateDto;
+import com.jwcg.groogroo.model.dto.report.RequestDeleteReportedContent;
+import com.jwcg.groogroo.model.dto.report.RequestReportListDto;
+import com.jwcg.groogroo.model.dto.user.ResponseUserDto;
 import com.jwcg.groogroo.model.entity.Report;
 import com.jwcg.groogroo.model.entity.UserStatus;
 import com.jwcg.groogroo.model.service.*;
+import com.jwcg.groogroo.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -32,12 +33,13 @@ public class AdminController {
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
 
-    private UserService userService;
-    private ReportService reportService;
-    private TreeService treeService;
-    private FlowerService flowerService;
-    private FruitService fruitService;
-    private GardenService gardenService;
+    private final JwtUtil jwtUtil;
+    private final UserService userService;
+    private final ReportService reportService;
+    private final TreeService treeService;
+    private final FlowerService flowerService;
+    private final FruitService fruitService;
+    private final GardenService gardenService;
 
     @Operation(summary = "신고 접수 내역 조회", description = "신고 접수 내역 오래된 순으로 10개씩 조회하는 API")
     @ApiResponses({
@@ -162,12 +164,12 @@ public class AdminController {
             @ApiResponse(responseCode = "500", description = "정원 추방 실패 - 내부 서버 오류")
     })
     @PatchMapping("/garden")
-    public ResponseEntity<Map<String, Object>> banishFromGarden(@RequestBody RequestBanishFromGardenDto requestBanishFromGardenDto) {
+    public ResponseEntity<Map<String, Object>> banishFromGarden(@RequestHeader("Authorization") String token, @RequestBody RequestUpdateJoinStateDto request) {
         Map<String,Object> response = new HashMap<>();
 
         try {
             log.info("정원 추방");
-            gardenService.updateUserGardenState(requestBanishFromGardenDto.getUserId(), requestBanishFromGardenDto.getGardenId());
+            gardenService.updateOthersJoinState(token, request.getUserId(), request.getGardenId(), "KICK");
             log.info("정원 추방 성공");
             response.put("httpStatus", SUCCESS);
             response.put("message", "정원 추방 성공");

@@ -1,4 +1,4 @@
-package com.jwcg.groogroo.model.dto.admin;
+package com.jwcg.groogroo.model.dto.user;
 
 import com.jwcg.groogroo.model.entity.UserRole;
 import com.jwcg.groogroo.model.entity.UserStatus;

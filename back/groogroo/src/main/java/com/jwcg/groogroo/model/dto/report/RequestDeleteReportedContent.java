@@ -1,4 +1,4 @@
-package com.jwcg.groogroo.model.dto.admin;
+package com.jwcg.groogroo.model.dto.report;
 
 import com.jwcg.groogroo.model.entity.ContentType;
 import lombok.AllArgsConstructor;

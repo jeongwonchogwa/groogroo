@@ -1,4 +1,4 @@
-package com.jwcg.groogroo.model.dto.admin;
+package com.jwcg.groogroo.model.dto.garden;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestReportListDto {
-    private int pageNumber;
-    private Boolean completed;
+public class RequestUpdateJoinStateDto {
+    Long userId;
+    Long gardenId;
+    String joinState;
 }

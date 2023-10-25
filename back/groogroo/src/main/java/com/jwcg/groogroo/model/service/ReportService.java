@@ -1,8 +1,8 @@
 package com.jwcg.groogroo.model.service;
 
-import com.jwcg.groogroo.model.dto.admin.RequestDeleteReportedContent;
-import com.jwcg.groogroo.model.dto.admin.RequestReportListDto;
-import com.jwcg.groogroo.model.dto.user.RequestReportDto;
+import com.jwcg.groogroo.model.dto.report.RequestDeleteReportedContent;
+import com.jwcg.groogroo.model.dto.report.RequestReportListDto;
+import com.jwcg.groogroo.model.dto.report.RequestReportDto;
 import com.jwcg.groogroo.model.entity.ContentType;
 import com.jwcg.groogroo.model.entity.Report;
 import com.jwcg.groogroo.repository.*;

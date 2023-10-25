@@ -1,9 +1,7 @@
 package com.jwcg.groogroo.controller;
 
-import com.jwcg.groogroo.model.dto.garden.RequestGardenGenerationDto;
-import com.jwcg.groogroo.model.dto.garden.RequestGardenRoleDto;
-import com.jwcg.groogroo.model.dto.garden.ResponseGardenInfoDto;
-import com.jwcg.groogroo.model.dto.garden.ResponseUserGardenDto;
+import com.jwcg.groogroo.exception.CustomException;
+import com.jwcg.groogroo.model.dto.garden.*;
 import com.jwcg.groogroo.model.service.GardenService;
 import com.jwcg.groogroo.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -190,7 +188,7 @@ public class GardenController {
         }
     }
 
-    @Operation(summary = "정원 가입 신청", description = "해당 정원에 가입신청한다.")
+    @Operation(summary = "정원 가입 신청", description = "해당 정원에 가입신청하는 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정원 가입 신청 성공"),
             @ApiResponse(responseCode = "500", description = "정원 가입 신청 실패 - 내부 서버 오류"),
@@ -201,18 +199,118 @@ public class GardenController {
         Map<String,Object> response = new HashMap<>();
 
         try {
-            log.info("Garden Controller - 정원 가입");
+            log.info("정원 가입");
             Long userId = jwtUtil.getId(token);
             gardenService.joinGarden(userId, gardenId);
 
+            log.info("정원 가입 성공");
             response.put("httpStatus", SUCCESS);
             response.put("message", "정원 가입 성공");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (Exception e) {
-            log.info("Garden Controller - 정원 가입 실패");
+            log.info("정원 가입 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "정원 가입 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "정원 가입 처리", description = "가입 신청에 대해 승인 / 거절 하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정원 가입 처리 성공"),
+            @ApiResponse(responseCode = "500", description = "정원 가입 처리 실패 - 내부 서버 오류"),
+    })
+    @PatchMapping("/process")
+    public ResponseEntity<Map<String, Object>> handleJoin(@RequestHeader("Authorization") String token, @RequestBody RequestUpdateJoinStateDto request) {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("정원 가입 처리");
+
+            gardenService.updateOthersJoinState(token, request.getUserId(), request.getGardenId(), request.getJoinState());
+
+            log.info("정원 가입 처리 성공");
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "정원 가입 처리 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (CustomException e) {
+            log.info(e.getMessage());
+            response.put("httpStatus", FAIL);
+            response.put("message", e.getMessage());
+
+            return new ResponseEntity<>(response, e.getHttpStatus());
+        }catch (Exception e) {
+            log.info("정원 가입 처리 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "정원 가입 처리 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "정원 가입 결과 조회", description = "정원 가입 결과를 조회하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정원 가입 결과 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "정원 가입 결과 조회 실패 - 내부 서버 오류"),
+    })
+    @GetMapping("/process")
+    public ResponseEntity<Map<String, Object>> getJoinResult(@RequestHeader("Authorization") String token) {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("정원 가입 결과 조회");
+            token = token.split(" ")[1];
+            Long userId = jwtUtil.getId(token);
+
+            List<ResponseUserGardenDto> list = gardenService.getGardenJoinStateList(userId);
+
+            log.info("정원 가입 결과 조회 성공");
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "정원 가입 결과 조회 성공");
+            response.put("gardenList", list);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("정원 가입 결과 조회 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "정원 가입 결과 조회 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "정원 탈퇴", description = "정원에서 탈퇴하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정원 탈퇴 성공"),
+            @ApiResponse(responseCode = "500", description = "정원 탈퇴 실패 - 내부 서버 오류"),
+    })
+    @PatchMapping("/withdrawal")
+    public ResponseEntity<Map<String, Object>> withdrawFromGarden(@RequestHeader("Authorization") String token, @RequestBody Long gardenId) {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("정원 탈퇴");
+            token = token.split(" ")[1];
+            Long userId = jwtUtil.getId(token);
+
+            gardenService.withdrawFromGarden(userId, gardenId);
+
+            log.info("정원 탈퇴 성공");
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "정원 탈퇴 성공");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (CustomException e) {
+            log.info(e.getMessage());
+            response.put("httpStatus", FAIL);
+            response.put("message", e.getMessage());
+
+            return new ResponseEntity<>(response, e.getHttpStatus());
+        }catch (Exception e) {
+            log.info("정원 탈퇴 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "정원 탈퇴 실패");
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }

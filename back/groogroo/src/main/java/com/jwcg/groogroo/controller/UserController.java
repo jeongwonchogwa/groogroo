@@ -1,6 +1,6 @@
 package com.jwcg.groogroo.controller;
 
-import com.jwcg.groogroo.model.dto.user.RequestReportDto;
+import com.jwcg.groogroo.model.dto.report.RequestReportDto;
 import com.jwcg.groogroo.model.entity.Report;
 import com.jwcg.groogroo.model.entity.UserStatus;
 import com.jwcg.groogroo.model.service.ReportService;

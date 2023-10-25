@@ -1,6 +1,6 @@
 package com.jwcg.groogroo.model.service;
 
-import com.jwcg.groogroo.model.dto.admin.ResponseUserDto;
+import com.jwcg.groogroo.model.dto.user.ResponseUserDto;
 import com.jwcg.groogroo.model.entity.User;
 import com.jwcg.groogroo.model.entity.UserStatus;
 import com.jwcg.groogroo.repository.UserRepository;

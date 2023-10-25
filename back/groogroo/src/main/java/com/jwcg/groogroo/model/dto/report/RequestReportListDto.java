@@ -1,4 +1,4 @@
-package com.jwcg.groogroo.model.dto.admin;
+package com.jwcg.groogroo.model.dto.report;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestBanishFromGardenDto {
-    Long userId;
-    Long gardenId;
+public class RequestReportListDto {
+    private int pageNumber;
+    private Boolean completed;
 }
