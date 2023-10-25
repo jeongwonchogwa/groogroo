@@ -167,7 +167,6 @@ public class GardenService {
         List<ResponseUserGardenDto> returnData = new ArrayList<>();
 
         for (UserGarden userGarden : userGardens) {
-        for (UserGarden userGarden : userGardens) {
             JoinState joinState = userGarden.getJoinState();
             if (joinState.equals(JoinState.WAIT) || joinState.equals(JoinState.ACCEPT)) {
                 Garden garden = userGarden.getGarden();
