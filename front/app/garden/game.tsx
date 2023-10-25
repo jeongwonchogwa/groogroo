@@ -9,7 +9,7 @@ const Game = () => {
   // const [game, setGame] = useState<Phaser.Game>();
 
   useEffect(() => {
-    console.log("유즈이펙트");
+    console.log("높이" + window.innerHeight + "너비" + window.innerWidth);
     const initPhaser = () => {
       const phaserGame = new Phaser.Game({
         type: Phaser.AUTO,
@@ -22,7 +22,7 @@ const Game = () => {
         scene: [Preloader, MainScene],
         pixelArt: true,
         scale: {
-          zoom: 2,
+          // zoom: window.innerHeight / 320,
           // mode: Phaser.Scale.FIT,
           // autoCenter: Phaser.Scale.CENTER_BOTH,
           // mode: Phaser.Scale.HEIGHT_CONTROLS_WIDTH,
@@ -54,7 +54,7 @@ const Game = () => {
   }, []);
 
   return (
-    <div>
+    <div className="w-full h-full overflow-hidden">
       <div id="game-content" key="game-content"></div>
     </div>
   );

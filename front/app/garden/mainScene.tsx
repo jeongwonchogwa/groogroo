@@ -19,29 +19,23 @@ export default class MainScene extends Scene {
   }
 
   create() {
-    console.log("메인씬 실행");
     const map = this.make.tilemap({ key: "mainMap" });
     map.addTilesetImage("Overworld", "Overworld");
-    // map.layers.forEach((layer, index) => {
-    //   map.createLayer(index, "Overworld", 0, 0);
-    // });
-
-    const groundLayer = map.createLayer("Tile Layer 1", "Overworld", 0, 0);
-    const borderLayer = map.createLayer("Tile Layer 2", "Overworld", 0, 0);
-    const TopLayer = map.createLayer("Tile Layer 3", "Overworld", 0, 0);
-    // const container = this.add.container(400, 300);
-    // container.setSize(32, 32);
-    // container.setInteractive({ draggable: true });
+    map.layers.forEach((layer, index) => {
+      map.createLayer(index, "Overworld", 0, 0);
+    });
 
     const heroSprite = this.physics.add.sprite(0, 0, "hero").setScale(0.25);
-    // .setInteractive({ draggable: true });
-    // this.cameras.main.startFollow(heroSprite, true);
-    // this.cameras.main.setFollowOffset(-heroSprite.width, -heroSprite.height);
+    this.cameras.main.setBackgroundColor("#f1f100");
+    this.cameras.main.setZoom(window.innerWidth / 480);
+    // this.cameras.main.setSize(window.innerHeight / 320);
 
-    // container.add(heroSprite);
-    // container.on("drag", (pointer, dragX, dragY) =>
-    //   container.setPosition(dragX, dragY)
-    // );
+    // console.log(this.cameras.main.worldView);
+    console.log(this.cameras.main.width);
+    this.cameras.main.setPosition(0, 0);
+    this.cameras.main.startFollow(heroSprite, true);
+    this.cameras.main.setFollowOffset(-heroSprite.width, -heroSprite.height);
+
     const gridEngineConfig = {
       characters: [
         {
