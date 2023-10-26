@@ -209,7 +209,13 @@ public class GardenController {
             response.put("message", "정원 가입 성공");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (CustomException e) {
+            log.info(e.getMessage());
+            response.put("httpStatus", FAIL);
+            response.put("message", e.getMessage());
+
+            return new ResponseEntity<>(response, e.getHttpStatus());
+        } catch (Exception e) {
             log.info("정원 가입 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "정원 가입 실패");
@@ -237,13 +243,13 @@ public class GardenController {
             response.put("message", "정원 가입 처리 성공");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (CustomException e) {
+        } catch (CustomException e) {
             log.info(e.getMessage());
             response.put("httpStatus", FAIL);
             response.put("message", e.getMessage());
 
             return new ResponseEntity<>(response, e.getHttpStatus());
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.info("정원 가입 처리 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "정원 가입 처리 실패");
@@ -273,7 +279,7 @@ public class GardenController {
             response.put("message", "정원 가입 결과 조회 성공");
             response.put("gardenList", list);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.info("정원 가입 결과 조회 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "정원 가입 결과 조회 실패");
@@ -302,13 +308,13 @@ public class GardenController {
             response.put("httpStatus", SUCCESS);
             response.put("message", "정원 탈퇴 성공");
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (CustomException e) {
+        } catch (CustomException e) {
             log.info(e.getMessage());
             response.put("httpStatus", FAIL);
             response.put("message", e.getMessage());
 
             return new ResponseEntity<>(response, e.getHttpStatus());
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.info("정원 탈퇴 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "정원 탈퇴 실패");

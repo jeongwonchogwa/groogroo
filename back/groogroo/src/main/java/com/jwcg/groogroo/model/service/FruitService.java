@@ -28,7 +28,7 @@ public class FruitService {
     // 기본적으로 나무 조회 시 조건에 맞는 열매 데이터까지 조회하게 만들어서 필요하진 않으나 나중에 사용할 수도 있어서 일단 만들어둠.
     @Transactional(readOnly = true)
     public List<Fruit> getAllFruitsByTreeId(long treeId){
-        return fruitRepository.findAllByTreeId(treeId);
+        return fruitRepository.findAllByTreeIdAndDelteDateIsNull(treeId);
     }
 
     public void makeFruit(long userId, long treeId, String writerNickname, String imageUrl, String content){

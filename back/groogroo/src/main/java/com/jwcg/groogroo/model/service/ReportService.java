@@ -6,13 +6,13 @@ import com.jwcg.groogroo.model.dto.report.RequestReportDto;
 import com.jwcg.groogroo.model.entity.ContentType;
 import com.jwcg.groogroo.model.entity.Report;
 import com.jwcg.groogroo.repository.*;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.List;
@@ -22,11 +22,11 @@ import java.util.List;
 @AllArgsConstructor
 public class ReportService {
 
-    private ReportRepository reportRepository;
-    private TreeRepository treeRepository;
-    private GardenRepository gardenRepository;
-    private FlowerRepository flowerRepository;
-    private FruitRepository fruitRepository;
+    private final ReportRepository reportRepository;
+    private final TreeRepository treeRepository;
+    private final GardenRepository gardenRepository;
+    private final FlowerRepository flowerRepository;
+    private final FruitRepository fruitRepository;
 
     // 신고하기
     public void report(Long userId, RequestReportDto requestReportDto) {
@@ -61,11 +61,13 @@ public class ReportService {
     }
 
     // 내 신고 내역 조회
+    @Transactional(readOnly = true)
     public List<Report> getMyReports(Long userId) {
         return reportRepository.findAllByReporterId(userId);
     }
 
     // 접수된 신고내역 10개씩 오래된 순으로 조회
+    @Transactional(readOnly = true)
     public List<Report> getReportList(RequestReportListDto requestReportListDto) {
         Pageable pageable = PageRequest.of(requestReportListDto.getPageNumber(), 10, Sort.by(Sort.Order.asc("id")));
         if (requestReportListDto.getCompleted() == null) {

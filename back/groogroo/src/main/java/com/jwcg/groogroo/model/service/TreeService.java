@@ -80,6 +80,9 @@ public class TreeService {
         List<ResponseFruitDto> fruits = new ArrayList<>();
 
         for (Fruit fruit : tree.getFruits()) {
+            // 삭제된 꽃이면 건너 뛰기
+            if(fruit.getDeleteDate() != null) continue;
+
             ResponseFruitDto now = ResponseFruitDto.builder()
                     .id(fruit.getId())
                     .writerId(fruit.getWriterId())
@@ -111,7 +114,7 @@ public class TreeService {
         log.info("========검색어: " + name + "==========");
         String word = "%" + name + "%";
         log.info(word);
-        List<Tree> trees = treeRepository.findByNameLike(word);
+        List<Tree> trees = treeRepository.findByNameLikeAndDeleteDateIsNull(word);
         List<ResponseTreeDto> returnData = new ArrayList<>();
 
         for (Tree tree : trees) {
@@ -124,6 +127,10 @@ public class TreeService {
             List<ResponseFruitDto> fruits = new ArrayList<>();
 
             for (Fruit fruit : tree.getFruits()) {
+
+                // 삭제된 꽃이면 건너 뛰기
+                if(fruit.getDeleteDate() != null) continue;
+
                 if (fruit.getWriterId() == userId){
                     ResponseFruitDto now = ResponseFruitDto.builder()
                             .id(fruit.getId())

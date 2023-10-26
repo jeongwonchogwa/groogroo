@@ -32,8 +32,7 @@ public class AdminController {
 
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
-
-    private final JwtUtil jwtUtil;
+    
     private final UserService userService;
     private final ReportService reportService;
     private final TreeService treeService;

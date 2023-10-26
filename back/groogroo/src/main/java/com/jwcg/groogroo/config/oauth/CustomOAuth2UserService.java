@@ -2,6 +2,7 @@ package com.jwcg.groogroo.config.oauth;
 
 
 import com.jwcg.groogroo.model.entity.User;
+import com.jwcg.groogroo.model.entity.UserStatus;
 import com.jwcg.groogroo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String email = (String) userAttribute.get("email");
         // 이메일로 가입된 회원인지 조회한다.
         User findUser = userRepository.findByEmail(email);
+
+        if(findUser.getUserStatus() == UserStatus.BLOCK){
+            log.info("로그인 실패 - 차단된 회원");
+            throw new OAuth2AuthenticationException("차단된 회원");
+        }
 
         if (findUser==null) {
             // 회원이 존재하지 않을경우, userAttribute의 exist 값을 false로 넣어준다.

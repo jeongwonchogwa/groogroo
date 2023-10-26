@@ -1,5 +1,6 @@
 package com.jwcg.groogroo.controller;
 
+import com.jwcg.groogroo.exception.CustomException;
 import com.jwcg.groogroo.model.dto.report.RequestReportDto;
 import com.jwcg.groogroo.model.entity.Report;
 import com.jwcg.groogroo.model.entity.UserStatus;
@@ -33,7 +34,7 @@ public class UserController {
     private static final String FAIL = "fail";
 
     private final JwtUtil jwtUtil;
-    private  final UserService userService;
+    private final UserService userService;
     private final ReportService reportService;
 
     @Operation(summary = "로그아웃", description = "accessToken으로 로그아웃하는 API")
@@ -112,11 +113,19 @@ public class UserController {
             log.info("로그아웃 성공");
             response.put("httpStatus", SUCCESS);
             response.put("message", "회원 탈퇴 성공");
+
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (CustomException e) {
+            log.info(e.getMessage());
+            response.put("httpStatus", FAIL);
+            response.put("message", e.getMessage());
+
+            return new ResponseEntity<>(response, e.getHttpStatus());
+        } catch (Exception e) {
             log.info("회원 탈퇴 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "회원 탈퇴 실패");
+
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

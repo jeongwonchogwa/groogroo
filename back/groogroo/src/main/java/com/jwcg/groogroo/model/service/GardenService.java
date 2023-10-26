@@ -128,6 +128,9 @@ public class GardenService {
         log.info("나무, 꽃 정보 확인 + 정원 dto 생성");
         // 나무 위치 정보 삽입
         for (TreeGarden treeGarden : treeInfo) {
+            // 삭제된 나무면 건너 뛰기
+            if(treeGarden.getTree().getDeleteDate() != null) continue;
+
             ResponseTreePosDto responseTreePosDto = ResponseTreePosDto.builder()
                     .id(treeGarden.getTree().getId())
                     .x(treeGarden.getX())
@@ -142,7 +145,12 @@ public class GardenService {
 
         // 꽃 위치 정보 삽입
         for (UserGarden userGarden : flowerInfo) {
+            // 삭제된 userGarden에 대해 건너 뛰기
+            if(userGarden.getDeleteDate() != null) continue;
             for (Flower flower : userGarden.getFlowers()) {
+                // 삭제된 꽃이면 건너 뛰기
+                if(flower.getDeleteDate() != null) continue;
+
                 ResponseFlowerPosDto responseFlowerPosDto = ResponseFlowerPosDto.builder()
                         .id(flower.getId())
                         .x(flower.getX())
@@ -167,7 +175,7 @@ public class GardenService {
     public Page<ResponseUserGardenDto> getUserGardenByPagination(long userId, int page) {
         Pageable pageable = PageRequest.of(page, PAGESIZE, Sort.by(Sort.Order.asc("state")));
 
-        List<UserGarden> userGardens = userGardenRepository.findAllByUserId(userId);
+        List<UserGarden> userGardens = userGardenRepository.findAllByUserIdAndDeleteDateIsNull(userId);
         List<ResponseUserGardenDto> returnData = new ArrayList<>();
 
         for (UserGarden userGarden : userGardens) {
@@ -253,9 +261,9 @@ public class GardenService {
                 .name(garden.getName())
                 .description(garden.getDescription())
                 .url(garden.getUrl())
-                .deleteDate(garden.getDeleteDate())
-                .userGardens(garden.getUserGardens())
-                .treeGardens(garden.getTreeGardens())
+                .deleteDate(now)
+                .userGardens(userGardens)
+                .treeGardens(treeGardens)
                 .build();
 
         gardenRepository.save(deletedGarden);
@@ -292,19 +300,30 @@ public class GardenService {
     }
 
     public void joinGarden(Long userId, long gardenId) {
+        Garden garden = gardenRepository.findGardenById(gardenId);
+
+        // 인원 수 확인해서 정원 초과면 예외 발생
+        if(garden.getCapacity()<=garden.getMemberCnt()){
+            throw new CustomException(HttpStatus.FORBIDDEN, "정원 가입 실패 - 정원 초과");
+        }
+
         UserGarden userGarden = UserGarden.builder()
                 .gardenRole(GardenRole.MEMBER)
                 .joinState(JoinState.WAIT)
                 .user(userRepository.findUserById(userId))
-                .garden(gardenRepository.findGardenById(gardenId))
                 .build();
+
+        userGarden.setGarden(garden);
+
         userGardenRepository.save(userGarden);
+        gardenRepository.save(garden);
     }
 
     // 정원 가입 결과 조회 - WAIT, ACCEPT, REFUSE 인 정원 목록 반환
+    @Transactional(readOnly = true)
     public List<ResponseUserGardenDto> getGardenJoinStateList(Long userId) {
 
-        List<UserGarden> userGardens = userGardenRepository.findAllByUserId(userId);
+        List<UserGarden> userGardens = userGardenRepository.findAllByUserIdAndDeleteDateIsNull(userId);
         List<ResponseUserGardenDto> list = new ArrayList<>();
 
         for (UserGarden userGarden : userGardens) {
@@ -315,6 +334,10 @@ public class GardenService {
                         .name(userGarden.getGarden().getName())
                         .description(userGarden.getGarden().getDescription())
                         .state(joinState.toString())
+                        .capacity(userGarden.getGarden().getCapacity())
+                        .memberCnt(userGarden.getGarden().getMemberCnt())
+                        //TODO: 좋아요 수 추가하기
+//                        .likes()
                         .build();
 
                 list.add(responseUserGardenDto);
@@ -330,7 +353,7 @@ public class GardenService {
         GardenRole gardenRole = userGarden.getGardenRole();
         // MASTER면 탈퇴 불가 (다른 사람에게 위임해줘야함)
         if(gardenRole == GardenRole.MASTER) {
-            throw new CustomException(HttpStatus.FORBIDDEN, "정원 탈퇴 실패 - MASTER는 탈퇴 불가");
+            throw new CustomException(HttpStatus.FORBIDDEN, "정원 탈퇴 실패 - MASTER 권한 위임 후 탈퇴 가능");
         }
         updateJoinState(userGarden, JoinState.WITHDRAWAL);
     }
@@ -344,9 +367,32 @@ public class GardenService {
                 .deleteDate(null)
                 .flowers(userGarden.getFlowers())
                 .user(userGarden.getUser())
-                .garden(userGarden.getGarden())
                 .build();
 
+        // 승인하면 인원 +1, 탈퇴/추방 하면 인원 -1
+        int cnt = 0;
+        switch (joinState){
+            case ACCEPT :
+                cnt = 1;
+                break;
+            case WITHDRAWAL: case KICK:
+                cnt = -1;
+                
+        }
+        Garden garden = userGarden.getGarden();
+        Garden updatedGarden = Garden.builder()
+                .id(garden.getId())
+                .name(garden.getName())
+                .description(garden.getDescription())
+                .url(garden.getUrl())
+                .capacity(garden.getCapacity())
+                .memberCnt(garden.getMemberCnt()+cnt) // 인원수 변경
+                .treeGardens(garden.getTreeGardens())
+                .build();
+
+        userGarden.setGarden(updatedGarden);
+
+        gardenRepository.save(updatedGarden);
         userGardenRepository.save(updatedUserGarden);
     }
 }
