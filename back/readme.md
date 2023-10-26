@@ -136,7 +136,7 @@
     - 꽃, 열매 삭제는 기존 service에 있던 것 사용해서 delete됨 수정 필요
     - 삭제하면 같은 대상에 대한 신고내역 모두 처리 완료로 변경
   - 정원 가입 신청 API 구현
-  - 
+
 - 23.10.25 CKH
   - 유저가 가입한 정원 목록에 페이지네이션 적용
   - 좋아요 관련 기능 구현
@@ -147,10 +147,18 @@
     - capacity -> 정원
   - 정원 정보 조회 서비스 로직에 추가된 속성 및 좋아요 정보 포함
 
-  - 23.10.25 KJW
-    - 정원 가입 처리 API 구현
-      - gardenRole MEMBER면 403 반환
-    - 정원 가입 결과 조회 API 구현
-    - 정원 탈퇴 API 구현
-      - gardenRole MASTER면 403 반환
-    - BadRequestException 삭제, CustomException 추가
+- 23.10.25 KJW
+  - 정원 가입 처리 API 구현
+    - gardenRole MEMBER면 403 반환
+  - 정원 가입 결과 조회 API 구현
+  - 정원 탈퇴 API 구현
+    - gardenRole MASTER면 403 반환
+  - BadRequestException 삭제, CustomException 추가
+
+- 23.10.26 KJW
+  - 로그인 시 userStatus가 BLOCK이면(차단된 회원이면) 로그인 막음
+  - 정원, 꽃, 열매, 나무 조회할 때 deleteDate is null 조건 넣어줌
+  - 정원 인원 수 적용
+    - 정원 가입 할 때 인원 다 찬 정원이면 예외 던짐
+    - 정원 가입 승인하면 인원수 +1 / 정원 탈퇴하거나 추방당하면 인원수 -1
+  - 회원 탈퇴할 때 MASTER인 정원 있는지 확인해서 있으면 탈퇴  못하게 함
