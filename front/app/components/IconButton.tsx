@@ -1,12 +1,12 @@
 import Image from "next/image";
-import Bell from "/public/asset/images/bell.png";
-import Tree from "/public/asset/images/tree.png";
-import Glass from "/public/asset/images/glass.png";
-import Plus from "/public/asset/images/plus.png";
-import Arrow from "/public/asset/images/arrow.png";
-import Swipe from "/public/asset/images/swipe.png";
-import Kakao from "/public/asset/images/kakao.png";
-import Link from "/public/asset/images/link.png";
+import Bell from "/public/assets/images/bell.png";
+import Tree from "/public/assets/images/tree.png";
+import Glass from "/public/assets/images/glass.png";
+import Plus from "/public/assets/images/plus.png";
+import Arrow from "/public/assets/images/arrow.png";
+import Swipe from "/public/assets/images/swipe.png";
+import Kakao from "/public/assets/images/kakao.png";
+import Link from "/public/assets/images/link.png";
 
 interface IconButtonProps {
   iconSrc: "bell" | "tree" | "glass" | "plus" | "arrow" | "swipe" | "kakao" | "link";
