@@ -10,5 +10,5 @@ public interface FruitRepository extends JpaRepository<Fruit, Long> {
     Fruit findFruitById(long fruitId);
 
 
-    List<Fruit> findAllByTreeIdAndDelteDateIsNull(long treeId);
+    List<Fruit> findAllByTreeIdAndDeleteDateIsNull(long treeId);
 }
