@@ -3,6 +3,11 @@ import type { Metadata } from "next";
 import { Press_Start_2P } from "next/font/google";
 import localFont from "next/font/local";
 
+declare global {
+  interface Window {
+    Kakao: any;
+  }
+}
 const pressStart2P = Press_Start_2P({ weight: "400", subsets: ["latin"] });
 
 const bitBit = localFont({
