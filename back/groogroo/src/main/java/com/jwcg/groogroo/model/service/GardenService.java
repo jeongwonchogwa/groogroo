@@ -78,7 +78,7 @@ public class GardenService {
 
         // 생성한 사람과 그 나무를 해당 정원에 등록(관리자)
         UserGarden userGarden = UserGarden.builder()
-                .gardenRole(GardenRole.ADMIN)
+                .gardenRole(GardenRole.MASTER)
                 .joinState(JoinState.ACCEPT)
                 .build();
 
@@ -172,18 +172,22 @@ public class GardenService {
 
         for (UserGarden userGarden : userGardens) {
             JoinState joinState = userGarden.getJoinState();
+            log.info(joinState.toString());
             if (joinState.equals(JoinState.WAIT) || joinState.equals(JoinState.ACCEPT)) {
                 Garden garden = userGarden.getGarden();
+                log.info(garden.toString());
+//                long likes = gardenLikeRepository.countByGardenId(garden.getId());
+                long likes = gardenLikeRepository.findAllByGardenId(garden.getId()).size();
                 ResponseUserGardenDto responseUserGardenDto = ResponseUserGardenDto.builder()
                         .gardenId(garden.getId())
-                        .name(userGarden.getGarden().getName())
-                        .description(userGarden.getGarden().getDescription())
+                        .name(garden.getName())
+                        .description(garden.getDescription())
                         .state(joinState.toString())
-                        .capacity(userGarden.getGarden().getCapacity())
-                        .memberCnt(userGarden.getGarden().getMemberCnt())
-                        .likes(gardenLikeRepository.countByGardenId(garden.getId()))
+                        .capacity(garden.getCapacity())
+                        .memberCnt(garden.getMemberCnt())
+                        .likes(likes)
                         .build();
-
+                log.info(responseUserGardenDto.toString());
                 returnData.add(responseUserGardenDto);
             }
         }
@@ -191,6 +195,9 @@ public class GardenService {
         // 페이지네이션 적용
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), returnData.size());
+
+        log.info(Integer.toString(start));
+        log.info(Integer.toString(end));
 
         List<ResponseUserGardenDto> userGardensOnPage = returnData.subList(start, end);
 
