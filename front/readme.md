@@ -21,6 +21,14 @@
   - TailwindCSS에 NeoDunggeunmo Pro 폰트 추가
 
 - 23.10.24 KHN
+
   - next.js에 NES.css implement
   - TailwindCss에 색상 추가
   - textButton 구현
+
+- 23.10.26 KHN
+  - 카카오톡 공유하기 구현, 링크 복사하기 구현
+    - 링크 수정 필요
+    - garden 동적 라우팅, 백에서 링크 난수 받아와서 적용해야함
+  - IconButton 구현
+    - asset 경로 변경
