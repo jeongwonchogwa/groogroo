@@ -84,15 +84,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         // AccessToken을 검증하고, 만료되었을경우 예외를 발생시킨다.
-        if (!jwtUtil.verifyToken(token)) {
-            throw new JwtException("Access Token 만료");
-        }
-
-        // AccessToken의 값이 있고, 유효한 경우에 진행한다.
-        if (jwtUtil.verifyToken(token)) {
-
-            // AccessToken 내부의 payload에 있는 email로 user를 조회한다. 없다면 예외를 발생시킨다 -> 정상 케이스가 아님
-            User findUser = userRepository.findByEmail(jwtUtil.getEmail(token));
+        if (!jwtUtil.verifyToken(token, "access")) {
+            if(request.getRequestURI().equals("/api/user/refresh")){
+                // 토큰 재발급 요청인 경우 새로운 AccessToken을 응답으로 반환
+                log.info("accessToken 재발급 요청");
+                String newAccessToken = jwtUtil.republishAccessToken(token);
+                response.setHeader("Authorization", "Bearer " + newAccessToken);
+                return;
+            } else{
+                throw new JwtException("Access Token 만료");
+            }
+        } else {
+            // AccessToken 내부의 payload에 있는 userId로 user를 조회한다. 없다면 예외를 발생시킨다 -> 정상 케이스가 아님
+            User findUser = userRepository.findUserById(jwtUtil.getId(token));
             if(findUser == null) throw new IllegalStateException();
 
             // SecurityContext에 등록할 User 객체를 만들어준다.

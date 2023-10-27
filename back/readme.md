@@ -184,3 +184,10 @@
   - 좋아요 랭킹 목록 조회
     - 현재 데이터가 적어 엣지케이스 발생 확률 있음
     - 추가 테스트 필요
+
+- 23.10.27 KJW
+  - accessToken이랑 refreshToken secretKey 분리
+    - jwtUtil 코드 좀 더 깔끔하게 수정 예정
+  - accessToken 만료 시 accessToken재발급 api에 요청 보내면 만료된 토큰이라고 jwt예외 발생하는 문제 해결
+    - 요청 주소가 api/user/refresh 면 토큰 재발급해서 헤더에 담아서 리턴
+  - jwt.yml 삭제
