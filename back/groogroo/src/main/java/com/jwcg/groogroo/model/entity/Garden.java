@@ -48,4 +48,5 @@ public class Garden {
     @OneToMany(mappedBy = "garden")
     private List<TreeGarden> treeGardens = new ArrayList<>();
 
+
 }
