@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import MainScene from "./mainScene";
-import Preloader from "./preloader";
+import MainScene from "./MainScene";
+import Preloader from "./Preloader";
 import GridEngine from "grid-engine";
+import Grid from "./Grid";
 
 const Game = () => {
   // const [game, setGame] = useState<Phaser.Game>();
@@ -54,8 +55,10 @@ const Game = () => {
   }, []);
 
   return (
-    <div className="w-full h-full overflow-hidden">
-      <div id="game-content" key="game-content"></div>
+    <div className="w-full h-full overflow-hidden border-2 border-point-orange ">
+      <div className="relative" id="game-content" key="game-content">
+        {/* <Grid /> */}
+      </div>
     </div>
   );
 };
