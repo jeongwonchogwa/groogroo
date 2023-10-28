@@ -21,8 +21,11 @@ import java.util.Optional;
 public class JwtUtil {
     private final RefreshTokenRepository tokenRepository;
 
-    @Value("${jwt.secret}")
-    private String secretKey;
+    @Value("${access-token-secret-key}")
+    private String accessSecretKey;
+
+    @Value("${refresh-token-secret-key}")
+    private String refreshSecretKey;
 
     @Value("${access-expiration-time}")
     private Long accessExpirationTime;
@@ -32,7 +35,8 @@ public class JwtUtil {
 
     @PostConstruct
     protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+        accessSecretKey = Base64.getEncoder().encodeToString(accessSecretKey.getBytes());
+        refreshSecretKey = Base64.getEncoder().encodeToString(refreshSecretKey.getBytes());
     }
 
     /**
@@ -78,7 +82,7 @@ public class JwtUtil {
                 // 토큰의 만료일시를 설정한다.
                 .setExpiration(new Date(now.getTime() + refreshExpirationTime))
                 // 지정된 서명 알고리즘과 비밀 키를 사용하여 토큰을 서명한다.
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(SignatureAlgorithm.HS256, refreshSecretKey)
                 .compact();
     }
 
@@ -106,9 +110,8 @@ public class JwtUtil {
                         // 토큰의 만료일시를 설정한다.
                         .setExpiration(new Date(now.getTime() + accessExpirationTime))
                         // 지정된 서명 알고리즘과 비밀 키를 사용하여 토큰을 서명한다.
-                        .signWith(SignatureAlgorithm.HS256, secretKey)
+                        .signWith(SignatureAlgorithm.HS256, accessSecretKey)
                         .compact();
-
     }
 
 
@@ -117,11 +120,11 @@ public class JwtUtil {
      * @param token
      * @return
      */
-    public boolean verifyToken(String token) {
+    public boolean verifyToken(String token, String type) {
         try {
-            log.info("토큰 유효성 검사");
+            log.info(type +"Token 유효성 검사");
             Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(secretKey)// 비밀키를 설정하여 파싱한다.
+                    .setSigningKey(type.equals("access")?accessSecretKey:refreshSecretKey)// 비밀키를 설정하여 파싱한다.
                     .parseClaimsJws(token);  // 주어진 토큰을 파싱하여 Claims 객체를 얻는다.
             System.out.println(claims.getBody().getExpiration());
             System.out.println(new Date());
@@ -130,41 +133,68 @@ public class JwtUtil {
                     .getExpiration()
                     .after(new Date());  // 만료 시간이 현재 시간 이후인지 확인하여 유효성 검사 결과를 반환
         } catch (Exception e) {
-            log.info("토큰 유효성 검사 실패");
+            log.info(type +"Token 유효성 검사 실패");
             return false;
         }
     }
 
-
     /**
-     * 토큰에서 Email 추출
+     * AccessToken에서 Email 추출
      * @param token
      * @return
      */
     public String getEmail(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
 
     /**
-     * 토큰에서 userId 추출
+     * AccessToken에서 userId 추출
      * @param token
      * @return
      */
     public Long getId(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("id", Long.class);
+        return Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(token).getBody().get("id", Long.class);
     }
 
 
     /**
-     * 토큰에서 ROLE(권한) 추출
+     * AccessToken에서 ROLE(권한) 추출
      * @param token
      * @return
      */
     public String getRole(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("role", String.class);
+        return Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(token).getBody().get("role", String.class);
     }
 
+    /**
+     * RefreshToken에서 Email 추출
+     * @param token
+     * @return
+     */
+    public String getEmailFromRefreshToken(String token) {
+        return Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+
+    /**
+     * RefreshToken에서 userId 추출
+     * @param token
+     * @return
+     */
+    public Long getIdFromRefreshToken(String token) {
+        return Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(token).getBody().get("id", Long.class);
+    }
+
+
+    /**
+     * RefreshToken에서 ROLE(권한) 추출
+     * @param token
+     * @return
+     */
+    public String getRoleFromRefreshToken(String token) {
+        return Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(token).getBody().get("role", String.class);
+    }
 
     /**
      * RefreshToken 정보를 redis에 저장
@@ -202,16 +232,16 @@ public class JwtUtil {
         Optional<RefreshToken> refreshToken = tokenRepository.findByAccessToken(accessToken);
 
         // RefreshToken이 존재하고 유효하다면 실행
-        if (refreshToken.isPresent() && verifyToken(refreshToken.get().getRefreshToken())) {
+        if (refreshToken.isPresent() && verifyToken(refreshToken.get().getRefreshToken(), "refresh")) {
             // RefreshToken 객체를 꺼내온다.
-            RefreshToken resultToken = refreshToken.get();
-            log.info("refreshToken: {}", resultToken);
+            String token = refreshToken.get().getRefreshToken();
+            log.info("refreshToken: {}", token);
             // UserId, Email, Role을 추출해 새로운 액세스토큰을 만든다.
-            Long userId = getId(resultToken.getAccessToken());
-            String newAccessToken = generateAccessToken(userId, resultToken.getId(), getRole(resultToken.getRefreshToken()));
+            String newAccessToken = generateAccessToken(getIdFromRefreshToken(token), getEmailFromRefreshToken(token), getRoleFromRefreshToken(token));
             // 액세스 토큰의 값을 수정해준다.
-            resultToken.updateAccessToken(newAccessToken);
-            tokenRepository.save(resultToken);
+            refreshToken.get().updateAccessToken(newAccessToken);
+            tokenRepository.save(refreshToken.get());
+            log.info("accessToken 재발급 완료");
             // 새로운 액세스 토큰을 반환해준다.
             return newAccessToken;
         } else {

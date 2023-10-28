@@ -152,8 +152,7 @@
     - gardenRole MEMBER면 403 반환
   - 정원 가입 결과 조회 API 구현
   - 정원 탈퇴 API 구현
-    - gardenRole MASTER면 403 반환
-  - BadRequestException 삭제, CustomException 추가
+    - gardenRole MASTER면 403 반환  - BadRequestException 삭제, CustomException 추가
 
 - 23.10.26 KJW
   - 로그인 시 userStatus가 BLOCK이면(차단된 회원이면) 로그인 막음
@@ -162,3 +161,33 @@
     - 정원 가입 할 때 인원 다 찬 정원이면 예외 던짐
     - 정원 가입 승인하면 인원수 +1 / 정원 탈퇴하거나 추방당하면 인원수 -1
   - 회원 탈퇴할 때 MASTER인 정원 있는지 확인해서 있으면 탈퇴  못하게 함
+
+- 23.10.27 CKH
+  - 좋아요, 랭킹 API 관련 Redis 적용 완료
+    - 데이터 정합성을 고려하여 삽입, 조회, 삭제 수행
+    - message listener를 통해 TTL(현재 1분) 이 만료되서 Redis에서 데이터가 삭제될 때, MySQL로 해당 데이터를 백업한다.
+    - 이 때, MySQL에 해당 데이터가 존재하는 지 검사함으로 데이터 무결성을 지킴
+    - API 명세서 추가 작성 필요
+  - 좋아요 추가
+    - 별도의 검증 로직 없이 Redis에 데이터 추가
+  - 좋아요 취소
+    - Redis와 MySQL 양측의 해당하는 데이터를 삭제
+  - 좋아요 여부 조회
+    - Redis를 우선적으로 확인, 존재하면 cache hit
+    - 존재하지 않으면, cache miss
+      - MySQL에 해당 데이터가 존재하면 Redis에 업데이트 후 true 리턴
+      - 존재하지 않으면 false 리턴
+  - 좋아요 개수 조회
+    - Redis에 해당 정원에 해당하는 데이터 업데이트
+    - Redis에서 개수 확인
+    - 더 나은 로직 존재할 것 같아 추가 스터디 필요
+  - 좋아요 랭킹 목록 조회
+    - 현재 데이터가 적어 엣지케이스 발생 확률 있음
+    - 추가 테스트 필요
+
+- 23.10.27 KJW
+  - accessToken이랑 refreshToken secretKey 분리
+    - jwtUtil 코드 좀 더 깔끔하게 수정 예정
+  - accessToken 만료 시 accessToken재발급 api에 요청 보내면 만료된 토큰이라고 jwt예외 발생하는 문제 해결
+    - 요청 주소가 api/user/refresh 면 토큰 재발급해서 헤더에 담아서 리턴
+  - jwt.yml 삭제

@@ -2,6 +2,7 @@ package com.jwcg.groogroo.controller;
 
 import com.jwcg.groogroo.exception.CustomException;
 import com.jwcg.groogroo.model.dto.garden.*;
+import com.jwcg.groogroo.model.service.GardenLikeService;
 import com.jwcg.groogroo.model.service.GardenService;
 import com.jwcg.groogroo.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,7 @@ public class GardenController {
 
     private final JwtUtil jwtUtil;
     private final GardenService gardenService;
+    private final GardenLikeService gardenLikeService;
 
     @Operation(summary = "정원 생성", description = "정원을 새로 생성하는 API")
     @ApiResponses({
@@ -125,10 +127,184 @@ public class GardenController {
         }
     }
 
-    // TO DO: 랭킹 및 랭킹 목록 조회
-    /*
-        랭킹 집계(Redis), 랭킹 목록 조회(Redis)
+    // TO DO: 랭킹 및 랭킹 목록 조회 : DONE
+
+    /**
+     * 좋아요 추가 API
+     * Redis에 좋아요 정보를 추가한다. TTL(Time To Live) 가 만료되면 해당 데이터는 MySQL로 추가된다.
+     * @param token
+     * @param gardenId
+     * @return -
      */
+    @Operation(summary = "좋아요 추가", description = "사용자가 특정 정원에 좋아요를 표시한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "좋아요 추가 성공"),
+            @ApiResponse(responseCode = "500", description = "좋아요 추가 실패 - 내부 서버 오류"),
+    })
+    @PostMapping("/like/{gardenId}")
+    public ResponseEntity<Map<String, Object>> addLikeToGarden(@RequestHeader("Authorization") String token, @PathVariable long gardenId) {
+        token = token.split(" ")[1];
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("Garden Controller - 좋아요 추가");
+            Long userId = jwtUtil.getId(token);
+
+            gardenLikeService.likeGarden(userId, gardenId);
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "좋아요 추가 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("Garden Controller - 좋아요 추가 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "좋아요 추가 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * 좋아요 취소
+     * Redis에 해당 좋아요 정보가 존재하면 삭제, MySQL에서 해당 좋아요 정보를 삭제한다.
+     * @param token
+     * @param gardenId
+     * @return -
+     */
+    @Operation(summary = "좋아요 취소", description = "사용자가 좋아요를 표시한 정원의 좋아요를 취소한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "좋아요 취소 성공"),
+            @ApiResponse(responseCode = "500", description = "좋아요 취소 실패 - 내부 서버 오류"),
+    })
+    @DeleteMapping("/like/{gardenId}")
+    public ResponseEntity<Map<String, Object>> cancelLikeToGarden(@RequestHeader("Authorization") String token, @PathVariable long gardenId) {
+        token = token.split(" ")[1];
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("Garden Controller - 좋아요 취소");
+            Long userId = jwtUtil.getId(token);
+
+            gardenLikeService.cancelLikeGarden(userId, gardenId);
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "좋아요 취소 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("Garden Controller - 좋아요 취소 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "좋아요 취소 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * 좋아요 여부 조회
+     * 사용자가 특정 정원에 대해서 좋아요를 표시했는 지 여부를 조회한다.
+     * Redis에 해당 정보가 없고 MySQL에 존재한다면 최신화한다.
+     * @param token
+     * @param gardenId
+     * @return -
+     */
+    @Operation(summary = "좋아요 여부 조회", description = "사용자가 특정 정원에 대해 좋아요를 표시했는 지 여부를 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "좋아요 여부 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "좋아요 여부 조회 실패 - 내부 서버 오류"),
+    })
+    @GetMapping("/like/check/{gardenId}")
+    public ResponseEntity<Map<String, Object>> isLikeGarden(@RequestHeader("Authorization") String token, @PathVariable long gardenId) {
+        token = token.split(" ")[1];
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("Garden Controller - 좋아요 여부 조회");
+            Long userId = jwtUtil.getId(token);
+
+            boolean result = gardenLikeService.isLikeGarden(userId, gardenId);
+            response.put("result", result);
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "좋아요 여부 조회 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("Garden Controller - 좋아요 여부 조회 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "좋아요 여부 조회 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * 좋아요 개수 조회
+     * 특정 정원의 좋아요 개수를 조회한다.
+     * 항상 레디스에 해당 정원의 좋아요 정보를 최신화한다.
+     * @param gardenId
+     * @return {"count", long count}
+     */
+    @Operation(summary = "좋아요 개수 조회", description = "특정 정원의 총 좋아요 개수를 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "좋아요 개수 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "좋아요 개수 조회 실패 - 내부 서버 오류"),
+    })
+    @GetMapping("/like/count/{gardenId}")
+    public ResponseEntity<Map<String, Object>> getGardenLikes(@PathVariable long gardenId) {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("Garden Controller - 좋아요 개수 조회");
+
+            long count = gardenLikeService.getGardenLikes(gardenId);
+            response.put("count", count);
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "좋아요 개수 조회 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("Garden Controller - 좋아요 개수 조회 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "좋아요 개수 조회 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * 좋아요 랭킹 목록 조회
+     * 파라미터의 페이지의 좋아요 랭킹을 10개씩 반환한다.
+     * @param token
+     * @param page 0부터 시작
+     * @return Page<ResponseGardenRankingDto> ranking
+     */
+    @Operation(summary = "좋아요 랭킹 목록 조회", description = "모든 정원 중 좋아요 개수가 많은 순서대로 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "좋아요 랭킹 목록 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "좋아요 랭킹 목록 조회 실패 - 내부 서버 오류"),
+    })
+    @GetMapping("/like/ranking/{page}")
+    public ResponseEntity<Map<String, Object>> getGardenLikes(@RequestHeader("Authorization") String token, @PathVariable int page) {
+        token = token.split(" ")[1];
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            long userId = jwtUtil.getId(token);
+            log.info("Garden Controller - 좋아요 랭킹 목록 조회");
+
+            Page<ResponseGardenRankingDto> responseGardenRankingDtos = gardenLikeService.getGardenRankingByPagination(userId, page);
+            response.put("ranking", responseGardenRankingDtos);
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "좋아요 랭킹 목록 조회 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("Garden Controller - 좋아요 랭킹 목록 조회 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "좋아요 랭킹 목록 조회 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @Operation(summary = "정원 마스터 권한 지정", description = "정원 마스터가 다른 소속 인원의 등급을 변경한다.")
     @ApiResponses({
