@@ -7,7 +7,6 @@ export default class MainScene extends Scene {
   private heroSprite!: Phaser.Physics.Arcade.Sprite;
   private moveCheck!: boolean;
   private spriteBox!: Phaser.GameObjects.Graphics;
-  private spriteContainer!: Phaser.GameObjects.Container;
   constructor() {
     super("mainScene");
     // bootGame : 이 scene의 identifier
@@ -30,24 +29,10 @@ export default class MainScene extends Scene {
     });
 
     this.heroSprite = this.physics.add.sprite(0, 0, "hero").setScale(0.25);
-
-    this.spriteBox = this.add.graphics();
-
-    const color = 0xffff00;
-    const thickness = 2;
-    const alpha = 1;
-
-    this.spriteBox.lineStyle(thickness, color, alpha);
-
-    this.spriteBox.strokeRect(0, 0, 32, 32);
-
-    // this.spriteContainer = this.physics.add.image() container(100, 100, [
-    //   this.heroSprite,
-    //   this.spriteBox,
-    // ]);
-
     this.cameras.main.setBackgroundColor("#1E7CB8");
     this.moveCheck = false;
+
+    //맵 screen 사이즈에 맞춰서 zoom수치 설정. 너비/높이 중 더 큰 사이즈에 맞춰서.
     if (window.innerHeight > window.innerWidth) {
       console.log("높이가 너비보다 더큼" + window.innerHeight / 320 + "배");
       this.cameras.main.setZoom(window.innerHeight / 320);
@@ -58,21 +43,47 @@ export default class MainScene extends Scene {
     console.log(this.cameras.main.width);
     this.cameras.main.setPosition(0, 0);
     this.cameras.main.startFollow(this.heroSprite, true);
-    this.cameras.main.setFollowOffset(-8, -16);
+    this.cameras.main.setFollowOffset(-16);
 
-    this.heroSprite.setInteractive(
-      new Phaser.Geom.Rectangle(0, 0, 32, 32),
-      Phaser.Geom.Rectangle.Contains
-    );
+    // this.heroSprite.setInteractive();
+
+    const garden = this;
+
+    const gridSize = 16; // 각 격자의 크기
+    const gridWidth = 2; // 가로 방향 격자 개수
+    const gridHeight = 2; // 세로 방향 격자 개수
+
+    this.spriteBox = this.add.graphics();
+
+    const color = 0xffc76a;
+    const thickness = 0.5;
+    const alpha = 1;
+
+    this.spriteBox.lineStyle(thickness, color, alpha);
+    this.spriteBox.fillStyle(0xffc76a, 0.5);
+    this.spriteBox.fillRect(0, 0, 32, 32);
+    this.spriteBox.strokeRect(0, 0, 32, 32);
+    this.spriteBox.setDepth(3);
+
+    // this.heroSprite.on("pointerover", function () {
+    //   garden.heroSprite.setPipeline("Light2D");
+    // });
+
+    // this.heroSprite.on("pointerout", function () {
+    //   garden.heroSprite.resetPipeline();
+    // });
 
     const gridEngineConfig = {
+      snapToCell: true,
       characters: [
         {
           id: "hero",
           sprite: this.heroSprite,
           startPosition: { x: 15, y: 10 },
-          // offsetX: 8,
-          // offsetY: 4,
+          tileHeight: 2,
+          tileWidth: 2,
+          offsetX: 8,
+          offsetY: 16,
         },
       ],
     };
@@ -85,16 +96,20 @@ export default class MainScene extends Scene {
 
   update() {
     //스프라이트와 키입력 변수
+
+    this.spriteBox.setX(this.heroSprite.x);
+    this.spriteBox.setY(this.heroSprite.y);
+
     const sprite = this.heroSprite;
     const cursors = this.input.keyboard?.createCursorKeys();
 
     //스프라이트 이동 속도
     this.gridEngine.setSpeed("hero", 32);
+
     //카메라 추적 로직.
     //맵과 스크린 테두리가 맞을시 카메라 멈추기.
     //다시 범위에 들어오면 추적
-    //sprite.x => 맵에서 x축 위치  즉 확대된 배율만큼 곱해줘야함? 나눠줘야함?
-
+    //sprite.x => 맵에서 x축 위치 확대된 배율만큼 곱해줘야함
     if (this.moveCheck) {
       if (
         ((sprite.x + sprite.width / 8) * this.cameras.main.zoom <=
