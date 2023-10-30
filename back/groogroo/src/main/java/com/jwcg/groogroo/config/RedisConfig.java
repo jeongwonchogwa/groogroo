@@ -58,6 +58,7 @@ public class RedisConfig {
         return container;
     }
 
+
 //    /**
 //     * 어플리케이션에서 사용할 redisTemplate 설정
 //     */

@@ -98,35 +98,6 @@ public class GardenController {
         }
     }
 
-    @Operation(summary = "소속 정원 목록 조회", description = "사용자가 속해있는 정원의 목록을 조회한다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "소속 정원 목록 조회 성공"),
-            @ApiResponse(responseCode = "500", description = "소속 정원 목록 조회 실패 - 내부 서버 오류"),
-    })
-    @GetMapping("/list/{page}")
-    public ResponseEntity<Map<String, Object>> getUserGarden(@RequestHeader("Authorization") String token, @PathVariable int page) {
-        token = token.split(" ")[1];
-        Map<String,Object> response = new HashMap<>();
-
-        try {
-            log.info("Garden Controller - 소속 정원 목록 조회");
-            Long userId = jwtUtil.getId(token);
-
-            Page<ResponseUserGardenDto> returnData = gardenService.getUserGardenByPagination(userId, page);
-            response.put("gardenInfo", returnData);
-            response.put("httpStatus", SUCCESS);
-            response.put("message", "소속 정원 목록 조회 성공");
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e) {
-            log.info("Garden Controller - 소속 정원 목록 조회 실패");
-            response.put("httpStatus", FAIL);
-            response.put("message", "소속 정원 목록 조회 실패");
-
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     // TO DO: 랭킹 및 랭킹 목록 조회 : DONE
 
     /**
@@ -301,6 +272,36 @@ public class GardenController {
             log.info("Garden Controller - 좋아요 랭킹 목록 조회 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "좋아요 랭킹 목록 조회 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @Operation(summary = "소속 정원 목록 조회", description = "사용자가 속해있는 정원의 목록을 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "소속 정원 목록 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "소속 정원 목록 조회 실패 - 내부 서버 오류"),
+    })
+    @GetMapping("/list/{page}")
+    public ResponseEntity<Map<String, Object>> getUserGarden(@RequestHeader("Authorization") String token, @PathVariable int page) {
+        token = token.split(" ")[1];
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("Garden Controller - 소속 정원 목록 조회");
+            Long userId = jwtUtil.getId(token);
+
+            Page<ResponseUserGardenDto> returnData = gardenService.getUserGardenByPagination(userId, page);
+            response.put("gardenInfo", returnData);
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "소속 정원 목록 조회 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("Garden Controller - 소속 정원 목록 조회 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "소속 정원 목록 조회 실패");
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }

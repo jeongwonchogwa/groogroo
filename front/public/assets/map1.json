@@ -98,7 +98,7 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":6,
+ "nextlayerid":7,
  "nextobjectid":22,
  "orientation":"orthogonal",
  "renderorder":"right-down",
@@ -897,6 +897,33 @@
                         }]
                 }, 
                 {
+                 "id":242,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":243,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":244,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
                  "animation":[
                         {
                          "duration":150,
@@ -937,7 +964,25 @@
                         }]
                 }, 
                 {
+                 "id":282,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
                  "id":283,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":284,
                  "properties":[
                         {
                          "name":"ge_collide",
@@ -996,6 +1041,34 @@
                 }, 
                 {
                  "id":300,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":322,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":323,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                },
+            
+                {
+                 "id":324,
                  "properties":[
                         {
                          "name":"ge_collide",
@@ -1078,13 +1151,39 @@
                          "type":"bool",
                          "value":true
                         }]
-                },
-            
+                }, 
+                {
+                 "id":362,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":363,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
                 {
                  "id":366,
                  "properties":[
                         {
                          "name":"ge_collide_right",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":370,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
                          "type":"bool",
                          "value":true
                         }]
@@ -1192,6 +1291,24 @@
                         }]
                 }, 
                 {
+                 "id":402,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":403,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
                  "id":406,
                  "properties":[
                         {
@@ -1271,7 +1388,8 @@
                          "type":"bool",
                          "value":true
                         }]
-                }, 
+                },
+            
                 {
                  "id":419,
                  "properties":[
@@ -1388,8 +1506,7 @@
                          "type":"bool",
                          "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":486,
                  "properties":[
@@ -1472,6 +1589,15 @@
                         }]
                 }, 
                 {
+                 "id":527,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
                  "id":532,
                  "properties":[
                         {
@@ -1526,6 +1652,16 @@
                         }]
                 }, 
                 {
+                 "id":567,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                },
+            
+                {
                  "id":572,
                  "properties":[
                         {
@@ -1545,6 +1681,42 @@
                 }, 
                 {
                  "id":574,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":604,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":605,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":606,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":607,
                  "properties":[
                         {
                          "name":"ge_collide",
@@ -1643,6 +1815,24 @@
                         }]
                 }, 
                 {
+                 "id":689,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":690,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
                  "id":720,
                  "properties":[
                         {
@@ -1659,8 +1849,7 @@
                          "type":"bool",
                          "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":723,
                  "properties":[
@@ -1741,7 +1930,8 @@
                          "type":"bool",
                          "value":true
                         }]
-                }, 
+                },
+            
                 {
                  "id":768,
                  "properties":[
@@ -1815,6 +2005,24 @@
                         }]
                 }, 
                 {
+                 "id":809,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":810,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
                  "id":844,
                  "properties":[
                         {
@@ -1843,6 +2051,24 @@
                 }, 
                 {
                  "id":847,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":849,
+                 "properties":[
+                        {
+                         "name":"ge_collide",
+                         "type":"bool",
+                         "value":true
+                        }]
+                }, 
+                {
+                 "id":850,
                  "properties":[
                         {
                          "name":"ge_collide",
