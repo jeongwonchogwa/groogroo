@@ -5,6 +5,7 @@ import MainScene from "./MainScene";
 import Preloader from "./Preloader";
 import GridEngine from "grid-engine";
 import Grid from "./Grid";
+import GardenUi from "./GardenUi";
 
 const Game = () => {
   // const [game, setGame] = useState<Phaser.Game>();
@@ -58,6 +59,7 @@ const Game = () => {
     <div className="w-full h-full overflow-hidden border-2 border-point-orange ">
       <div className="relative" id="game-content" key="game-content">
         {/* <Grid /> */}
+        <GardenUi />
       </div>
     </div>
   );
