@@ -19,9 +19,6 @@ public class Report {
     @Column(name = "report_id")
     private Long id;
 
-    @Column(name = "reporter_id")
-    private Long reporterId;
-
     @Column(name = "content")
     private String content;
 
@@ -34,4 +31,8 @@ public class Report {
 
     @Column(name = "target_id")
     private Long targetId;
+
+    @OneToOne
+    @JoinColumn(name = "user_report_id")
+    private UserReport userReport;
 }

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestDeleteReportedContent {
+public class RequestReportedContentDto {
     private ContentType contentType;
     private Long targetId;
 }

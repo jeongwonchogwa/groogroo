@@ -1,6 +1,8 @@
 package com.jwcg.groogroo.model.service;
 
+import com.jwcg.groogroo.model.dto.fruit.ResponseFruitDto;
 import com.jwcg.groogroo.model.dto.fruit.ResponseFruitPresetDto;
+import com.jwcg.groogroo.model.dto.fruit.ResponseSimpleFruitDto;
 import com.jwcg.groogroo.model.entity.ContentType;
 import com.jwcg.groogroo.model.entity.Fruit;
 import com.jwcg.groogroo.model.entity.Preset;
@@ -60,6 +62,18 @@ public class FruitService {
     @Transactional(readOnly = true)
     public Fruit getFruitContent(long fruitId) {
         return fruitRepository.findFruitById(fruitId);
+    }
+
+
+    @Transactional(readOnly = true)
+    public ResponseSimpleFruitDto getSimpleFruitContent(long fruitId) {
+        Fruit fruit = fruitRepository.findFruitById(fruitId);
+        ResponseSimpleFruitDto responseFruitDto = ResponseSimpleFruitDto.builder()
+                .id(fruit.getId())
+                .writerNickname(fruit.getWriterNickname())
+                .content(fruit.getContent())
+                .build();
+        return responseFruitDto;
     }
 
     @Transactional(readOnly = true)

@@ -2,6 +2,7 @@ package com.jwcg.groogroo.controller;
 
 import com.jwcg.groogroo.exception.CustomException;
 import com.jwcg.groogroo.model.dto.report.RequestReportDto;
+import com.jwcg.groogroo.model.dto.report.ResponseReportListDto;
 import com.jwcg.groogroo.model.entity.Report;
 import com.jwcg.groogroo.model.entity.UserStatus;
 import com.jwcg.groogroo.model.service.ReportService;
@@ -162,30 +163,30 @@ public class UserController {
         }
     }
 
-    @Operation(summary = "내 신고 내역 조회", description = "내 신고내역 조회 API")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "내 신고 내역 조회 성공"),
-            @ApiResponse(responseCode = "500", description = "내 신고 내역 조회 실패 - 내부 서버 오류")
-    })
-    @GetMapping()
-    public ResponseEntity<Map<String, Object>> getMyReports(@RequestHeader("Authorization") String token) {
-        token = token.split(" ")[1];
-        Long userId = jwtUtil.getId(token);
-        Map<String,Object> response = new HashMap<>();
-
-        try {
-            log.info("내 신고 내역 조회");
-            List<Report> list = reportService.getMyReports(userId);
-            log.info("내 신고 내역 조회 성공");
-            response.put("httpStatus", SUCCESS);
-            response.put("message", "내 신고 내역 조회 성공");
-            response.put("reportList", list);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e) {
-            log.info("내 신고 내역 조회 실패");
-            response.put("httpStatus", FAIL);
-            response.put("message", "내 신고 내역 조회 실패");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @Operation(summary = "내 신고 내역 조회", description = "내 신고내역 조회 API")
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "200", description = "내 신고 내역 조회 성공"),
+//            @ApiResponse(responseCode = "500", description = "내 신고 내역 조회 실패 - 내부 서버 오류")
+//    })
+//    @GetMapping()
+//    public ResponseEntity<Map<String, Object>> getMyReports(@RequestHeader("Authorization") String token) {
+//        token = token.split(" ")[1];
+//        Long userId = jwtUtil.getId(token);
+//        Map<String,Object> response = new HashMap<>();
+//
+//        try {
+//            log.info("내 신고 내역 조회");
+//            List<ResponseReportListDto> list = reportService.getMyReports(userId);
+//            log.info("내 신고 내역 조회 성공");
+//            response.put("httpStatus", SUCCESS);
+//            response.put("message", "내 신고 내역 조회 성공");
+//            response.put("reportList", list);
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        }catch (Exception e) {
+//            log.info("내 신고 내역 조회 실패");
+//            response.put("httpStatus", FAIL);
+//            response.put("message", "내 신고 내역 조회 실패");
+//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 }
