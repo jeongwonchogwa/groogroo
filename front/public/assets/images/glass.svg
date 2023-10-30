@@ -1,0 +1,23 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="8" y="8" width="104" height="112" fill="white"/>
+<rect x="8" width="112" height="8" fill="black"/>
+<rect x="120" y="112" width="96" height="8" transform="rotate(-90 120 112)" fill="black"/>
+<rect x="112" y="112" width="96" height="8" transform="rotate(-90 112 112)" fill="#DCD2D2"/>
+<rect y="112" width="96" height="8" transform="rotate(-90 0 112)" fill="black"/>
+<rect x="8" y="120" width="112" height="8" fill="black"/>
+<rect y="8" width="16" height="8" fill="black"/>
+<rect y="112" width="16" height="8" fill="black"/>
+<rect x="112" y="8" width="16" height="8" fill="black"/>
+<rect x="112" y="112" width="16" height="8" fill="black"/>
+<path d="M72 72H88V80H96V88H104.5L104 104H88V96H80V88H72V72Z" fill="black"/>
+<rect x="40" y="24" width="24" height="8" fill="black"/>
+<rect x="40" y="72" width="24" height="8" fill="black"/>
+<rect x="24" y="64" width="24" height="8" transform="rotate(-90 24 64)" fill="black"/>
+<rect x="72" y="64" width="24" height="8" transform="rotate(-90 72 64)" fill="black"/>
+<rect x="32" y="32" width="8" height="8" fill="black"/>
+<rect x="32" y="64" width="8" height="8" fill="black"/>
+<rect x="64" y="64" width="8" height="8" fill="black"/>
+<rect x="64" y="32" width="8" height="8" fill="black"/>
+<rect x="48" y="40" width="8" height="8" fill="#DCD2D2"/>
+<rect x="56" y="48" width="8" height="16" fill="#DCD2D2"/>
+</svg>
