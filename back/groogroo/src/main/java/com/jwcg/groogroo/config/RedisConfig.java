@@ -43,20 +43,7 @@ public class RedisConfig {
     }
 
 
-    /*
-    redis TTL이 만료될 때 MySQL로 데이터를 백업하기 위해 메세지 리스너를 정의하고 핸들러를 활용한다
-     */
-    @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(
-            RedisConnectionFactory redisConnectionFactory,
-            MessageListener redisExpirationListener) {
 
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConnectionFactory);
-        container.addMessageListener(redisExpirationListener, new PatternTopic("__keyevent@*__:expired"));
-
-        return container;
-    }
 
 //    /**
 //     * 어플리케이션에서 사용할 redisTemplate 설정
