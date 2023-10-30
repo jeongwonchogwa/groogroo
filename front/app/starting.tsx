@@ -14,7 +14,7 @@ const Starting = () => {
 				<p className="font-nexonGothic font-bold text-[22px]">
         함께 만들어가는 우리의 정원
       	</p>
-				<div className="w-[350px] h-[200px] border border-1 mt-[220px] space-y-4">
+				<div className="w-[350px] h-[200px] border border-1 mt-[240px] space-y-4">
 					<Button color="secondary" label="카카오톡 로그인"/>
 					<Button color="white" label="구글 로그인"/>
 					<Button color="primary" label="네이버 로그인"/>
