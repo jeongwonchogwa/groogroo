@@ -55,25 +55,25 @@ public class UserService {
     }
 
     // 유저 목록 10개씩 조회
-    @Transactional(readOnly = true)
-    public List<ResponseUserDto> getUserList(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by(Sort.Order.asc("id")));
-
-        List<User> list =  userRepository.findAll(pageable).getContent();
-
-        List<ResponseUserDto> responseList = new ArrayList<>();
-
-        for(User user : list){
-            ResponseUserDto responseUserDto = ResponseUserDto.builder()
-                    .userId(user.getId())
-                    .email(user.getEmail())
-                    .userStatus(user.getUserStatus())
-                    .userRole(user.getUserRole())
-                    .createTime(user.getCreateTime())
-                    .provider(user.getProvider())
-                    .build();
-            responseList.add(responseUserDto);
-        }
-        return responseList;
-    }
+//    @Transactional(readOnly = true)
+//    public List<ResponseUserDto> getUserList(int pageNumber) {
+//        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by(Sort.Order.asc("id")));
+//
+//        List<User> list =  userRepository.findAll(pageable).getContent();
+//
+//        List<ResponseUserDto> responseList = new ArrayList<>();
+//
+//        for(User user : list){
+//            ResponseUserDto responseUserDto = ResponseUserDto.builder()
+//                    .userId(user.getId())
+//                    .email(user.getEmail())
+//                    .userStatus(user.getUserStatus())
+//                    .userRole(user.getUserRole())
+//                    .createTime(user.getCreateTime())
+//                    .provider(user.getProvider())
+//                    .build();
+//            responseList.add(responseUserDto);
+//        }
+//        return responseList;
+//    }
 }
