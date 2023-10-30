@@ -7,9 +7,11 @@ import Arrow from "/public/assets/images/arrow.png";
 import Swipe from "/public/assets/images/swipe.png";
 import Kakao from "/public/assets/images/kakao.png";
 import Link from "/public/assets/images/link.png";
+import Trash from "/public/assets/images/trash.png";
+import Siren from "/public/assets/images/siren.png";
 
 interface IconButtonProps {
-  iconSrc: "bell" | "tree" | "glass" | "plus" | "arrow" | "swipe" | "kakao" | "link";
+  iconSrc: "bell" | "tree" | "glass" | "plus" | "arrow" | "swipe" | "kakao" | "link" | "trash" | "siren";
   onClick?: () => void;
   rotate?: boolean;
 }
@@ -23,6 +25,8 @@ const iconButtonConfig = {
   swipe: Swipe,
   kakao: Kakao,
   link: Link,
+  trash: Trash,
+  siren: Siren,
 };
 
 const IconButton = ({ iconSrc, onClick, rotate }: IconButtonProps) => {

@@ -53,4 +53,5 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<TreeUserPreset> treeUserPresets = new ArrayList<>();
+
 }

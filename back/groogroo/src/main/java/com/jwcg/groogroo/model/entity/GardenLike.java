@@ -9,11 +9,11 @@ import org.springframework.data.redis.core.index.Indexed;
 @Setter
 @AllArgsConstructor
 @Builder
-@RedisHash(value = "Ranking")
+@RedisHash(value = "GardenLike", timeToLive = 60)
 public class GardenLike {
 
     @Id
-    private Long id;
+    private String id;
 
     @Indexed
     private long userId;

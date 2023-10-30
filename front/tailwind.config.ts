@@ -12,8 +12,7 @@ const config: Config = {
   theme: {
     extend: {
       backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "background-pixel": "url('/assets/images/background.png')",
       },
       // theme -> extend -> color구조인데도 tailwindcss 정의 색상 사용하려면 직접 지정해야해..?
       colors: {

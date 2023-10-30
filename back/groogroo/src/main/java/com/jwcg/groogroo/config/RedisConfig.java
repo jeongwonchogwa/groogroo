@@ -3,10 +3,13 @@ package com.jwcg.groogroo.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisKeyValueAdapter;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
@@ -37,6 +40,22 @@ public class RedisConfig {
         //TODO: Redis 서버에 올리면 주석 풀기
 //        lettuceConnectionFactory.setPassword(password);
         return lettuceConnectionFactory;
+    }
+
+
+    /*
+    redis TTL이 만료될 때 MySQL로 데이터를 백업하기 위해 메세지 리스너를 정의하고 핸들러를 활용한다
+     */
+    @Bean
+    public RedisMessageListenerContainer redisMessageListenerContainer(
+            RedisConnectionFactory redisConnectionFactory,
+            MessageListener redisExpirationListener) {
+
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(redisConnectionFactory);
+        container.addMessageListener(redisExpirationListener, new PatternTopic("__keyevent@*__:expired"));
+
+        return container;
     }
 
 

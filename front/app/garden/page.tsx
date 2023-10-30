@@ -1,8 +1,9 @@
-import Game from "./game";
+import Game from "./components/Game";
+import Grid from "./components/Grid";
 
 const gardenPage = () => {
   return (
-    <div className="w-screen h-screen border-2 border-point-orange">
+    <div className="w-screen h-screen">
       <Game />
     </div>
   );
