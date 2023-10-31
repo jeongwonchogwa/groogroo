@@ -13,6 +13,8 @@ export interface Tree {
   name: string;
   fruits: Fruit[];
   fruitsCount: number;
+  x: number;
+  y: number;
 }
 
 export interface TreesResponse {
@@ -43,4 +45,22 @@ export interface User {
   userRoll: string;
   createTime: string;
   provider: "naver" | "google" | "kakao";
+}
+
+export interface MenuButton {
+  name: string;
+  clickEvent: () => void;
+}
+export interface SpritePosition {
+  x: number;
+  y: number;
+}
+export interface Character {
+  id: string;
+  sprite: Phaser.Physics.Arcade.Sprite;
+  startPosition: SpritePosition;
+  tileHeight: number;
+  tileWidth: number;
+  offsetX: number;
+  offsetY: number;
 }

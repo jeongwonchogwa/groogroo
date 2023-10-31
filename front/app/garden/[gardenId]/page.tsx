@@ -1,17 +1,11 @@
-"use client";
+import Garden from "./components/Garden";
 
-import KakaoButton from "./components/KakaoButton";
-import LinkCopyButton from "./components/LinkCopyButton";
-// Todo. garden page 테스트 중
-const GardenPage = () => {
+const gardenPage = () => {
   return (
-    <div>
-      <KakaoButton />
-      <div className="w-5 h-5">
-        <LinkCopyButton />
-      </div>
+    <div className="w-screen h-screen">
+      <Garden />
     </div>
   );
 };
 
-export default GardenPage;
+export default gardenPage;

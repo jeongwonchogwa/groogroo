@@ -108,11 +108,11 @@
         {
          "columns":40,
          "firstgid":1,
-         "image":"Overworld.png",
+         "image":"tileset.png",
          "imageheight":576,
          "imagewidth":640,
          "margin":0,
-         "name":"Overworld",
+         "name":"tileset",
          "spacing":0,
          "tilecount":1440,
          "tileheight":16,
