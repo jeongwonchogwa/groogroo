@@ -205,3 +205,6 @@
     - TREE, TREEGARDEN, FLOWER, FRUIT의 경우 간단한 정보 담고 있는 content 반환, GARDEN의 경우 gardenUrl 반환
   - DB에 없는 회원이 로그인 시 차단된 회원인지 검사하면서 로그인 오류 발생하는 문제 해결
   - 사용하지 않는 내 신고내역 조회 & 회원 조회 API 주석 처리
+
+- 23.10.31 CKH
+  - 이미지 URL을 받아서 파일로 변환 후 S3 저장하는 메서드 작성
