@@ -3,10 +3,15 @@ package com.jwcg.groogroo.model.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import org.springframework.core.io.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -24,7 +29,21 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    
+    public String upload(String imageUrl, String name, String dirName) throws IOException {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Resource> response = restTemplate.exchange(imageUrl, HttpMethod.GET, null, Resource.class);
+        Resource imageResource = response.getBody();
+
+        File file = new File(name);
+        try {
+            FileCopyUtils.copy(imageResource.getInputStream(), new FileOutputStream(file));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return upload(file, dirName);
+    }
+
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         // MultipartFile을 File로 변환
         File uploadFile = convert(multipartFile)
