@@ -55,3 +55,9 @@
   - 약관 페이지 수정
     - 폰트 크기 수정
     - 배경, 이미지 url주소 수정
+
+- 23.10.31 KJW
+  - 에셋 추가
+    - arrow, bell, kakao, link, plus, siren, swipe, trash, tree 버튼 에셋 추가
+    - first, second, third 트로피 에셋 추가
+    - 기존에 있던 png 파일 삭제
