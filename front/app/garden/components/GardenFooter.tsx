@@ -5,14 +5,14 @@ const GardenFooter = () => {
     <div className="flex justify-between">
       <Image
         alt="user"
-        src={"/assets/images/plus.png"}
+        src={"/assets/images/plus.svg"}
         width={42}
         height={42}
       />
       <div className="flex flex-row-reverse gap-5">
         <Image
           alt="user"
-          src={"/assets/images/tree.png"}
+          src={"/assets/images/tree.svg"}
           width={42}
           height={42}
         />

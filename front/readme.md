@@ -60,3 +60,9 @@
   - 나무생성 페이지 구현
     - 달리 사용방식 정한 뒤, 관련 코드 작성 필요
 
+
+- 23.10.31 KJW
+  - 에셋 추가
+    - arrow, bell, kakao, link, plus, siren, swipe, trash, tree 버튼 에셋 추가
+    - first, second, third 트로피 에셋 추가
+    - 기존에 있던 png 파일 삭제
