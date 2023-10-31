@@ -13,6 +13,7 @@ const config: Config = {
     extend: {
       backgroundImage: {
         "background-pixel": "url('/assets/images/background.png')",
+        "modal-img": "url('/assets/images/card.svg')",
       },
       // theme -> extend -> color구조인데도 tailwindcss 정의 색상 사용하려면 직접 지정해야해..?
       colors: {

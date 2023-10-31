@@ -50,7 +50,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // 이메일로 가입된 회원인지 조회한다.
         User findUser = userRepository.findByEmail(email);
 
-        if(findUser.getUserStatus() == UserStatus.BLOCK){
+        if(findUser != null && findUser.getUserStatus() == UserStatus.BLOCK){
             log.info("로그인 실패 - 차단된 회원");
             throw new OAuth2AuthenticationException("차단된 회원");
         }

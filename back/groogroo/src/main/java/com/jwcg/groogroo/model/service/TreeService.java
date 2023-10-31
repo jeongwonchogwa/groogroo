@@ -1,12 +1,11 @@
 package com.jwcg.groogroo.model.service;
 
 import com.jwcg.groogroo.model.dto.fruit.ResponseFruitDto;
+import com.jwcg.groogroo.model.dto.tree.ResponseSimpleTreeDto;
+import com.jwcg.groogroo.model.dto.tree.ResponseSimpleTreeGardenDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseTreeDto;
 import com.jwcg.groogroo.model.entity.*;
-import com.jwcg.groogroo.repository.PresetRepository;
-import com.jwcg.groogroo.repository.TreeRepository;
-import com.jwcg.groogroo.repository.TreeUserPresetRepository;
-import com.jwcg.groogroo.repository.UserRepository;
+import com.jwcg.groogroo.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,6 +26,7 @@ public class TreeService {
     private final TreeRepository treeRepository;
     private final PresetRepository presetRepository;
     private final TreeUserPresetRepository treeUserPresetRepository;
+    private final TreeGardenRepository treeGardenRepository;
 
     public boolean checkNameDuplicate(String name) {
         return treeRepository.existsByName(name);
@@ -210,5 +210,43 @@ public class TreeService {
                     .build();
             treeRepository.save(deletedTree);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseSimpleTreeDto getSimpleTreeContent(long treeId) {
+        Tree tree = treeRepository.findTreeById(treeId);
+        ResponseSimpleTreeDto simpleTreeDto = ResponseSimpleTreeDto.builder()
+                .id(tree.getId())
+                .imageUrl(tree.getImageUrl())
+                .name(tree.getName())
+                .build();
+        return simpleTreeDto;
+    }
+
+    public void deleteTreeGarden(Long treeGardenId) {
+        TreeGarden treeGarden = treeGardenRepository.findTreeGardenById(treeGardenId);
+        if (treeGarden != null){
+            TreeGarden deletedTreeGarden = TreeGarden.builder()
+                    .id(treeGarden.getId())
+                    .imageUrl(treeGarden.getImageUrl())
+                    .x(treeGarden.getX())
+                    .y(treeGarden.getY())
+                    .deleteDate(LocalDate.now())
+                    .tree(treeGarden.getTree())
+                    .garden(treeGarden.getGarden())
+                    .build();
+
+            treeGardenRepository.save(deletedTreeGarden);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseSimpleTreeGardenDto getSimpleTreeGardenContent(long treeGardenId) {
+        TreeGarden treeGarden = treeGardenRepository.findTreeGardenById(treeGardenId);
+        ResponseSimpleTreeGardenDto simpleTreeGardenDto = ResponseSimpleTreeGardenDto.builder()
+                .id(treeGarden.getId())
+                .imageUrl(treeGarden.getImageUrl())
+                .build();
+        return simpleTreeGardenDto;
     }
 }

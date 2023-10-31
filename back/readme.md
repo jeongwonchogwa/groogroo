@@ -191,3 +191,20 @@
   - accessToken 만료 시 accessToken재발급 api에 요청 보내면 만료된 토큰이라고 jwt예외 발생하는 문제 해결
     - 요청 주소가 api/user/refresh 면 토큰 재발급해서 헤더에 담아서 리턴
   - jwt.yml 삭제
+
+- 23.10.30 KJW
+  - ContentType에 TREEGARDEN 추가
+    - 메인나무 신고하는 경우 TREE, 정원에 있는 나무 신고하는 경우 TREEGARDEN
+  - Report와 User 연결하는 UserReport 엔티티 추가
+  - 신고 내역 조회 API의 response 수정
+    - ResponseReportListDto 추가
+    - 총페이지수와 ResponseReportListDto 리스트 반환
+    - N+1 쿼리 문제 해결을 위해 Query 어노테이션 사용
+  - 신고 대상 상세 조회 API 구현
+    - ResponseSimpleFlowerDto, ResponseSimpleTreeDto, ResponseSimpleTreeGardenDto, ResponseSimpleFruitDto 추가
+    - TREE, TREEGARDEN, FLOWER, FRUIT의 경우 간단한 정보 담고 있는 content 반환, GARDEN의 경우 gardenUrl 반환
+  - DB에 없는 회원이 로그인 시 차단된 회원인지 검사하면서 로그인 오류 발생하는 문제 해결
+  - 사용하지 않는 내 신고내역 조회 & 회원 조회 API 주석 처리
+
+- 23.10.31 CKH
+  - 이미지 URL을 받아서 파일로 변환 후 S3 저장하는 메서드 작성

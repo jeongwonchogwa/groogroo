@@ -1,6 +1,7 @@
 package com.jwcg.groogroo.model.service;
 
 
+import com.jwcg.groogroo.model.dto.flower.ResponseSimpleFlowerDto;
 import com.jwcg.groogroo.model.entity.*;
 import com.jwcg.groogroo.repository.*;
 import lombok.AllArgsConstructor;
@@ -54,7 +55,8 @@ public class FlowerService {
     }
 
     public Flower getFlowerContent(long flowerId){
-        return flowerRepository.findFlowerById(flowerId);}
+        return flowerRepository.findFlowerById(flowerId);
+    }
 
 
 
@@ -64,4 +66,13 @@ public class FlowerService {
     }
 
 
+    public ResponseSimpleFlowerDto getSimpleFlowerContent(Long flowerId) {
+        Flower flower = flowerRepository.findFlowerById(flowerId);
+        ResponseSimpleFlowerDto  simpleFlowerDto = ResponseSimpleFlowerDto.builder()
+                .id(flower.getId())
+                .content(flower.getContent())
+                .writerNickname(flower.getWriterNickname())
+                .build();
+        return simpleFlowerDto;
+    }
 }
