@@ -3,11 +3,11 @@ interface ButtonProps {
   label: string;
   onClick?: () => void;
   disabled?: boolean;
+  active?: boolean;
 }
 
-const buttonConfig = {
-  default:
-    "bg-text-sub border-b-4 border-r-4 border-[#737373] focus:border-t-4 focus:border-l-4 focus:border-[#737373] focus:border-r-0 focus:border-b-0",
+const buttonActiveConfig = {
+  default: `bg-text-sub border-b-4 border-r-4 border-[#737373] active:border-t-4 active:border-l-4 active:border-[#737373] active:border-r-0 active:border-b-0`,
   white:
     "bg-background border-b-4 border-r-4 border-background-container active:border-t-4 active:border-l-4 active:border-background-container active:border-r-0 active:border-b-0",
   primary:
@@ -20,7 +20,18 @@ const buttonConfig = {
     "bg-error border-b-4 border-r-4 border-[#9b2f14] active:border-t-4 active:border-l-4 active:border-[#9b2f14] active:border-r-0 active:border-b-0",
 };
 
-const Button = ({ color, label, onClick, disabled }: ButtonProps) => {
+const buttonNotActiveConfig = {
+  default: `bg-text-sub border-b-4 border-r-4 border-[#737373]`,
+  white: "bg-background border-b-4 border-r-4 border-background-container",
+  primary: "bg-primary border-b-4 border-r-4 border-[#225d36]",
+  secondary: "bg-point-orange-container border-b-4 border-r-4 border-point-orange",
+  "secondary-container": "bg-[#FFA107] border-b-4 border-r-4 border-[#E08E07]",
+  error: "bg-error border-b-4 border-r-4 border-[#9b2f14]",
+};
+
+const Button = ({ color, label, onClick, disabled, active = true }: ButtonProps) => {
+  const buttonConfig = active ? buttonActiveConfig[color] : buttonNotActiveConfig[color];
+
   return (
     <div className="w-full flex flex-row">
       <div className="my-auto">
@@ -31,7 +42,7 @@ const Button = ({ color, label, onClick, disabled }: ButtonProps) => {
         <div className="w-full">
           <button
             disabled={disabled}
-            className={`w-full focus:outline-none h-[50px] ${buttonConfig[color]}`}
+            className={`w-full focus:outline-none h-[50px] ${buttonConfig}`}
             onClick={onClick}
           >
             <span className={`font-bitBit text-xl ${color === "white" ? "text-black" : "text-white"}`}>{label}</span>

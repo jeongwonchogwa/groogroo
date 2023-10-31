@@ -15,7 +15,7 @@ const CardModal = ({ label, previousText, followingText, isOpen, handleToggle, c
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="absolute w-full h-full bg-gray-900 opacity-50" onClick={handleToggle}></div>
-      <div className="bg-modal-img h-[610px] w-[360px] mx-auto rounded z-50 overflow-y-auto">
+      <div className="bg-modal-img h-[598px] w-[350px] mx-auto rounded z-50 overflow-y-auto">
         <div className="p-4 w-full h-full">
           <div className="flex flex-col w-full">
             <div className="flex flex-col w-full mt-8">
