@@ -66,3 +66,8 @@
     - arrow, bell, kakao, link, plus, siren, swipe, trash, tree 버튼 에셋 추가
     - first, second, third 트로피 에셋 추가
     - 기존에 있던 png 파일 삭제
+
+- 23.11.01 MYH
+  - 나무 프리셋 페이지 구현
+    - 나무 이미지 몇 개인지 세어주는 함수 고민 필요
+  - 나무생성관련 페이지들 요소 크기,배치 수정
