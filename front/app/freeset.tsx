@@ -57,7 +57,7 @@ const Freeset = () => {
 							<div className="w-[290px] h-[5px] bg-black"></div>
 							<div className="w-[290px] h-[490px] flex items-center justify-center bg-white">
 								<img
-								src={`/assets/trees/tree[${currentImage}].png`}
+								src={`/assets/trees/tree[${currentImage}].svg`}
 								alt = "나무 이미지"
 								style ={{
 									width: '256px',
