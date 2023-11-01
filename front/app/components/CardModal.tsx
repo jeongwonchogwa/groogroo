@@ -7,9 +7,18 @@ interface CardModalProps {
   isOpen: boolean;
   handleToggle: () => void;
   children: React.ReactNode;
+  selectedId?: number;
 }
 
-const CardModal = ({ label, previousText, followingText, isOpen, handleToggle, children }: CardModalProps) => {
+const CardModal = ({
+  label,
+  previousText,
+  followingText,
+  isOpen,
+  handleToggle,
+  children,
+  selectedId,
+}: CardModalProps) => {
   if (!isOpen) return null;
 
   return (
