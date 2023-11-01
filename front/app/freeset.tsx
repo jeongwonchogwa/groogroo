@@ -1,0 +1,101 @@
+"use client"
+
+import React, { useState } from 'react';
+import Button from "./components/Button";
+
+
+
+// 이걸,, 지금은 imageCount를 직접넣는데
+// 자동으로 파일내에 파일갯수를 파악해주는 코드를짜야할까......?
+// 우리 이미지 자동저장 이런것도없는데 굳이...??????????????? ㅠㅠㅠ....
+const imageCount = 2;
+
+const Freeset = () => {
+	const [currentImage, setCurrentImage] = useState(0);
+
+	const prevImage = () => {
+		setCurrentImage((prev) => (prev -1 + imageCount) % imageCount);
+	}
+
+	const nextImage = () => {
+		setCurrentImage((prev) => (prev +1) % imageCount);
+	}
+
+  return (
+    <div
+      className="w-[430px] h-[932px] bg-cover bg-center bg-no-repeat relative flex justify-center items-center"
+      style={{ backgroundImage: 'url("/assets/images/background_home.png")' }}
+    >    
+      <div className="w-[390px] h-[720px] absolute top-[440px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+        <div className="w-[390px] h-[120px] flex flex-col items-center">
+          <p className="font-bitBit text-[48px]" style={{ marginBottom: 0 }}>
+            나무 프리셋
+          </p>
+          <p className="font-nexonGothic text-[18px] mt-[10px]" style={{ marginBottom: 0 }}>
+            제공된 프리셋을 통해 나무를 골라주세요!
+          </p>
+        </div>
+        <div className="w-[390px] h-[500px] flex flex-row justify-center">
+					<div className="w-[35px] h-[500px] flex items-center justify-center">
+    				<button
+						  onClick={prevImage}
+      				style={{
+        			backgroundImage: 'url("/assets/images/arrow.png")',
+        			width: '24px',
+        			height: '48px',
+        			backgroundSize: 'cover',
+        			backgroundPosition: 'center',
+        			backgroundRepeat: 'no-repeat',
+      			}}
+    				></button>
+  				</div>
+					<div className="w-[290px] flex flex-row mr-[15px] ml-[5px]">
+						<div className="my-auto">
+							<div className="w-[5px] h-[490px] bg-black" />
+						</div>
+						<div className="w-[290px] flex flex-col">
+							<div className="w-[290px] h-[5px] bg-black"></div>
+							<div className="w-[290px] h-[490px] flex items-center justify-center bg-white">
+								<img
+								src={`/assets/trees/tree[${currentImage}].png`}
+								alt = "나무 이미지"
+								style ={{
+									width: '256px',
+									height: '256px',
+									objectFit: 'cover',
+								}} />
+							</div>
+							<div className="w-[290px] h-[5px] bg-black"></div>
+						</div>
+						<div className="my-auto">
+							<div className="w-[5px] h-[490px] bg-black" />
+						</div>
+					</div>
+					<div className="w-[35px] h-[500px] flex items-center justify-center">
+						<button
+							onClick={nextImage}
+							style={{
+							backgroundImage: 'url("/assets/images/arrow_right.png")',
+							width: '24px',
+							height: '48px',
+							backgroundSize: 'cover',
+							backgroundPosition: 'center',
+							backgroundRepeat: 'no-repeat',
+						}}
+						></button>
+					</div>
+        </div>
+        <div className="w-[320px] h-[50px] mt-[30px] flex justify-between">
+          <div className="w-[150px] h-[50px]">
+            <Button color="primary" label="직접 그리기"/>
+          </div>
+          <div className="w-[150px] h-[50px]">
+            <Button color="primary" label="생성 하기"/>
+          </div>
+        </div>
+      </div>
+		</div>
+  );
+;}
+
+export default Freeset;

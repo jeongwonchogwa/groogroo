@@ -3,6 +3,7 @@ import MessageContainer from "./components/MessageContainer";
 import Starting from "./starting";
 import Terms from "./terms";
 import Create from "./create";
+import Freeset from "./freeset";
 
 
 
@@ -10,6 +11,9 @@ export default function Home() {
   return (
     <div className="w-screen h-screen bg-background-pixel bg-cover">
       <div className="flex w-full">
+        <div className="mx-5 mt-5">
+          <Freeset />
+        </div>
         <div className="mx-5 mt-5">
           <Create />
         </div>
