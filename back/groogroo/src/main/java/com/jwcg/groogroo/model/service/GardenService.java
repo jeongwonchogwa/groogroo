@@ -27,6 +27,8 @@ public class GardenService {
 
     private final int PAGESIZE = 10;
 
+    private final NotificationService notificationService;
+
     private final GardenRepository gardenRepository;
     private final UserRepository userRepository;
     private final UserGardenRepository userGardenRepository;
@@ -285,16 +287,26 @@ public class GardenService {
 
         UserGarden userGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId);
         JoinState state = JoinState.WAIT;
-        switch(joinState){
+        String content = "";
+        switch (joinState) {
             case "ACCEPT":
                 state = JoinState.ACCEPT;
+                content = "정원에 가입 신청이 승인되었습니다. 지금 방문 해보세요.";
                 break;
             case "REFUSE":
                 state = JoinState.REFUSE;
+                content = "정원에 가입 신청이 거절되었습니다.";
                 break;
             case "KICK":
                 state = JoinState.KICK;
+                content = "정원에서 추방되었습니다.";
+                break;
+            default:
+                throw new CustomException(HttpStatus.BAD_REQUEST, "잘못된 가입 처리 요청입니다.");
         }
+        // 알림 발송
+        Notification notification = notificationService.makeNotification(userId, gardenId, gardenId, content, NotificationType.GARDEN);
+        notificationService.send(userId, notification);
 
         updateJoinState(userGarden, state);
     }
@@ -317,6 +329,18 @@ public class GardenService {
 
         userGardenRepository.save(userGarden);
         gardenRepository.save(garden);
+
+        // 알림 보내기
+        // 정원의 관리자이상 권한 찾기
+        List<UserGarden> admins = userGardenRepository.findAllByGardenIdAndGardenRoleOrGardenRole(gardenId, GardenRole.ADMIN, GardenRole.MASTER);
+
+        // 모든 관리자에게 알림 발송
+        for (UserGarden admin : admins) {
+            long receiverId = admin.getUser().getId();
+            String content = "정원에 가입 신청이 왔어요. 확인 해주세요.";
+            Notification joinNotification = notificationService.makeNotification(receiverId, gardenId, gardenId, content, NotificationType.GARDEN);
+            notificationService.send(receiverId, joinNotification);
+        }
     }
 
     // 정원 가입 결과 조회 - WAIT, ACCEPT, REFUSE 인 정원 목록 반환

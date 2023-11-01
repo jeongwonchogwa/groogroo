@@ -3,10 +3,7 @@ package com.jwcg.groogroo.model.service;
 import com.jwcg.groogroo.model.dto.fruit.ResponseFruitDto;
 import com.jwcg.groogroo.model.dto.fruit.ResponseFruitPresetDto;
 import com.jwcg.groogroo.model.dto.fruit.ResponseSimpleFruitDto;
-import com.jwcg.groogroo.model.entity.ContentType;
-import com.jwcg.groogroo.model.entity.Fruit;
-import com.jwcg.groogroo.model.entity.Preset;
-import com.jwcg.groogroo.model.entity.Tree;
+import com.jwcg.groogroo.model.entity.*;
 import com.jwcg.groogroo.repository.FruitRepository;
 import com.jwcg.groogroo.repository.PresetRepository;
 import com.jwcg.groogroo.repository.TreeRepository;
@@ -22,6 +19,8 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 public class FruitService {
+
+    private final NotificationService notificationService;
 
     private final FruitRepository fruitRepository;
     private final TreeRepository treeRepository;
@@ -46,6 +45,12 @@ public class FruitService {
         fruit.setTree(tree);
 
         fruitRepository.save(fruit);
+
+        String msg = "나의 나무에 열매가 달렸어요. 확인 해보세요.";
+        long receiverId = tree.getUser().getId();
+        Notification notification = notificationService.makeNotification(receiverId, null, treeId, msg, NotificationType.FRUIT);
+        notificationService.send(receiverId, notification);
+
     }
 
     public void deleteFruit(long fruitId){
