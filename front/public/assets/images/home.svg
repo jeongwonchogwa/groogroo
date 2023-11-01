@@ -1,0 +1,40 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="8" width="112" height="8" fill="black"/>
+<rect x="112" y="8" width="16" height="8" fill="black"/>
+<rect x="120" y="16" width="8" height="104" fill="black"/>
+<rect x="112" y="112" width="8" height="16" fill="black"/>
+<rect x="8" y="120" width="104" height="8" fill="black"/>
+<rect y="112" width="16" height="8" fill="black"/>
+<rect y="16" width="8" height="96" fill="black"/>
+<rect y="8" width="16" height="8" fill="black"/>
+<path d="M16 8H112V120H16V112H8V16H16V8Z" fill="#F9F9F9"/>
+<rect x="112" y="16" width="8" height="96" fill="#E0E0E0"/>
+<rect x="40" y="34" width="8" height="8" fill="#C54B4A"/>
+<rect x="32" y="42" width="8" height="8" fill="#C54B4A"/>
+<rect x="24" y="50" width="8" height="8" fill="#C54B4A"/>
+<rect x="48" y="29" width="8" height="8" fill="#C54B4A"/>
+<path d="M56 29H86V34V42H64V34H56V29Z" fill="#AE2825"/>
+<rect x="56" y="34" width="8" height="8" fill="#C54B4A"/>
+<path d="M86 34H94V42V50H100V54H94H80V50H72V42H80H86V34Z" fill="#AE2825"/>
+<rect x="94" y="42" width="8" height="8" fill="#AE2825"/>
+<rect x="100" y="50" width="8" height="8" fill="#AE2825"/>
+<rect x="64" y="42" width="8" height="8" fill="#C54B4A"/>
+<rect x="72" y="50" width="8" height="8" fill="#C54B4A"/>
+<rect x="80" y="54" width="28" height="8" fill="#D14B4A"/>
+<rect x="29" y="58" width="8" height="43" fill="#BF9261"/>
+<path d="M48 37H56V42H64V50H72V58V93H65V76H61V68H45V76H41V93.5L37 93V58H32V50H40V42H48V37Z" fill="#CC9D69"/>
+<rect x="37" y="93" width="35" height="8" fill="#CC9D69"/>
+<rect x="72" y="58" width="8" height="43" fill="#BF9261"/>
+<rect x="80" y="89" width="8" height="12" fill="#AD7F5E"/>
+<path d="M80 62H93V85H88V89H80V85V62Z" fill="#AD7F5E"/>
+<rect x="88" y="85" width="8" height="13" fill="#AD7F5E"/>
+<rect x="93" y="62" width="8" height="33" fill="#AD7F5E"/>
+<rect x="45" y="68" width="16" height="8" fill="#7B5040"/>
+<rect x="49" y="76" width="8" height="25" fill="#7B5040"/>
+<rect x="41" y="76" width="8" height="25" fill="#7B5040"/>
+<path d="M57 76V70H61V76H65V93V101H57V93V76Z" fill="#684D38"/>
+<rect x="56" y="42" width="8" height="8" fill="#BF9261"/>
+<rect x="40" y="42" width="8" height="8" fill="#BF9261"/>
+<rect x="32" y="50" width="8" height="8" fill="#BF9261"/>
+<rect x="48" y="37" width="8" height="8" fill="#BF9261"/>
+</svg>

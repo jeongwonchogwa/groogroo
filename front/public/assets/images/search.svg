@@ -1,0 +1,19 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect y="26.9474" width="14.2222" height="47.1579" fill="black"/>
+<rect x="14.2222" y="13.4736" width="14.2222" height="13.4737" fill="black"/>
+<rect x="14.2222" y="74.1052" width="14.2222" height="13.4737" fill="black"/>
+<rect x="78.2222" y="13.4736" width="14.2222" height="13.4737" fill="black"/>
+<rect x="78.2222" y="74.1052" width="14.2222" height="13.4737" fill="black"/>
+<rect x="92.4443" y="26.9474" width="14.2222" height="47.1579" fill="black"/>
+<rect x="28.4443" width="49.7778" height="13.4737" fill="black"/>
+<rect x="28.4443" y="87.579" width="49.7778" height="13.4737" fill="black"/>
+<rect x="85.3333" y="80.842" width="14.2222" height="20.2105" fill="black"/>
+<rect x="92.4443" y="87.579" width="14.2222" height="20.2105" fill="black"/>
+<rect x="99.5557" y="94.3158" width="14.2222" height="20.2105" fill="black"/>
+<rect x="106.667" y="101.053" width="14.2222" height="20.2105" fill="black"/>
+<rect x="113.778" y="107.789" width="14.2222" height="20.2105" fill="black"/>
+<path d="M28.4444 26.9473V13.4736H78.2222V26.9473H92.4444V74.1052H78.2222V87.5789H28.4444V74.1052H14.2222V26.9473H28.4444Z" fill="#F9F9F9"/>
+<rect x="78.2222" y="40.421" width="7.11111" height="26.9474" fill="#E0E0E0"/>
+<rect x="71.1111" y="33.6842" width="7.11111" height="6.73684" fill="#E0E0E0"/>
+<rect x="64" y="26.9474" width="7.11111" height="6.73684" fill="#E0E0E0"/>
+</svg>
