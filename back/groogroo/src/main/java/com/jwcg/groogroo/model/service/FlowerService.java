@@ -20,6 +20,8 @@ import java.util.List;
 @AllArgsConstructor
 public class FlowerService {
 
+    private final NotificationService notificationService;
+
     private final UserGardenRepository userGardenRepository;
     private final FlowerRepository flowerRepository;
     private final PresetRepository presetRepository;
@@ -36,10 +38,24 @@ public class FlowerService {
                 .x(x)
                 .y(y)
                 .build();
+
         // userGarden 객체의 flowers 리스트에 flower 추가
         userGarden.getFlowers().add(flower);
 
         flowerRepository.save(flower);
+
+        // 정원 소속 인원들에게 알림 발송
+        List<UserGarden> members = userGardenRepository.findAllByGardenId(gardenId);
+        // 본인 제거
+        members.removeIf(member -> member.getUser().getId() == userId);
+
+        String msg = "정원에 새로운 꽃이 심어졌습니다. 확인 해보세요.";
+
+        for (UserGarden member : members) {
+            long receiverId = member.getUser().getId();
+            Notification notification = notificationService.makeNotification(receiverId, gardenId, flower.getId(), msg, NotificationType.FLOWER);
+            notificationService.send(member.getId(), notification);
+        }
     }
 
     public void deleteFlower(long flowerId){
@@ -68,7 +84,7 @@ public class FlowerService {
 
     public ResponseSimpleFlowerDto getSimpleFlowerContent(Long flowerId) {
         Flower flower = flowerRepository.findFlowerById(flowerId);
-        ResponseSimpleFlowerDto  simpleFlowerDto = ResponseSimpleFlowerDto.builder()
+        ResponseSimpleFlowerDto simpleFlowerDto = ResponseSimpleFlowerDto.builder()
                 .id(flower.getId())
                 .content(flower.getContent())
                 .writerNickname(flower.getWriterNickname())
