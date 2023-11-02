@@ -1,8 +1,14 @@
-import Button from "./components/Button";
+"use client"
 
+import Button from "../../components/Button";
+import { useRouter } from "next/navigation";
 
 const Create = () => {
-	
+	const router = useRouter();
+
+  const handleCreateButtonClick = () => {
+    router.push('/enter/pick');
+  };
 
   return (
     <div
@@ -35,12 +41,12 @@ const Create = () => {
 					</div>
         </div>
         <div className="w-[290px] h-[20px] flex justify-end">
-          <a href="/경로" className="text-primary font-nexonGothic font-bold text-[20px] hover:no-underline hover:text-primary">				
+          <a href="/enter/freeset" className="text-primary font-nexonGothic font-bold text-[20px] hover:no-underline hover:text-primary">				
 						나무 프리셋 구경하기
 					</a>
 				</div>
         <div className="w-[290px] h-[50px] mt-[30px]">      
-          <Button color="primary" label="생성 하기"/>
+          <Button color="primary" label="생성 하기" onClick={handleCreateButtonClick} />
         </div>
       </div>
 		</div>

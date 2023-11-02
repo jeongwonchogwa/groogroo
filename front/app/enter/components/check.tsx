@@ -1,12 +1,15 @@
 "use client"
 
-import Button from "./components/Button";
-import NameInput from "./components/NameInput";
-import Frame from "./components/Frame";
+import Button from "../../components/Button";
+import NameInput from "../../components/NameInput";
+import Frame from "../../components/Frame";
 
 import React, { useState, ChangeEvent } from 'react';
+import { useRouter } from "next/navigation";
 
 const Check = () => {
+	const router = useRouter();
+
 
 	const [inputValue, setInputValue] = useState('');
   const [message, setMessage] = useState('닉네임은 12글자까지 가능합니다');
@@ -41,6 +44,10 @@ const Check = () => {
 			}
 		}
 	};
+
+	const handleReselctButtonClick = () => {
+    window.history.back()
+  };
 
 	const handleStart = () => {
 		if (message === '사용가능한 닉네임입니다') {
@@ -90,7 +97,7 @@ const Check = () => {
           <Button color="default" label="중복 확인" onClick={handleCheckDuplicate}/>
         </div>
         <div className="w-[290px] h-[50px] mt-[25px]">      
-          <Button color="secondary" label="다시 선택 하기"/>
+          <Button color="secondary" label="다시 선택 하기" onClick={handleReselctButtonClick}/>
         </div>
         <div className="w-[290px] h-[50px] mt-[25px]">      
           <Button color="white" label="시작하기" onClick={handleStart}/>

@@ -1,11 +1,10 @@
 "use client"
 
-// 1. 이미지 url 수정해야함
 // 2. 약관동의 체크박스 css 수정해야함
-// 3. 버튼누르면 다음페이지로 라우팅되게 해야함
 
 import React, { useState } from "react";
-import Button from "./components/Button";
+import { useRouter } from "next/navigation";
+import Button from "../../components/Button";
 
 export default function Terms() {
   const [isChecked, setIsChecked] = useState(false);
@@ -14,10 +13,11 @@ export default function Terms() {
     setIsChecked(!isChecked);
   };
 
+  const router = useRouter();
+
   const handleButtonClick = () => {
     if (isChecked) {
-      // 체크박스가 체크되어 있을 때 버튼 동작
-      // 이 부분에 버튼 클릭 시 실행할 동작을 추가하세요.
+      router.push('/enter/create');
       console.log("버튼이 클릭되었습니다.");
     }
   };
@@ -65,7 +65,7 @@ export default function Terms() {
             onChange={handleCheckboxChange}
           />
         </div>
-        <Button color="primary" label="다음으로" disabled={!isChecked} />
+        <Button color="primary" label="다음으로" disabled={!isChecked} onClick={handleButtonClick}/>
       </div>
     </div>
   );
