@@ -48,7 +48,7 @@ public class GardenController {
             log.info("Garden Controller - 정원 생성");
             Long userId = jwtUtil.getId(token);
 
-            gardenService.makeGarden(userId,
+            String url = gardenService.makeGarden(userId,
                     requestGardenGenerationDto.getName(),
                     requestGardenGenerationDto.getDescription(),
                     requestGardenGenerationDto.getX(),
@@ -56,6 +56,7 @@ public class GardenController {
                     requestGardenGenerationDto.getImageUrl(),
                     requestGardenGenerationDto.getCapacity());
 
+            response.put("url", url);
             response.put("httpStatus", SUCCESS);
             response.put("message", "정원 생성 성공");
 

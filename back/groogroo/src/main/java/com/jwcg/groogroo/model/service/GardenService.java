@@ -62,7 +62,7 @@ public class GardenService {
         else return makeURL();
     }
 
-    public void makeGarden(long userId, String name, String description, int x, int y, String imageUrl, int capacity){
+    public String makeGarden(long userId, String name, String description, int x, int y, String imageUrl, int capacity){
 
         // url 생성
         String url = makeURL();
@@ -107,6 +107,7 @@ public class GardenService {
         treeGardenRepository.save(treeGarden);
         log.info("treeGarden 저장 성공");
 
+        return url;
     }
 
     @Transactional(readOnly = true)
