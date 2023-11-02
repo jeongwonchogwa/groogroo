@@ -51,9 +51,6 @@ public class GardenController {
             String url = gardenService.makeGarden(userId,
                     requestGardenGenerationDto.getName(),
                     requestGardenGenerationDto.getDescription(),
-                    requestGardenGenerationDto.getX(),
-                    requestGardenGenerationDto.getY(),
-                    requestGardenGenerationDto.getImageUrl(),
                     requestGardenGenerationDto.getCapacity());
 
             response.put("url", url);

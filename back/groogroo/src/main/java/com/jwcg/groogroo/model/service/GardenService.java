@@ -62,7 +62,7 @@ public class GardenService {
         else return makeURL();
     }
 
-    public String makeGarden(long userId, String name, String description, int x, int y, String imageUrl, int capacity){
+    public String makeGarden(long userId, String name, String description, int capacity){
 
         // url 생성
         String url = makeURL();
@@ -90,22 +90,23 @@ public class GardenService {
         log.info("userGarden 생성 성공");
         userGardenRepository.save(userGarden);
 
-        TreeGarden treeGarden = TreeGarden.builder()
-                .x(x)
-                .y(y)
-                .imageUrl(imageUrl)
-                .build();
-
-        log.info("treeGarden setGarden");
-        treeGarden.setGarden(garden);
-        log.info("treeGarden setTree");
-        treeGarden.setTree(user.getTree());
-
-        log.info("treeGarden 생성 성공" + treeGarden.getGarden().toString());
-        log.info(treeGarden.getTree().toString());
-
-        treeGardenRepository.save(treeGarden);
-        log.info("treeGarden 저장 성공");
+        // 나무 배치 부분 제거.. 정원 꾸미기 API에 사용할듯
+//        TreeGarden treeGarden = TreeGarden.builder()
+//                .x(x)
+//                .y(y)
+//                .imageUrl(imageUrl)
+//                .build();
+//
+//        log.info("treeGarden setGarden");
+//        treeGarden.setGarden(garden);
+//        log.info("treeGarden setTree");
+//        treeGarden.setTree(user.getTree());
+//
+//        log.info("treeGarden 생성 성공" + treeGarden.getGarden().toString());
+//        log.info(treeGarden.getTree().toString());
+//
+//        treeGardenRepository.save(treeGarden);
+//        log.info("treeGarden 저장 성공");
 
         return url;
     }
