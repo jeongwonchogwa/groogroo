@@ -11,11 +11,24 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      keyframes: {
+        typing: {
+          "0%": {
+            width: "0%",
+            visibility: "hidden",
+          },
+          "100%": {
+            width: "100%",
+          },
+        },
+      },
+      animation: {
+        typing: "typing 5s steps(19) infinite alternate, infinite",
+      },
       backgroundImage: {
         "background-pixel": "url('/assets/images/background.png')",
         "modal-img": "url('/assets/images/card.svg')",
       },
-      // theme -> extend -> color구조인데도 tailwindcss 정의 색상 사용하려면 직접 지정해야해..?
       colors: {
         primary: "#2A7443",
         "primary-container": "#7FAC8E",
@@ -35,6 +48,7 @@ const config: Config = {
         outline: "#787D85",
         "outline-container": "#DCE1E9",
         frame: "#F2FFF0",
+        "frame-border": "#1E3445",
         "linear-frame": "#C7FFBE",
       },
       fontFamily: {

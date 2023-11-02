@@ -10,8 +10,9 @@ import Link from "/public/assets/images/link.svg";
 import Trash from "/public/assets/images/trash.svg";
 import Siren from "/public/assets/images/siren.svg";
 import Flower from "/public/assets/images/flower.png";
-import Home from "/public/assets/images/home.png";
-import Menu from "/public/assets/images/menu.png";
+import Update from "/public/assets/images/update.svg";
+import Home from "/public/assets/images/home.svg";
+import Menu from "/public/assets/images/menu.svg";
 
 interface IconButtonProps {
   iconSrc:
@@ -27,7 +28,8 @@ interface IconButtonProps {
     | "siren"
     | "flower"
     | "home"
-    | "menu";
+    | "menu"
+    | "update";
   onClick?: () => void;
   rotate?: boolean;
 }
@@ -46,6 +48,7 @@ const iconButtonConfig = {
   flower: Flower,
   home: Home,
   menu: Menu,
+  update: Update,
 };
 
 const IconButton = ({ iconSrc, onClick, rotate }: IconButtonProps) => {
@@ -53,11 +56,7 @@ const IconButton = ({ iconSrc, onClick, rotate }: IconButtonProps) => {
   return (
     <div className="w-full h-full" onClick={onClick}>
       {/* rotate는 arrow에만 사용할 예정 */}
-      <Image
-        className={rotate ? "rotate-180" : ""}
-        src={IconComponent}
-        alt={iconSrc}
-      />
+      <Image className={rotate ? "rotate-180" : ""} src={IconComponent} alt={iconSrc} />
     </div>
   );
 };

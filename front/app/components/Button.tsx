@@ -42,7 +42,8 @@ const Button = ({ color, label, onClick, disabled, active = true }: ButtonProps)
         <div className="w-full">
           <button
             disabled={disabled}
-            className={`w-full focus:outline-none h-[50px] ${buttonConfig}`}
+            // overflow를 넣는게 맞을까요?
+            className={`overflow-auto w-full focus:outline-none h-[50px] ${buttonConfig}`}
             onClick={onClick}
           >
             <span className={`font-bitBit text-xl ${color === "white" ? "text-black" : "text-white"}`}>{label}</span>

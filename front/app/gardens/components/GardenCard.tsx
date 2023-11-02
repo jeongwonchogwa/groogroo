@@ -26,7 +26,7 @@ const GardenCard = () => {
             }}
           >
             <div className="flex flex-col bg-white" onClick={() => handleToggle(2)}>
-              <div className="w-[300px] h-[100px]  outline-dotted border-[#1E3445] rounded-lg mr-1 z-50">
+              <div className="w-[300px] h-[100px]  outline-dashed outline-2 outline-[#1E3445] rounded-lg mr-1 z-50">
                 <div className="w-full h-full">
                   <Image
                     src="/cat.jpg"
