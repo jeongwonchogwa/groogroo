@@ -5,10 +5,10 @@ import GardenScene from "./GardenScene";
 import Preloader from "./Preloader";
 import GridEngine from "grid-engine";
 import GardenHeader from "./GardenHeader";
-import GardenFooter from "./GardenFooter";
 import GardenEditScene from "./GardenEditScene";
-
+import { gardenEditStore } from "@/stores/gardenEditStore";
 const Garden = () => {
+  const { gardenEdit } = gardenEditStore();
   const getTree = async () => {
     try {
     } catch (error) {}
@@ -24,13 +24,16 @@ const Garden = () => {
         width: window.innerWidth,
         height: window.innerHeight,
         backgroundColor: 0x000000,
+        dom: {
+          createContainer: true,
+        },
         scene: [Preloader, GardenScene, GardenEditScene],
         pixelArt: true,
 
         physics: {
           default: "arcade",
           arcade: {
-            // debug: true,
+            debug: true,
           },
         },
 
@@ -53,10 +56,12 @@ const Garden = () => {
 
   return (
     <div className="w-full h-full overflow-hidden border-2 border-point-orange ">
-      <div className="relative w-full" id="garden-content" key="garden-content">
-        {/* <GardenUi /> */}
+      <div
+        className="relative w-full h-full"
+        id="garden-content"
+        key="garden-content"
+      >
         <GardenHeader />
-        <GardenFooter />
       </div>
     </div>
   );

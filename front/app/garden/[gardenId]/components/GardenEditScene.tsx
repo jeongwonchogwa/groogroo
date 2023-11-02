@@ -1,3 +1,4 @@
+import { tree } from "@/app/dummies";
 import { Scene } from "phaser";
 // @ts-ignore
 import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";

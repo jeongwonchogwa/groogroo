@@ -32,7 +32,10 @@ const GardenFooter = () => {
   };
 
   const registMenu: MenuButton[] = [
-    { name: "나무 심기", clickEvent: setGardenEdit },
+    {
+      name: "나무 심기",
+      clickEvent: setGardenEdit,
+    },
     { name: "꽃 심기", clickEvent: () => {} },
   ];
 
