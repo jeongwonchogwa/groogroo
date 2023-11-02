@@ -1,7 +1,6 @@
 package com.jwcg.groogroo.controller;
 
 import com.jwcg.groogroo.model.dto.flower.ResponseSimpleFlowerDto;
-import com.jwcg.groogroo.model.dto.fruit.ResponseFruitDto;
 import com.jwcg.groogroo.model.dto.fruit.ResponseSimpleFruitDto;
 import com.jwcg.groogroo.model.dto.garden.RequestUpdateJoinStateDto;
 import com.jwcg.groogroo.model.dto.report.RequestReportListDto;
@@ -9,9 +8,6 @@ import com.jwcg.groogroo.model.dto.report.RequestReportedContentDto;
 import com.jwcg.groogroo.model.dto.report.ResponseReportListDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseSimpleTreeDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseSimpleTreeGardenDto;
-import com.jwcg.groogroo.model.entity.Flower;
-import com.jwcg.groogroo.model.entity.Fruit;
-import com.jwcg.groogroo.model.entity.Tree;
 import com.jwcg.groogroo.model.entity.UserStatus;
 import com.jwcg.groogroo.model.service.*;
 import io.swagger.v3.oas.annotations.Operation;
