@@ -8,7 +8,7 @@ import Button from "./components/Button";
 // 이걸,, 지금은 imageCount를 직접넣는데
 // 자동으로 파일내에 파일갯수를 파악해주는 코드를짜야할까......?
 // 우리 이미지 자동저장 이런것도없는데 굳이...??????????????? ㅠㅠㅠ....
-const imageCount = 2;
+const imageCount = 4;
 
 const Freeset = () => {
 	const [currentImage, setCurrentImage] = useState(0);
@@ -37,18 +37,18 @@ const Freeset = () => {
         </div>
         <div className="w-[390px] h-[500px] flex flex-row justify-center">
 					<div className="w-[35px] h-[500px] flex items-center justify-center">
-    				<button
-						  onClick={prevImage}
-      				style={{
-        			backgroundImage: 'url("/assets/images/arrow.svg")',
-        			width: '24px',
-        			height: '48px',
-        			backgroundSize: 'cover',
-        			backgroundPosition: 'center',
-        			backgroundRepeat: 'no-repeat',
-      			}}
-    				></button>
-  				</div>
+						<button
+							onClick={prevImage}
+							style={{
+								backgroundImage: 'url("/assets/images/arrow.svg")',
+								width: '24px',
+								height: '48px',
+								backgroundSize: 'cover',
+								backgroundPosition: 'center',
+								backgroundRepeat: 'no-repeat',
+							}}
+						></button>
+					</div>
 					<div className="w-[290px] flex flex-row mr-[15px] ml-[5px]">
 						<div className="my-auto">
 							<div className="w-[5px] h-[490px] bg-black" />
