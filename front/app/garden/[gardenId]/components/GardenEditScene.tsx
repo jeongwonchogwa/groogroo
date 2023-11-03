@@ -1,4 +1,6 @@
 import { tree } from "@/app/dummies";
+import { myTree } from "@/app/dummies";
+import { Character } from "@/app/types";
 import { Scene } from "phaser";
 // @ts-ignore
 import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";
@@ -8,6 +10,8 @@ export default class GardenEditScene extends Scene {
   private treeSprite!: Phaser.Physics.Arcade.Sprite;
   private moveCheck!: boolean;
   private spriteBox!: Phaser.GameObjects.Graphics;
+  private errorSpriteBox!: Phaser.GameObjects.Graphics;
+  private defaultSpriteBox!: Phaser.GameObjects.Graphics;
   constructor() {
     super("gardenEditScene");
     // bootGame : 이 scene의 identifier
@@ -23,13 +27,49 @@ export default class GardenEditScene extends Scene {
   }
 
   create() {
+    //맵 생성. 레이어별로 foreach 돌면서.///////////////////////////////////////////////
     const map = this.make.tilemap({ key: "mainMap" });
     map.addTilesetImage("tileset", "tileset");
     map.layers.forEach((layer, index) => {
       map.createLayer(index, "tileset", 0, 0);
     });
 
-    this.treeSprite = this.physics.add.sprite(0, 0, "tree").setScale(0.25);
+    //나무 sprite 목록 생성./////////////////////////////////////////////////////////
+    const characters: Character[] = [];
+    tree.trees.forEach((tree) => {
+      characters.push({
+        id: tree.name,
+        sprite: this.physics.add
+          .sprite(0, 0, tree.name)
+          .setDepth(3)
+          .setScale(0.25)
+          .setInteractive()
+          //열매 작성 폼 띄워줄거임.
+          .on("pointerdown", () => {
+            console.log("누름!");
+          }),
+        startPosition: { x: tree.x!, y: tree.y! },
+        tileHeight: 2,
+        tileWidth: 2,
+        offsetX: 8,
+        offsetY: 16,
+      });
+    });
+
+    //내 나무 sprite
+    this.treeSprite = this.physics.add
+      .sprite(0, 0, myTree.name)
+      .setScale(0.25)
+      .setDepth(4);
+    characters.push({
+      id: myTree.name,
+      sprite: this.treeSprite,
+      startPosition: { x: 15, y: 10 },
+      tileHeight: 0,
+      tileWidth: 0,
+      offsetX: 8,
+      offsetY: 16,
+    });
     this.cameras.main.setBackgroundColor("#1E7CB8");
     this.moveCheck = false;
 
@@ -48,31 +88,31 @@ export default class GardenEditScene extends Scene {
 
     // this.treeSprite.setInteractive();
 
-    this.spriteBox = this.add.graphics();
-
     const color = 0xffc76a;
+    const errorColor = 0xb83818;
     const thickness = 0.5;
     const alpha = 1;
 
-    this.spriteBox.lineStyle(thickness, color, alpha);
-    this.spriteBox.fillStyle(0xffc76a, 0.5);
-    this.spriteBox.fillRect(0, 0, 32, 32);
-    this.spriteBox.strokeRect(0, 0, 32, 32);
-    this.spriteBox.setDepth(3);
+    this.defaultSpriteBox = this.add.graphics();
+    this.defaultSpriteBox.lineStyle(thickness, color, alpha);
+    this.defaultSpriteBox.fillStyle(color, 0.5);
+    this.defaultSpriteBox.fillRect(0, 0, 32, 32);
+    this.defaultSpriteBox.strokeRect(0, 0, 32, 32);
+    this.defaultSpriteBox.setDepth(3);
+
+    this.errorSpriteBox = this.add.graphics();
+    this.errorSpriteBox.lineStyle(thickness, errorColor, alpha);
+    this.errorSpriteBox.fillStyle(errorColor, 0.5);
+    this.errorSpriteBox.fillRect(0, 0, 32, 32);
+    this.errorSpriteBox.strokeRect(0, 0, 32, 32);
+    this.errorSpriteBox.setDepth(3);
+    this.errorSpriteBox.setVisible(false);
+
+    this.spriteBox = this.defaultSpriteBox;
 
     const gridEngineConfig = {
       snapToCell: true,
-      characters: [
-        {
-          id: "tree",
-          sprite: this.treeSprite,
-          startPosition: { x: 15, y: 10 },
-          tileHeight: 2,
-          tileWidth: 2,
-          offsetX: 8,
-          offsetY: 16,
-        },
-      ],
+      characters: characters,
     };
 
     // @ts-ignore
@@ -85,12 +125,16 @@ export default class GardenEditScene extends Scene {
     //에셋 배치시 나무, 꽃 테두리 보여주기.
     this.spriteBox.setX(this.treeSprite.x);
     this.spriteBox.setY(this.treeSprite.y);
+    this.defaultSpriteBox.setX(this.treeSprite.x);
+    this.defaultSpriteBox.setY(this.treeSprite.y);
+    this.errorSpriteBox.setX(this.treeSprite.x);
+    this.errorSpriteBox.setY(this.treeSprite.y);
     //스프라이트와 키입력 변수
     const sprite = this.treeSprite;
     const cursors = this.input.keyboard?.createCursorKeys();
 
     //스프라이트 이동 속도
-    this.gridEngine.setSpeed("tree", 32);
+    this.gridEngine.setSpeed("고무고무나무", 32);
 
     //카메라 추적 로직.
     //맵과 스크린 테두리가 맞을시 카메라 멈추기.
@@ -138,21 +182,125 @@ export default class GardenEditScene extends Scene {
     //키 입력시 좌표 이동.
     //moveCheck를 통해서 꾹누르고있어도 한칸만 가도록 제한
     if (cursors?.left.isDown && !this.moveCheck) {
-      this.gridEngine.move("tree", "left");
+      this.gridEngine.move(myTree.name, "left");
       this.moveCheck = true;
-      console.log(this.gridEngine.getCollisionGroups("tree"));
+
+      if (
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x - 1,
+          y: this.gridEngine.getPosition(myTree.name).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x - 1,
+          y: this.gridEngine.getPosition(myTree.name).y + 1,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x,
+          y: this.gridEngine.getPosition(myTree.name).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x,
+          y: this.gridEngine.getPosition(myTree.name).y + 1,
+        })
+      ) {
+        this.spriteBox = this.errorSpriteBox;
+        this.errorSpriteBox.setVisible(true);
+        this.defaultSpriteBox.setVisible(false);
+      } else {
+        this.spriteBox = this.defaultSpriteBox;
+        this.errorSpriteBox.setVisible(false);
+        this.defaultSpriteBox.setVisible(true);
+      }
     } else if (cursors?.right.isDown && !this.moveCheck) {
-      this.gridEngine.move("tree", "right");
+      this.gridEngine.move(myTree.name, "right");
       this.moveCheck = true;
-      console.log(this.gridEngine.getPosition("tree"));
+
+      if (
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x + 1,
+          y: this.gridEngine.getPosition(myTree.name).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x + 1,
+          y: this.gridEngine.getPosition(myTree.name).y + 1,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x + 2,
+          y: this.gridEngine.getPosition(myTree.name).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x + 2,
+          y: this.gridEngine.getPosition(myTree.name).y + 1,
+        })
+      ) {
+        this.spriteBox = this.errorSpriteBox;
+        this.errorSpriteBox.setVisible(true);
+        this.defaultSpriteBox.setVisible(false);
+      } else {
+        this.spriteBox = this.defaultSpriteBox;
+        this.errorSpriteBox.setVisible(false);
+        this.defaultSpriteBox.setVisible(true);
+      }
     } else if (cursors?.down.isDown && !this.moveCheck) {
-      this.gridEngine.move("tree", "down");
+      this.gridEngine.move(myTree.name, "down");
       this.moveCheck = true;
-      console.log(this.gridEngine.getPosition("tree"));
+
+      if (
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x,
+          y: this.gridEngine.getPosition(myTree.name).y + 1,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x,
+          y: this.gridEngine.getPosition(myTree.name).y + 2,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x + 1,
+          y: this.gridEngine.getPosition(myTree.name).y + 1,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x + 1,
+          y: this.gridEngine.getPosition(myTree.name).y + 2,
+        })
+      ) {
+        this.errorSpriteBox.setVisible(true);
+        this.defaultSpriteBox.setVisible(false);
+        this.spriteBox = this.errorSpriteBox;
+      } else {
+        this.spriteBox = this.defaultSpriteBox;
+        this.errorSpriteBox.setVisible(false);
+        this.defaultSpriteBox.setVisible(true);
+      }
     } else if (cursors?.up.isDown && !this.moveCheck) {
-      this.gridEngine.move("tree", "up");
+      this.gridEngine.move(myTree.name, "up");
       this.moveCheck = true;
-      console.log(this.gridEngine.getPosition("tree"));
+
+      if (
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x,
+          y: this.gridEngine.getPosition(myTree.name).y - 1,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x,
+          y: this.gridEngine.getPosition(myTree.name).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x + 1,
+          y: this.gridEngine.getPosition(myTree.name).y - 1,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x + 1,
+          y: this.gridEngine.getPosition(myTree.name).y,
+        })
+      ) {
+        this.spriteBox = this.errorSpriteBox;
+        this.errorSpriteBox.setVisible(true);
+        this.defaultSpriteBox.setVisible(false);
+      } else {
+        this.spriteBox = this.defaultSpriteBox;
+        this.errorSpriteBox.setVisible(false);
+        this.defaultSpriteBox.setVisible(true);
+      }
     }
 
     if (

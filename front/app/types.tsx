@@ -13,8 +13,8 @@ export interface Tree {
   name: string;
   fruits: Fruit[];
   fruitsCount: number;
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
 }
 
 export interface TreesResponse {

@@ -19,7 +19,7 @@ export const tree: type.TreesResponse = {
         },
       ],
       fruitsCount: 1,
-      x: 15,
+      x: 5,
       y: 10,
     },
     {
@@ -59,6 +59,23 @@ export const tree: type.TreesResponse = {
       y: 12,
     },
   ],
+};
+
+export const myTree: type.Tree = {
+  id: 1,
+  imageUrl: "/assets/tree.png",
+  name: "고무고무나무",
+  fruits: [
+    {
+      id: 1,
+      writerId: 1,
+      writerNickname: "내가누구게",
+      content: "잘지내~",
+      imageUrl: "/assets/tree.png",
+      createTime: "14:10",
+    },
+  ],
+  fruitsCount: 1,
 };
 
 export const admin: type.Admin = {

@@ -54,7 +54,10 @@ const iconButtonConfig = {
 const IconButton = ({ iconSrc, onClick, rotate }: IconButtonProps) => {
   const IconComponent = iconButtonConfig[iconSrc];
   return (
-    <div className="w-full h-full" onClick={onClick}>
+    <div
+      className={iconSrc === "bell" ? "w-full h-full z-50" : "w-full h-full"}
+      onClick={onClick}
+    >
       {/* rotate는 arrow에만 사용할 예정 */}
       <Image className={rotate ? "rotate-180" : ""} src={IconComponent} alt={iconSrc} />
     </div>

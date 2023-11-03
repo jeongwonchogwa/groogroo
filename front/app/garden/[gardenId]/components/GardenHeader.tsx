@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Menu from "./Menu";
 import { MenuButton } from "@/app/types";
+import Alarm from "@/app/components/Alarm";
 const GardenHeader = () => {
   const router = useRouter();
 
@@ -22,6 +23,7 @@ const GardenHeader = () => {
   };
 
   const menuList: MenuButton[] = [
+    { name: "참여신청", clickEvent: () => {} },
     { name: "초대하기", clickEvent: () => {} },
     { name: "신고하기", clickEvent: () => {} },
   ];
@@ -36,15 +38,16 @@ const GardenHeader = () => {
       </div>
 
       <div className="flex gap-5">
-        <div className="flex flex-col gap-2 h-10 w-10 items-end">
+        <div className="flex flex-col gap-2 h-10 w-10">
           <IconButton iconSrc="bell" onClick={onAlarmButtonClick} />
-          {openAlarm ? <Menu menuList={menuList}></Menu> : null}
+          {openAlarm ? <Alarm /> : null}
         </div>
-
-        <div className="flex flex-col gap-2 h-10 w-10 items-end">
-          <IconButton iconSrc="menu" onClick={onMenuButtonClick} />
-          {openMenu ? <Menu menuList={menuList}></Menu> : null}
-        </div>
+        {openAlarm ? null : (
+          <div className="flex flex-col gap-2 h-10 w-10 items-end">
+            <IconButton iconSrc="menu" onClick={onMenuButtonClick} />
+            {openMenu ? <Menu menuList={menuList}></Menu> : null}
+          </div>
+        )}
       </div>
     </div>
   );

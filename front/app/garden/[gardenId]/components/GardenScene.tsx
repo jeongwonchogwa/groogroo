@@ -29,7 +29,6 @@ export default class GardenScene extends Scene {
   create() {
     //맵 생성. 레이어별로 foreach 돌면서.///////////////////////////////////////////////
     const map = this.make.tilemap({ key: "mainMap" });
-
     map.addTilesetImage("tileset", "tileset");
     map.layers.forEach((layer, index) => {
       map.createLayer(index, "tileset", 0, 0);
@@ -40,8 +39,16 @@ export default class GardenScene extends Scene {
     tree.trees.forEach((tree) => {
       characters.push({
         id: tree.name,
-        sprite: this.physics.add.sprite(0, 0, tree.name).setScale(0.25),
-        startPosition: { x: tree.x, y: tree.y },
+        sprite: this.physics.add
+          .sprite(0, 0, tree.name)
+          .setDepth(3)
+          .setScale(0.25)
+          .setInteractive()
+          //열매 작성 폼 띄워줄거임.
+          .on("pointerdown", () => {
+            console.log("누름!");
+          }),
+        startPosition: { x: tree.x!, y: tree.y! },
         tileHeight: 2,
         tileWidth: 2,
         offsetX: 8,
@@ -51,10 +58,9 @@ export default class GardenScene extends Scene {
 
     //camera 설정 /////////////////////////////////////////////////////////////////
     //zoom, scroll, position 설정.
-
     this.cameras.main.setBackgroundColor("#1E7CB8");
 
-    // // 맵 screen 사이즈에 맞춰서 zoom수치 설정. 너비/높이 중 더 큰 사이즈에 맞춰서.
+    // 맵 screen 사이즈에 맞춰서 zoom수치 설정. 너비/높이 중 더 큰 사이즈에 맞춰서.
     if (window.innerHeight >= window.innerWidth) {
       console.log(
         "높이가 너비보다 같거나 더큼" + window.innerHeight / 320 + "배"
@@ -70,7 +76,7 @@ export default class GardenScene extends Scene {
       240 - (240 * window.innerWidth) / 480,
       160 - (160 * window.innerHeight) / 320
     );
-    // this.plusButton.setPosition(200 / this.cameras.main.zoom, 50);
+
     //맨처음 시작 위치 기준으로 이동 제한하기 위해서 저장
     const startX = this.cameras.main.scrollX;
     const startY = this.cameras.main.scrollY;
@@ -114,64 +120,133 @@ export default class GardenScene extends Scene {
     });
 
     //버튼, 모달 생성./////////////////////////////////////////////////////////
+    //Footer DOM요소로 추가 //////////////////////////////////////////////////
 
-    // this.plusButton = this.add
-    //   .image(
-    //     250 - (window.innerWidth / 2 - 10) / this.cameras.main.zoom,
-    //     170 + (window.innerHeight / 2 - 80) / this.cameras.main.zoom,
-    //     "plusButton"
-    //   )
-    //   .setDepth(3)
-    //   .setScale(
-    //     5 / (16 * this.cameras.main.zoom),
-    //     5 / (16 * this.cameras.main.zoom)
-    //   );
+    //에셋추가 모달 박스 생성, CSS 설정
+    const registModalBox = document.createElement("div");
+    registModalBox.style.borderImage = `url("/assets/images/pixelBorder.png") 25`;
+    registModalBox.style.width = "160px";
+    registModalBox.style.height = "fit-content";
+    registModalBox.className =
+      "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]";
 
-    // const textBox = this.add.image(0, 0, "pixelBox").setDisplaySize(50, 50);
+    //나무 목록 박스 생성, CSS 설정
+    const treeModalBox = document.createElement("div");
+    treeModalBox.style.borderImage = `url("/assets/images/pixelBorder.png") 25`;
+    treeModalBox.style.width = "200px";
+    treeModalBox.style.height = "fit-content";
+    treeModalBox.className =
+      "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]";
 
-    //DOM 요소 추가가 가능하다?!!??!? ///////////////////////////////////////////
+    //꽃 목록 박스 생성, CSS 설정(현재 나무 더미 들어가있음 수정  필요.)
+    const flowerModalBox = document.createElement("div");
+    flowerModalBox.style.borderImage = `url("/assets/images/pixelBorder.png") 25`;
+    flowerModalBox.style.width = "200px";
+    flowerModalBox.style.height = "fit-content";
+    flowerModalBox.className =
+      "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]";
 
-    const modalStyle = {
-      // "background-color": "white",
-      borderImage: `url("/assets/images/pixelBorder.png") 25`,
-      width: "250px",
-      height: "fit-content",
-    };
-
-    const modalBox = this.add
-      .dom(300, 200, "div", modalStyle)
-      .setDepth(3)
-      .setScale(0.25, 0.25);
-
-    modalBox.setClassName(
-      "text-black font-bitBit flex justify-center items-center border-[15px]"
-    );
-
+    //에셋(나무, 꽃) 추가 텍스트 생성, 이벤트 등록
     const textBox1 = document.createElement("div");
     textBox1.className =
-      "flex flex-col bg-white px-3 py-2 min-w-max font-bitBit text-[32px] text-center";
+      "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
     const treeRegistText = document.createTextNode("나무 심기");
     textBox1.appendChild(treeRegistText);
+    textBox1.addEventListener("click", () => {
+      this.scene.start("gardenEditScene");
+    });
 
     const textBox2 = document.createElement("div");
     textBox2.className =
-      "flex flex-col bg-white px-3 py-2 min-w-max font-bitBit text-[32px] text-center";
+      "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
     const flowerRegistText = document.createTextNode("꽃 심기");
     textBox2.appendChild(flowerRegistText);
+    textBox2.addEventListener("click", () => {
+      this.scene.start("gardenEditScene");
+    });
 
-    modalBox.node.appendChild(textBox1);
-    modalBox.node.appendChild(textBox2);
+    //나무, 꽃 목록 생성. 이벤트 등록
+    characters.forEach((tree) => {
+      let tmpTextBox = document.createElement("div");
+      tmpTextBox.className =
+        "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
+      tmpTextBox.appendChild(document.createTextNode(tree.id));
+      tmpTextBox.addEventListener("click", () => {
+        if (
+          (window.innerWidth / 2 >
+            (20 - tree.startPosition.x + 0.5) * 16 * this.cameras.main.zoom &&
+            window.innerWidth / 2) ||
+          window.innerWidth / 2 >
+            tree.startPosition.x + 0.5 * 16 * this.cameras.main.zoom
+        )
+          this.cameras.main.setScroll(
+            240 -
+              (240 * window.innerWidth) / 480 +
+              (tree.startPosition.x - 15) * 16,
+            this.cameras.main.scrollY
+          );
+
+        const nameTagStyle = {
+          borderImage: `url("/assets/images/pixelBorder.png") 25`,
+          width: "160px",
+          height: "fit-content",
+        };
+        const nameTagBox = this.add
+          .dom(
+            240 + (tree.startPosition.x - 15) * 16 - 4,
+            160 + (tree.startPosition.y - 10) * 16 + 34,
+
+            "div",
+            nameTagStyle
+          )
+          .setScale(0.25, 0.25)
+          .setOrigin(0, 0);
+
+        nameTagBox.setClassName(
+          "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]"
+        );
+
+        const nameTextBox = document.createElement("div");
+        nameTextBox.className =
+          "flex flex-col bg-white px-3 w-full font-bitBit text-[16px] text-center";
+        const nameText = document.createTextNode(tree.id);
+        nameTextBox.appendChild(nameText);
+        nameTagBox.node.appendChild(nameTextBox);
+        console.log(
+          this.cameras.main.scrollX + " " + this.cameras.main.scrollY
+        );
+
+        this.time.addEvent({
+          delay: 4000,
+          callback: function () {
+            nameTagBox.destroy();
+          },
+          callbackScope: this,
+          loop: false,
+        });
+      });
+      treeModalBox.appendChild(tmpTextBox);
+    });
+
+    characters.forEach((flower) => {
+      let tmpTextBox = document.createElement("div");
+      tmpTextBox.className =
+        "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
+      tmpTextBox.appendChild(document.createTextNode(flower.id));
+      tmpTextBox.addEventListener("click", () => {
+        this.cameras.main.startFollow(flower);
+        this.cameras.main.stopFollow;
+      });
+      flowerModalBox.appendChild(tmpTextBox);
+    });
+    registModalBox.appendChild(textBox1);
+    registModalBox.appendChild(textBox2);
 
     const footerStyle = {
-      // position: "absolute",
-      // bottom: "0px",
-      // left: `${1.5 * window.innerWidth + 20}px`,
       display: "flex",
       "justify-content": "space-between",
       width: `${window.innerWidth}px`,
-      // "background-color": "white",
     };
-    // this.cameras.main.setZoom(2.3);
 
     this.footer = this.add
       .dom(0, 0, "div", footerStyle)
@@ -188,7 +263,9 @@ export default class GardenScene extends Scene {
     } else {
       this.footer.setPosition(
         0,
-        130 + window.innerHeight / this.cameras.main.zoom / 2
+        160 -
+          60 / this.cameras.main.zoom +
+          window.innerHeight / this.cameras.main.zoom / 2
       );
       console.log(this.footer.x + " " + this.footer.y);
     }
@@ -203,72 +280,64 @@ export default class GardenScene extends Scene {
     this.plusButton.className = "w-full h-full";
     registMenuSet.appendChild(this.plusButton);
     this.footer.node.appendChild(registMenuSet);
+    registMenuSet.appendChild(registModalBox);
+    const onPlusButtonClick = () => {
+      if (registModalBox.style.display === "flex") {
+        registModalBox.style.display = "none";
+      } else {
+        registModalBox.style.display = "flex";
+        treeModalBox.style.display = "none";
+        flowerModalBox.style.display = "none";
+      }
+    };
 
-    // registMenuSet.appendChild(modalBox);
+    const onTreeButtonClick = () => {
+      if (treeModalBox.style.display === "flex") {
+        treeModalBox.style.display = "none";
+      } else {
+        treeModalBox.style.display = "flex";
+        registModalBox.style.display = "none";
+        flowerModalBox.style.display = "none";
+      }
+    };
+
+    const onFlowerButtonClick = () => {
+      if (flowerModalBox.style.display === "flex") {
+        flowerModalBox.style.display = "none";
+      } else {
+        flowerModalBox.style.display = "flex";
+        treeModalBox.style.display = "none";
+        registModalBox.style.display = "none";
+      }
+    };
+    this.plusButton.addEventListener("click", onPlusButtonClick);
 
     const treeMenuSet = document.createElement("div");
-    treeMenuSet.className = "flex flex-col-reverse gap-2 h-[40px] w-[40px]";
+    treeMenuSet.className =
+      "flex flex-col-reverse gap-2 h-[40px] w-[40px] items-end";
     this.treeButton = document.createElement("img");
     this.treeButton.src = "/assets/images/tree.svg";
     this.treeButton.className = "w-full h-full";
     treeMenuSet.appendChild(this.treeButton);
+    treeMenuSet.appendChild(treeModalBox);
 
     const flowerMenuSet = document.createElement("div");
-    flowerMenuSet.className = "flex flex-col-reverse gap-2 h-[40px] w-[40px]";
+    flowerMenuSet.className =
+      "flex flex-col-reverse gap-2 h-[40px] w-[40px] items-end";
     this.flowerButton = document.createElement("img");
     this.flowerButton.src = "/assets/images/flower.png";
     this.flowerButton.className = "w-full h-full";
     flowerMenuSet.appendChild(this.flowerButton);
+    flowerMenuSet.appendChild(flowerModalBox);
 
     const rightsideMenu = document.createElement("div");
     rightsideMenu.className = "flex gap-5";
     rightsideMenu.appendChild(flowerMenuSet);
     rightsideMenu.appendChild(treeMenuSet);
     this.footer.node.appendChild(rightsideMenu);
-    // const registModal = this.add.container(
-    //   250 - (window.innerWidth / 2 - 60) / this.cameras.main.zoom,
-    //   170 + (window.innerHeight / 2 - 180) / this.cameras.main.zoom
-    // );
-    // registModal.setDepth(3).setVisible(false);
 
-    // this.plusButton.setInteractive();
-    // this.plusButton.on("pointerdown", () => {
-    //   registModal.setVisible(!registModal.visible);
-    // });
-
-    // this.treeButton = this.add
-    //   .image(
-    //     250 + (window.innerWidth / 2 - 70) / this.cameras.main.zoom,
-    //     170 + (window.innerHeight / 2 - 80) / this.cameras.main.zoom,
-    //     "treeButton"
-    //   )
-    //   .setDepth(3)
-    //   .setScale(
-    //     5 / (16 * this.cameras.main.zoom),
-    //     5 / (16 * this.cameras.main.zoom)
-    //   );
-
-    // this.treeButton.setInteractive();
-    // this.treeButton.on("pointerdown", () => {
-    //   console.log("여깃어요!");
-    // });
-
-    // this.flowerButton = this.add
-    //   .image(
-    //     250 + (window.innerWidth / 2 - 130) / this.cameras.main.zoom,
-    //     170 + (window.innerHeight / 2 - 80) / this.cameras.main.zoom,
-    //     "flowerButton"
-    //   )
-    //   .setDepth(3)
-    //   .setScale(
-    //     5 / (16 * this.cameras.main.zoom),
-    //     5 / (16 * this.cameras.main.zoom)
-    //   );
-
-    // this.flowerButton.setInteractive();
-    // this.flowerButton.on("pointerdown", () => {
-    //   console.log("여깃어요!");
-    // });
+    this.treeButton.addEventListener("click", onTreeButtonClick);
+    this.flowerButton.addEventListener("click", onFlowerButtonClick);
 
     //드롭다운 추가/////////////////////////////////////////////////////
 
@@ -291,6 +360,29 @@ export default class GardenScene extends Scene {
 
   update() {
     //ui 버튼 뷰포트에 고정
+    if (window.innerHeight >= window.innerWidth) {
+      this.footer.setPosition(
+        240 -
+          window.innerWidth / this.cameras.main.zoom / 2 -
+          (240 - (240 * window.innerWidth) / 480) +
+          this.cameras.main.scrollX,
+        320 -
+          60 / this.cameras.main.zoom -
+          (160 - (160 * window.innerHeight) / 320) +
+          this.cameras.main.scrollY
+      );
+      // console.log(this.footer.x + " " + this.footer.y);
+    } else {
+      this.footer.setPosition(
+        -(240 - window.innerWidth / 2) + this.cameras.main.scrollX,
+        160 -
+          60 / this.cameras.main.zoom +
+          window.innerHeight / this.cameras.main.zoom / 2 -
+          (160 - window.innerHeight / 2) +
+          this.cameras.main.scrollY
+      );
+      // console.log(this.footer.x + " " + this.footer.y);
+    }
     // this.footer.setPosition(
     //   250 -
     //     (window.innerWidth / 2 - 10) / this.cameras.main.zoom -
