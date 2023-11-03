@@ -18,4 +18,5 @@ public class ResponseUserGardenDto {
     private int capacity;
     private int memberCnt;
     private long likes;
+    private String url;
 }

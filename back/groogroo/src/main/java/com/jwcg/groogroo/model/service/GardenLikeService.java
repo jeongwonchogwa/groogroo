@@ -204,6 +204,7 @@ public class GardenLikeService {
                     .capacity(garden.getCapacity())
                     .memberCnt(garden.getMemberCnt())
                     .likes(likes)
+                    .url(garden.getUrl())
                     .build();
 
             log.info(responseGardenRankingDto.toString());

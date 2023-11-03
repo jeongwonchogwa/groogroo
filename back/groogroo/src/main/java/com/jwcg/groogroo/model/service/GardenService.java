@@ -198,6 +198,7 @@ public class GardenService {
                         .capacity(garden.getCapacity())
                         .memberCnt(garden.getMemberCnt())
                         .likes(likes)
+                        .url(garden.getUrl())
                         .build();
                 log.info(responseUserGardenDto.toString());
                 returnData.add(responseUserGardenDto);
