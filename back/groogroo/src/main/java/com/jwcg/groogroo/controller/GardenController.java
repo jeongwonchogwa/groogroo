@@ -371,7 +371,7 @@ public class GardenController {
             @ApiResponse(responseCode = "200", description = "정원 가입 신청 성공"),
             @ApiResponse(responseCode = "500", description = "정원 가입 신청 실패 - 내부 서버 오류"),
     })
-    @PostMapping("/process/{gardenId}")
+    @PutMapping("/process/{gardenId}")
     public ResponseEntity<Map<String, Object>> joinGarden(@RequestHeader("Authorization") String token, @PathVariable long gardenId) {
         token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();

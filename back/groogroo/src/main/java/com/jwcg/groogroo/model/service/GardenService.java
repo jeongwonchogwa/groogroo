@@ -321,27 +321,28 @@ public class GardenService {
         notificationService.send(userId, notification);
 
         updateJoinState(userGarden, state);
-        log.info("정원 멤버 상태 {}로 변경 완료", joinState);
+        log.info("정원 멤버 상태 {}(으)로 변경 완료", joinState);
     }
 
     public void joinGarden(Long userId, long gardenId) {
         Garden garden = gardenRepository.findGardenById(gardenId);
-
+        User user = userRepository.findUserById(userId);
         // 인원 수 확인해서 정원 초과면 예외 발생
         if(garden.getCapacity()<=garden.getMemberCnt()){
             throw new CustomException(HttpStatus.FORBIDDEN, "정원 가입 실패 - 정원 초과");
         }
+        UserGarden userGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId);
 
-        UserGarden userGarden = UserGarden.builder()
+        UserGarden updatedUserGarden = UserGarden.builder()
+                .id(userGarden==null? null:userGarden.getId())
                 .gardenRole(GardenRole.MEMBER)
                 .joinState(JoinState.WAIT)
-                .user(userRepository.findUserById(userId))
                 .build();
 
-        userGarden.setGarden(garden);
+        updatedUserGarden.setGarden(garden);
+        updatedUserGarden.setUser(user);
 
-        userGardenRepository.save(userGarden);
-        gardenRepository.save(garden);
+        userGardenRepository.save(updatedUserGarden);
 
         // 알림 보내기
         // 정원의 관리자이상 권한 찾기
