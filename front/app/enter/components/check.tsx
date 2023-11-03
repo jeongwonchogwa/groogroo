@@ -84,7 +84,6 @@ const Check = () => {
 								src={`/assets/trees/tree[${selectedImage}].svg`}
 								alt="나무 이미지"
 								style={{
-									width: '192px',
 									height: '192px',
 									objectFit: 'cover',
 								}}
@@ -118,4 +117,3 @@ const Check = () => {
 ;}
 
 export default Check;
-``

@@ -67,7 +67,6 @@ const Freeset = () => {
 								src={`/assets/trees/tree[${currentImage}].svg`}
 								alt = "나무 이미지"
 								style ={{
-									width: '256px',
 									height: '256px',
 									objectFit: 'cover',
 								}} />
