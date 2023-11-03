@@ -36,9 +36,6 @@ public class Flower {
     @Column(name = "y")
     private int y;
 
-    @Column(name = "delete_date")
-    private LocalDate deleteDate;
-
     @Column(name = "create_time")
     private LocalDateTime createTime;
 

@@ -80,7 +80,7 @@ public class TreeService {
         List<ResponseFruitDto> fruits = new ArrayList<>();
 
         for (Fruit fruit : tree.getFruits()) {
-            // 삭제된 꽃이면 건너 뛰기
+            // 삭제된 열매면 건너 뛰기
             if(fruit.getDeleteDate() != null) continue;
 
             ResponseFruitDto now = ResponseFruitDto.builder()
@@ -128,7 +128,7 @@ public class TreeService {
 
             for (Fruit fruit : tree.getFruits()) {
 
-                // 삭제된 꽃이면 건너 뛰기
+                // 삭제된 열매면 건너 뛰기
                 if(fruit.getDeleteDate() != null) continue;
 
                 if (fruit.getWriterId() == userId){
