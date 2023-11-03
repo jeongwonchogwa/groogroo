@@ -1,13 +1,14 @@
-import Image from "next/image";
-import MessageContainer from "./components/MessageContainer";
+import CreateFruit from "./garden/[gardenId]/components/CreateFruit"
+import CreateFlower from "./garden/[gardenId]/components/CreateFlower"
 
-
-export default function Home() {
+const EneterPage = () => {
   return (
-    <div className="w-screen h-screen bg-background-pixel bg-cover">
-      <div className="flex w-full">
-        <div className="text-2xl">메인페이지</div>
+    <div className="w-full h-full">
+      <div className="mx-5 mb-8">
+        <CreateFlower />
       </div>
     </div>
   );
-}
+};
+
+export default EneterPage;
