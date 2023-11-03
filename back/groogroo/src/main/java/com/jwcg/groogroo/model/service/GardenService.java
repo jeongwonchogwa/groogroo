@@ -137,7 +137,7 @@ public class GardenService {
             if(treeGarden.getTree().getDeleteDate() != null) continue;
 
             ResponseTreePosDto responseTreePosDto = ResponseTreePosDto.builder()
-                    .id(treeGarden.getTree().getId())
+                    .id(treeGarden.getId())
                     .x(treeGarden.getX())
                     .y(treeGarden.getY())
                     .imageUrl(treeGarden.getImageUrl())
