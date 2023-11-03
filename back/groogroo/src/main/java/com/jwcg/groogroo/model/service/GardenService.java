@@ -1,8 +1,7 @@
 package com.jwcg.groogroo.model.service;
 
 import com.jwcg.groogroo.exception.CustomException;
-import com.jwcg.groogroo.model.dto.garden.ResponseGardenInfoDto;
-import com.jwcg.groogroo.model.dto.garden.ResponseUserGardenDto;
+import com.jwcg.groogroo.model.dto.garden.*;
 import com.jwcg.groogroo.model.dto.flower.ResponseFlowerPosDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseTreePosDto;
 import com.jwcg.groogroo.model.entity.*;
@@ -15,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +35,7 @@ public class GardenService {
     private final TreeGardenRepository treeGardenRepository;
     private final GardenLikeRepository gardenLikeRepository;
     private final JwtUtil jwtUtil;
+    private final FlowerRepository flowerRepository;
 
     public String makeURL() {
         StringBuffer URL = new StringBuffer();
@@ -387,6 +388,7 @@ public class GardenService {
 
     // joinState를 변환하는 메서드
     private void updateJoinState(UserGarden userGarden, JoinState joinState) {
+        Garden garden = userGarden.getGarden();
         UserGarden updatedUserGarden = UserGarden.builder()
                 .id(userGarden.getId())
                 .gardenRole(userGarden.getGardenRole())
@@ -406,7 +408,7 @@ public class GardenService {
                 cnt = -1;
                 
         }
-        Garden garden = userGarden.getGarden();
+
         Garden updatedGarden = Garden.builder()
                 .id(garden.getId())
                 .name(garden.getName())
@@ -417,9 +419,62 @@ public class GardenService {
                 .treeGardens(garden.getTreeGardens())
                 .build();
 
-        userGarden.setGarden(updatedGarden);
+        updatedUserGarden.setGarden(updatedGarden);
 
         gardenRepository.save(updatedGarden);
         userGardenRepository.save(updatedUserGarden);
+    }
+
+    // treeGarden 생성
+    public void createTreeGarden(Long userId, Long gardenId, String imageUrl, int x, int y) {
+        Garden garden = gardenRepository.findGardenById(gardenId);
+        User user = userRepository.findUserById(userId);
+
+        TreeGarden treeGarden = TreeGarden.builder()
+                .x(x)
+                .y(y)
+                .imageUrl(imageUrl)
+                .build();
+
+        treeGarden.setGarden(garden);
+        treeGarden.setTree(user.getTree());
+        log.info("treeGarden 생성 성공" + treeGarden.getGarden().toString());
+
+        treeGardenRepository.save(treeGarden);
+    }
+
+    // 꽃 & 나무 위치 수정
+    @Transactional
+    public void updateFlowersAndTrees(RequestReplaceFlowersAndTreesDto request) {
+        List<FlowerDto> flowers = request.getFlowers();
+        List<TreeDto> trees = request.getTrees();
+
+        for(FlowerDto flowerDto : flowers){
+            Flower flower = flowerRepository.findFlowerById(flowerDto.getId());
+            Flower updatedFlower = Flower.builder()
+                    .id(flower.getId())
+                    .content(flower.getContent())
+                    .imageUrl(flower.getImageUrl())
+                    .writerNickname(flower.getWriterNickname())
+                    .x(flowerDto.getX())
+                    .y(flowerDto.getY())
+                    .createTime(flower.getCreateTime())
+                    .build();
+            updatedFlower.setUserGarden(flower.getUserGarden());
+            flowerRepository.save(updatedFlower);
+        }
+
+        for(TreeDto treeDto : trees){
+            TreeGarden treeGarden = treeGardenRepository.findTreeGardenById(treeDto.getId());
+            TreeGarden updatedTreeGarden = TreeGarden.builder()
+                    .id(treeGarden.getId())
+                    .imageUrl(treeGarden.getImageUrl())
+                    .x(treeDto.getX())
+                    .y(treeDto.getY())
+                    .build();
+            updatedTreeGarden.setTree(treeGarden.getTree());
+            updatedTreeGarden.setGarden(treeGarden.getGarden());
+            treeGardenRepository.save(updatedTreeGarden);
+        }
     }
 }

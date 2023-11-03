@@ -4,6 +4,7 @@ import com.jwcg.groogroo.exception.CustomException;
 import com.jwcg.groogroo.model.dto.garden.*;
 import com.jwcg.groogroo.model.service.GardenLikeService;
 import com.jwcg.groogroo.model.service.GardenService;
+import com.jwcg.groogroo.model.service.S3UploadService;
 import com.jwcg.groogroo.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,6 +34,7 @@ public class GardenController {
     private final JwtUtil jwtUtil;
     private final GardenService gardenService;
     private final GardenLikeService gardenLikeService;
+    private final S3UploadService s3UploadService;
 
     @Operation(summary = "정원 생성", description = "정원을 새로 생성하는 API")
     @ApiResponses({
@@ -493,6 +495,70 @@ public class GardenController {
             log.info("정원 탈퇴 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "정원 탈퇴 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "정원에 나무 생성 및 배치", description = "정원에 나무 생성하고 배치하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정원에 나무 생성 및 배치 성공"),
+            @ApiResponse(responseCode = "500", description = "정원에 나무 생성 및 배치 실패 - 내부 서버 오류"),
+    })
+    @PostMapping("/tree")
+    public ResponseEntity<Map<String, Object>> plantTree(@RequestHeader("Authorization") String token, @RequestBody RequestCreateTreeGardenDto request) {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            token = token.split(" ")[1];
+            Long userId = jwtUtil.getId(token);
+            
+            if(!request.isPreset()){
+                // 프리셋이 아니면 이미지 S3에 저장하기
+                s3UploadService.upload(request.getImageUrl(), userId.toString()+"groogroo"+request.getGardenId().toString(), "tree");
+                log.info("이미지 S3에 저장 성공");
+            }
+            
+            log.info("정원에 나무 생성 및 배치");
+            gardenService.createTreeGarden(userId, request.getGardenId(), request.getImageUrl(), request.getX(), request.getY());
+            log.info("정원에 나무 생성 및 배치 성공");
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "정원에 나무 생성 및 배치 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            log.info("정원에 나무 생성 및 배치 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "정원에 나무 생성 및 배치 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "정꾸!(정원 꾸미기)", description = "정원의 꽃과 나무 제배치하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "꽃 & 나무 재배치 성공"),
+            @ApiResponse(responseCode = "500", description = "꽃 & 나무 재배치 실패 - 내부 서버 오류"),
+    })
+    @PostMapping("/decoration")
+    public ResponseEntity<Map<String, Object>> replaceFlowersAndTrees(@RequestHeader("Authorization") String token, @RequestBody RequestReplaceFlowersAndTreesDto request) {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            token = token.split(" ")[1];
+            Long userId = jwtUtil.getId(token);
+
+            log.info("꽃 & 나무 재배치");
+            gardenService.updateFlowersAndTrees(request);
+            log.info("꽃 & 나무 재배치 성공");
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "꽃 & 나무 재배치 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            log.info("꽃 & 나무 재배치 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "꽃 & 나무 재배치 실패");
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }

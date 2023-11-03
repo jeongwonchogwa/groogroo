@@ -230,5 +230,12 @@
   - treeGarden 도 생성하지 않음
   - TO DO: 정원 꾸미기 API 만들어야 함
 
+- 23.11.02 KJW
+  - 정원에 나무 생성 및 배치 API 구현
+  - 정원 꾸미기(꽃, 나무 위치 변경) API 구현
+    - TreeDto, FlowerDto, RequestReplaceFlowersAndTreeDto 추가
+    - TreeDto와 FlowerDto의 리스트 받아와서 x,y 좌표 업데이트
+    - 트랜잭셔널 어노테이션 붙였는데 쿼리가 한번에 나가는건지 잘 모르겠음 더 효율적인 방법 고민 필요!!
+
 - 23.11.03 CKH
   - 소속 정원 목록 반환 시, 좋아요 순 정원 목록 반환 시 url 포함시키게 수정
