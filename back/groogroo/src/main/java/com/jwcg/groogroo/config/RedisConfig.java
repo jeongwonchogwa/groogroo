@@ -28,17 +28,15 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int port;
 
-    //TODO: Redis 서버에 올리면 주석 풀기!!!
-//     @Value("${spring.data.redis.password}")
-//     private String password;
+    @Value("${spring.data.redis.password}")
+    private String password;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory();
         lettuceConnectionFactory.setHostName(host);
         lettuceConnectionFactory.setPort(port);
-        //TODO: Redis 서버에 올리면 주석 풀기
-//        lettuceConnectionFactory.setPassword(password);
+        lettuceConnectionFactory.setPassword(password);
         return lettuceConnectionFactory;
     }
 

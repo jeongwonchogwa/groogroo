@@ -244,3 +244,14 @@
     - treeUserPresetId : 0이면 GrooGroo에서 기본적으로 제공하는 프리셋 / 그 외 숫자면 유저가 추가한 프리셋
   - SSE 알림 관련 Notification 엔티티 변경
     - create time, name 추가 / Notification Type의 GARDEN -> GARDEN_REQUEST, GARDEN_RESPONSE 로 세분화
+
+- 23.11.03 KJW
+  - 정원에 나무 존재 여부 확인하는 API 추가
+  - 정원 가입 처리 API 를 정원 멤버 상태 변경 API로 변경
+    - 가입 처리와 추방 모두 이 API로 가능
+    - MASTER는 가입 처리 & 추방 가능 , ADMIN은 가입 처리만 가능
+  - flower entity deleteDate 삭제
+  - 삭제된 꽃인지 검사하는 부분 삭제
+  - 가입 신청 API Post에서 Put으로 변경
+    - 기존 멤버면 State를 WAIT으로 변경
+    - 신규 멤버면 새로운 userGarden 저장

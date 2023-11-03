@@ -371,19 +371,19 @@ public class GardenController {
             @ApiResponse(responseCode = "200", description = "정원 가입 신청 성공"),
             @ApiResponse(responseCode = "500", description = "정원 가입 신청 실패 - 내부 서버 오류"),
     })
-    @PostMapping("/process")
-    public ResponseEntity<Map<String, Object>> joinGarden(@RequestHeader("Authorization") String token, @RequestBody long gardenId) {
+    @PutMapping("/process/{gardenId}")
+    public ResponseEntity<Map<String, Object>> joinGarden(@RequestHeader("Authorization") String token, @PathVariable long gardenId) {
         token = token.split(" ")[1];
         Map<String,Object> response = new HashMap<>();
 
         try {
-            log.info("정원 가입");
+            log.info("정원 가입 신청");
             Long userId = jwtUtil.getId(token);
             gardenService.joinGarden(userId, gardenId);
 
-            log.info("정원 가입 성공");
+            log.info("정원 가입 신청 성공");
             response.put("httpStatus", SUCCESS);
-            response.put("message", "정원 가입 성공");
+            response.put("message", "정원 가입 신청 성공");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (CustomException e) {
@@ -393,31 +393,31 @@ public class GardenController {
 
             return new ResponseEntity<>(response, e.getHttpStatus());
         } catch (Exception e) {
-            log.info("정원 가입 실패");
+            log.info("정원 가입 신청 실패");
             response.put("httpStatus", FAIL);
-            response.put("message", "정원 가입 실패");
+            response.put("message", "정원 가입 신청 실패");
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @Operation(summary = "정원 가입 처리", description = "가입 신청에 대해 승인 / 거절 하는 API")
+    @Operation(summary = "정원 멤버 상태 변경", description = "가입 신청에 대해 승인 / 거절, 멤버 추방하는 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "정원 가입 처리 성공"),
-            @ApiResponse(responseCode = "500", description = "정원 가입 처리 실패 - 내부 서버 오류"),
+            @ApiResponse(responseCode = "200", description = "정원 멤버 상태 변경 성공"),
+            @ApiResponse(responseCode = "500", description = "정원 멤버 상태 변경 실패 - 권한 없음"),
+            @ApiResponse(responseCode = "500", description = "정원 멤버 상태 변경 실패 - 내부 서버 오류"),
     })
     @PatchMapping("/process")
     public ResponseEntity<Map<String, Object>> handleJoin(@RequestHeader("Authorization") String token, @RequestBody RequestUpdateJoinStateDto request) {
         Map<String,Object> response = new HashMap<>();
 
         try {
-            log.info("정원 가입 처리");
+            log.info("정원 멤버 상태 변경");
 
             gardenService.updateOthersJoinState(token, request.getUserId(), request.getGardenId(), request.getJoinState());
 
-            log.info("정원 가입 처리 성공");
             response.put("httpStatus", SUCCESS);
-            response.put("message", "정원 가입 처리 성공");
+            response.put("message", "정원 멤버 상태 변경 성공");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (CustomException e) {
@@ -427,9 +427,9 @@ public class GardenController {
 
             return new ResponseEntity<>(response, e.getHttpStatus());
         } catch (Exception e) {
-            log.info("정원 가입 처리 실패");
+            log.info("정원 멤버 상태 변경 실패");
             response.put("httpStatus", FAIL);
-            response.put("message", "정원 가입 처리 실패");
+            response.put("message", "정원 멤버 상태 변경 실패");
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -500,10 +500,10 @@ public class GardenController {
         }
     }
 
-    @Operation(summary = "정원에 나무 생성 및 배치", description = "정원에 나무 생성하고 배치하는 API")
+    @Operation(summary = "정원용 나무 이미지 생성 및 배치", description = "정원용 나무 이미지를 생성하고 배치하는 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "정원에 나무 생성 및 배치 성공"),
-            @ApiResponse(responseCode = "500", description = "정원에 나무 생성 및 배치 실패 - 내부 서버 오류"),
+            @ApiResponse(responseCode = "200", description = "정원용 나무 이미지 생성 및 배치 성공"),
+            @ApiResponse(responseCode = "500", description = "정원용 나무 이미지 생성 및 배치 실패 - 내부 서버 오류"),
     })
     @PostMapping("/tree")
     public ResponseEntity<Map<String, Object>> plantTree(@RequestHeader("Authorization") String token, @RequestBody RequestCreateTreeGardenDto request) {
@@ -512,24 +512,24 @@ public class GardenController {
         try {
             token = token.split(" ")[1];
             Long userId = jwtUtil.getId(token);
-            
+
             if(!request.isPreset()){
                 // 프리셋이 아니면 이미지 S3에 저장하기
                 s3UploadService.upload(request.getImageUrl(), userId.toString()+"groogroo"+request.getGardenId().toString(), "tree");
                 log.info("이미지 S3에 저장 성공");
             }
             
-            log.info("정원에 나무 생성 및 배치");
+            log.info("정원용 나무 이미지 생성 및 배치");
             gardenService.createTreeGarden(userId, request.getGardenId(), request.getImageUrl(), request.getX(), request.getY());
-            log.info("정원에 나무 생성 및 배치 성공");
+            log.info("정원용 나무 이미지 생성 및 배치 성공");
             response.put("httpStatus", SUCCESS);
-            response.put("message", "정원에 나무 생성 및 배치 성공");
+            response.put("message", "정원용 나무 이미지 생성 및 배치 성공");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            log.info("정원에 나무 생성 및 배치 실패");
+            log.info("정원용 나무 이미지 생성 및 배치 실패");
             response.put("httpStatus", FAIL);
-            response.put("message", "정원에 나무 생성 및 배치 실패");
+            response.put("message", "정원용 나무 이미지 생성 및 배치 실패");
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -545,9 +545,6 @@ public class GardenController {
         Map<String,Object> response = new HashMap<>();
 
         try {
-            token = token.split(" ")[1];
-            Long userId = jwtUtil.getId(token);
-
             log.info("꽃 & 나무 재배치");
             gardenService.updateFlowersAndTrees(request);
             log.info("꽃 & 나무 재배치 성공");
@@ -559,6 +556,36 @@ public class GardenController {
             log.info("꽃 & 나무 재배치 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "꽃 & 나무 재배치 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "정원 나무 존재 여부 확인", description = "정원에 나무가 심어져 있는지 확인하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정원 나무 존재 여부 확인 성공"),
+            @ApiResponse(responseCode = "500", description = "정원 나무 존재 여부 확인 실패 - 내부 서버 오류"),
+    })
+    @GetMapping("/tree/{gardenId}")
+    public ResponseEntity<Map<String, Object>> plantTree(@RequestHeader("Authorization") String token, @PathVariable Long gardenId) {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            token = token.split(" ")[1];
+            Long userId = jwtUtil.getId(token);
+
+            log.info("정원 나무 존재 여부 확인");
+            boolean isExist = gardenService.checkTreeGarden(userId, gardenId);
+            log.info("정원 나무 존재 여부 확인 성공");
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "정원 나무 존재 여부 확인 성공");
+            response.put("isExist", isExist);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            log.info("정원 나무 존재 여부 확인 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "정원 나무 존재 여부 확인 실패");
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }

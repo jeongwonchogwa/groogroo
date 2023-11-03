@@ -154,9 +154,6 @@ public class GardenService {
             // 삭제된 userGarden에 대해 건너 뛰기
             if(userGarden.getDeleteDate() != null) continue;
             for (Flower flower : userGarden.getFlowers()) {
-                // 삭제된 꽃이면 건너 뛰기
-                if(flower.getDeleteDate() != null) continue;
-
                 ResponseFlowerPosDto responseFlowerPosDto = ResponseFlowerPosDto.builder()
                         .id(flower.getId())
                         .x(flower.getX())
@@ -283,11 +280,19 @@ public class GardenService {
 
         // ADMIN계정이 아닌 일반 USER 계정인 경우 gardenRole 확인하기
         if(userRole.equals("USER")){
+            log.info("권한 확인");
             GardenRole gardenRole = userGardenRepository.findUserGardenByUserIdAndGardenId(id, gardenId).getGardenRole();
-            // GardenRole이 MASTER나 ADMIN이어야 joinState 변경 가능
+
+            // MEMBER가 다른 사람의 state 변경하는 경우 예외 처리
             if(gardenRole == GardenRole.MEMBER){
                 throw new CustomException(HttpStatus.FORBIDDEN, "JoinState 변경 실패 - 권한 없음");
             }
+
+            // 정원 추방은 MASTER만 가능! ADMIN이 추방하는 경우 예외 처리
+            if(gardenRole == GardenRole.ADMIN && joinState.equals("KICK")){
+                throw new CustomException(HttpStatus.FORBIDDEN, "JoinState 변경 실패 - 권한 없음");
+            }
+            log.info("멤버 상태 변경 권한 있음");
         }
 
         UserGarden userGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId);
@@ -316,26 +321,28 @@ public class GardenService {
         notificationService.send(userId, notification);
 
         updateJoinState(userGarden, state);
+        log.info("정원 멤버 상태 {}(으)로 변경 완료", joinState);
     }
 
     public void joinGarden(Long userId, long gardenId) {
         Garden garden = gardenRepository.findGardenById(gardenId);
-
+        User user = userRepository.findUserById(userId);
         // 인원 수 확인해서 정원 초과면 예외 발생
         if(garden.getCapacity()<=garden.getMemberCnt()){
             throw new CustomException(HttpStatus.FORBIDDEN, "정원 가입 실패 - 정원 초과");
         }
+        UserGarden userGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId);
 
-        UserGarden userGarden = UserGarden.builder()
+        UserGarden updatedUserGarden = UserGarden.builder()
+                .id(userGarden==null? null:userGarden.getId())
                 .gardenRole(GardenRole.MEMBER)
                 .joinState(JoinState.WAIT)
-                .user(userRepository.findUserById(userId))
                 .build();
 
-        userGarden.setGarden(garden);
+        updatedUserGarden.setGarden(garden);
+        updatedUserGarden.setUser(user);
 
-        userGardenRepository.save(userGarden);
-        gardenRepository.save(garden);
+        userGardenRepository.save(updatedUserGarden);
 
         // 알림 보내기
         // 정원의 관리자이상 권한 찾기
@@ -479,5 +486,11 @@ public class GardenService {
             updatedTreeGarden.setGarden(treeGarden.getGarden());
             treeGardenRepository.save(updatedTreeGarden);
         }
+    }
+
+    // 정원에 나무가 존재하는지 확인
+    public boolean checkTreeGarden(Long userId, Long gardenId) {
+        Tree tree = userRepository.findUserById(userId).getTree();
+        return treeGardenRepository.existsByTreeIdAndGardenId(tree.getId(), gardenId);
     }
 }
