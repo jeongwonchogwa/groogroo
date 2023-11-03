@@ -4,6 +4,7 @@ import com.jwcg.groogroo.model.dto.fruit.ResponseFruitDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseSimpleTreeDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseSimpleTreeGardenDto;
 import com.jwcg.groogroo.model.dto.tree.ResponseTreeDto;
+import com.jwcg.groogroo.model.dto.tree.ResponseTreePresetDto;
 import com.jwcg.groogroo.model.entity.*;
 import com.jwcg.groogroo.repository.*;
 import lombok.AllArgsConstructor;
@@ -174,21 +175,30 @@ public class TreeService {
 
 
     @Transactional(readOnly = true)
-    public List<Preset> getTreePreset(long userId) {
+    public List<ResponseTreePresetDto> getTreePreset(long userId) {
 
         List<Preset> presets = presetRepository.findAllByContentType(ContentType.TREE);
         List<TreeUserPreset> treeUserPresets = treeUserPresetRepository.findAllByUserId(userId);
+        List<ResponseTreePresetDto> returnData = new ArrayList<>();
+
+        for (Preset preset : presets) {
+            ResponseTreePresetDto responseTreePresetDto = ResponseTreePresetDto.builder()
+                    .imageUrl(preset.getImageUrl())
+                    .build();
+
+            returnData.add(responseTreePresetDto);
+        }
 
         for (TreeUserPreset treeUserPreset : treeUserPresets) {
-            Preset preset = Preset.builder()
-                    .contentType(ContentType.TREE)
+            ResponseTreePresetDto responseTreePresetDto = ResponseTreePresetDto.builder()
+                    .treeUserPresetId(treeUserPreset.getId())
                     .imageUrl(treeUserPreset.getImageUrl())
                     .build();
 
-            presets.add(preset);
+            returnData.add(responseTreePresetDto);
         }
 
-        return presets;
+        return returnData;
     }
 
     public void deleteTreePreset(long treeuserPresetId){

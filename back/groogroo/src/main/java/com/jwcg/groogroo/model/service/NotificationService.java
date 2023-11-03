@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,16 +80,18 @@ public class NotificationService {
         }
     }
 
-    public Notification makeNotification(Long receiverId, Long gardenId, Long contentId, String content, NotificationType notificationType) {
+    public Notification makeNotification(Long receiverId, Long gardenId, Long contentId, String content, NotificationType notificationType, String name) {
         User receiver = userRepository.findUserById(receiverId);
 
         Notification notification = Notification.builder()
+                .name(name)
                 .contentId(contentId)
                 .gardenId(gardenId)
                 .content(content)
                 .notificationType(notificationType)
                 .receiver(receiver)
                 .isRead(false)
+                .createTime(LocalDateTime.now())
                 .build();
 
         return notificationRepository.save(notification);

@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Entity
@@ -24,6 +25,9 @@ public class Notification{
     @Column(name = "notification_id")
     private Long id;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(nullable = false, name = "content")
     private String content;
 
@@ -35,6 +39,9 @@ public class Notification{
 
     @Column(nullable = false, name = "is_read")
     private boolean isRead;
+
+    @Column(name = "create_time")
+    private LocalDateTime createTime;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

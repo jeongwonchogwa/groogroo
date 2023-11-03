@@ -240,3 +240,7 @@
 - 23.11.03 CKH
   - 소속 정원 목록 반환 시, 좋아요 순 정원 목록 반환 시 url 포함시키게 수정
   - 정원 상세보기에서 treeId가 아닌 treeGardenId 반환하게 수정
+  - 나무 프리셋 조회 시 반환 값 추가
+    - treeUserPresetId : 0이면 GrooGroo에서 기본적으로 제공하는 프리셋 / 그 외 숫자면 유저가 추가한 프리셋
+  - SSE 알림 관련 Notification 엔티티 변경
+    - create time, name 추가 / Notification Type의 GARDEN -> GARDEN_REQUEST, GARDEN_RESPONSE 로 세분화

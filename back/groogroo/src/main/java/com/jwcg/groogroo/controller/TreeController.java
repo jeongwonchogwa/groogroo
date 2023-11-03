@@ -252,16 +252,7 @@ public class TreeController {
         try {
             log.info("Tree Controller - 나무 프리셋 조회");
             long userId = jwtUtil.getId(token);
-            List<Preset> presets = treeService.getTreePreset(userId);
-            List<ResponseTreePresetDto> returnData = new ArrayList<>();
-
-            for (Preset preset : presets) {
-                ResponseTreePresetDto responseTreePresetDto = ResponseTreePresetDto.builder()
-                        .imageUrl(preset.getImageUrl())
-                        .build();
-
-                returnData.add(responseTreePresetDto);
-            }
+            List<ResponseTreePresetDto> returnData = treeService.getTreePreset(userId);
 
             response.put("presets", returnData);
             response.put("httpStatus", SUCCESS);

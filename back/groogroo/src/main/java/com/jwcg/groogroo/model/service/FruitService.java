@@ -48,7 +48,7 @@ public class FruitService {
 
         String msg = "나의 나무에 열매가 달렸어요. 확인 해보세요.";
         long receiverId = tree.getUser().getId();
-        Notification notification = notificationService.makeNotification(receiverId, null, treeId, msg, NotificationType.FRUIT);
+        Notification notification = notificationService.makeNotification(receiverId, null, treeId, msg, NotificationType.FRUIT, tree.getName());
         notificationService.send(receiverId, notification);
 
     }

@@ -25,6 +25,7 @@ public class FlowerService {
     private final UserGardenRepository userGardenRepository;
     private final FlowerRepository flowerRepository;
     private final PresetRepository presetRepository;
+    private final GardenRepository gardenRepository;
 
 
     public void makeFlower(long userId, long gardenId, String writerNickname, String imageUrl, String content, int x, int y ){
@@ -50,10 +51,10 @@ public class FlowerService {
         members.removeIf(member -> member.getUser().getId() == userId);
 
         String msg = "정원에 새로운 꽃이 심어졌습니다. 확인 해보세요.";
-
+        Garden garden = gardenRepository.findGardenById(gardenId);
         for (UserGarden member : members) {
             long receiverId = member.getUser().getId();
-            Notification notification = notificationService.makeNotification(receiverId, gardenId, flower.getId(), msg, NotificationType.FLOWER);
+            Notification notification = notificationService.makeNotification(receiverId, gardenId, flower.getId(), msg, NotificationType.FLOWER, garden.getName());
             notificationService.send(member.getId(), notification);
         }
     }

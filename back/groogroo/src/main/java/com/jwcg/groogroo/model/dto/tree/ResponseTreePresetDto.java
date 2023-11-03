@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseTreePresetDto {
-
+    private long treeUserPresetId;
     private String imageUrl;
 }

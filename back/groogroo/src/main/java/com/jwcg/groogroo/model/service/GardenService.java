@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -28,6 +29,7 @@ public class GardenService {
     private final int PAGESIZE = 10;
 
     private final NotificationService notificationService;
+    private final GardenLikeService gardenLikeService;
 
     private final GardenRepository gardenRepository;
     private final UserRepository userRepository;
@@ -118,12 +120,11 @@ public class GardenService {
         List<TreeGarden> treeInfo = garden.getTreeGardens();
         List<UserGarden> flowerInfo = garden.getUserGardens();
 
-
         ResponseGardenInfoDto responseGardenInfoDto = ResponseGardenInfoDto.builder()
                 .gardenId(gardenId)
                 .name(garden.getName())
                 .description(garden.getDescription())
-                .likes(gardenLikeRepository.countByGardenId(gardenId))
+                .likes(gardenLikeService.getGardenLikes(gardenId))
                 .capacity(garden.getCapacity())
                 .memberCnt(garden.getMemberCnt())
                 .state(userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId).getJoinState().toString())
@@ -309,7 +310,9 @@ public class GardenService {
                 throw new CustomException(HttpStatus.BAD_REQUEST, "잘못된 가입 처리 요청입니다.");
         }
         // 알림 발송
-        Notification notification = notificationService.makeNotification(userId, gardenId, gardenId, content, NotificationType.GARDEN);
+        Garden garden = gardenRepository.findGardenById(gardenId);
+
+        Notification notification = notificationService.makeNotification(userId, gardenId, gardenId, content, NotificationType.GARDEN_RESPONSE, garden.getName());
         notificationService.send(userId, notification);
 
         updateJoinState(userGarden, state);
@@ -342,7 +345,7 @@ public class GardenService {
         for (UserGarden admin : admins) {
             long receiverId = admin.getUser().getId();
             String content = "정원에 가입 신청이 왔어요. 확인 해주세요.";
-            Notification joinNotification = notificationService.makeNotification(receiverId, gardenId, gardenId, content, NotificationType.GARDEN);
+            Notification joinNotification = notificationService.makeNotification(receiverId, gardenId, gardenId, content, NotificationType.GARDEN_REQUEST, garden.getName());
             notificationService.send(receiverId, joinNotification);
         }
     }

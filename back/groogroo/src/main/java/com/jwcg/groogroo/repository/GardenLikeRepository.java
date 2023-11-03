@@ -21,7 +21,7 @@ public interface GardenLikeRepository extends CrudRepository<GardenLike, String>
 
     List<GardenLike> findAllByGardenId(long gardenId);
 
-    @Query("SELECT COUNT(*) FROM garden_like gl WHERE gl.garden_id = :gardenId")
+    @Query("SELECT COUNT(gl) FROM GardenLike gl WHERE gl.gardenId = :gardenId")
     Long countByGardenId(@Param("gardenId") long gardenId);
 
     List<GardenLike> findAll();
