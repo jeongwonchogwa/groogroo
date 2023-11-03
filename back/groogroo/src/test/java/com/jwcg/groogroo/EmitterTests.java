@@ -45,7 +45,7 @@ public class EmitterTests {
         Long memberId = 1L;
         String eventCacheId =  memberId + "_" + System.currentTimeMillis();
         Notification notification = Notification.builder()
-                .notificationType(NotificationType.GARDEN)
+                .notificationType(NotificationType.GARDEN_REQUEST)
                 .content("정원 가입 신청이 왔습니다.")
                 .receiver(userRepository.findUserById(memberId))
                 .gardenId(1L)
@@ -89,7 +89,7 @@ public class EmitterTests {
         String eventCacheId1 =  memberId + "_" + System.currentTimeMillis();
 
         Notification notification1 = Notification.builder()
-                .notificationType(NotificationType.GARDEN)
+                .notificationType(NotificationType.GARDEN_REQUEST)
                 .content("정원 가입 신청이 왔습니다. 1번")
                 .receiver(userRepository.findUserById(memberId))
                 .gardenId(1L)
@@ -103,7 +103,7 @@ public class EmitterTests {
         String eventCacheId2 =  memberId + "_" + System.currentTimeMillis();
 
         Notification notification2 = Notification.builder()
-                .notificationType(NotificationType.GARDEN)
+                .notificationType(NotificationType.GARDEN_REQUEST)
                 .content("정원 가입 신청이 왔습니다. 2번")
                 .receiver(userRepository.findUserById(memberId))
                 .gardenId(1L)
@@ -116,7 +116,7 @@ public class EmitterTests {
         String eventCacheId3 =  memberId + "_" + System.currentTimeMillis();
 
         Notification notification3 = Notification.builder()
-                .notificationType(NotificationType.GARDEN)
+                .notificationType(NotificationType.GARDEN_REQUEST)
                 .content("정원 가입 신청이 왔습니다. 2번")
                 .receiver(userRepository.findUserById(memberId))
                 .gardenId(1L)
@@ -174,7 +174,7 @@ public class EmitterTests {
         Long memberId = 1L;
         String eventCacheId1 =  memberId + "_" + System.currentTimeMillis();
         Notification notification1 = Notification.builder()
-                .notificationType(NotificationType.GARDEN)
+                .notificationType(NotificationType.GARDEN_REQUEST)
                 .content("정원 가입 신청이 왔습니다. 1번")
                 .receiver(userRepository.findUserById(memberId))
                 .gardenId(1L)
@@ -186,7 +186,7 @@ public class EmitterTests {
         Thread.sleep(100);
         String eventCacheId2 =  memberId + "_" + System.currentTimeMillis();
         Notification notification2 = Notification.builder()
-                .notificationType(NotificationType.GARDEN)
+                .notificationType(NotificationType.GARDEN_REQUEST)
                 .content("정원 가입 신청이 왔습니다. 2번")
                 .receiver(userRepository.findUserById(memberId))
                 .gardenId(1L)
