@@ -25,8 +25,8 @@ const Freeset = () => {
 	const router = useRouter();
 
 	const handlePickButtonClick = () => {
-    router.push('/enter/check');
-  };
+		router.push(`/enter/check?selectedImage=${currentImage}`);
+	};
 
   return (
     <div

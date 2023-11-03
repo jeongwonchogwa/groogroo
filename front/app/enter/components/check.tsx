@@ -4,12 +4,14 @@ import Button from "../../components/Button";
 import NameInput from "../../components/NameInput";
 import Frame from "../../components/Frame";
 
-import React, { useState, ChangeEvent } from 'react';
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect, ChangeEvent } from 'react';
+import { useRouter, useSearchParams } from "next/navigation";
 
 const Check = () => {
 	const router = useRouter();
 
+	const search = useSearchParams();
+	const selectedImage = search?.get("selectedImage")
 
 	const [inputValue, setInputValue] = useState('');
   const [message, setMessage] = useState('닉네임은 12글자까지 가능합니다');
@@ -78,7 +80,15 @@ const Check = () => {
 						<div className="w-[290px] flex flex-col">
 							<div className="w-[290px] h-[5px] bg-black"></div>
 							<div className="w-[290px] h-[290px] flex items-center justify-center bg-white">
-								{/* 이미지 넣기 */}
+							<img
+								src={`/assets/trees/tree[${selectedImage}].svg`}
+								alt="나무 이미지"
+								style={{
+									width: '192px',
+									height: '192px',
+									objectFit: 'cover',
+								}}
+							/>
 							</div>
 							<div className="w-[290px] h-[5px] bg-black"></div>
 						</div>
