@@ -127,6 +127,8 @@ public class NotificationService {
                 .isRead(notification.isRead())
                 .type(notification.getNotificationType().toString())
                 .content(notification.getContent())
+                .name(notification.getName())
+                .createTime(notification.getCreateTime())
                 .build();
     }
 
