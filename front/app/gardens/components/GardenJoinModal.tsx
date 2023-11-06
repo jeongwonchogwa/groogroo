@@ -1,5 +1,6 @@
 "use client";
 
+// 이것도 필요없어.
 import Button from "@/app/components/Button";
 import PixelCard from "@/app/components/PixelCard";
 import { useState } from "react";

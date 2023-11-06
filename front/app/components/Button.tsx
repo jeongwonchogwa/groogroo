@@ -1,13 +1,9 @@
 interface ButtonProps {
-  color:
-    | "default"
-    | "white"
-    | "primary"
-    | "secondary"
-    | "secondary-container"
-    | "error";
+  color: "default" | "white" | "primary" | "secondary" | "secondary-container" | "error";
   label: string;
   onClick?: () => void;
+  // onClickText를 넣는게 맞나?
+  onClickText?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   active?: boolean;
 }
@@ -30,22 +26,13 @@ const buttonNotActiveConfig = {
   default: `bg-text-sub border-b-4 border-r-4 border-[#737373]`,
   white: "bg-background border-b-4 border-r-4 border-background-container",
   primary: "bg-primary border-b-4 border-r-4 border-[#225d36]",
-  secondary:
-    "bg-point-orange-container border-b-4 border-r-4 border-point-orange",
+  secondary: "bg-point-orange-container border-b-4 border-r-4 border-point-orange",
   "secondary-container": "bg-[#FFA107] border-b-4 border-r-4 border-[#E08E07]",
   error: "bg-error border-b-4 border-r-4 border-[#9b2f14]",
 };
 
-const Button = ({
-  color,
-  label,
-  onClick,
-  disabled,
-  active = true,
-}: ButtonProps) => {
-  const buttonConfig = active
-    ? buttonActiveConfig[color]
-    : buttonNotActiveConfig[color];
+const Button = ({ color, label, onClick, onClickText, disabled, active = true }: ButtonProps) => {
+  const buttonConfig = active ? buttonActiveConfig[color] : buttonNotActiveConfig[color];
 
   return (
     <div className="w-full flex flex-row">
@@ -59,15 +46,10 @@ const Button = ({
             disabled={disabled}
             // overflow를 넣는게 맞을까요?
             className={`overflow-auto w-full focus:outline-none h-[50px] ${buttonConfig}`}
-            onClick={onClick}
+            // 이게 뭔..
+            onClick={onClick ? onClick : onClickText}
           >
-            <span
-              className={`font-bitBit text-xl ${
-                color === "white" ? "text-black" : "text-white"
-              }`}
-            >
-              {label}
-            </span>
+            <span className={`font-bitBit text-xl ${color === "white" ? "text-black" : "text-white"}`}>{label}</span>
           </button>
         </div>
         <div className="w-full h-[5px] bg-black"></div>

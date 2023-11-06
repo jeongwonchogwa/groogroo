@@ -10,9 +10,7 @@ interface Props {
 const PixelCard = (props: Props) => {
   return (
     <div
-      className={`w-fit h-fit flex flex-col border-[15px] ${
-        props.isModal ? "z-50" : ""
-      } border-transparent`}
+      className={`w-fit h-fit flex flex-col border-[15px] ${props.isModal ? "z-40" : ""} border-transparent`}
       style={{
         borderImage: `url("/assets/images/pixelBorder.png") 25`,
       }}
@@ -32,10 +30,7 @@ const PixelCard = (props: Props) => {
           ))
         : props.assetList
         ? props.assetList.map((element) => (
-            <div
-              className="flex flex-col bg-white p-3 pb-0 min-w-max gap-2 font-bitBit"
-              key={element.id}
-            >
+            <div className="flex flex-col bg-white p-3 pb-0 min-w-max gap-2 font-bitBit" key={element.id}>
               {element.name}
               <hr />
             </div>

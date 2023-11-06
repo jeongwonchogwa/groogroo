@@ -49,13 +49,13 @@ const AdminTable = ({ sortType, clickExpel, clickDelete }: AdminTableProp) => {
                     <td className="w-full">
                       <div className=" w-full h-[40px] flex flex-row gap-2 mx-auto">
                         <button
-                          className="w-full text-white bg-error px-1 rounded-lg text-center py-2 my-1 mx-auto font-nexonGothic_Medium text-base"
+                          className="w-full flex items-center justify-center text-white bg-error rounded-lg py-2 my-1 font-nexonGothic_Medium text-base"
                           onClick={clickExpel}
                         >
                           추방
                         </button>
                         <button
-                          className="w-full  text-white bg-primary rounded-lg py-2 text-center my-1 mx-auto font-nexonGothic_Medium text-base"
+                          className="w-full flex items-center justify-center text-white bg-primary rounded-lg py-2 my-1 font-nexonGothic_Medium text-base"
                           onClick={clickDelete}
                         >
                           메세지 삭제

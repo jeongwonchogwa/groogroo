@@ -64,3 +64,24 @@ export interface Character {
   offsetX: number;
   offsetY: number;
 }
+
+export interface Garden {
+  gardenId: number;
+  name: string;
+  description: string;
+  targetId?: number;
+  url?: string;
+  role?: string;
+  x?: number;
+  y?: number;
+  imageUrl?: string;
+  capacity: number;
+  memberCnt?: number;
+  likes?: number;
+}
+
+export interface Report {
+  content: string;
+  contentType: "TREE" | "GARDEN" | "FLOWER" | "FRUIT";
+  targetId: number;
+}

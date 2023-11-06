@@ -11,6 +11,7 @@ const FruitMessageContainer = () => {
     <div className="w-full flex flex-col">
       <div className="w-full flex flex-row">
         <div className="w-7 my-auto">
+          {/* 이거는 수정하기 처럼 만들자, 인피니티? 아니면 그냥 한번만 보도록 만들어? */}
           <IconButton
             iconSrc="arrow"
             onClick={() => {

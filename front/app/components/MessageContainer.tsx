@@ -45,6 +45,7 @@ const MessageContainer = () => {
           <span className="font-nexonGothic text-xl">{firstFruit.content}</span>
         </div>
       </div>
+      {/* 신고하기 눌렀을때 폼 */}
       {open && (
         <CardModal
           isOpen={open}

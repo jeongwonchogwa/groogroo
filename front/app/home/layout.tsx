@@ -1,9 +1,17 @@
-import HomeHeader from "./components/HomeHeader";
+"use client";
 
+import HomeHeader from "./components/HomeHeader";
+import { useState } from "react";
 const HomeLayout = ({ children }: any) => {
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+
+  const handlemenu = () => {
+    setMenuOpen((prev) => !prev);
+  };
+
   return (
     <div className="w-screen h-screen bg-background-pixel bg-cover">
-      <HomeHeader />
+      <HomeHeader handlemenu={() => handlemenu()} menuOpen={menuOpen} />
       {children}
     </div>
   );

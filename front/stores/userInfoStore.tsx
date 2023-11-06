@@ -10,7 +10,7 @@ export const userInfoStore = create(
   persist<UserInfo>(
     (set) => ({
       userToken:
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYWE1MDExQG5hdmVyLmNvbSIsImlkIjoxLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNjk4OTA3NzkyLCJleHAiOjE3MDAxMTczOTJ9.7Q6gIV8wJw6ejdEqBWd4dztbL6HUuHgGcuf7jDz2_AY",
+        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYWE1MDExQG5hdmVyLmNvbSIsImlkIjoxLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNjk5MjMxNjIwLCJleHAiOjE2OTkyMzUyMjB9.W42KM99EjTY3VPT9AhIND0_8G3NR7-DsQ4qPwl4GFFs",
       setMember: (userToken: string) => set({ userToken }),
     }),
     {

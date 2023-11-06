@@ -4,15 +4,22 @@ import Button from "@/app/components/Button";
 import Image from "next/image";
 import { useState } from "react";
 import GardenJoinModal from "./GardenJoinModal";
+import { useRouter } from "next/navigation";
+import { Garden } from "@/app/types";
 
 // 여기서 정원의 이름을 넘겨주자
 interface GardenDetailModalProps {
   isOpen: boolean;
   handleToggle: () => void;
   selectedGardenId: number;
+  gardenData?: Garden;
 }
 
-const GardenDetailModal = ({ isOpen, handleToggle, selectedGardenId }: GardenDetailModalProps) => {
+const GardenDetailModal = ({ isOpen, handleToggle, selectedGardenId, gardenData }: GardenDetailModalProps) => {
+  console.log(gardenData);
+
+  const router = useRouter();
+
   const [joinModalOpen, setJoinModalOpen] = useState<boolean>(false);
 
   if (!isOpen) return null;
@@ -30,7 +37,7 @@ const GardenDetailModal = ({ isOpen, handleToggle, selectedGardenId }: GardenDet
         <div className="bg-modal-img h-[598px] w-[350px] mx-auto rounded z-50 overflow-y-auto">
           <div className="flex flex-col p-1 h-full">
             <div className="mt-5 mx-7">
-              <Button color="primary" label="시크릿 가든" active={false} />
+              <Button color="primary" label={`${gardenData?.name}`} active={false} />
             </div>
             {/* 이렇게 박아 넣는게 맞아..? */}
             <div className="mt-5 ml-[2px] mr-[7px] h-[250px]">
@@ -49,40 +56,39 @@ const GardenDetailModal = ({ isOpen, handleToggle, selectedGardenId }: GardenDet
                       alt="heart"
                     />
                   </div>
-                  <p className="my-auto  text-sm">9</p>
+                  <p className="my-auto  text-sm">{gardenData?.likes}</p>
                 </div>
                 <div className="my-auto flex flex-row  text-sm">
-                  <span>500</span>
+                  <span>{gardenData?.memberCnt}</span>
                   <span>/</span>
-                  <span>10000</span>
+                  <span>{gardenData?.capacity}</span>
                 </div>
               </div>
-              <div className="px-4 mt-3">
-                <p className=" font-nexonGothic text-lg">
-                  야야얍얍얍얍ㅇ뱌얍야뱡뱌얍얍야뱌얍얍야ㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑㅑ
-                </p>
+              {/* 내용이 길어지면 스크롤을 하게해..? 일단 overflow-auto 넣어야지.. */}
+              <div className="px-4 mt-3 h-[90px] overflow-auto">
+                <p className=" font-nexonGothic text-lg">{gardenData?.description}</p>
               </div>
             </div>
             <div className="mx-5">
               <Button
                 onClick={() => {
                   handleModal();
-                  console.log("참여신청클릭");
+                  router.push(`/garden/${gardenData?.url}`);
                 }}
                 color="secondary"
-                label="참여신청"
+                label="입장하기"
               />
             </div>
           </div>
         </div>
       </div>
-      {joinModalOpen && (
+      {/* {joinModalOpen && (
         <GardenJoinModal
           isJoinModalOpen={joinModalOpen}
           handleModal={() => handleModal()}
           selectedGardenId={selectedGardenId}
         />
-      )}
+      )} */}
     </>
   );
 };

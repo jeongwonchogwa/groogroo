@@ -1,5 +1,6 @@
 import PixelCard from "@/app/components/PixelCard";
 
+// 이거 필요없어
 interface GardenJoinProcessModalProps {
   isJoinProcessModalOpen: boolean;
   handleSignUp: () => void;

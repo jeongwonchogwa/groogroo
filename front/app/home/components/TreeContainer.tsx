@@ -33,10 +33,9 @@ const TreeContainer = () => {
             </div>
           </div>
           <div>
-            {/* 이미지 클릭하면 페이지 이동이 일어나아 근데 나는 여기서 srdc에 뭘 넣어야 할지도 모르겠다..  */}
+            {/* 이미지 클릭하면 페이지 이동이 일어나아 근데 나는 여기서 src에 뭘 넣어야 할지도 모르겠다..  */}
             <Image
               onClick={() => {
-                console.log("이미지 클릭");
                 router.push("/home/1");
               }}
               src="/assets/images/testTree.svg"
