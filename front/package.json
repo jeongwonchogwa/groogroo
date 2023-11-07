@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^4.36.1",
+    "canvas": "^2.11.2",
     "grid-engine": "^2.39.0",
     "nes.css": "^2.3.0",
     "next": "13.5.4",
