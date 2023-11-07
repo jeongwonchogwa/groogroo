@@ -19,7 +19,7 @@ public class UserSetUp {
     @Autowired
     private JwtUtil jwtUtil;
 
-    public String saveUser() {
+    public String userLogin() {
         User user = User.builder()
                 .email("test@test.com")
                 .userStatus(UserStatus.USER)
@@ -38,7 +38,7 @@ public class UserSetUp {
         return generatedToken.getAccessToken();
     }
 
-    public String saveAdmin() {
+    public String adminLogin() {
         User user = User.builder()
                 .email("admin@test.com")
                 .userStatus(UserStatus.USER)

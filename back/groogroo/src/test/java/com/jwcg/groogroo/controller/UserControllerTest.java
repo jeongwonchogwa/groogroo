@@ -1,6 +1,7 @@
 package com.jwcg.groogroo.controller;
 
 import com.jwcg.groogroo.common.BaseIntegrationTest;
+import com.jwcg.groogroo.config.TreeSetUp;
 import com.jwcg.groogroo.config.UserSetUp;
 import com.jwcg.groogroo.model.dto.report.RequestReportDto;
 import com.jwcg.groogroo.model.entity.*;
@@ -30,17 +31,17 @@ class UserControllerTest extends BaseIntegrationTest {
     @Autowired
     UserSetUp userSetUp;
 
+    @Autowired
+    TreeSetUp treeSetUp;
+
     @MockBean
     UserGardenRepository userGardenRepository;
-
-    @Autowired
-    TreeRepository treeRepository;
 
     @Test
     @DisplayName("로그아웃")
     public void logout() throws Exception {
         // Given
-        String accessToken = userSetUp.saveUser();
+        String accessToken = userSetUp.userLogin();
 
         // When
         ResultActions result = mvc.perform(post("/user")
@@ -55,7 +56,7 @@ class UserControllerTest extends BaseIntegrationTest {
     @DisplayName("토큰 재발급")
     public void republishToken() throws Exception {
         //Given
-        String accessToken = userSetUp.saveUser();
+        String accessToken = userSetUp.userLogin();
 
         //when
         ResultActions result = mvc.perform(post("/user/refresh")
@@ -70,7 +71,7 @@ class UserControllerTest extends BaseIntegrationTest {
     @DisplayName("회원 탈퇴")
     public void withdrawSuccess() throws Exception {
         //given
-        String accessToken = userSetUp.saveUser();
+        String accessToken = userSetUp.userLogin();
 
         //when
         ResultActions result = mvc.perform(patch("/user")
@@ -85,7 +86,7 @@ class UserControllerTest extends BaseIntegrationTest {
     @DisplayName("회원 탈퇴 실패_정원의 마스터인 경우")
     public void withdrawCustomException() throws Exception {
         // Given
-        String accessToken = userSetUp.saveUser();
+        String accessToken = userSetUp.userLogin();
         long userId = userSetUp.getId(accessToken);
 
         List<UserGarden> userGardens = new ArrayList<>();
@@ -108,23 +109,18 @@ class UserControllerTest extends BaseIntegrationTest {
     @DisplayName("신고하기")
     public void reportSuccess() throws Exception {
         // Given
-        String accessToken = userSetUp.saveUser();
+        String accessToken = userSetUp.userLogin();
         
         // 신고할 User와 Tree 생성
         User testUser = userSetUp.createTestUser();
+        Tree tree = treeSetUp.createTree(testUser);
 
-        Tree tree = Tree.builder()
-                .name("테스트용 나무")
-                .user(testUser)
-                .build();
-
-        Long treeId = treeRepository.save(tree).getId();
 
         // DTO 생성
         RequestReportDto requestReportDto = RequestReportDto.builder()
                 .content("신고합니다!!")
                 .contentType(ContentType.TREE)
-                .targetId(treeId)
+                .targetId(tree.getId())
                 .build();
 
 
@@ -143,7 +139,7 @@ class UserControllerTest extends BaseIntegrationTest {
     @DisplayName("신고하기 실패_존재하지 않는 대상 신고한 경우")
     public void reportFailure() throws Exception {
         // Given
-        String accessToken = userSetUp.saveUser();
+        String accessToken = userSetUp.userLogin();
 
         // DTO 생성 (존재 하지 않는 나무 신고)
         RequestReportDto requestReportDto = RequestReportDto.builder()

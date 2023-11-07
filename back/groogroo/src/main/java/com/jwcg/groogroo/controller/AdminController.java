@@ -81,6 +81,8 @@ public class AdminController {
 
         try {
             log.info("신고 접수 대상 상세 조회");
+            log.info("Content Type: {}",reportedContent.getContentType());
+            log.info("Target Id: {}", reportedContent.getTargetId());
             switch(reportedContent.getContentType()){
                 case TREE:
                     log.info("메인 나무 상세 조회");
