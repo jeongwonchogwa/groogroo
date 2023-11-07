@@ -81,7 +81,13 @@ export interface Garden {
 }
 
 export interface Report {
+  completed: boolean | null;
   content: string;
   contentType: "TREE" | "GARDEN" | "FLOWER" | "FRUIT";
+  id: number;
+  reportedEmail: string;
+  reportedId: number;
+  reporterEmail: string;
+  reporterId: number;
   targetId: number;
 }
