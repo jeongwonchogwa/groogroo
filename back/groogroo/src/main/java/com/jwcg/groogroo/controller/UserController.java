@@ -2,8 +2,6 @@ package com.jwcg.groogroo.controller;
 
 import com.jwcg.groogroo.exception.CustomException;
 import com.jwcg.groogroo.model.dto.report.RequestReportDto;
-import com.jwcg.groogroo.model.dto.report.ResponseReportListDto;
-import com.jwcg.groogroo.model.entity.Report;
 import com.jwcg.groogroo.model.entity.UserStatus;
 import com.jwcg.groogroo.model.service.ReportService;
 import com.jwcg.groogroo.model.service.UserService;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -81,11 +78,11 @@ public class UserController {
             response.put("message", "accessToken 재발급 성공");
             response.put("accessToken", newAccessToken);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (JwtException e){
+        } catch (CustomException e){
             log.info(e.getMessage());
             response.put("httpStatus", FAIL);
             response.put("message", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(response, e.getHttpStatus());
         } catch (Exception e) {
             log.info("accessToken 재발급 실패");
             response.put("httpStatus", FAIL);
@@ -108,6 +105,8 @@ public class UserController {
 
         try {
             log.info("회원 탈퇴");
+            log.info("token: {}", token);
+            log.info("userId: {}", userId);
             userService.updateStatus(userId, UserStatus.WITHDRAWAL);
             log.info("회원 탈퇴 성공 => 로그아웃");
             jwtUtil.deleteRefreshToken(token);
@@ -150,11 +149,11 @@ public class UserController {
             response.put("httpStatus", SUCCESS);
             response.put("message", "신고 성공");
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch(NotFoundException e){
+        } catch(CustomException e){
             log.info(e.getMessage());
             response.put("httpStatus", FAIL);
             response.put("message", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(response, e.getHttpStatus());
         } catch(Exception e) {
             log.info("신고 실패");
             response.put("httpStatus", FAIL);

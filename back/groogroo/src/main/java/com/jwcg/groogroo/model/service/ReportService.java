@@ -1,5 +1,6 @@
 package com.jwcg.groogroo.model.service;
 
+import com.jwcg.groogroo.exception.CustomException;
 import com.jwcg.groogroo.model.dto.report.RequestReportDto;
 import com.jwcg.groogroo.model.dto.report.RequestReportListDto;
 import com.jwcg.groogroo.model.dto.report.RequestReportedContentDto;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ public class ReportService {
     private final FlowerRepository flowerRepository;
     private final FruitRepository fruitRepository;
     private final UserReportRepository userReportRepository;
+    private final GardenRepository gardenRepository;
 
     // 신고하기
     public void report(Long userId, RequestReportDto requestReportDto) {
@@ -37,19 +40,28 @@ public class ReportService {
         switch(contentType){
             case TREE :
                 Tree tree = treeRepository.findTreeById(targetId);
+                if(tree == null) throw new CustomException(HttpStatus.NOT_FOUND, "존재 하지 않는 신고 대상");
                 reportedUser = tree.getUser();
                 break;
             case FRUIT:
                 Fruit fruit = fruitRepository.findFruitById(targetId);
+                if(fruit == null) throw new CustomException(HttpStatus.NOT_FOUND, "존재 하지 않는 신고 대상");
                 reportedUser = userRepository.findUserById(fruit.getWriterId());
                 break;
             case FLOWER:
                 Flower flower = flowerRepository.findFlowerById(targetId);
+                if(flower == null) throw new CustomException(HttpStatus.NOT_FOUND, "존재 하지 않는 신고 대상");
                 reportedUser = flower.getUserGarden().getUser();
                 break;
             case TREEGARDEN:
                 TreeGarden treeGarden = treeGardenRepository.findTreeGardenById(targetId);
+                if(treeGarden == null) throw new CustomException(HttpStatus.NOT_FOUND, "존재 하지 않는 신고 대상");
                 reportedUser = treeGarden.getTree().getUser();
+                break;
+            case GARDEN:
+                Garden garden = gardenRepository.findGardenById(targetId);
+                if(garden == null) throw new CustomException(HttpStatus.NOT_FOUND, "존재 하지 않는 신고 대상");
+            default:
         }
 
         User reporter = userRepository.findUserById(userId); // 신고한 회원
