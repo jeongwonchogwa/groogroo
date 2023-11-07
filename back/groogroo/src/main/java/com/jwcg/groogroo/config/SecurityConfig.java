@@ -50,11 +50,7 @@ public class SecurityConfig {
                 // 접속 허용할 url
                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/login", "/flower/**", "/fruit/**", "/garden/**", "/tree/**").permitAll()
-<<<<<<< HEAD
-                // /admin은 관리자만 접속 가능
-=======
                 // admin은 관리자만 접속 가능
->>>>>>> feature/BE/CORS
                 .requestMatchers("/admin","/admin/**").hasRole(UserRole.ADMIN.toString())
                 // 나머지 요청은 인증 필요
                 .anyRequest().authenticated();
