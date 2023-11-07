@@ -35,6 +35,7 @@ public class UserGarden {
     @Column(name = "delete_date")
     private LocalDate deleteDate;
 
+    @Builder.Default
     @OneToMany(mappedBy = "userGarden")
     private List<Flower> flowers = new ArrayList<>();
 

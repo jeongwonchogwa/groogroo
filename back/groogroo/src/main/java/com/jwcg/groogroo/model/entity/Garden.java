@@ -42,9 +42,11 @@ public class Garden {
     @Column(name = "delete_date")
     private LocalDate deleteDate;
 
+    @Builder.Default
     @OneToMany(mappedBy = "garden")
     private List<UserGarden> userGardens = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "garden")
     private List<TreeGarden> treeGardens = new ArrayList<>();
 

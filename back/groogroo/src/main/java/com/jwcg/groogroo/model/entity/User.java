@@ -48,12 +48,15 @@ public class User {
     @JoinColumn(name = "tree_id")
     private Tree tree;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<UserGarden> userGardens = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<TreeUserPreset> treeUserPresets = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "receiver")
     private List<Notification> notifications = new ArrayList<>();
 

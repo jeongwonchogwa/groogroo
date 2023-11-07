@@ -38,9 +38,11 @@ public class Tree {
     @OneToOne(mappedBy = "tree")
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "tree")
     private List<Fruit> fruits = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "tree")
     private List<TreeGarden> treeGardens = new ArrayList<>();
 }
