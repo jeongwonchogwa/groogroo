@@ -1,10 +1,13 @@
-## Flask 실행하기
+## Flask 실행하기  
+: `flask/` 폴더 경로에서 시작한다
 
 ### 가상환경 설치
 `python -m venv venv`
 
-### 가상환경 구성
-`source venv/Scripts/activate`
+### 가상환경 활성화
+`source venv/Scripts/activate`  
+- 참고(가상환경 비활성화):  
+  `deactivate`
 
 ### 필요한 라이브러리 설치
 `pip install -r requirements.txt`
