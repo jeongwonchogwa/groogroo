@@ -14,6 +14,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -29,7 +34,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // Rest API & JWT 사용을 위한 설정
-        http.cors(cors->cors.disable())// CORS 비활성화
+//        http.cors(cors->cors.disable())// CORS 비활성화
+        http.cors(cors->corsConfigurationSource())
                 .csrf(csrf->csrf.disable())// CSRF 보호 기능 비활성화
                 .httpBasic(httpBasic->httpBasic.disable())// HTTP 기본 인증을 비활성화
                 .formLogin(formLogin->formLogin.disable())
@@ -41,12 +47,16 @@ public class SecurityConfig {
 
         //요청에 대한 권한 설정
         http.authorizeRequests()
-                //접속 허용할 url
+                // 접속 허용할 url
                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/login", "/flower/**", "/fruit/**", "/garden/**", "/tree/**").permitAll()
+<<<<<<< HEAD
                 // /admin은 관리자만 접속 가능
+=======
+                // admin은 관리자만 접속 가능
+>>>>>>> feature/BE/CORS
                 .requestMatchers("/admin","/admin/**").hasRole(UserRole.ADMIN.toString())
-                //나머지 요청은 인증 필요
+                // 나머지 요청은 인증 필요
                 .anyRequest().authenticated();
 
         //oauth2Login 설정
@@ -71,5 +81,18 @@ public class SecurityConfig {
 
         return http.build();
     }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
 
+        config.setAllowCredentials(true);
+        config.setMaxAge(4000L);
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://groogroo.site"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE"));
+        config.setAllowedHeaders(Arrays.asList("*"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 }
