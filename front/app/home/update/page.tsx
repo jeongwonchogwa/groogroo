@@ -8,10 +8,11 @@ import { useEffect, useState } from "react";
 const UpdatePage = () => {
   const [width, setWidth] = useState<number>(0);
   useEffect(() => {
-    if (!window) {
+    if (typeof window === "undefined") {
       return;
+    } else {
+      setWidth(window.innerWidth);
     }
-    setWidth(window.innerWidth);
   }, []);
 
   const [openNext, setOpenNext] = useState<boolean>(false);

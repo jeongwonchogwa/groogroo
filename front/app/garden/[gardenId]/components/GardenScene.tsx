@@ -2,7 +2,9 @@ import { Scene } from "phaser";
 // @ts-ignore
 import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";
 import { tree } from "@/app/dummies";
-import { Character } from "@/app/types";
+import { Character, Tree } from "@/app/types";
+import CreateFruit from "./CreateFruit";
+import ReactDOM from "react-dom/client";
 
 export default class GardenScene extends Scene {
   private gridEngine!: any;
@@ -12,8 +14,18 @@ export default class GardenScene extends Scene {
   private plusButton!: HTMLImageElement;
   private treeButton!: HTMLImageElement;
   private flowerButton!: HTMLImageElement;
-  constructor() {
+  private fruitForm!: Phaser.GameObjects.DOMElement;
+  private onFormOpenButtonClick!: (tree: Tree) => void;
+  private onFlowerSelectOpenButtonClick!: () => void;
+
+  constructor(props: {
+    onFormOpenButtonClick: (tree: Tree) => void;
+    onFlowerSelectOpenButtonClick: () => void;
+  }) {
     super("gardenScene");
+
+    this.onFormOpenButtonClick = props.onFormOpenButtonClick;
+    this.onFlowerSelectOpenButtonClick = props.onFlowerSelectOpenButtonClick;
   }
 
   preload() {
@@ -45,9 +57,7 @@ export default class GardenScene extends Scene {
           .setScale(0.25)
           .setInteractive()
           //열매 작성 폼 띄워줄거임.
-          .on("pointerdown", () => {
-            console.log("누름!");
-          }),
+          .on("pointerup", () => this.onFormOpenButtonClick(tree)),
         startPosition: { x: tree.x!, y: tree.y! },
         tileHeight: 2,
         tileWidth: 2,
@@ -161,9 +171,7 @@ export default class GardenScene extends Scene {
       "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
     const flowerRegistText = document.createTextNode("꽃 심기");
     textBox2.appendChild(flowerRegistText);
-    textBox2.addEventListener("click", () => {
-      this.scene.start("gardenEditScene");
-    });
+    textBox2.addEventListener("click", this.onFlowerSelectOpenButtonClick);
 
     //나무, 꽃 목록 생성. 이벤트 등록
     characters.forEach((tree) => {
@@ -339,25 +347,31 @@ export default class GardenScene extends Scene {
     this.treeButton.addEventListener("click", onTreeButtonClick);
     this.flowerButton.addEventListener("click", onFlowerButtonClick);
 
-    //드롭다운 추가/////////////////////////////////////////////////////
+    //열매 작성 폼////////////////////////////////////////////////////////
+    // let createFruit = CreateFruit();
+    // const DOMCreateFruitForm = document.createElement("div");
 
-    // .setScale(
-    //   5 / (16 * this.cameras.main.zoom),
-    //   5 / (16 * this.cameras.main.zoom)
+    // ReactDOM.createRoot(DOMCreateFruitForm).render(createFruit);
+
+    // this.fruitForm = this.add
+    //   .dom(0, 0, "div")
+    //   .setScrollFactor(0, 0)
+    //   .setOrigin(0, 0);
+    // this.fruitForm.setClassName(
+    //   "w-full h-full !flex flex-col align-center justify-center border-2 border-white"
     // );
+
+    // this.fruitForm.node.appendChild(DOMCreateFruitForm);
 
     //그리드엔진 설정///////////////////////////////////////////////////
     const gridEngineConfig = {
       snapToCell: true,
       characters: characters,
     };
-
-    //타일 애니메이션 실행.
     // @ts-ignore
-    this.sys.animatedTiles.init(map);
+    this.sys.animatedTiles.init(map); //타일 애니메이션 실행.
     this.gridEngine.create(map, gridEngineConfig);
   }
-
   update() {
     //ui 버튼 뷰포트에 고정
     if (window.innerHeight >= window.innerWidth) {
@@ -383,49 +397,5 @@ export default class GardenScene extends Scene {
       );
       // console.log(this.footer.x + " " + this.footer.y);
     }
-    // this.footer.setPosition(
-    //   250 -
-    //     (window.innerWidth / 2 - 10) / this.cameras.main.zoom -
-    //     (240 - (240 * window.innerWidth) / 480) +
-    //     this.cameras.main.scrollX,
-    //   // 300
-    //   170 +
-    //     (window.innerHeight / 2 - 80) / this.cameras.main.zoom -
-    //     (160 - (160 * window.innerHeight) / 320) +
-    //     this.cameras.main.scrollY
-    // );
-    // this.plusButton.setPosition(
-    //   250 -
-    //     (window.innerWidth / 2 - 10) / this.cameras.main.zoom -
-    //     (240 - (240 * window.innerWidth) / 480) +
-    //     this.cameras.main.scrollX,
-    //   // 300
-    //   170 +
-    //     (window.innerHeight / 2 - 80) / this.cameras.main.zoom -
-    //     (160 - (160 * window.innerHeight) / 320) +
-    //     this.cameras.main.scrollY
-    // );
-    // this.treeButton.setPosition(
-    //   250 +
-    //     (window.innerWidth / 2 - 70) / this.cameras.main.zoom -
-    //     (240 - (240 * window.innerWidth) / 480) +
-    //     this.cameras.main.scrollX,
-    //   // 300
-    //   170 +
-    //     (window.innerHeight / 2 - 80) / this.cameras.main.zoom -
-    //     (160 - (160 * window.innerHeight) / 320) +
-    //     this.cameras.main.scrollY
-    // );
-    // this.flowerButton.setPosition(
-    //   250 +
-    //     (window.innerWidth / 2 - 130) / this.cameras.main.zoom -
-    //     (240 - (240 * window.innerWidth) / 480) +
-    //     this.cameras.main.scrollX,
-    //   // 300
-    //   170 +
-    //     (window.innerHeight / 2 - 80) / this.cameras.main.zoom -
-    //     (160 - (160 * window.innerHeight) / 320) +
-    //     this.cameras.main.scrollY
-    // );
   }
 }

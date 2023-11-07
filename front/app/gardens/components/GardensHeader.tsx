@@ -15,7 +15,11 @@ interface GardenHeaderProp {
   menuOpen: boolean;
 }
 
-const GardensHeader = ({ clickText, handlemenu, menuOpen }: GardenHeaderProp) => {
+const GardensHeader = ({
+  clickText,
+  handlemenu,
+  menuOpen,
+}: GardenHeaderProp) => {
   const router = useRouter();
 
   const [openAlarm, setOpenAlarm] = useState(false);
@@ -29,7 +33,10 @@ const GardensHeader = ({ clickText, handlemenu, menuOpen }: GardenHeaderProp) =>
   const menuList: MenuButton[] = [
     // link가 아니라 router로 해버렸다..
     { name: "로그아웃", clickEvent: () => {} },
-    { name: "문의하기", clickEvent: () => router.push("http://pf.kakao.com/_xoIkxbG") },
+    {
+      name: "문의하기",
+      clickEvent: () => router.push("http://pf.kakao.com/_xoIkxbG"),
+    },
   ];
 
   return (
@@ -43,11 +50,14 @@ const GardensHeader = ({ clickText, handlemenu, menuOpen }: GardenHeaderProp) =>
           </div>
           <div className="flex flex-row gap-3">
             <div className="w-10 h-10">
-              <IconButton onClick={() => router.push("/garden/regist")} iconSrc="plus" />
+              <IconButton
+                onClick={() => router.push("/garden/regist")}
+                iconSrc="plus"
+              />
             </div>
             <div className={bellClick}>
               <IconButton iconSrc="bell" onClick={onAlarmButtonClick} />
-              {openAlarm ? <Alarm /> : null}
+              {/* {openAlarm ? <Alarm /> : null} */}
             </div>
             <div className="w-10 h-10">
               <IconButton

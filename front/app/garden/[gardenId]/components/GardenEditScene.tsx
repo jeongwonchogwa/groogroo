@@ -1,12 +1,11 @@
 import { tree } from "@/app/dummies";
 import { myTree } from "@/app/dummies";
-import { Character } from "@/app/types";
+import { Character, Tree } from "@/app/types";
 import { Scene } from "phaser";
 // @ts-ignore
 import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";
 import Button from "@/app/components/Button";
-import ReactDOM from "react-dom";
-import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom/client";
 
 export default class GardenEditScene extends Scene {
   private gridEngine!: any;
@@ -22,6 +21,7 @@ export default class GardenEditScene extends Scene {
   private rightKey!: HTMLButtonElement;
   private upKey!: HTMLButtonElement;
   private downKey!: HTMLButtonElement;
+  private myTree!: Tree;
 
   constructor() {
     super("gardenEditScene");
@@ -167,8 +167,8 @@ export default class GardenEditScene extends Scene {
     const DOMCancelButton = document.createElement("div");
     const DOMRegistButton = document.createElement("div");
 
-    ReactDOM.render(cancelButton, DOMCancelButton);
-    ReactDOM.render(registButton, DOMRegistButton);
+    ReactDOM.createRoot(DOMCancelButton).render(cancelButton);
+    ReactDOM.createRoot(DOMRegistButton).render(registButton);
 
     DOMCancelButton.style.width = window.innerWidth / 2 - 40 + "px";
     DOMCancelButton.style.height = "60px";
@@ -327,6 +327,8 @@ export default class GardenEditScene extends Scene {
       }
     }
 
+    //sprite 이동 로직//////////////////////////////////////////////////
+    //좌측 버튼
     this.leftKey.onclick = () => {
       this.moveCheck = true;
       if (this.gridEngine.getPosition(myTree.name).x - 1 >= 0)
@@ -364,43 +366,8 @@ export default class GardenEditScene extends Scene {
       }
       this.moveCheck = false;
     };
-
-    if (cursors?.left.isDown && !this.moveCheck) {
-      this.moveCheck = true;
-      if (this.gridEngine.getPosition(myTree.name).x - 1 >= 0)
-        this.gridEngine.setPosition(myTree.name, {
-          x: this.gridEngine.getPosition(myTree.name).x - 1,
-          y: this.gridEngine.getPosition(myTree.name).y,
-        });
-
-      //이동한 좌표에 장애물 존재시 박스 교체.
-      if (
-        this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(myTree.name).x,
-          y: this.gridEngine.getPosition(myTree.name).y,
-        }) ||
-        this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(myTree.name).x,
-          y: this.gridEngine.getPosition(myTree.name).y + 1,
-        }) ||
-        this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(myTree.name).x + 1,
-          y: this.gridEngine.getPosition(myTree.name).y,
-        }) ||
-        this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(myTree.name).x + 1,
-          y: this.gridEngine.getPosition(myTree.name).y + 1,
-        })
-      ) {
-        this.spriteBox = this.errorSpriteBox;
-        this.errorSpriteBox.setVisible(true);
-        this.defaultSpriteBox.setVisible(false);
-      } else {
-        this.spriteBox = this.defaultSpriteBox;
-        this.errorSpriteBox.setVisible(false);
-        this.defaultSpriteBox.setVisible(true);
-      }
-    } else if (cursors?.right.isDown && !this.moveCheck) {
+    //우측 버튼
+    this.rightKey.onclick = () => {
       this.moveCheck = true;
       if (this.gridEngine.getPosition(myTree.name).x + 1 < 29)
         this.gridEngine.setPosition(myTree.name, {
@@ -434,41 +401,10 @@ export default class GardenEditScene extends Scene {
         this.errorSpriteBox.setVisible(false);
         this.defaultSpriteBox.setVisible(true);
       }
-    } else if (cursors?.down.isDown && !this.moveCheck) {
-      this.moveCheck = true;
-      if (this.gridEngine.getPosition(myTree.name).y + 1 < 19)
-        this.gridEngine.setPosition(myTree.name, {
-          x: this.gridEngine.getPosition(myTree.name).x,
-          y: this.gridEngine.getPosition(myTree.name).y + 1,
-        });
-
-      if (
-        this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(myTree.name).x,
-          y: this.gridEngine.getPosition(myTree.name).y,
-        }) ||
-        this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(myTree.name).x + 1,
-          y: this.gridEngine.getPosition(myTree.name).y,
-        }) ||
-        this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(myTree.name).x,
-          y: this.gridEngine.getPosition(myTree.name).y + 1,
-        }) ||
-        this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(myTree.name).x + 1,
-          y: this.gridEngine.getPosition(myTree.name).y + 1,
-        })
-      ) {
-        this.errorSpriteBox.setVisible(true);
-        this.defaultSpriteBox.setVisible(false);
-        this.spriteBox = this.errorSpriteBox;
-      } else {
-        this.spriteBox = this.defaultSpriteBox;
-        this.errorSpriteBox.setVisible(false);
-        this.defaultSpriteBox.setVisible(true);
-      }
-    } else if (cursors?.up.isDown && !this.moveCheck) {
+      this.moveCheck = false;
+    };
+    //위 버튼
+    this.upKey.onclick = () => {
       this.moveCheck = true;
       if (this.gridEngine.getPosition(myTree.name).y - 1 >= 0)
         this.gridEngine.setPosition(myTree.name, {
@@ -502,17 +438,44 @@ export default class GardenEditScene extends Scene {
         this.errorSpriteBox.setVisible(false);
         this.defaultSpriteBox.setVisible(true);
       }
-    }
-
-    if (
-      !cursors?.left.isDown &&
-      !cursors?.right.isDown &&
-      !cursors?.up.isDown &&
-      !cursors?.down.isDown &&
-      this.moveCheck
-    ) {
       this.moveCheck = false;
-      this.UIMoveCheck = false;
-    }
+    };
+    //아래 버튼
+    this.downKey.onclick = () => {
+      this.moveCheck = true;
+      if (this.gridEngine.getPosition(myTree.name).y + 1 < 19)
+        this.gridEngine.setPosition(myTree.name, {
+          x: this.gridEngine.getPosition(myTree.name).x,
+          y: this.gridEngine.getPosition(myTree.name).y + 1,
+        });
+
+      if (
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x,
+          y: this.gridEngine.getPosition(myTree.name).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x + 1,
+          y: this.gridEngine.getPosition(myTree.name).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x,
+          y: this.gridEngine.getPosition(myTree.name).y + 1,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(myTree.name).x + 1,
+          y: this.gridEngine.getPosition(myTree.name).y + 1,
+        })
+      ) {
+        this.errorSpriteBox.setVisible(true);
+        this.defaultSpriteBox.setVisible(false);
+        this.spriteBox = this.errorSpriteBox;
+      } else {
+        this.spriteBox = this.defaultSpriteBox;
+        this.errorSpriteBox.setVisible(false);
+        this.defaultSpriteBox.setVisible(true);
+      }
+      this.moveCheck = false;
+    };
   }
 }

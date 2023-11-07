@@ -1,7 +1,7 @@
 "use client";
 import IconButton from "@/app/components/IconButton";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Menu from "./Menu";
 import { MenuButton } from "@/app/types";
@@ -27,7 +27,12 @@ const GardenHeader = () => {
     { name: "초대하기", clickEvent: () => {} },
     { name: "신고하기", clickEvent: () => {} },
   ];
-  const uiWidth = window.innerWidth + "px";
+
+  const [uiWidth, setUiWidth] = useState<String>("");
+  useEffect(() => {
+    setUiWidth(window.innerWidth + "px");
+  }, []);
+
   return (
     <div
       className="absolute top-5 px-5 flex gap-5 font-bitBit justify-between"

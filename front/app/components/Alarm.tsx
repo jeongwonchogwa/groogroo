@@ -47,6 +47,7 @@ const AlarmList = () => {
     }
     setWwidth(window.innerWidth);
   }, []);
+
   return (
     <div className="bg-white" style={{ width: wWidth - 30 }}>
       <div className="align py-2 px-5 text-[24px] font-bitBit">알람</div>
@@ -57,8 +58,12 @@ const AlarmList = () => {
               {alarm.type === "fruit" ? (
                 <div className="flex flex-col w-full p-3 gap-2">
                   <div className="flex w-full justify-between items-baseline ">
-                    <div className="font-nexonGothic_Bold text-base">내 나무에 열매가 달렸습니다.</div>
-                    <div className="font-nexonGothic_Light text-sm">{alarm.createTime}</div>
+                    <div className="font-nexonGothic_Bold text-base">
+                      내 나무에 열매가 달렸습니다.
+                    </div>
+                    <div className="font-nexonGothic_Light text-sm">
+                      {alarm.createTime}
+                    </div>
                   </div>
                   <div className="font-nexonGothic_Light text-base overflow-hidden whitespace-nowrap text-ellipsis">
                     {alarm.content}
@@ -70,14 +75,19 @@ const AlarmList = () => {
                     <div className="font-nexonGothic_Bold text-base">
                       {alarm.gardenInfo?.name} 에 꽃이 심어졌습니다.
                     </div>
-                    <div className="font-nexonGothic_Light text-sm">{alarm.createTime}</div>
+                    <div className="font-nexonGothic_Light text-sm">
+                      {alarm.createTime}
+                    </div>
                   </div>
-                  <div className="font-nexonGothic_Light text-base">{alarm.content}</div>
+                  <div className="font-nexonGothic_Light text-base">
+                    {alarm.content}
+                  </div>
                 </div>
               ) : alarm.type === "garden" ? (
                 <div className="flex w-full justify-between items-center">
                   <div className="w-[180px] font-nexonGothic_Bold h-fit">
-                    {alarm.writerNickname} 님이 {alarm.gardenInfo?.name}에 참여를 요청하셨습니다.
+                    {alarm.writerNickname} 님이 {alarm.gardenInfo?.name}에
+                    참여를 요청하셨습니다.
                   </div>
                   <div className="flex gap-5">
                     <Button color="secondary" label="수락"></Button>

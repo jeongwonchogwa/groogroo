@@ -1,9 +1,13 @@
 import { Scene } from "phaser";
 import { tree } from "@/app/dummies";
 import { myTree } from "@/app/dummies";
+import { Tree } from "@/app/types";
+
 export default class Preloader extends Scene {
-  constructor() {
+  private myTree: Tree;
+  constructor(props: { myTree: Tree }) {
     super("preloader");
+    this.myTree = props.myTree;
   }
 
   preload() {
@@ -24,6 +28,11 @@ export default class Preloader extends Scene {
       frameWidth: 128,
       frameHeight: 128,
     });
+
+    // this.load.spritesheet(this.myTree.name, this.myTree.imageUrl, {
+    //   frameWidth: 128,
+    //   frameHeight: 128,
+    // });
   }
 
   create() {
