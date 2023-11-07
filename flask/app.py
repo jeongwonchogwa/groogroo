@@ -58,6 +58,21 @@ def make_image():
     </form>
     '''
 
+from googletrans import Translator
+
+@app.route('/translate')
+def translate():
+    translator = Translator()
+    # text1 = '안녕하세요, 이것은 나무입니다.'
+    text2 = 'I am a LemonTree'
+
+    # trans_result1 = translator.translate(text1, dest='en')
+    trans_result2 = translator.translate(text2, dest='ko')
+
+    # {trans_result1.text} & 
+    print(trans_result2)
+    return f'번역 결과: {trans_result2.text}'
+
 
 if __name__ == '__main__':
     app.run()
