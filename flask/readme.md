@@ -14,3 +14,12 @@
 
 ### 서버 실행
 `python app.py` or `flask run`
+
+
+## 참고 링크
+
+- [블로그 - google](https://www.dinolabs.ai/386)
+  - [googletrans 라이브러리](https://pypi.org/project/googletrans/)
+  - [google cloud - Translation AI](https://cloud.google.com/translate/?hl=ko)
+
+- [블로그 - naver & kakao](https://www.dinolabs.ai/387)
