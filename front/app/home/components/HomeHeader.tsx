@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
 import Alarm from "@/app/components/Alarm";
 import PixelCard from "@/app/components/PixelCard";
 import ButtonModal from "@/app/components/ButtonModal";
+import Button from "@/app/components/Button";
 
 interface HomeHeaderProps {
   handlemenu: () => void;
@@ -87,7 +88,33 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
         </div>
       </div>
       {menuOpen && !openAlarm ? <HomeMenu menuList={menuList}></HomeMenu> : null}
-      {openUpdate && <ButtonModal handleModal={onUpdateButtonClick} isOpenModal={openUpdate} button={true} />}
+      {openUpdate && (
+        <ButtonModal
+          handleModal={onUpdateButtonClick}
+          isOpenModal={openUpdate}
+          title="나무 수정하기"
+          button={
+            <div className="grid grid-flow-col gap-2">
+              <Button
+                color="default"
+                label="NEW"
+                onClick={() => {
+                  router.push("/enter/check");
+                  onUpdateButtonClick();
+                }}
+              />
+              <Button
+                color="primary"
+                label="PRESET"
+                onClick={() => {
+                  router.push("/home/update");
+                  onUpdateButtonClick();
+                }}
+              />
+            </div>
+          }
+        />
+      )}
     </>
   );
 };

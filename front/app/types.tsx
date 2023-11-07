@@ -3,7 +3,6 @@ export interface Fruit {
   writerId: number;
   writerNickname: string;
   content: string;
-  imageUrl: string;
   createTime: string;
 }
 

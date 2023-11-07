@@ -7,7 +7,8 @@ interface CardModalProps {
   isOpen: boolean;
   handleToggle: () => void;
   children: React.ReactNode;
-  selectedId?: number;
+  selectedId: number;
+  handleClick: (id: number) => void;
 }
 
 const CardModal = ({
@@ -18,6 +19,7 @@ const CardModal = ({
   handleToggle,
   children,
   selectedId,
+  handleClick,
 }: CardModalProps) => {
   if (!isOpen) return null;
 
@@ -60,11 +62,11 @@ const CardModal = ({
                 <Button onClick={handleToggle} color="default" label="취소" />
                 {/* 수락, 신고, 추방 */}
                 {label === "수락하기" ? (
-                  <Button color="primary" label="수락하기" />
+                  <Button color="primary" label="수락하기" onClick={() => handleClick(selectedId)} />
                 ) : label === "신고하기" ? (
-                  <Button color="error" label="신고" />
+                  <Button color="error" label="신고" onClick={() => handleClick(selectedId)} />
                 ) : (
-                  <Button color="error" label="추방" />
+                  <Button color="error" label="추방" onClick={() => handleClick(selectedId)} />
                 )}
               </div>
             </div>

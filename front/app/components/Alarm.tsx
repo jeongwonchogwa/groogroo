@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Button from "./Button";
 import PixelCard from "./PixelCard";
 
@@ -35,11 +38,18 @@ const alarmData = [
   },
 ];
 
-const width = window.innerWidth;
-const alarmList = () => {
+const AlarmList = () => {
+  // window null 방지를 위해 useEffect 처리
+  const [wWidth, setWwidth] = useState(window.innerWidth);
+  useEffect(() => {
+    if (!window) {
+      return;
+    }
+    setWwidth(window.innerWidth);
+  }, []);
   return (
-    <div className="bg-white" style={{ width: width - 30 }}>
-      <div className="align py-2 px-5 text-[24px]">알람</div>
+    <div className="bg-white" style={{ width: wWidth - 30 }}>
+      <div className="align py-2 px-5 text-[24px] font-bitBit">알람</div>
       <div>
         {alarmData.map((alarm, index) => {
           return (
@@ -47,12 +57,8 @@ const alarmList = () => {
               {alarm.type === "fruit" ? (
                 <div className="flex flex-col w-full p-3 gap-2">
                   <div className="flex w-full justify-between items-baseline ">
-                    <div className="font-nexonGothic_Bold text-base">
-                      내 나무에 열매가 달렸습니다.
-                    </div>
-                    <div className="font-nexonGothic_Light text-sm">
-                      {alarm.createTime}
-                    </div>
+                    <div className="font-nexonGothic_Bold text-base">내 나무에 열매가 달렸습니다.</div>
+                    <div className="font-nexonGothic_Light text-sm">{alarm.createTime}</div>
                   </div>
                   <div className="font-nexonGothic_Light text-base overflow-hidden whitespace-nowrap text-ellipsis">
                     {alarm.content}
@@ -64,19 +70,14 @@ const alarmList = () => {
                     <div className="font-nexonGothic_Bold text-base">
                       {alarm.gardenInfo?.name} 에 꽃이 심어졌습니다.
                     </div>
-                    <div className="font-nexonGothic_Light text-sm">
-                      {alarm.createTime}
-                    </div>
+                    <div className="font-nexonGothic_Light text-sm">{alarm.createTime}</div>
                   </div>
-                  <div className="font-nexonGothic_Light text-base">
-                    {alarm.content}
-                  </div>
+                  <div className="font-nexonGothic_Light text-base">{alarm.content}</div>
                 </div>
               ) : alarm.type === "garden" ? (
                 <div className="flex w-full justify-between items-center">
                   <div className="w-[180px] font-nexonGothic_Bold h-fit">
-                    {alarm.writerNickname} 님이 {alarm.gardenInfo?.name}에
-                    참여를 요청하셨습니다.
+                    {alarm.writerNickname} 님이 {alarm.gardenInfo?.name}에 참여를 요청하셨습니다.
                   </div>
                   <div className="flex gap-5">
                     <Button color="secondary" label="수락"></Button>
@@ -95,7 +96,7 @@ const alarmList = () => {
 const Alarm = () => {
   return (
     <div className="absolute -top-5 left-0 z-0">
-      <PixelCard content={alarmList()}></PixelCard>
+      <PixelCard content={AlarmList()}></PixelCard>
     </div>
   );
 };
