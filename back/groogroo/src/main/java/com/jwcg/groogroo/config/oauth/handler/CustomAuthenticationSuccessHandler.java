@@ -64,8 +64,8 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         GeneratedToken token = jwtUtil.generateToken(userId, email, role);
         log.info("AccessToken: {}", token.getAccessToken());
         log.info("RefreshToken: {}", token.getRefreshToken());
-        String uri = UriComponentsBuilder.fromUriString("https://localhost:3000/redirect")
-                .queryParam("accessToken", token.getAccessToken())
+        String uri = UriComponentsBuilder.fromUriString("http://localhost:3000/redirect")
+                .queryParam("accesstoken", token.getAccessToken())
                 .build().toUriString();
         response.sendRedirect(uri);
     }
