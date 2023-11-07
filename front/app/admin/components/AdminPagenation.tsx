@@ -1,4 +1,11 @@
-const AdminPagenation = () => {
+interface AdminPagenationProp {
+  totalPages: number;
+}
+
+const AdminPagenation = ({totalPages}:AdminPagenationProp) => {
+
+  const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
+console.log(pages)
   return (
     <div className="w-full mt-5">
       <nav aria-label="w-full flex Page navigation example">
@@ -12,30 +19,18 @@ const AdminPagenation = () => {
               <span aria-hidden="true">&laquo;</span>
             </a>
           </li>
-          <li>
-            <a
-              className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
-              href="#"
-            >
-              1
-            </a>
-          </li>
-          <li aria-current="page">
-            <a
-              className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
-              href="#"
-            >
-              2
-            </a>
-          </li>
-          <li>
-            <a
-              className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
-              href="#"
-            >
-              3
-            </a>
-          </li>
+          {pages.map((page)=>{
+            return(
+              <li key={page}>
+              <a
+                className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
+                href={`#${page}`}
+              >
+                {page}
+              </a>
+            </li>
+            )
+          })}
           <li>
             <a
               className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"

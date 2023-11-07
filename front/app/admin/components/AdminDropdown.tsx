@@ -21,7 +21,7 @@ const AdminDropdown = ({ isOpen, toggleDropdown, sortType, items, handleItemClic
             className="w-full bg-gray-400 text-white shadow-lg px-4 py-2 rounded font-neoDunggeunmo_Pro text-sm"
             onClick={toggleDropdown}
           >
-            {sortType === null ? "전체" : sortType === false ? "처리중" : "완료"}
+            {sortType === null ? "전체 ▽" : sortType === false ? "처리중 ▽" : "완료 ▽"}
           </button>
           {isOpen && (
             <ul className="w-24 absolute mt-2 py-2 bg-white border rounded">
