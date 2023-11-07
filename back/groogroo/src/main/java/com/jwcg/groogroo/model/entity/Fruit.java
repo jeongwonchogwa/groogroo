@@ -31,9 +31,6 @@ public class Fruit {
     @Column(name = "writer_nickname")
     private String writerNickname;
 
-    @Column(name = "image_url")
-    private String imageUrl;
-
     @Column(name = "create_time")
     private LocalDateTime createTime;
 

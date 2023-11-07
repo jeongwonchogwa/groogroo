@@ -88,7 +88,6 @@ public class TreeService {
                     .id(fruit.getId())
                     .writerId(fruit.getWriterId())
                     .content(fruit.getContent())
-                    .imageUrl(fruit.getImageUrl())
                     .writerNickname(fruit.getWriterNickname())
                     .build();
 
@@ -137,7 +136,6 @@ public class TreeService {
                             .id(fruit.getId())
                             .writerId(fruit.getWriterId())
                             .content(fruit.getContent())
-                            .imageUrl(fruit.getImageUrl())
                             .writerNickname(fruit.getWriterNickname())
                             .build();
 

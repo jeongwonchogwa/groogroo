@@ -55,7 +55,6 @@ public class FruitController {
             fruitService.makeFruit(userId,
                     requestFruitGenerationDto.getTreeId(),
                     requestFruitGenerationDto.getWriterNickname(),
-                    requestFruitGenerationDto.getImageUrl(),
                     requestFruitGenerationDto.getContent());
 
             response.put("httpStatus", SUCCESS);
@@ -151,7 +150,6 @@ public class FruitController {
                     .writerId(fruit.getWriterId())
                     .writerNickname(fruit.getWriterNickname())
                     .content(fruit.getContent())
-                    .imageUrl(fruit.getImageUrl())
                     .build();
 
             LocalDateTime cur = LocalDateTime.now();

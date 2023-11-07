@@ -32,7 +32,7 @@ public class FruitService {
         return fruitRepository.findAllByTreeIdAndDeleteDateIsNull(treeId);
     }
 
-    public void makeFruit(long userId, long treeId, String writerNickname, String imageUrl, String content){
+    public void makeFruit(long userId, long treeId, String writerNickname, String content){
         Tree tree = treeRepository.findTreeById(treeId);
 
         Fruit fruit = Fruit.builder()
@@ -40,7 +40,6 @@ public class FruitService {
                 .createTime(LocalDateTime.now())
                 .writerId(userId)
                 .writerNickname(writerNickname)
-                .imageUrl(imageUrl)
                 .build();
         fruit.setTree(tree);
 

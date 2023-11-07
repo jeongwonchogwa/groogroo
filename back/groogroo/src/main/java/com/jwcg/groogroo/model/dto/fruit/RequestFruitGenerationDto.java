@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class RequestFruitGenerationDto {
     private long treeId;
     private String writerNickname;
-    private String imageUrl;
     private String content;
 
 }
