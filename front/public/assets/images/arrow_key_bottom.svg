@@ -1,5 +1,4 @@
 <svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_908_13477)">
 <rect x="128" y="128" width="8" height="8" transform="rotate(-180 128 128)" fill="#D9D9D9"/>
 <rect x="72" y="104" width="8" height="8" transform="rotate(-180 72 104)" fill="#BED853"/>
 <rect x="64" y="104" width="8" height="8" transform="rotate(-180 64 104)" fill="#BDD071"/>
@@ -35,10 +34,24 @@
 <rect x="72" y="24" width="16" height="8" transform="rotate(-180 72 24)" fill="#BDD071"/>
 <rect x="56" y="56" width="8" height="40" transform="rotate(-180 56 56)" fill="#BDD071"/>
 <rect x="56" y="96" width="8" height="8" transform="rotate(-180 56 96)" fill="#BDD071"/>
-</g>
-<defs>
-<clipPath id="clip0_908_13477">
-<rect width="128" height="128" fill="white" transform="matrix(-1 0 0 -1 128 128)"/>
-</clipPath>
-</defs>
+<rect x="112" y="120" width="8" height="112" transform="rotate(-180 112 120)" fill="white"/>
+<rect x="24" y="120" width="8" height="112" transform="rotate(-180 24 120)" fill="white"/>
+<rect x="104" y="112" width="8" height="40" transform="rotate(-180 104 112)" fill="white"/>
+<rect x="104" y="56" width="8" height="48" transform="rotate(-180 104 56)" fill="white"/>
+<rect x="96" y="56" width="8" height="48" transform="rotate(-180 96 56)" fill="white"/>
+<rect x="88" y="56" width="8" height="48" transform="rotate(-180 88 56)" fill="white"/>
+<rect x="48" y="56" width="8" height="48" transform="rotate(-180 48 56)" fill="white"/>
+<rect x="40" y="56" width="8" height="48" transform="rotate(-180 40 56)" fill="white"/>
+<rect x="32" y="56" width="8" height="48" transform="rotate(-180 32 56)" fill="white"/>
+<rect x="32" y="112" width="8" height="40" transform="rotate(-180 32 112)" fill="white"/>
+<rect x="96" y="112" width="8" height="32" transform="rotate(-180 96 112)" fill="white"/>
+<rect x="40" y="112" width="8" height="32" transform="rotate(-180 40 112)" fill="white"/>
+<rect x="88" y="112" width="8" height="24" transform="rotate(-180 88 112)" fill="white"/>
+<rect x="48" y="112" width="8" height="24" transform="rotate(-180 48 112)" fill="white"/>
+<rect x="80" y="112" width="8" height="16" transform="rotate(-180 80 112)" fill="white"/>
+<rect x="56" y="112" width="8" height="16" transform="rotate(-180 56 112)" fill="white"/>
+<rect x="72" y="112" width="16" height="8" transform="rotate(-180 72 112)" fill="white"/>
+<rect x="80" y="16" width="32" height="8" transform="rotate(-180 80 16)" fill="white"/>
+<rect x="120" y="112" width="8" height="96" transform="rotate(-180 120 112)" fill="white"/>
+<rect x="16" y="112" width="8" height="96" transform="rotate(-180 16 112)" fill="white"/>
 </svg>

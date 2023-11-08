@@ -34,4 +34,24 @@
 <rect x="56" y="104" width="16" height="8" fill="#BDD071"/>
 <rect x="72" y="72" width="8" height="40" fill="#BDD071"/>
 <rect x="72" y="32" width="8" height="8" fill="#BDD071"/>
+<rect x="16" y="8" width="8" height="112" fill="white"/>
+<rect x="104" y="8" width="8" height="112" fill="white"/>
+<rect x="24" y="16" width="8" height="40" fill="white"/>
+<rect x="24" y="72" width="8" height="48" fill="white"/>
+<rect x="32" y="72" width="8" height="48" fill="white"/>
+<rect x="40" y="72" width="8" height="48" fill="white"/>
+<rect x="80" y="72" width="8" height="48" fill="white"/>
+<rect x="88" y="72" width="8" height="48" fill="white"/>
+<rect x="96" y="72" width="8" height="48" fill="white"/>
+<rect x="96" y="16" width="8" height="40" fill="white"/>
+<rect x="32" y="16" width="8" height="32" fill="white"/>
+<rect x="88" y="16" width="8" height="32" fill="white"/>
+<rect x="40" y="16" width="8" height="24" fill="white"/>
+<rect x="80" y="16" width="8" height="24" fill="white"/>
+<rect x="48" y="16" width="8" height="16" fill="white"/>
+<rect x="72" y="16" width="8" height="16" fill="white"/>
+<rect x="56" y="16" width="16" height="8" fill="white"/>
+<rect x="48" y="112" width="32" height="8" fill="white"/>
+<rect x="8" y="16" width="8" height="96" fill="white"/>
+<rect x="112" y="16" width="8" height="96" fill="white"/>
 </svg>

@@ -119,4 +119,11 @@
   - 추방 API 연결
   - 신고 대상 삭제 API 연결
   - pageNumber 0, completed null로 고정해놓고 신고 목록 조회 API 요청 하고 있음
-    - 드롭다운에서 선택한 completed와 페이지네이션에서 선택한 pageNumber 반영되도록 수정 필요 
+    - 드롭다운에서 선택한 completed와 페이지네이션에서 선택한 pageNumber 반영되도록 수정 필요
+
+- 23.11.07 MYH
+  - 그림판 기능 추가
+    - 그림판 tools 관련 추가 필요 ex.전체삭제 등
+
+- 23.11.08 MYH
+  - Enter쪽 페이지 css 전체수정
