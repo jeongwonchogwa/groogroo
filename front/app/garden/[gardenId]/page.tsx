@@ -6,7 +6,7 @@ const GardenCSR = dynamic(() => import("./components/Garden"), { ssr: false });
 const gardenPage = () => {
   return (
     <div className="w-screen h-screen">
-      <GardenCSR />
+      <GardenCSR gardenId={0} />
     </div>
   );
 };

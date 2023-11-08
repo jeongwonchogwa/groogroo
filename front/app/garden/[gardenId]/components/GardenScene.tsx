@@ -1,31 +1,38 @@
 import { Scene } from "phaser";
 // @ts-ignore
 import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";
-import { tree } from "@/app/dummies";
-import { Character, Tree } from "@/app/types";
-import CreateFruit from "./CreateFruit";
+import { treeList } from "@/app/dummies";
+import { Character, Garden, Tree } from "@/app/types";
 import ReactDOM from "react-dom/client";
+
+interface Props {
+  onFormOpenButtonClick: (tree: Tree) => void;
+  onFlowerSelectOpenButtonClick: () => void;
+  onTreeSelectOpenButtonClick: () => void;
+}
 
 export default class GardenScene extends Scene {
   private gridEngine!: any;
+  private garden!: Garden;
   private startX!: number;
   private startY!: number;
   private footer!: Phaser.GameObjects.DOMElement;
   private plusButton!: HTMLImageElement;
   private treeButton!: HTMLImageElement;
   private flowerButton!: HTMLImageElement;
-  private fruitForm!: Phaser.GameObjects.DOMElement;
   private onFormOpenButtonClick!: (tree: Tree) => void;
   private onFlowerSelectOpenButtonClick!: () => void;
+  private onTreeSelectOpenButtonClick!: () => void;
 
-  constructor(props: {
-    onFormOpenButtonClick: (tree: Tree) => void;
-    onFlowerSelectOpenButtonClick: () => void;
-  }) {
+  constructor(props: Props) {
     super("gardenScene");
-
     this.onFormOpenButtonClick = props.onFormOpenButtonClick;
     this.onFlowerSelectOpenButtonClick = props.onFlowerSelectOpenButtonClick;
+    this.onTreeSelectOpenButtonClick = props.onTreeSelectOpenButtonClick;
+  }
+
+  init(data: { garden: Garden }) {
+    this.garden = data.garden;
   }
 
   preload() {
@@ -48,7 +55,7 @@ export default class GardenScene extends Scene {
 
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
     const characters: Character[] = [];
-    tree.trees.forEach((tree) => {
+    treeList.trees.forEach((tree) => {
       characters.push({
         id: tree.name,
         sprite: this.physics.add
@@ -163,7 +170,10 @@ export default class GardenScene extends Scene {
     const treeRegistText = document.createTextNode("나무 심기");
     textBox1.appendChild(treeRegistText);
     textBox1.addEventListener("click", () => {
-      this.scene.start("gardenEditScene");
+      onPlusButtonClick();
+      this.onTreeSelectOpenButtonClick();
+      // this.scene.stop("gardenScene");
+      // this.scene.start("treeEditScene", { gardenId: this.garden.gardenId });
     });
 
     const textBox2 = document.createElement("div");
@@ -171,7 +181,6 @@ export default class GardenScene extends Scene {
       "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
     const flowerRegistText = document.createTextNode("꽃 심기");
     textBox2.appendChild(flowerRegistText);
-    textBox2.addEventListener("click", this.onFlowerSelectOpenButtonClick);
 
     //나무, 꽃 목록 생성. 이벤트 등록
     characters.forEach((tree) => {
@@ -247,6 +256,7 @@ export default class GardenScene extends Scene {
       });
       flowerModalBox.appendChild(tmpTextBox);
     });
+
     registModalBox.appendChild(textBox1);
     registModalBox.appendChild(textBox2);
 
@@ -318,6 +328,12 @@ export default class GardenScene extends Scene {
         registModalBox.style.display = "none";
       }
     };
+
+    textBox2.addEventListener("click", () => {
+      onPlusButtonClick();
+      this.onFlowerSelectOpenButtonClick();
+    });
+
     this.plusButton.addEventListener("click", onPlusButtonClick);
 
     const treeMenuSet = document.createElement("div");
@@ -347,21 +363,11 @@ export default class GardenScene extends Scene {
     this.treeButton.addEventListener("click", onTreeButtonClick);
     this.flowerButton.addEventListener("click", onFlowerButtonClick);
 
-    //열매 작성 폼////////////////////////////////////////////////////////
-    // let createFruit = CreateFruit();
-    // const DOMCreateFruitForm = document.createElement("div");
-
-    // ReactDOM.createRoot(DOMCreateFruitForm).render(createFruit);
-
-    // this.fruitForm = this.add
-    //   .dom(0, 0, "div")
-    //   .setScrollFactor(0, 0)
-    //   .setOrigin(0, 0);
-    // this.fruitForm.setClassName(
-    //   "w-full h-full !flex flex-col align-center justify-center border-2 border-white"
-    // );
-
-    // this.fruitForm.node.appendChild(DOMCreateFruitForm);
+    if (this.garden.state !== "ACCEPT") {
+      // this.plusButton.style.display = "none";
+      // this.flowerButton.style.display = "none";
+      // this.treeButton.style.display = "none";
+    }
 
     //그리드엔진 설정///////////////////////////////////////////////////
     const gridEngineConfig = {

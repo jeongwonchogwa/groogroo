@@ -1,3 +1,4 @@
+import Provider from "@/utils/provider";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Press_Start_2P } from "next/font/google";
@@ -60,7 +61,7 @@ export default function RootLayout({
       <body
         className={`${pressStart2P.className} ${bitBit.variable} ${nexonGothic.variable} ${nexonGothic_Light.variable} ${nexonGothic_Medium.variable} ${nexonGothic_Bold.variable} ${neoDuggeunmo_Pro.variable}`}
       >
-        {children}
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

@@ -23,6 +23,7 @@ const GardensPage = () => {
     name: "",
     description: "",
     imageUrl: "",
+    state: null,
     likes: 0,
     memberCnt: 0,
   });
@@ -52,22 +53,28 @@ const GardensPage = () => {
 
   // gardenData를 업데이트하는 함수
   const updateGardenData = (gardenId: number) => {
-    const selectedGarden = gardenList.find((garden) => garden.gardenId === gardenId);
+    const selectedGarden = gardenList.find(
+      (garden) => garden.gardenId === gardenId
+    );
     if (selectedGarden) {
       setGardenData(selectedGarden);
     }
   };
 
   // 내 정원 GardenList 불러오기
+
   const fetchGardenList = useCallback(
     async (pageNumber: number) => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/list/${pageNumber}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/list/${pageNumber}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${userToken}`,
+            },
+          }
+        );
         if (response.status === 200) {
           const responseData = await response.json();
           console.log(responseData);
@@ -83,12 +90,15 @@ const GardensPage = () => {
   const fetchGardenRankingList = useCallback(
     async (pageNumber: number) => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/ranking/${pageNumber}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/ranking/${pageNumber}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${userToken}`,
+            },
+          }
+        );
         if (response.status === 200) {
           const responseData = await response.json();
           console.log(responseData);
@@ -115,7 +125,11 @@ const GardensPage = () => {
   // 캐싱을 추가해야지?
   return (
     <div className="w-screen h-screen bg-background-pixel bg-blend-overlay bg-slate-300 bg-opacity-25 bg-cover">
-      <GardensHeader clickText={clickText} handlemenu={() => handlemenu()} menuOpen={menuOpen} />
+      <GardensHeader
+        clickText={clickText}
+        handlemenu={() => handlemenu()}
+        menuOpen={menuOpen}
+      />
       <div className="h-[650px] overflow-scroll mt-3">
         <div className="flex w-full flex-col">
           <GardenCard

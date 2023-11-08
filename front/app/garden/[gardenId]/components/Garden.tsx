@@ -1,30 +1,44 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import GardenScene from "./GardenScene";
 import Preloader from "./Preloader";
 import GridEngine from "grid-engine";
 import GardenHeader from "./GardenHeader";
-import GardenEditScene from "./GardenEditScene";
+import TreeEditScene from "./TreeEditScene";
 import CreateFruit from "./CreateFruit";
-import { Tree } from "@/app/types";
+import { Flower, FlowerPos, Garden, Tree } from "@/app/types";
 import PixelCard from "@/app/components/PixelCard";
 import Image from "next/image";
 import FlowerSelect from "./FlowerSelect";
-const Garden = () => {
+import FlowerEditScene from "./FlowerEditScene";
+import CreateFlower from "./CreateFlower";
+import TreeSelect from "./TreeSelect";
+
+interface Props {
+  gardenId: number;
+}
+
+const Garden = (props: Props) => {
   const AccessToken =
     "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraW1qdzM5MjhAZ21haWwuY29tIiwiaWQiOjU5LCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNjk5MzM3OTc1LCJleHAiOjE3MDA1NDc1NzV9.Ql31eBvnvari9_g4o-s46SsURV9egVz1wcCo2m1vxVw";
   // const AccessToken = localStorage.getItem("access_token");
-
-  const [fruitEdit, setFruitEdit] = useState<boolean>(false);
-  const [flowerEdit, setFlowerEdit] = useState<boolean>(false);
-  const [selectedFlower, setSelectedFlower] = useState<number>(100);
+  const [game, setGame] = useState<Phaser.Game>();
+  const [garden, setGarden] = useState<Garden>({
+    gardenId: 0,
+    name: "정원이름",
+    state: null,
+    imageUrl: "/assets/map1.json",
+    capacity: 0,
+    description: "설명",
+    treePosList: [{ id: 0, name: "", imagUrl: "", fruitCnt: 0, x: 0, y: 0 }],
+    flowerPosList: [{ id: 0, imageUrl: "", x: 0, y: 0 }],
+  });
   const [myTree, setMyTree] = useState<Tree>({
     id: 0,
     fruits: [],
     fruitsCount: 0,
-    imageUrl: "",
-    name: "",
+    imageUrl: "/assets/trees/tree[1].svg",
+    name: "myTree",
   });
   const [currnetTree, setCurrnetTree] = useState<Tree>({
     id: 0,
@@ -33,10 +47,22 @@ const Garden = () => {
     imageUrl: "",
     name: "",
   });
+
+  const [currentFlower, setCurrentFlower] = useState<Flower>({
+    x: 0,
+    y: 0,
+    imageUrl: "",
+  });
+  const [fruitEdit, setFruitEdit] = useState<boolean>(false);
+  const [flowerEdit, setFlowerEdit] = useState<boolean>(false);
+  const [treeEdit, setTreeEdit] = useState<boolean>(false);
+  const [flowerMessageEdit, setFlowerMessageEdit] = useState<boolean>(false);
+
   const onFormCloseButtonClick = () => {
     console.log("꺼져랏");
     setFruitEdit(false);
     setFlowerEdit(false);
+    setTreeEdit(false);
   };
 
   const onFormOpenButtonClick = (tree: Tree) => {
@@ -49,22 +75,41 @@ const Garden = () => {
     setFlowerEdit(true);
   };
 
-  const onFlowerSelectButtonClick = (index: number) => {
-    console.log("꽃 선택 완료!");
-    setSelectedFlower(index);
+  const onTreeSelectOpenButtonClick = () => {
+    setTreeEdit(true);
   };
 
-  const getMyTree = async () => {
+  const onFlowerPlantButtonClick = (data: Flower) => {
+    setCurrentFlower(data);
+    setFlowerMessageEdit(true);
+  };
+
+  const onFlowerSelectButtonClick = (index: number) => {
+    console.log("꽃 선택 완료!" + (index + 1));
+    onFormCloseButtonClick();
+    game?.scene.stop("gardenScene");
+    game?.scene.start("flowerEditScene", {
+      selectedFlower: index + 1,
+      gardenId: garden.gardenId,
+    });
+  };
+
+  const onTreeSelectButtonClick = (index: number) => {
+    console.log("나무 선택 완료!" + (index + 1));
+    onFormCloseButtonClick();
+    game?.scene.stop("gardenScene");
+    game?.scene.start("treeEditScene", {
+      selectedFlower: index + 1,
+      gardenId: garden.gardenId,
+    });
+  };
+
+  const getGardenInfo = async () => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`,
-        {
-          headers: {
-            Authorization: `Bearer ${AccessToken}`,
-          },
-        }
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${props.gardenId}`
       );
-      const data: Tree = await res.json();
+      const data: Garden = await res.json();
       console.log(data);
       return data;
     } catch (err) {
@@ -76,16 +121,21 @@ const Garden = () => {
     const gardenScene = new GardenScene({
       onFormOpenButtonClick: onFormOpenButtonClick,
       onFlowerSelectOpenButtonClick: onFlowerSelectOpenButtonClick,
+      onTreeSelectOpenButtonClick: onTreeSelectOpenButtonClick,
     });
-    const preloader = new Preloader({ myTree: myTree });
-    // const gardenEditScene = new GardenEditScene({})
 
-    // const fetchMyTree = async () => {
-    //   const Data = await getMyTree();
-    //   setMyTree(Data!);
+    const treeEditScene = new TreeEditScene({ myTree: myTree });
+    const flowerEditScene = new FlowerEditScene({
+      onFlowerPlantButtonClick: onFlowerPlantButtonClick,
+    });
+    const preloader = new Preloader({ myTree: myTree, garden: garden });
+
+    // const fetchGarden = async () => {
+    //   const Data = await getGardenInfo();
+    //   setGarden(Data!);
     // };
 
-    // fetchMyTree();
+    // fetchGarden();
 
     const initPhaser = () => {
       const phaserGame = new Phaser.Game({
@@ -99,7 +149,7 @@ const Garden = () => {
         dom: {
           createContainer: true,
         },
-        scene: [preloader, gardenScene, GardenEditScene],
+        scene: [preloader, gardenScene, treeEditScene, flowerEditScene],
         pixelArt: true,
 
         physics: {
@@ -120,7 +170,7 @@ const Garden = () => {
         },
       });
 
-      // setGame(phaserGame);
+      setGame(phaserGame);
     };
 
     initPhaser();
@@ -133,7 +183,7 @@ const Garden = () => {
         id="garden-content"
         key="garden-content"
       >
-        <GardenHeader />
+        <GardenHeader state={garden.state} />
         {fruitEdit ? (
           <div
             className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-30 "
@@ -161,6 +211,18 @@ const Garden = () => {
           </div>
         ) : null}
 
+        {treeEdit ? (
+          <div
+            className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-30 flex items-center px-5"
+            onClick={onFormCloseButtonClick}
+          >
+            <TreeSelect
+              onFormCloseButtonClick={onFormCloseButtonClick}
+              onTreeSelectButtonClick={onTreeSelectButtonClick}
+            />
+          </div>
+        ) : null}
+
         {flowerEdit ? (
           <div
             className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-30 flex items-center px-5"
@@ -169,6 +231,27 @@ const Garden = () => {
             <FlowerSelect
               onFormCloseButtonClick={onFormCloseButtonClick}
               onFlowerSelectButtonClick={onFlowerSelectButtonClick}
+            />
+          </div>
+        ) : null}
+
+        {flowerMessageEdit ? (
+          <div
+            className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-30 "
+            onClick={onFormCloseButtonClick}
+          >
+            <div className="flex flex-col items-center justify-center gap-2 pt-20">
+              <Image
+                alt="currentFlower"
+                src={currentFlower.imageUrl}
+                width={250}
+                height={250}
+              ></Image>
+            </div>
+            <CreateFlower
+              gardenId={garden.gardenId}
+              onFormCloseButtonClick={onFormCloseButtonClick}
+              currentFlower={currentFlower}
             />
           </div>
         ) : null}

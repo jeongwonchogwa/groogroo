@@ -1,6 +1,6 @@
 import * as type from "./types";
 
-export const tree: type.TreesResponse = {
+export const treeList: type.TreesResponse = {
   httpStatus: "success",
   message: "나무 검색 성공",
   trees: [

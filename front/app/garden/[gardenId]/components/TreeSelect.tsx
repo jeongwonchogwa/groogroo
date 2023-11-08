@@ -7,35 +7,34 @@ import { useState } from "react";
 
 interface Props {
   onFormCloseButtonClick: () => void;
-  onFlowerSelectButtonClick: (index: number) => void;
+  onTreeSelectButtonClick: (index: number) => void;
 }
 
-const FlowerSelect = (props: Props) => {
-  const [flowerNumber, setFlowerNumber] = useState<number>(0);
-  const flowerList = [
-    "/assets/flowers/flower[1].svg",
-    "/assets/flowers/flower[2].svg",
-    "/assets/flowers/flower[3].svg",
-    "/assets/flowers/flower[4].svg",
-    "/assets/flowers/flower[5].svg",
-    "/assets/flowers/flower[6].svg",
-    "/assets/flowers/flower[7].svg",
-    "/assets/flowers/flower[8].svg",
-    "/assets/flowers/flower[9].svg",
+const TreeSelect = (props: Props) => {
+  const [treeNumber, setTreeNumber] = useState<number>(0);
+  const treeList = [
+    "/assets/trees/tree[0].svg",
+    "/assets/trees/tree[1].svg",
+    "/assets/trees/tree[2].svg",
+    "/assets/trees/tree[3].svg",
+    "/assets/trees/tree[4].svg",
+    "/assets/trees/tree[5].svg",
+    "/assets/trees/tree[6].svg",
+    "/assets/trees/tree[7].svg",
   ];
-  const prevFlower = () => {
-    if (flowerNumber === 0) {
-      setFlowerNumber(flowerList.length - 1);
+  const prevTree = () => {
+    if (treeNumber === 0) {
+      setTreeNumber(treeList.length - 1);
     } else {
-      setFlowerNumber((prev) => prev - 1);
+      setTreeNumber((prev) => prev - 1);
     }
   };
 
-  const nextFlower = () => {
-    if (flowerNumber === flowerList.length - 1) {
-      setFlowerNumber(0);
+  const nextTree = () => {
+    if (treeNumber === treeList.length - 1) {
+      setTreeNumber(0);
     } else {
-      setFlowerNumber((prev) => prev + 1);
+      setTreeNumber((prev) => prev + 1);
     }
   };
 
@@ -44,18 +43,20 @@ const FlowerSelect = (props: Props) => {
       onClick={(e) => e.stopPropagation()}
       className="w-full flex flex-col gap-10 items-center"
     >
-      <div className="font-bitBit text-2xl text-white">심을 꽃을 고르세요.</div>
+      <div className="font-bitBit text-2xl text-white">
+        심을 나무를 고르세요.
+      </div>
       <div className="w-full flex gap-5">
         <div className="w-8 my-auto">
-          {<IconButton iconSrc="arrow" onClick={prevFlower} />}
+          {<IconButton iconSrc="arrow" onClick={prevTree} />}
         </div>
         <Frame
           content={
             <div className="flex items-center bg-white w-full h-full">
               <div className="mx-auto">
                 <Image
-                  alt="flower"
-                  src={flowerList[flowerNumber]}
+                  alt="tree"
+                  src={treeList[treeNumber]}
                   width={200}
                   height={200}
                 />
@@ -65,7 +66,7 @@ const FlowerSelect = (props: Props) => {
           height={400}
         />
         <div className="w-8 my-auto">
-          {<IconButton iconSrc="arrow" rotate={true} onClick={nextFlower} />}
+          {<IconButton iconSrc="arrow" rotate={true} onClick={nextTree} />}
         </div>
       </div>
       <div className="flex w-full gap-5 px-5">
@@ -77,11 +78,11 @@ const FlowerSelect = (props: Props) => {
         <Button
           color="secondary"
           label="선택완료"
-          onClick={() => props.onFlowerSelectButtonClick(flowerNumber)}
+          onClick={() => props.onTreeSelectButtonClick(treeNumber)}
         ></Button>
       </div>
     </div>
   );
 };
 
-export default FlowerSelect;
+export default TreeSelect;

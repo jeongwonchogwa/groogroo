@@ -16,6 +16,13 @@ export interface Tree {
   y?: number;
 }
 
+export interface Flower {
+  id?: number;
+  imageUrl: string;
+  x?: number;
+  y?: number;
+}
+
 export interface TreesResponse {
   httpStatus: string;
   message: string;
@@ -68,15 +75,31 @@ export interface Garden {
   gardenId: number;
   name: string;
   description: string;
-  targetId?: number;
   url?: string;
   role?: string;
-  x?: number;
-  y?: number;
   imageUrl?: string;
   capacity: number;
+  state: "ACCEPT" | "REFUSE" | "KICK" | "WAIT" | "WITHDRAWAL" | null;
   memberCnt?: number;
   likes?: number;
+  treePosList?: TreePos[];
+  flowerPosList?: FlowerPos[];
+}
+
+export interface TreePos {
+  id: number;
+  name: string;
+  imagUrl: string;
+  fruitCnt: number;
+  x: number;
+  y: number;
+}
+
+export interface FlowerPos {
+  id: number;
+  imageUrl: string;
+  x: number;
+  y: number;
 }
 
 export interface Report {

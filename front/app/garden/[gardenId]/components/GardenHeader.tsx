@@ -6,7 +6,12 @@ import { useRouter } from "next/navigation";
 import Menu from "./Menu";
 import { MenuButton } from "@/app/types";
 import Alarm from "@/app/components/Alarm";
-const GardenHeader = () => {
+
+interface Props {
+  state: "ACCEPT" | "REFUSE" | "KICK" | "WAIT" | "WITHDRAWAL" | null;
+}
+
+const GardenHeader = (props: Props) => {
   const router = useRouter();
 
   const [openMenu, setOpenMenu] = useState(false);
@@ -22,11 +27,24 @@ const GardenHeader = () => {
     setOpenMenu(false);
   };
 
-  const menuList: MenuButton[] = [
-    { name: "참여신청", clickEvent: () => {} },
-    { name: "초대하기", clickEvent: () => {} },
-    { name: "신고하기", clickEvent: () => {} },
-  ];
+  let menuList: MenuButton[] = [];
+
+  {
+    props.state === "ACCEPT"
+      ? (menuList = [
+          { name: "초대하기", clickEvent: () => {} },
+          { name: "신고하기", clickEvent: () => {} },
+        ])
+      : props.state === null || "REFUSE" || "WITHDRAWAL"
+      ? (menuList = [{ name: "참여신청", clickEvent: () => {} }])
+      : props.state === "KICK"
+      ? (menuList = [{ name: "추방당하셨습니다.", clickEvent: () => {} }])
+      : props.state === "WAIT"
+      ? (menuList = [
+          { name: "회원가입 신청을 확인중입니다.", clickEvent: () => {} },
+        ])
+      : null;
+  }
 
   const [uiWidth, setUiWidth] = useState<String>("");
   useEffect(() => {

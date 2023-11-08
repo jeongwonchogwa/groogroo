@@ -4,7 +4,7 @@ import IconButton from "@/app/components/IconButton";
 import { useState } from "react";
 import Menu from "./Menu";
 import { MenuButton } from "@/app/types";
-import { tree } from "@/app/dummies";
+import { treeList } from "@/app/dummies";
 import { gardenEditStore } from "@/stores/gardenEditStore";
 
 const GardenFooter = () => {
@@ -52,12 +52,12 @@ const GardenFooter = () => {
       <div className="flex gap-5">
         <div className="flex flex-col-reverse gap-2 h-10 w-10 items-end">
           <IconButton iconSrc="flower" onClick={onFlowerButtonClick} />
-          {openFlowerList ? <Menu assetList={tree.trees}></Menu> : null}
+          {openFlowerList ? <Menu assetList={treeList.trees}></Menu> : null}
         </div>
 
         <div className="flex flex-col-reverse gap-2 h-10 w-10 items-end">
           <IconButton iconSrc="tree" onClick={onTreeButtonClick} />
-          {openTreeList ? <Menu assetList={tree.trees}></Menu> : null}
+          {openTreeList ? <Menu assetList={treeList.trees}></Menu> : null}
         </div>
       </div>
     </div>
