@@ -29,12 +29,9 @@ const Freeset = () => {
 	};
 
   return (
-    <div
-      className="w-[430px] h-[932px] bg-cover bg-center bg-no-repeat relative flex justify-center items-center"
-      style={{ backgroundImage: 'url("/assets/images/background_home.png")' }}
-    >    
-      <div className="w-[390px] h-[720px] absolute top-[430px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-        <div className="w-[390px] h-[110px] flex flex-col items-center">
+    <div className="w-full flex flex-col justify-center items-center ">    
+      <div className="w-full flex flex-col items-center mt-20">
+        <div className="flex flex-col items-center mb-3">
           <p className="font-bitBit text-[48px]" style={{ marginBottom: 0 }}>
             나무 프리셋
           </p>
@@ -42,7 +39,7 @@ const Freeset = () => {
             제공된 프리셋을 통해 나무를 골라주세요!
           </p>
         </div>
-        <div className="w-[390px] h-[500px] flex flex-row justify-center">
+        <div className="h-[500px] flex flex-row justify-center">
 					<div className="w-[35px] h-[500px] flex items-center justify-center">
 						<button
 							onClick={prevImage}
@@ -66,8 +63,9 @@ const Freeset = () => {
 								<Image
 								src={`/assets/trees/tree[${currentImage}].svg`}
 								alt = "나무 이미지"
+								width={256}
+          			height={256}
 								style ={{
-									height: '256px',
 									objectFit: 'cover',
 								}} />
 							</div>

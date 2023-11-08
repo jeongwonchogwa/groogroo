@@ -14,12 +14,9 @@ const Pick = () => {
   };
 
   return (
-    <div
-      className="w-[430px] h-[932px] bg-cover bg-center bg-no-repeat relative flex justify-center items-center"
-      style={{ backgroundImage: 'url("/assets/images/background_home.png")' }}
-    >    
-      <div className="w-[390px] h-[720px] absolute top-[430px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-        <div className="w-[390px] h-[110px] flex flex-col items-center">
+		<div className="w-full flex flex-col justify-center items-center ">    
+      <div className="w-full flex flex-col items-center mt-20">
+        <div className="flex flex-col items-center mb-3">
 					<p className="font-bitBit text-[48px]" style={{ marginBottom: 0 }}>
             내 나무 만들기
           </p>
@@ -27,7 +24,7 @@ const Pick = () => {
             AI를 통해 생성된 나무 목록입니다!
           </p>
         </div>
-        <div className="w-[390px] h-[500px] flex flex-row justify-center">
+        <div className="h-[500px] flex flex-row justify-center">
 					<div className="w-[35px] h-[500px] flex items-center justify-center">
 						<button
 							style={{

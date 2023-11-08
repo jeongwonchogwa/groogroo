@@ -24,20 +24,17 @@ export default function Terms() {
   };
 
   return (
-    <div
-      className="w-[430px] h-[932px] bg-cover bg-center bg-no-repeat relative flex justify-center items-center"
-      style={{ backgroundImage: 'url("/assets/images/background_home.png")' }}
-    >      
-      <div className="w-[350px] h-[720px] absolute top-[430px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-        <Image src="/assets/images/groogroo_logo.png" alt="Logo" className="w-[240px] h-[90px] mb-[20px]" />
-        <div className="w-[350px] flex flex-row">
-          <div className="my-auto">
-            <div className="w-[5px] h-[450px] bg-black" />
+    <div className="w-full flex justify-center items-center">   
+      <div className="flex flex-col items-center mt-20 mx-5">
+        <Image src="/assets/images/groogroo_logo.png" alt="Logo" width={240} height={90} className="mb-[20px]" />
+        <div className="w-full h-[440px] flex flex-row">
+          <div className=" my-auto">
+            <div className="w-[5px] h-[430px] bg-black" />
           </div>
-          <div className="w-[340px] flex flex-col">
-            <div className="w-[340px] h-[5px] bg-black"></div>
-            <div className="w-[340px]">
-              <div className="w-[340px] h-[450px] bg-primary border border-black flex flex-col items-center">
+          <div className="w-full flex flex-col">
+            <div className="w-full h-[5px] bg-black"></div>
+            <div className="w-full">
+              <div className="w-full h-[430px] bg-primary border border-black flex flex-col items-center">
                 <p className="text-white font-nexonGothic font-bold text-[32px] mt-5 mb-5">그루그루 이용약관</p>
                 <p className="text-white font-nexonGothic text-[20px] ml-5 mr-5">
                   1. 다른 회원의 계정 및 비밀번호를 &nbsp;&nbsp;&nbsp;&nbsp;도용하면 안 돼요. <br/>
@@ -49,10 +46,10 @@ export default function Terms() {
                 </p>
               </div>
             </div>
-            <div className="w-[340px] h-[5px] bg-black"></div>
+            <div className="w-full h-[5px] bg-black"></div>
           </div>
           <div className="my-auto">
-            <div className="w-[5px] h-[450px] bg-black" />
+            <div className="w-[5px] h-[430px] bg-black" />
           </div>
         </div>
         <div className="mt-[25px] mb-[35px] flex items-center">

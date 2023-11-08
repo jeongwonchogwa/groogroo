@@ -35,38 +35,39 @@ const Create = () => {
 
 
   return (
-    <div className="w-full flex flex-col justify-center items-center">    
-        <div className="w-full flex flex-col items-center">
-          <p className="font-bitBit text-[48px]" style={{ marginBottom: 0 }}>
-            내 나무 만들기
-          </p>
-          <p className="font-nexonGothic text-[18px]" style={{ marginBottom: 0 }}>
-            AI 처리를 통해 나만의 나무를 만들 수 있답니다!
-          </p>
+    <div className="w-full flex flex-col justify-center items-center ">    
+      <div className="w-full flex flex-col items-center mt-20">
+        <p className="font-bitBit text-[48px]" style={{ marginBottom: 0 }}>
+          내 나무 만들기
+        </p>
+        <p className="font-nexonGothic text-[18px]" style={{ marginBottom: 0 }}>
+          AI 처리를 통해 나만의 나무를 만들 수 있답니다!
+        </p>
+      </div>
+      <div className="w-full flex flex-col items-center">
+        <div className="w-full flex space-x-8 mt-5 mb-3">
+          <SmallButton color={selectedComponent === 'canvas' ? 'default' : 'white'} label="이미지" onClick={() => setSelectedComponent('canvas')} />
+          <SmallButton color={selectedComponent === 'text' ? 'default' : 'white'} label="텍스트" onClick={() => setSelectedComponent('text')} /> 
         </div>
-        <div className="w-full flex mb-3">
-          <SmallButton color={selectedComponent === 'canvas' ? 'default' : 'white'} label="이미지" onClick={() => setSelectedComponent('canvas')} /> { /* 이미지 버튼을 눌렀을 때 canvas를 선택합니다 */ }
-          <SmallButton color={selectedComponent === 'text' ? 'default' : 'white'} label="텍스트" onClick={() => setSelectedComponent('text')} /> { /* 텍스트 버튼을 눌렀을 때 text를 선택합니다 */ }
-        </div>
-
         {selectedComponent === 'canvas' && (
           <>
             <DrawingTools
               onSelectTool={(tool) => handleSelectTool(tool)}
               onColorChange={(color) => handleColorChange(color)}
             />
-            <Canvas selectedTool={selectedTool} selectedColor={selectedColor} />
+          <Canvas selectedTool={selectedTool} selectedColor={selectedColor} />
           </>
         )}        
         {selectedComponent === 'text' && <NameInput placeholder="뿡뿡이나무" value={inputValue} onChange={handleInputChange} />} { /* NameInput 컴포넌트를 렌더링 */ }    
-        <div className="w-[290px] h-[20px] flex justify-end">
+        <div className="w-full h-[20px] flex justify-end mr-20">
           <a href="/enter/freeset" className="text-primary font-nexonGothic font-bold text-[20px] hover:no-underline hover:text-primary">				
-						나무 프리셋 구경하기
-					</a>
-				</div>
-        <div className="w-[290px] h-[50px] mt-[30px]">      
+            나무 프리셋 구경하기
+          </a>
+        </div>
+        <div className="w-[80%] mt-[30px] ">      
           <Button color="primary" label="생성 하기" onClick={handleCreateButtonClick} />
         </div>
+      </div>
 		</div>
   );
 ;}

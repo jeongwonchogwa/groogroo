@@ -63,17 +63,14 @@ const Check = () => {
 	};
 
   return (
-    <div
-      className="w-[430px] h-[932px] bg-cover bg-center bg-no-repeat relative flex justify-center items-center"
-      style={{ backgroundImage: 'url("/assets/images/background_home.png")' }}
-    >    
-      <div className="w-[390px] h-[720px] absolute top-[430px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-        <div className="w-[390px] h-[80px] flex flex-col items-center">
+    <div className="w-full flex flex-col justify-center items-center ">    
+      <div className="w-full flex flex-col items-center mt-20">
+        <div className="flex flex-col items-center mb-3">
           <p className="font-bitBit text-[32px]" style={{ marginBottom: 0 }}>
             아래 나무로 시작할까요?
           </p>
         </div>
-        <div className="w-[390px] h-[300px] flex justify-center">
+        <div className="h-[300px] flex justify-center">
           <div className="w-[290px] flex flex-row mr-[15px] ml-[5px]">
 						<div className="my-auto">
 							<div className="w-[5px] h-[290px] bg-black" />
@@ -84,8 +81,9 @@ const Check = () => {
 							<Image
 								src={`/assets/trees/tree[${selectedImage}].svg`}
 								alt="나무 이미지"
+								width={192}
+								height={192}
 								style={{
-									height: '192px',
 									objectFit: 'cover',
 								}}
 							/>
