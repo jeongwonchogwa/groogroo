@@ -27,6 +27,7 @@ const config: Config = {
       },
       backgroundImage: {
         "background-pixel": "url('/assets/images/background.png')",
+        "background-home": "url('/assets/images/background_home.png')",
         "modal-img": "url('/assets/images/card.svg')",
       },
       colors: {

@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 
-const Canvas: React.FC = () => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+const Canvas: React.FC<{ selectedTool: string; selectedColor: string }> = ({ selectedTool, selectedColor }) => {  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [prevX, setPrevX] = useState(0);
   const [prevY, setPrevY] = useState(0);
@@ -11,14 +10,20 @@ const Canvas: React.FC = () => {
     if (canvas) {
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        // 기본값 설정
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 2;
+        // 기본값 설정 (selectedTool에 따라 적절한 색상 설정)
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
+
+        if (selectedTool === 'pen') {
+          ctx.strokeStyle = selectedColor; // Pen 도구 선택 시 선택한 색상 사용
+					ctx.lineWidth = 2;
+        } else if (selectedTool === 'eraser') {
+          ctx.strokeStyle = 'white'; // Eraser 도구 선택 시 흰색 사용
+					ctx.lineWidth = 10;
+        }
       }
     }
-  }, []);
+  }, [selectedTool, selectedColor]);
 
   const getCanvasCoordinates = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;

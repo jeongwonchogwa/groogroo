@@ -3,13 +3,13 @@
 import React, { useState } from 'react';
 import Button from "../../components/Button";
 import { useRouter } from "next/navigation";
-
+import Image from 'next/image';
 
 
 // 이걸,, 지금은 imageCount를 직접넣는데
 // 자동으로 파일내에 파일갯수를 파악해주는 코드를짜야할까......?
 // 우리 이미지 자동저장 이런것도없는데 굳이...??????????????? ㅠㅠㅠ....
-const imageCount = 4;
+const imageCount = 8;
 
 const Freeset = () => {
 	const [currentImage, setCurrentImage] = useState(0);
@@ -63,7 +63,7 @@ const Freeset = () => {
 						<div className="w-[290px] flex flex-col">
 							<div className="w-[290px] h-[5px] bg-black"></div>
 							<div className="w-[290px] h-[490px] flex items-center justify-center bg-white">
-								<img
+								<Image
 								src={`/assets/trees/tree[${currentImage}].svg`}
 								alt = "나무 이미지"
 								style ={{

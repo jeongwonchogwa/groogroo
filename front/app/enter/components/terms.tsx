@@ -5,6 +5,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "../../components/Button";
+import Image from 'next/image';
 
 export default function Terms() {
   const [isChecked, setIsChecked] = useState(false);
@@ -28,7 +29,7 @@ export default function Terms() {
       style={{ backgroundImage: 'url("/assets/images/background_home.png")' }}
     >      
       <div className="w-[350px] h-[720px] absolute top-[430px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-        <img src="/assets/images/groogroo_logo.png" alt="Logo" className="w-[240px] h-[90px] mb-[20px]" />
+        <Image src="/assets/images/groogroo_logo.png" alt="Logo" className="w-[240px] h-[90px] mb-[20px]" />
         <div className="w-[350px] flex flex-row">
           <div className="my-auto">
             <div className="w-[5px] h-[450px] bg-black" />

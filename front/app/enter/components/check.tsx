@@ -6,6 +6,7 @@ import Frame from "../../components/Frame";
 
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from 'next/image';
 
 const Check = () => {
 	const router = useRouter();
@@ -80,7 +81,7 @@ const Check = () => {
 						<div className="w-[290px] flex flex-col">
 							<div className="w-[290px] h-[5px] bg-black"></div>
 							<div className="w-[290px] h-[290px] flex items-center justify-center bg-white">
-							<img
+							<Image
 								src={`/assets/trees/tree[${selectedImage}].svg`}
 								alt="나무 이미지"
 								style={{
