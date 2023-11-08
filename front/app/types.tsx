@@ -90,3 +90,12 @@ export interface Report {
   reporterId: number;
   targetId: number;
 }
+
+// 신고 대상 조회할 때 사용
+export interface Content {
+  id: number;
+  content: string; // 열매, 꽃 내용
+  imageUrl: string; // 나무, 정원 나무 이미지
+  name: string; // 나무 이름
+  writerNickname: string; // 열매, 꽃 작성자 아이디
+}
