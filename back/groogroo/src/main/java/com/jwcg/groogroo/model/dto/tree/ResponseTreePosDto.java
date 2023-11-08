@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResponseTreePosDto {
     private long id;
+    private String name;
     private int x;
     private int y;
     private String imageUrl;
+    private int fruitCnt;
 }

@@ -130,6 +130,8 @@ public class GardenService {
                 .state(userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId).getJoinState().toString())
                 .build();
 
+        responseGardenInfoDto.setTreePos(new ArrayList<>());
+        responseGardenInfoDto.setFlowerPos(new ArrayList<>());
 
         log.info("나무, 꽃 정보 확인 + 정원 dto 생성");
         // 나무 위치 정보 삽입
@@ -137,15 +139,19 @@ public class GardenService {
             // 삭제된 나무면 건너 뛰기
             if(treeGarden.getTree().getDeleteDate() != null) continue;
 
+            Tree tree = treeGarden.getTree();
+
             ResponseTreePosDto responseTreePosDto = ResponseTreePosDto.builder()
                     .id(treeGarden.getId())
                     .x(treeGarden.getX())
                     .y(treeGarden.getY())
                     .imageUrl(treeGarden.getImageUrl())
+                    .name(tree.getName())
+                    .fruitCnt(tree.getFruits().size())
                     .build();
 
             log.info("나무 위치 정보: " + responseTreePosDto.toString());
-            responseGardenInfoDto.setTreePos(new ArrayList<>());
+
             responseGardenInfoDto.getTreePos().add(responseTreePosDto);
         }
 
@@ -160,7 +166,7 @@ public class GardenService {
                         .y(flower.getY())
                         .imageUrl(flower.getImageUrl())
                         .build();
-                responseGardenInfoDto.setFlowerPos(new ArrayList<>());
+
                 responseGardenInfoDto.getFlowerPos().add(responseFlowerPosDto);
                 log.info("꽃 위치 정보: " + responseFlowerPosDto.toString());
 
