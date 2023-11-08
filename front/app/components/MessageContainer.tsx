@@ -1,7 +1,6 @@
 "use client";
 
 // 너무 거지 같이 만들었어요 미안해요 쓰는 사람 저에게 알려주세요....
-import { useState } from "react";
 import IconButton from "./IconButton";
 import CardModal from "./CardModal";
 import ButtonModal from "./ButtonModal";
@@ -34,28 +33,33 @@ const MessageContainer = ({
   handleReport,
   clickReport,
 }: MessageContainerProps) => {
+  console.log("MessageContainerProps - ", data);
   return (
     <>
-      <div className="nes-container is-rounded bg-white w-full h-full flex flex-col !p-4">
-        <div className="w-full flex justify-between">
-          <p className="font-nexonGothic text-lg text-text-sub">{data[currentIndex].createTime}</p>
-          <div className="flex flex-row">
-            <div className="w-9 h-9 mr-2">
-              <IconButton iconSrc="trash" onClick={handleDeleteModal} />
-            </div>
-            <div className=" w-9 h-9">
-              <IconButton iconSrc="siren" onClick={() => handleReportModal(data[currentIndex].id)} />
+      {data.length > 0 ? (
+        <div className="nes-container is-rounded bg-white w-full h-full flex flex-col !p-4">
+          <div className="w-full flex justify-between">
+            <p className="font-nexonGothic text-lg text-text-sub">{data[currentIndex].createTime}</p>
+            <div className="flex flex-row">
+              <div className="w-9 h-9 mr-2">
+                <IconButton iconSrc="trash" onClick={handleDeleteModal} />
+              </div>
+              <div className=" w-9 h-9">
+                <IconButton iconSrc="siren" onClick={() => handleReportModal(data[currentIndex].id)} />
+              </div>
             </div>
           </div>
+          <div className="w-full mt-2">
+            <span className="font-bitBit text-2xl">From. </span>
+            <span className="font-bitBit text-2xl">{data[currentIndex].writerNickname}</span>
+          </div>
+          <div className="w-full mt-5 overflow-auto">
+            <span className="font-nexonGothic text-xl">{data[currentIndex].content}</span>
+          </div>
         </div>
-        <div className="w-full mt-2">
-          <span className="font-bitBit text-2xl">From. </span>
-          <span className="font-bitBit text-2xl">{data[currentIndex].writerNickname}</span>
-        </div>
-        <div className="w-full mt-5 overflow-auto">
-          <span className="font-nexonGothic text-xl">{data[currentIndex].content}</span>
-        </div>
-      </div>
+      ) : (
+        <div>데이터가 없어요</div>
+      )}
       {/* 삭제하기 눌렀을때 나오는 모달 */}
       {openDelete && (
         <ButtonModal
@@ -105,11 +109,11 @@ const MessageContainer = ({
             <div className="flex flex-col font-nexonGothic">
               <div className="grid grid-cols-4 mt-1">
                 <div className="text-gray-500">작성자</div>
-                <div>{data[currentIndex].writerNickname}</div>
+                <div className="col-span-3 trancate">{data[currentIndex].writerNickname}</div>
               </div>
               <div className="grid grid-cols-4">
                 <div className="text-gray-500">내용</div>
-                <div className="truncate">{data[currentIndex].content}</div>
+                <div className="col-span-3 truncate">{data[currentIndex].content}</div>
               </div>
             </div>
             <hr className="mt-2" />

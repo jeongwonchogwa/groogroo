@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { userInfoStore } from "@/stores/userInfoStore";
 import { redirect, useRouter } from "next/navigation";
-import { Report } from  "@/app/types";
+import { Report } from "@/app/types";
 import AdminHeader from "./components/AdminHeader";
 import AdminDropdown from "./components/AdminDropdown";
 import AdminTable from "./components/AdminTable";
@@ -71,7 +71,7 @@ const AdminPage = () => {
       }
     } catch (error) {}
   };
-  
+
   useEffect(() => {
     fetchGetReportList(pageNumber, sortType);
   }, [pageNumber, sortType]);
@@ -80,22 +80,19 @@ const AdminPage = () => {
     console.log("차단버튼 클릭");
     console.log("userId: ", userId);
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/admin/user/${userId}`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/admin/user/${userId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
 
       if (response.status === 200) {
         const responseData = await response.json();
         console.log(responseData);
-        fetchGetReportList(pageNumber,sortType);
-      } 
+        fetchGetReportList(pageNumber, sortType);
+      }
     } catch (error) {
       console.error("에러", error);
     }
@@ -104,26 +101,23 @@ const AdminPage = () => {
   const clickDelete = async (contentType: string, targetId: number) => {
     console.log("삭제버튼 클릭");
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/admin`,
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${userToken}`,
-          },
-          body: JSON.stringify({
-            targetId,
-            contentType,
-          }),
-        }
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/admin`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: JSON.stringify({
+          targetId,
+          contentType,
+        }),
+      });
 
       if (response.status === 200) {
         const responseData = await response.json();
         console.log(responseData);
-        fetchGetReportList(pageNumber,sortType);
-      } 
+        fetchGetReportList(pageNumber, sortType);
+      }
     } catch (error) {
       console.error("에러", error);
     }
@@ -132,7 +126,7 @@ const AdminPage = () => {
   const clickDetail = async (contentType: string, targetId: number, reportId: number) => {
     try {
       let url = `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/admin/detail?contentType=${contentType}&targetId=${targetId}`;
-    
+
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -142,10 +136,10 @@ const AdminPage = () => {
       if (response.status === 200) {
         const responseData = await response.json();
         console.log(responseData);
-        if(contentType==="GARDEN"){
+        if (contentType === "GARDEN") {
           console.log(responseData.gardenUrl);
           router.push(`/garden/${responseData.gardenUrl}`);
-        }else{
+        } else {
           router.push(`/admin/${reportId}?content=${JSON.stringify(responseData.content)}`);
         }
       }
@@ -180,9 +174,15 @@ const AdminPage = () => {
         handleItemClick={handleItemClick}
       />
       {/* Use the Table component here */}
-      <AdminTable reportList={reportList} sortType={sortType} clickExpel={clickExpel} clickDelete={clickDelete} clickDetail={clickDetail}/>
+      <AdminTable
+        reportList={reportList}
+        sortType={sortType}
+        clickExpel={clickExpel}
+        clickDelete={clickDelete}
+        clickDetail={clickDetail}
+      />
       {/* Use the Pagination component here */}
-      <AdminPagenation totalPages={totalPages} onPageChange={handlePageChange}/>
+      <AdminPagenation totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
 };

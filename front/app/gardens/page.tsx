@@ -4,20 +4,18 @@ import GardensHeader from "./components/GardensHeader";
 import GardenCard from "./components/GardenCard";
 
 import { Garden } from "../types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { userInfoStore } from "@/stores/userInfoStore";
 import { redirect } from "next/navigation";
 
 const GardensPage = () => {
   const { userToken } = userInfoStore();
 
-  useEffect(() => {
-    if (userToken === "") redirect("/");
-  }, [userToken]);
-
   const [gardenList, setGardenList] = useState<Garden[]>([]);
 
-  const [selectedGardenId, setSelectedGardenId] = useState<number>(1);
+  const [selectedGardenId, setSelectedGardenId] = useState<number>(0);
+
+  const [pageNumber, setPageNumber] = useState<number>(0);
 
   const [gardenData, setGardenData] = useState<Garden>({
     gardenId: 0,
@@ -61,47 +59,60 @@ const GardensPage = () => {
   };
 
   // 내 정원 GardenList 불러오기
-  const fetchGardenList = async (pageNumber: number) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/list/${pageNumber}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
-      if (response.status === 200) {
-        const responseData = await response.json();
-        console.log(responseData);
-        setGardenList(responseData.gardenInfo.content);
+  const fetchGardenList = useCallback(
+    async (pageNumber: number) => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/list/${pageNumber}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        if (response.status === 200) {
+          const responseData = await response.json();
+          console.log(responseData);
+          setGardenList(responseData.gardenInfo.content);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {}
-  };
+    },
+    [userToken]
+  );
 
-  const fetchGardenRankingList = async (pageNumber: number) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/ranking/${pageNumber}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
-      if (response.status === 200) {
-        const responseData = await response.json();
-        console.log(responseData);
+  const fetchGardenRankingList = useCallback(
+    async (pageNumber: number) => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/ranking/${pageNumber}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        if (response.status === 200) {
+          const responseData = await response.json();
+          console.log(responseData);
+        }
+      } catch (error) {
+        console.log("오류오류");
       }
-    } catch (error) {
-      console.log("오류오류");
-    }
-  };
+    },
+    [userToken]
+  );
+
+  useEffect(() => {
+    if (userToken === "") redirect("/");
+  }, [userToken]);
+
   useEffect(() => {
     if (sort === "내 정원") {
-      fetchGardenList(selectedGardenId);
+      fetchGardenList(pageNumber);
     } else {
-      fetchGardenRankingList(selectedGardenId);
+      fetchGardenRankingList(pageNumber);
     }
-    // ? 아니 이거 왜 노란줄뜨는데?
-  }, [sort, selectedGardenId]);
+  }, [fetchGardenList, fetchGardenRankingList, sort, pageNumber]);
 
+  // 캐싱을 추가해야지?
   return (
     <div className="w-screen h-screen bg-background-pixel bg-blend-overlay bg-slate-300 bg-opacity-25 bg-cover">
       <GardensHeader clickText={clickText} handlemenu={() => handlemenu()} menuOpen={menuOpen} />

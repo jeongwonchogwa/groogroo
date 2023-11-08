@@ -11,7 +11,7 @@ export interface Tree {
   imageUrl: string;
   name: string;
   fruits: Fruit[];
-  fruitsCount: number;
+  fruitsCount?: number;
   x?: number;
   y?: number;
 }

@@ -10,7 +10,7 @@ interface SearchBarProps {
 
 const SearchBar = ({ name, value, handleInput, handleSearch }: SearchBarProps) => {
   return (
-    <div className="w-full h-full">
+    <div className="w-full">
       <div className="flex flex-col">
         <p
           className="text-center text-white font-bitBit text-2xl mb-1"

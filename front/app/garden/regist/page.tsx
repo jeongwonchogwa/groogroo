@@ -66,7 +66,7 @@ const RegistPage = () => {
   return (
     <div className="w-screen h-screen bg-background-pixel bg-blend-overlay bg-slate-200 bg-opacity-30 bg-cover">
       <div className="flex w-full h-full">
-        <div className="w-full flex items-center mt-5 m-3">
+        <div className="w-full flex items-center m-3">
           <div className="nes-container w-full bg-white mx-auto is-rounded !px-4">
             <p
               className="flex justify-center text-white font-bitBit text-3xl"

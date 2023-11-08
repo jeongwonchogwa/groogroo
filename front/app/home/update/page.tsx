@@ -72,8 +72,8 @@ const UpdatePage = () => {
 
   console.log(currentIndex);
   return (
-    // 높이는 계속 박아넣고 있어요
-    <div className="w-full h-[600px]">
+    // 높이는 계속 박아넣고 있어요 -> calc로 변경
+    <div className="w-full h-[calc(100%-60px)]">
       <div className="flex flex-col">
         <div className="mt-12 mb-7 mx-9">
           <Button color="white" label="나무 바꾸기" active={false} />

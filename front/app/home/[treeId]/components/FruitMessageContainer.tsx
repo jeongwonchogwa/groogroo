@@ -2,106 +2,29 @@
 
 import IconButton from "@/app/components/IconButton";
 import MessageContainer from "@/app/components/MessageContainer";
-import { useRouter } from "next/navigation";
+import { userTreeStore } from "@/stores/userTreeStore";
 import { useState, useEffect } from "react";
-
-//  더미를 여따가 잠시 넣을게요
-const Alldata = [
-  {
-    httpStatus: "success",
-    message: "나무 검색 성공",
-    trees: [
-      {
-        id: 1,
-        imageUrl: "주소!!",
-        name: "쿠마수정나무",
-        fruits: [
-          {
-            id: 1,
-            writerId: 1,
-            writerNickname: "내",
-            content:
-              "잘지내내내내내내내내내내내내내내내내내내내내내내내내내내내ㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐㅐ~",
-            createTime: "14:10",
-          },
-          {
-            id: 2,
-            writerId: 1,
-            writerNickname: "가",
-            content: "잘지내~",
-            createTime: "14:10",
-          },
-          {
-            id: 3,
-            writerId: 1,
-            writerNickname: "누",
-            content: "잘지내~",
-            createTime: "14:10",
-          },
-          {
-            id: 4,
-            writerId: 1,
-            writerNickname: "구",
-            content: "잘지내~",
-            createTime: "14:10",
-          },
-          {
-            id: 5,
-            writerId: 1,
-            writerNickname: "게",
-            content: "잘지내~",
-            createTime: "14:10",
-          },
-          {
-            id: 6,
-            writerId: 1,
-            writerNickname: "아",
-            content: "잘지내~",
-            imageUrl: "http://이미지주소",
-            createTime: "14:10",
-          },
-          {
-            id: 7,
-            writerId: 1,
-            writerNickname: "잉",
-            content: "잘지내~",
-            imageUrl: "http://이미지주소",
-            createTime: "14:10",
-          },
-        ],
-        fruitsCount: 7,
-      },
-    ],
-  },
-];
-
-// interface FruitMessageConiainerProp {
-//   isOpen: boolean;
-//   handleModal: () => void;
-//   data: Fruit[];
-//   prevFruits: () => void;
-//   currentIndex: number;
-//   nextFruits: () => void;
-//   handleTextArea: (e: any) => void;
-// }
+import { userInfoStore } from "@/stores/userInfoStore";
 
 const FruitMessageContainer = () => {
-  const router = useRouter();
+  const { userToken } = userInfoStore();
+  const { userTree, setUserTree } = userTreeStore();
 
-  // 나무데이터 전역적으로 가지고 있어야해
+  const data = userTree?.fruits;
 
-  // fruits 배열 추출
-  const data = Alldata[0].trees.map((tree) => tree.fruits).flat();
-
-  // 현재 열매 데이터가 Fruits의 어느 위치에 있니?
+  // 현재 열매 데이터가 `Fruits의 어느 위치에 있니?
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextFruits = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
+    if (data) {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
+    }
   };
 
   const prevFruits = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + data.length) % data.length);
+    if (data) {
+      setCurrentIndex((prevIndex) => (prevIndex - 1 + data.length) % data.length);
+    }
   };
 
   console.log("currentIndex 현재", currentIndex);
@@ -114,8 +37,26 @@ const FruitMessageContainer = () => {
 
   // 삭제 버튼 누르고 나면 실행할 함수
   const handleDelete = (id: number) => {
-    // 여기서 fetch 함수를 불러서 사용한다..?
-    console.log("이거는 handleDelete", id);
+    fetchDelete(id);
+  };
+
+  // 삭제 성공 시 모달도 띄워줘야 하네..?
+
+  // 삭제하기 api 연결
+  const fetchDelete = (id: number) => {
+    fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/fruit/${id}`, {
+      method: "DELETE",
+    }).then((res) => {
+      if (res.status === 200) {
+        if (userTree) {
+          const updatedUserTree = { ...userTree };
+          updatedUserTree.fruits = userTree?.fruits.filter((fruit) => fruit.id !== id);
+          setUserTree(updatedUserTree);
+        }
+      } else {
+        console.log("삭제 실패");
+      }
+    });
   };
 
   // 신고하기 내용 handling
@@ -142,10 +83,45 @@ const FruitMessageContainer = () => {
   // 신고하기 버튼 눌렀는지 확인
   const [clickReport, setClickReport] = useState<boolean>(false);
 
+  const reportData: {
+    content: string;
+    contentType: string;
+    targetId: number;
+  } = {
+    content: reportInput,
+    contentType: "FRUIT",
+    targetId: selectedFruitId,
+  };
+
+  // 신고하기 api 연결
+  const fetchReport = async (reportData: object) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user/report`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: JSON.stringify(reportData),
+      });
+
+      if (response.status === 200) {
+        const responseData = await response.json();
+        console.log(responseData);
+      } else {
+        console.log("신고 실패");
+      }
+    } catch (error) {
+      console.error("에러 발생: ", error);
+    }
+  };
+
   // 신고 버튼 클릭시 수행할 함수
   const handleReport = (fruitId: number) => {
     setClickReport((prev) => !prev);
+    // 여기서 fetch로 신고하기 연결 해야해
     console.log("이거는 모달 클릭 시 나오는 행동", fruitId);
+    fetchReport(reportData);
     if (openReport) {
       setOpenReport(false);
     }
@@ -166,31 +142,35 @@ const FruitMessageContainer = () => {
 
   console.log("여기는 FruitMessageContainer - repostInput", reportInput);
   // 데이터를 여기서 불러오는게 맞는거지?
+
+  // 여기서 검색한 경우에 돌아오자
   return (
-    <div className="w-full flex flex-col">
-      <div className="w-full flex flex-row">
-        <div className="w-7 my-auto">
-          <IconButton iconSrc="arrow" onClick={prevFruits} />
+    <>
+      {data && (
+        <div className="w-full flex flex-col">
+          <div className="w-full flex flex-row">
+            <div className="w-7 my-auto">{data.length > 0 && <IconButton iconSrc="arrow" onClick={prevFruits} />}</div>
+            <div className="w-full h-[350px] mr-3 ml-1">
+              <MessageContainer
+                handleTextArea={handleTextArea} // 신고하기 내용 입력 받고 확인하는 곳
+                currentIndex={currentIndex} // 현재 열매가 Fruits 배열에서 어디 인덱스에 위치했는지 확인
+                data={data} // 전체 열매 데이터
+                openDelete={openDelete} // 삭제 버튼 눌렀니?
+                handleDeleteModal={handleDeleteModal} // 삭제 버튼 눌렀을때 handling 하는 함수
+                handleDelete={handleDelete}
+                openReport={openReport} // 신고 버튼 눌렀니?
+                handleReportModal={handleReportModal} // 신고 버튼 눌렀을 때 handling 하는 함수 <- 이때 신고 진짜 할거니 모달 띄우기
+                clickReport={clickReport} // 신고 진짜 할거니 버튼 눌렀니?
+                handleReport={handleReport} // 신고 진짜 할거니 버튼 눌렀을 떄 handling 하는 함수 <- 이때 열매 아이디 가져와야해
+              />
+            </div>
+            <div className="w-7 my-auto">
+              {data.length > 0 && <IconButton iconSrc="arrow" rotate={true} onClick={nextFruits} />}
+            </div>
+          </div>
         </div>
-        <div className="w-full h-[350px] mr-3 ml-1">
-          <MessageContainer
-            handleTextArea={handleTextArea} // 신고하기 내용 입력 받고 확인하는 곳
-            currentIndex={currentIndex} // 현재 열매가 Fruits 배열에서 어디 인덱스에 위치했는지 확인
-            data={data} // 전체 열매 데이터
-            openDelete={openDelete} // 삭제 버튼 눌렀니?
-            handleDeleteModal={handleDeleteModal} // 삭제 버튼 눌렀을때 handling 하는 함수
-            handleDelete={handleDelete}
-            openReport={openReport} // 신고 버튼 눌렀니?
-            handleReportModal={handleReportModal} // 신고 버튼 눌렀을 때 handling 하는 함수 <- 이때 신고 진짜 할거니 모달 띄우기
-            clickReport={clickReport} // 신고 진짜 할거니 버튼 눌렀니?
-            handleReport={handleReport} // 신고 진짜 할거니 버튼 눌렀을 떄 handling 하는 함수 <- 이때 열매 아이디 가져와야해
-          />
-        </div>
-        <div className="w-7 my-auto">
-          <IconButton iconSrc="arrow" rotate={true} onClick={nextFruits} />
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

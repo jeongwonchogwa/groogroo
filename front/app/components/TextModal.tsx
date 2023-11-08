@@ -31,6 +31,9 @@ const TextModal = ({
         isModal={true}
         content={
           <div className="p-2 flex flex-col w-full rounded z-50 bg-white">
+            <div className="text-end mr-2 text-lg" onClick={handleModal}>
+              X
+            </div>
             <div className="flex flex-col p-1 h-full">
               <div className="h-full">
                 <div className="mx-5 text-center ">

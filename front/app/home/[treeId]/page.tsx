@@ -1,12 +1,18 @@
 "use client";
 
+import { useEffect } from "react";
 import FruitMessageContainer from "./components/FruitMessageContainer";
 import TreeSection from "./components/TreeSection";
+import { userInfoStore } from "@/stores/userInfoStore";
+import { redirect } from "next/navigation";
 
 const TreePage = ({ params }: { params: { treeId: string } }) => {
   console.log(params.treeId);
+  const { userToken } = userInfoStore();
+  useEffect(() => {
+    if (userToken === "") redirect("/");
+  }, [userToken]);
 
-  // 이 모든것을 page에서 처리? ㅇㅇ.... ㄴㄴㄴㄴㄴㄴㄴㄴㄴ
   return (
     <div className="w-full">
       <div className="mx-5 my-8">

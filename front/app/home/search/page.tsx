@@ -7,7 +7,7 @@ import { userInfoStore } from "@/stores/userInfoStore";
 import { Tree } from "@/app/types";
 
 const SearchPage = () => {
-  const userToken = userInfoStore();
+  const { userToken } = userInfoStore();
 
   const [clickSearch, setClickSearch] = useState<boolean>(false);
 
@@ -23,18 +23,17 @@ const SearchPage = () => {
     console.log("여긴 searchpage", value);
   };
 
-  console.log(treeSearchInput);
+  console.log("treeSearchInput 이게 뭐지? 여기는 SearchPage에요", treeSearchInput);
   useEffect(() => {
     if (clickSearch) {
       fetchSearch(treeSearchInput);
       console.log("클릭했어?", treeSearchInput);
     }
-  }, [clickSearch]);
+  }, [clickSearch, treeSearchInput]);
 
   const [searchData, setSearchData] = useState<Tree[]>([]);
   // 검색 결과 가져오기
   const fetchSearch = async (name: string) => {
-    console.log("name", decodeURI(name));
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/${name}`, {
         method: "GET",
@@ -42,12 +41,9 @@ const SearchPage = () => {
           "Content-Type": "application/json; charset=utf-8",
           Authorization: `Bearer ${userToken}`,
         },
-        mode: "cors",
       });
       if (response.status === 200) {
-        console.log("왔니?");
         const responseData = await response.json();
-        console.log(responseData);
         setSearchData(responseData.trees);
       }
     } catch (error) {
@@ -55,11 +51,11 @@ const SearchPage = () => {
     }
   };
   return (
-    <div>
-      <div className="mt-10 mx-5">
+    <div className="w-full h-[calc(100%-60px)]">
+      <div className="mt-10 mx-5 h-full">
         <SearchBar name="search" value={treeSearchInput} handleInput={handleInput} handleSearch={handleSearch} />
-        <div className="mt-7 w-full">
-          <SearchContainer />
+        <div className="mt-7 w-full h-full">
+          <SearchContainer searchData={searchData} />
         </div>
       </div>
     </div>
