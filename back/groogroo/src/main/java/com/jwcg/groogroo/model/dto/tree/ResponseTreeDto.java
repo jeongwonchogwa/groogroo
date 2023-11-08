@@ -18,4 +18,5 @@ public class ResponseTreeDto {
     private String name;
     private List<ResponseFruitDto> fruits;
     private int fruitsCount;
+    private String email;
 }

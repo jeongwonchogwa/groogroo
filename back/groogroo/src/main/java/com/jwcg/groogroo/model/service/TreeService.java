@@ -123,6 +123,7 @@ public class TreeService {
                     .imageUrl(tree.getImageUrl())
                     .name(tree.getName())
                     .fruitsCount(tree.getFruits().size())
+                    .email(tree.getUser().getEmail())
                     .build();
             List<ResponseFruitDto> fruits = new ArrayList<>();
 
