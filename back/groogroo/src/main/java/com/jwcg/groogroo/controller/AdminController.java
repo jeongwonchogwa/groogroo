@@ -201,8 +201,8 @@ public class AdminController {
             @ApiResponse(responseCode = "200", description = "회원 차단 성공"),
             @ApiResponse(responseCode = "500", description = "회원 차단 실패 - 내부 서버 오류")
     })
-    @PatchMapping("/user")
-    public ResponseEntity<Map<String, Object>> blockUser(@RequestBody Long userId) {
+    @PatchMapping("/user/{userId}")
+    public ResponseEntity<Map<String, Object>> blockUser(@PathVariable Long userId) {
         Map<String,Object> response = new HashMap<>();
 
         try {
