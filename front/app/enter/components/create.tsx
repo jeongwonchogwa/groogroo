@@ -51,7 +51,10 @@ const Create = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ text: inputData })
+        body: JSON.stringify({
+          text: inputData,
+          id: 9999,   // 실제 아이디 가져와서 바꿔놔야할 부분
+        })
       });
 
       if (response.status === 200) {

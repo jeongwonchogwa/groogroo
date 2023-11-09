@@ -64,7 +64,7 @@ def make_image():
                 )
                 image_url = response.data[0].url
                 image_data = requests.get(image_url).content
-                image_filename = f"gen_img_{time.localtime().tm_year}_{time.localtime().tm_mon}_{time.localtime().tm_mday}_{time.localtime().tm_hour}{time.localtime().tm_min}{time.localtime().tm_sec}{user_id}.jpg"
+                image_filename = f"gen_img_{user_id}_{time.localtime().tm_year}_{time.localtime().tm_mon}_{time.localtime().tm_mday}_{time.localtime().tm_hour}{time.localtime().tm_min}{time.localtime().tm_sec}.jpg"
                 image_path = os.path.join("static", "images", image_filename)
                 with open(image_path, "wb") as f:
                     f.write(image_data)

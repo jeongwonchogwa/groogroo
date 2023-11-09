@@ -186,3 +186,7 @@ pyvenv.cfg
 pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python,venv
+
+
+# 생성된 이미지는 업로드 안되도록
+static/images/*
