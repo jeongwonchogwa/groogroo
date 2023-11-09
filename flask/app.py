@@ -10,14 +10,9 @@ import base64       # 이미지 인코딩하기 위해
 
 # .env 파일에서 api_key 불러오기
 load_dotenv()
-<<<<<<< HEAD
 client = OpenAI(
     api_key = os.environ.get("OPENAI_API_KEY"),
 )
-cnt = 0
-=======
-openai.api_key = os.getenv("OPENAI_API_KEY")
->>>>>>> 74f447f ((BE/GenAI)Feat: add CORS policy)
 
 app = Flask(__name__)
 CORS(app)
@@ -33,7 +28,7 @@ def hello():
 def hello_world():
     return 'Hello World!'
 
-@app.route(context_path + '/image', methods=['GET', 'POST'])
+@app.route(context_path + '/image', methods=['POST'])
 def make_image():
     # 입력 폼에서 프롬프트 입력받으면, 
     if request.method == 'POST':
@@ -41,8 +36,8 @@ def make_image():
         # prompt += ' with a thick black line at its boundary, animation, Pixel art, no background, no fruits'
         # print('입력받은 데이터: ', prompt)
         data = request.get_json()
-        prompt = data.get('text')
-        if prompt:
+        user_input = data.get('text')
+        if user_input:
             ###############################################################################
             # url 을 보내는 방식
             # image_url = url_for("static", filename=f"images/cat.jpg", _external=True)
@@ -55,39 +50,61 @@ def make_image():
             # base64 인코딩된 이미지 데이터를 JSON으로 변환하여 반환
             return jsonify({ 'image_data': encoded_string }), 200
 
+            prompt = 'please create animation-styled pixel art image of a '
+            # 입력값이 '나무'로 끝나지 않으면 '나무'를 추가합니다.
+            if not user_input.endswith('tree'):
+                user_input += ' tree'
+            
+            prompt += user_input
+            prompt += ' without any fruits on this image and with a white background'
+            print('입력받은 데이터: ', prompt)
+            # prompt = "Image of a tree with a burning dot art feel"
+            
+            try:
+                response = client.images.generate(
+                    model="dall-e-3",
+                    prompt=prompt,
+                    n=1,    # default는 1이며 1개당 토큰이 나가고 그 이상은 돈이 개수만큼 나간다.
+                    size="1024x1024",
+                    quality="hd",
+                    # response_format="url"
+                )
+                image_url = response.data[0].url
+                image_data = requests.get(image_url).content
+                image_filename = f"gen_img_{cnt}.jpg"
+                image_path = os.path.join("static", "images", image_filename)
+                with open(image_path, "wb") as f:
+                    f.write(image_data)
+
+                image_html = f'<img src="{url_for("static", filename=f"images/{image_filename}")}">'
+                prompt_html = f'<p>{prompt}</p>'
+            except:
+                prompt_html = f'<p>잘못된 요청입니다.</p>'
+                image_html = f'<img src="https://michaels.me.uk/wp-content/uploads/2017/11/custom-error.png"/>'
+        
+        else:
+            print('유저 입력 데이터 없음!!')
+ 
+    else:
+        print('잘못된 요청')
         return
-        # prompt = "Image of a tree with a burning dot art feel"
-        response = client.images.generate(
-            model="dall-e-3",
-            prompt=prompt,
-            n=1,    # default는 1이며 1개당 토큰이 나가고 그 이상은 돈이 개수만큼 나간다.
-            size="1024x1024",
-            quality="hd",
-            # response_format="url"
-        )
-        print('결과: ', response)
-        image_url = response["data"][0]["url"]
-        image_data = requests.get(image_url).content
-        image_filename = f"gen_img.jpg"
-        image_path = os.path.join("static", "images", image_filename)
-        with open(image_path, "wb") as f:
-            f.write(image_data)
-        image_html = f'<img src="{url_for("static", filename=f"images/{image_filename}")}">'
-        prompt_html = f'<p>{prompt}</p>'
-        return prompt_html + image_html + render_template_string('''
-            <form method="POST">
-                Prompt: <input type="text" name="prompt">
-                <input type="submit" value="Generate Image">
-            </form>
-        ''')
+        ###########################################################################
+        # DALL-E 2 사용 코드
+        # response 3차원 배열 사용, 요청 보내는 함수도 create로 다름
+        # image_url = response["data"][0]["url"]
+        # image_data = requests.get(image_url).content
+        # image_filename = f"gen_img_{cnt}.jpg"
+        # image_path = os.path.join("static", "images", image_filename)
+        # with open(image_path, "wb") as f:
+        #     f.write(image_data)
+        # cnt += 1
+        # image_html = f'<img src="{url_for("static", filename=f"images/{image_filename}")}">'
+        # prompt_html = f'<p>{prompt}</p>'
+        ###########################################################################
+
+        
         # return f'<img src="{url_for("static", filename="images/gen_img_.jpg")}">'
-    # GET 요청이 들어오면 입력 폼 렌더링
-    return '''
-    <form method="POST">
-        Prompt: <input type="text" name="prompt">
-        <input type="submit" value="Generate Image">
-    </form>
-    '''
+
 
 # from googletrans import Translator
 
