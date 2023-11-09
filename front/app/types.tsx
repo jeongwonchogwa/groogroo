@@ -7,6 +7,7 @@ export interface Fruit {
 }
 
 export interface Tree {
+  email?: string;
   id: number;
   imageUrl: string;
   name: string;

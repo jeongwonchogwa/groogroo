@@ -17,9 +17,16 @@ interface MessageContainerProps {
   dataType: "TREE" | "GARDEN" | "FRUIT" | "FLOWER" | "TREEGARDEN";
   currentIndex?: number;
   data: Fruit;
+  isSearch?: boolean;
+  isValidDelete?: boolean;
 }
 
-const MessageContainer = ({ data, dataType }: MessageContainerProps) => {
+const MessageContainer = ({
+  data,
+  dataType,
+  isSearch,
+  isValidDelete,
+}: MessageContainerProps) => {
   const { userToken } = userInfoStore();
 
   const [openDelete, setOpenDelete] = useState(false);
@@ -61,6 +68,7 @@ const MessageContainer = ({ data, dataType }: MessageContainerProps) => {
           <span className="font-nexonGothic text-xl">{data.content}</span>
         </div>
       </div>
+
       {/* 삭제하기 눌렀을때 나오는 모달 */}
       {openDelete && (
         <DeleteModal id={data.id} handleDeleteModal={handleDeleteModal} />

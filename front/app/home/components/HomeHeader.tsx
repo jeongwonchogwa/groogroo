@@ -9,9 +9,9 @@ import HomeMenu from "./HomeMenu";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Alarm from "@/app/components/Alarm";
-import PixelCard from "@/app/components/PixelCard";
 import ButtonModal from "@/app/components/ButtonModal";
 import Button from "@/app/components/Button";
+import { searchTreeStore } from "@/stores/searchTreeInfo";
 
 interface HomeHeaderProps {
   handlemenu: () => void;
@@ -22,6 +22,7 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
   const router = useRouter();
 
   const pathname = usePathname();
+  console.log(pathname);
 
   const [openAlarm, setOpenAlarm] = useState<boolean>(false);
 
@@ -35,6 +36,7 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
     setOpenUpdate((prev) => !prev);
   };
 
+  const { searchTreeInfoData } = searchTreeStore();
   const menuList: MenuButton[] = [
     // link가 아니라 router로 해버렸다..
     { name: "로그아웃", clickEvent: () => {} },
@@ -51,7 +53,7 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
             {pathname != "/home" && (
               <div className="w-10 h-10">
                 <IconButton
-                  iconSrc="home"
+                  iconSrc="back"
                   onClick={() => {
                     router.push("/home");
                   }}
@@ -68,10 +70,11 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
                 }}
               />
             </div>
-            <div className="w-10 h-10">
-              {/* <IconButton iconSrc="update" onClick={() => router.push("/home/update")} /> */}
-              <IconButton iconSrc="update" onClick={onUpdateButtonClick} />
-            </div>
+            {pathname !== `/home/search/${searchTreeInfoData?.id}` && (
+              <div className="w-10 h-10">
+                <IconButton iconSrc="update" onClick={onUpdateButtonClick} />
+              </div>
+            )}
             <div className={bellClick}>
               <IconButton iconSrc="bell" onClick={onAlarmButtonClick} />
               {openAlarm ? <Alarm /> : null}

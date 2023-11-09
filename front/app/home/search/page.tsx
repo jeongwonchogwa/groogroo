@@ -23,7 +23,6 @@ const SearchPage = () => {
     console.log("여긴 searchpage", value);
   };
 
-  console.log("treeSearchInput 이게 뭐지? 여기는 SearchPage에요", treeSearchInput);
   useEffect(() => {
     if (clickSearch) {
       fetchSearch(treeSearchInput);
@@ -51,10 +50,10 @@ const SearchPage = () => {
     }
   };
   return (
-    <div className="w-full h-[calc(100%-60px)]">
+    <div className="w-full h-[calc(100%-100px)]">
       <div className="mt-10 mx-5 h-full">
         <SearchBar name="search" value={treeSearchInput} handleInput={handleInput} handleSearch={handleSearch} />
-        <div className="mt-7 w-full h-full">
+        <div className="mt-7 w-full h-[calc(100%-120px)]">
           <SearchContainer searchData={searchData} />
         </div>
       </div>
