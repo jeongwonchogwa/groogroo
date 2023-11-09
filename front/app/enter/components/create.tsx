@@ -8,6 +8,7 @@ import DrawingTools from "./DrawingTools";
 
 import React, { useState, ChangeEvent } from 'react';
 import { useRouter } from "next/navigation";
+import { UrlObject } from 'url';
 
 
 const Create = () => {
@@ -18,7 +19,17 @@ const Create = () => {
   const [selectedColor, setSelectedColor] = useState('black'); // 기본 색상을 'black'으로 설정
 
   const handleCreateButtonClick = () => {
-    router.push('/enter/pick');
+    if (selectedComponent === 'canvas') {
+      // 임시로 만들어서 route      
+      router.push('/enter/pick');
+    } else if (selectedComponent === 'text') {
+      if (inputValue.trim() === '') {
+        // inputValue가 비어있는 경우 알림 표시
+        alert('텍스트를 입력하세요');
+      } else {
+        fetchTextToFlask(inputValue);
+      }
+    }
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -31,6 +42,31 @@ const Create = () => {
 
   const handleColorChange = (color: string) => {
     setSelectedColor(color); // 선택한 색상을 업데이트
+  };
+
+  const fetchTextToFlask = async (inputData : string) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/image`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ text: inputData })
+      });
+
+      if (response.status === 200) {
+        // image_data - 형식은 base64
+        const responseData = await response.json();
+        // console.log(responseData.image_url)
+        // router.push(`/enter/pick/${responseData.image_url}`)
+        console.log(responseData.image_data);
+
+      } else {
+        console.log('Server Response Error:', response.status);
+      }
+    } catch (error) {
+      console.log('요청실패:', error);
+    }
   };
 
 
