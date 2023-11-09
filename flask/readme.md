@@ -12,6 +12,9 @@
 ### 필요한 라이브러리 설치
 `pip install -r requirements.txt`
 
+#### 설치된 라이브러리 관리
+`pip freeze > requirements.txt`
+
 ### 서버 실행
 `python app.py` or `flask run`
 

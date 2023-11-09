@@ -1,4 +1,4 @@
-import openai
+from openai import OpenAI
 import requests
 from flask import Flask, request, url_for, render_template_string
 
@@ -8,8 +8,9 @@ import os
 
 # .env 파일에서 api_key 불러오기
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
+client = OpenAI(
+    api_key = os.environ.get("OPENAI_API_KEY"),
+)
 cnt = 0
 
 app = Flask(__name__)
@@ -31,12 +32,15 @@ def make_image():
     # 입력 폼에서 프롬프트 입력받으면, 
     if request.method == 'POST':
         prompt = request.form['prompt']
+        prompt += ' with a thick black line at its boundary, animation, Pixel art, no background, no fruits'
         print('입력받은 데이터: ', prompt)
         # prompt = "Image of a tree with a burning dot art feel"
-        response = openai.Image.create(
+        response = client.images.generate(
+            model="dall-e-3",
             prompt=prompt,
             n=1,    # default는 1이며 1개당 토큰이 나가고 그 이상은 돈이 개수만큼 나간다.
-            size="256x256",
+            size="1024x1024",
+            quality="hd",
             # response_format="url"
         )
         print('결과: ', response)
