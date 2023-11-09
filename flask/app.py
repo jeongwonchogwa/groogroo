@@ -13,9 +13,15 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 cnt = 0
 
 app = Flask(__name__)
+# CORS(app)
 
+context_path = '/flask'
 
-@app.route('/')
+@app.route(context_path + '/')
+def hello():
+    return 'Hello!'
+
+@app.route(context_path + '/hello', methods=['GET'])
 def hello_world():
     return 'Hello World!'
 
@@ -58,21 +64,21 @@ def make_image():
     </form>
     '''
 
-from googletrans import Translator
+# from googletrans import Translator
 
-@app.route('/translate')
-def translate():
-    translator = Translator()
-    # text1 = '안녕하세요, 이것은 나무입니다.'
-    text2 = 'I am a LemonTree'
+# @app.route('/translate')
+# def translate():
+#     translator = Translator()
+#     # text1 = '안녕하세요, 이것은 나무입니다.'
+#     text2 = 'I am a LemonTree'
 
-    # trans_result1 = translator.translate(text1, dest='en')
-    trans_result2 = translator.translate(text2, dest='ko')
+#     # trans_result1 = translator.translate(text1, dest='en')
+#     trans_result2 = translator.translate(text2, dest='ko')
 
-    # {trans_result1.text} & 
-    print(trans_result2)
-    return f'번역 결과: {trans_result2.text}'
+#     # {trans_result1.text} & 
+#     print(trans_result2)
+#     return f'번역 결과: {trans_result2.text}'
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000)
