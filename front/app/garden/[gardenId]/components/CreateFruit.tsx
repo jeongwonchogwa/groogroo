@@ -44,7 +44,7 @@ const CreateFruit = (props: Props) => {
       onClick={(e) => e.stopPropagation()}
     >
       <div className="w-full flex flex-row">
-        <div className="w-full h-72 mr-3 ml-1">
+        <div className="w-full h-72 ml-3 mr-5">
           <MessageCreator
             onWriterChange={setWriter}
             onContentChange={setContent}

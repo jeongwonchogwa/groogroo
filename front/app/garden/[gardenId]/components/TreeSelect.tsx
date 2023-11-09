@@ -2,16 +2,21 @@
 import Button from "@/app/components/Button";
 import Frame from "@/app/components/Frame";
 import IconButton from "@/app/components/IconButton";
+import { Tree } from "@/app/types";
+import { gardenInfoStore } from "@/stores/gardenInfoStore";
+import { userTreeStore } from "@/stores/userTreeStore";
 import Image from "next/image";
 import { useState } from "react";
 
 interface Props {
   onFormCloseButtonClick: () => void;
-  onTreeSelectButtonClick: (index: number) => void;
+  game?: Phaser.Game;
 }
 
 const TreeSelect = (props: Props) => {
+  const { garden } = gardenInfoStore();
   const [treeNumber, setTreeNumber] = useState<number>(0);
+  const { userTree } = userTreeStore();
   const treeList = [
     "/assets/trees/tree[0].svg",
     "/assets/trees/tree[1].svg",
@@ -36,6 +41,17 @@ const TreeSelect = (props: Props) => {
     } else {
       setTreeNumber((prev) => prev + 1);
     }
+  };
+
+  const onTreeSelectButtonClick = (selectedTreeUrl: string) => {
+    console.log("나무 선택 완료!" + (selectedTreeUrl + 1));
+    props.onFormCloseButtonClick();
+    props.game?.scene.stop("gardenScene");
+    props.game?.scene.start("treeEditScene", {
+      userTreeName: userTree?.name,
+      selectedTreeUrl: selectedTreeUrl,
+      gardenId: garden.gardenId,
+    });
   };
 
   return (
@@ -78,7 +94,7 @@ const TreeSelect = (props: Props) => {
         <Button
           color="secondary"
           label="선택완료"
-          onClick={() => props.onTreeSelectButtonClick(treeNumber)}
+          onClick={() => onTreeSelectButtonClick(treeList[treeNumber])}
         ></Button>
       </div>
     </div>

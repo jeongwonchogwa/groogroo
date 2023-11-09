@@ -10,8 +10,8 @@ export interface Tree {
   id: number;
   imageUrl: string;
   name: string;
-  fruits: Fruit[];
-  fruitsCount?: number;
+  fruits?: Fruit[];
+  fruitCnt?: number;
   x?: number;
   y?: number;
 }
@@ -19,6 +19,10 @@ export interface Tree {
 export interface Flower {
   id?: number;
   imageUrl: string;
+  createTime?: string;
+  writerId?: number;
+  writerNickname?: string;
+  content?: string;
   x?: number;
   y?: number;
 }
@@ -82,24 +86,8 @@ export interface Garden {
   state: "ACCEPT" | "REFUSE" | "KICK" | "WAIT" | "WITHDRAWAL" | null;
   memberCnt?: number;
   likes?: number;
-  treePosList?: TreePos[];
-  flowerPosList?: FlowerPos[];
-}
-
-export interface TreePos {
-  id: number;
-  name: string;
-  imagUrl: string;
-  fruitCnt: number;
-  x: number;
-  y: number;
-}
-
-export interface FlowerPos {
-  id: number;
-  imageUrl: string;
-  x: number;
-  y: number;
+  treePosList?: Tree[];
+  flowerPosList?: Flower[];
 }
 
 export interface Report {

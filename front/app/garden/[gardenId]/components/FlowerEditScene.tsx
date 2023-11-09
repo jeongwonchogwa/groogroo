@@ -1,5 +1,5 @@
 import { treeList } from "@/app/dummies";
-import { Character, Flower, Tree } from "@/app/types";
+import { Character, Flower, Garden, Tree } from "@/app/types";
 import { Scene } from "phaser";
 // @ts-ignore
 import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";
@@ -8,6 +8,7 @@ import ReactDOM from "react-dom/client";
 
 interface Props {
   onFlowerPlantButtonClick: (data: Flower) => void;
+  garden: Garden;
 }
 
 export default class FlowerEditScene extends Scene {
@@ -25,18 +26,17 @@ export default class FlowerEditScene extends Scene {
   private upKey!: HTMLButtonElement;
   private downKey!: HTMLButtonElement;
   private selectedFlower!: number;
-  private gardenId!: number;
+  private garden: Garden;
   private onFlowerPlantButtonClick: (data: Flower) => void;
 
   constructor(props: Props) {
     super("flowerEditScene");
-
+    this.garden = props.garden;
     this.onFlowerPlantButtonClick = props.onFlowerPlantButtonClick;
   }
 
-  init(data: { selectedFlower: number; gardenId: number }) {
+  init(data: { selectedFlower: number }) {
     this.selectedFlower = data.selectedFlower;
-    this.gardenId = data.gardenId;
   }
 
   preload() {
@@ -70,25 +70,40 @@ export default class FlowerEditScene extends Scene {
       map.createLayer(index, "tileset", 0, 0);
     });
 
-    //심어져있는 나무 sprite 목록 생성./////////////////////////////////////////////////////////
-    const characters: Character[] = [];
-    treeList.trees.forEach((tree) => {
-      characters.push({
+    //나무sprite 목록 생성./////////////////////////////////////////////////////////
+    const trees: Character[] = [];
+    this.garden.treePosList!.forEach((tree) => {
+      trees.push({
         id: tree.name,
         sprite: this.physics.add
           .sprite(0, 0, tree.name)
-          .setDepth(2)
-          .setScale(0.25)
-          .setInteractive()
-          //열매 작성 폼 띄워줄거임.
-          .on("pointerdown", () => {
-            console.log("누름!");
-          }),
+          .setDepth(3)
+          .setScale(0.25),
         startPosition: { x: tree.x!, y: tree.y! },
         tileHeight: 2,
         tileWidth: 2,
         offsetX: 8,
         offsetY: 16,
+      });
+    });
+
+    //꽃sprite 목록 생성.///////////////////////////////////////////////////////////
+    const flowers: Character[] = [];
+    this.garden.flowerPosList!.forEach((flower) => {
+      flowers.push({
+        id: "flower" + flower.id,
+        sprite: this.physics.add
+          .sprite(0, 0, "flower" + flower.id)
+          .setDepth(3)
+          .setScale(0.25)
+          .setOrigin(0, 0),
+        //열매 작성 폼 띄워줄거임.
+        // .on("pointerup", () => this.onFormOpenButtonClick(flower)),
+        startPosition: { x: flower.x!, y: flower.y! },
+        tileHeight: 2,
+        tileWidth: 2,
+        offsetX: 0,
+        offsetY: 0,
       });
     });
 
@@ -100,7 +115,7 @@ export default class FlowerEditScene extends Scene {
       .setDepth(3)
       .setOrigin(0, 0);
 
-    characters.push({
+    flowers.push({
       id: "selectedFlower",
       sprite: this.assetSprite,
       startPosition: { x: 15, y: 10 },
@@ -288,20 +303,32 @@ export default class FlowerEditScene extends Scene {
       .fillStyle(errorColor, 0.5)
       .fillRect(0, 0, 16, 16)
       .strokeRect(0, 0, 16, 16)
-      .setDepth(3)
-      .setVisible(false);
-
-    this.spriteBox = this.defaultSpriteBox;
+      .setDepth(3);
 
     const gridEngineConfig = {
       snapToCell: true,
-      characters: characters,
+      characters: trees.concat(flowers),
     };
 
     // @ts-ignore
     this.sys.animatedTiles.init(map);
     this.cameras.main.scrollY = 0;
     this.gridEngine.create(map, gridEngineConfig);
+
+    if (
+      this.gridEngine.isBlocked({
+        x: this.gridEngine.getPosition("selectedFlower").x,
+        y: this.gridEngine.getPosition("selectedFlower").y,
+      })
+    ) {
+      this.spriteBox = this.errorSpriteBox;
+      this.errorSpriteBox.setVisible(true);
+      this.defaultSpriteBox.setVisible(false);
+    } else {
+      this.spriteBox = this.defaultSpriteBox;
+      this.errorSpriteBox.setVisible(false);
+      this.defaultSpriteBox.setVisible(true);
+    }
   }
 
   update() {
