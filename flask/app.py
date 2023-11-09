@@ -1,20 +1,27 @@
 from openai import OpenAI
 import requests
-from flask import Flask, request, url_for, render_template_string
+from flask import Flask, jsonify, request, url_for, render_template_string
+from flask_cors import CORS
 
 from dotenv import load_dotenv
 import os
+import base64       # 이미지 인코딩하기 위해
 
 
 # .env 파일에서 api_key 불러오기
 load_dotenv()
+<<<<<<< HEAD
 client = OpenAI(
     api_key = os.environ.get("OPENAI_API_KEY"),
 )
 cnt = 0
+=======
+openai.api_key = os.getenv("OPENAI_API_KEY")
+>>>>>>> 74f447f ((BE/GenAI)Feat: add CORS policy)
 
 app = Flask(__name__)
-# CORS(app)
+CORS(app)
+# CORS(app, supports_credentials=True, origins='*',allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"])
 
 context_path = '/flask'
 
@@ -26,14 +33,29 @@ def hello():
 def hello_world():
     return 'Hello World!'
 
-@app.route('/image', methods=['GET', 'POST'])
+@app.route(context_path + '/image', methods=['GET', 'POST'])
 def make_image():
-    global cnt
     # 입력 폼에서 프롬프트 입력받으면, 
     if request.method == 'POST':
-        prompt = request.form['prompt']
-        prompt += ' with a thick black line at its boundary, animation, Pixel art, no background, no fruits'
-        print('입력받은 데이터: ', prompt)
+        # prompt = request.form['prompt']
+        # prompt += ' with a thick black line at its boundary, animation, Pixel art, no background, no fruits'
+        # print('입력받은 데이터: ', prompt)
+        data = request.get_json()
+        prompt = data.get('text')
+        if prompt:
+            ###############################################################################
+            # url 을 보내는 방식
+            # image_url = url_for("static", filename=f"images/cat.jpg", _external=True)
+            # return jsonify({'image_url': image_url}), 200
+            ###############################################################################
+            image_path = 'static/images/cat.jpg'
+            # 이미지 파일을 열고 base64로 인코딩
+            with open(image_path, "rb") as image_file:
+                encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+            # base64 인코딩된 이미지 데이터를 JSON으로 변환하여 반환
+            return jsonify({ 'image_data': encoded_string }), 200
+
+        return
         # prompt = "Image of a tree with a burning dot art feel"
         response = client.images.generate(
             model="dall-e-3",
@@ -46,11 +68,10 @@ def make_image():
         print('결과: ', response)
         image_url = response["data"][0]["url"]
         image_data = requests.get(image_url).content
-        image_filename = f"gen_img_{cnt}.jpg"
+        image_filename = f"gen_img.jpg"
         image_path = os.path.join("static", "images", image_filename)
         with open(image_path, "wb") as f:
             f.write(image_data)
-        cnt += 1
         image_html = f'<img src="{url_for("static", filename=f"images/{image_filename}")}">'
         prompt_html = f'<p>{prompt}</p>'
         return prompt_html + image_html + render_template_string('''
