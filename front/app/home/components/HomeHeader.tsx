@@ -22,6 +22,7 @@ interface HomeHeaderProps {
 const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
+  console.log(pathname);
 
   const [openAlarm, setOpenAlarm] = useState<boolean>(false);
 
