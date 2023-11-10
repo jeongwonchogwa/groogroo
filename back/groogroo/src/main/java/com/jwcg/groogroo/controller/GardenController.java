@@ -256,15 +256,14 @@ public class GardenController {
             @ApiResponse(responseCode = "500", description = "좋아요 랭킹 목록 조회 실패 - 내부 서버 오류"),
     })
     @GetMapping("/like/ranking/{page}")
-    public ResponseEntity<Map<String, Object>> getGardenLikes(@RequestHeader("Authorization") String token, @PathVariable int page) {
-        token = token.split(" ")[1];
+    public ResponseEntity<Map<String, Object>> getGardenLikes(@PathVariable int page) {
         Map<String,Object> response = new HashMap<>();
 
         try {
-            long userId = jwtUtil.getId(token);
             log.info("Garden Controller - 좋아요 랭킹 목록 조회");
 
-            Page<ResponseGardenRankingDto> responseGardenRankingDtos = gardenLikeService.getGardenRankingByPagination(userId, page);
+//            Page<ResponseGardenRankingDto> responseGardenRankingDtos = gardenLikeService.getGardenRankingByPagination(page);
+            List<ResponseGardenRankingDto> responseGardenRankingDtos = gardenLikeService.getGardenRankingByPagination(page);
             response.put("ranking", responseGardenRankingDtos);
             response.put("httpStatus", SUCCESS);
             response.put("message", "좋아요 랭킹 목록 조회 성공");

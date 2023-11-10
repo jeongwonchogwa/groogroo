@@ -177,7 +177,8 @@ public class GardenLikeService {
     페이지 번호와 페이지 크기를 받아 10개씩 좋아요 랭킹을 반환
     */
     @Transactional(readOnly = true)
-    public Page<ResponseGardenRankingDto> getGardenRankingByPagination(long userId, int page) {
+//    public Page<ResponseGardenRankingDto> getGardenRankingByPagination(int page) {
+    public List<ResponseGardenRankingDto> getGardenRankingByPagination(int page) {
 
         Pageable pageable = PageRequest.of(page, PAGESIZE, Sort.by(Sort.Order.desc("likes")));
 
@@ -189,16 +190,12 @@ public class GardenLikeService {
 
             log.info("===========순회 : " + garden.getName());
 
-            UserGarden userGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(userId, garden.getId());
-            log.info(userGarden.toString());
-
             long likes = getGardenLikes(garden.getId());
 
             ResponseGardenRankingDto responseGardenRankingDto = ResponseGardenRankingDto.builder()
                     .gardenId(garden.getId())
                     .name(garden.getName())
                     .description(garden.getDescription())
-                    .state(userGarden.getJoinState().toString())
                     .capacity(garden.getCapacity())
                     .memberCnt(garden.getMemberCnt())
                     .likes(likes)
@@ -217,7 +214,8 @@ public class GardenLikeService {
 
         List<ResponseGardenRankingDto> gardensOnPage = returnData.subList(start, end);
 
-        return new PageImpl<>(gardensOnPage, pageable, returnData.size());
+//        return new PageImpl<>(gardensOnPage, pageable, returnData.size());
+        return gardensOnPage;
     }
 
 }

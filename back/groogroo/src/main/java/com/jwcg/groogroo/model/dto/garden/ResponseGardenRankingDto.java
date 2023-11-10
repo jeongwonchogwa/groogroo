@@ -14,7 +14,6 @@ public class ResponseGardenRankingDto {
     private long gardenId;
     private String name;
     private String description;
-    private String state;
     private int capacity;
     private int memberCnt;
     private long likes;
