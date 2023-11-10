@@ -59,8 +59,6 @@ export default class FlowerEditScene extends Scene {
   }
 
   create() {
-    // const cancelButton = document.createElement("div")
-
     // cancelButton.style.display = "flex"
     // cancelButton.style.width = "100%"
     //맵 생성. 레이어별로 foreach 돌면서.///////////////////////////////////////////////
@@ -72,7 +70,7 @@ export default class FlowerEditScene extends Scene {
 
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
     const trees: Character[] = [];
-    this.garden.treePos!.forEach((tree) => {
+    this.garden.treePos?.forEach((tree) => {
       trees.push({
         id: tree.name,
         sprite: this.physics.add
@@ -89,7 +87,7 @@ export default class FlowerEditScene extends Scene {
 
     //꽃sprite 목록 생성.///////////////////////////////////////////////////////////
     const flowers: Character[] = [];
-    this.garden.flowerPos!.forEach((flower) => {
+    this.garden.flowerPos?.forEach((flower) => {
       flowers.push({
         id: "flower" + flower.id,
         sprite: this.physics.add

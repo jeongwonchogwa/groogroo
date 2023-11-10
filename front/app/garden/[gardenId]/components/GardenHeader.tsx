@@ -56,7 +56,7 @@ const GardenHeader = (props: Props) => {
       className="absolute top-5 px-5 flex gap-5 font-bitBit justify-between"
       style={{ width: `${uiWidth}` }}
     >
-      <div className="h-10 w-10">
+      <div className="h-10 w-10 z-40">
         <IconButton iconSrc="home" onClick={() => router.push("../")} />
       </div>
 
@@ -66,7 +66,7 @@ const GardenHeader = (props: Props) => {
           {openAlarm ? <Alarm /> : null}
         </div>
         {openAlarm ? null : (
-          <div className="flex flex-col gap-2 h-10 w-10 items-end">
+          <div className="flex flex-col gap-2 h-10 w-10 items-end z-40">
             <IconButton iconSrc="menu" onClick={onMenuButtonClick} />
             {openMenu ? <Menu menuList={menuList}></Menu> : null}
           </div>

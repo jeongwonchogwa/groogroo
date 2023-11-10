@@ -21,7 +21,7 @@ export interface Flower {
   imageUrl: string;
   createTime?: string;
   writerId?: number;
-  writerNickname?: string;
+  writerNickName?: string;
   content?: string;
   x?: number;
   y?: number;

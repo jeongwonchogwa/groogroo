@@ -49,7 +49,7 @@ const GardenPhaser = (props: Props) => {
     createTime: "14:30",
     id: 0,
     writerId: 0,
-    writerNickname: "차차아버님",
+    writerNickName: "운영자",
     x: 0,
     y: 0,
     imageUrl: "/assets/flowers/flower[1].svg",
@@ -76,20 +76,20 @@ const GardenPhaser = (props: Props) => {
   };
 
   const onFlowerClick = async (flower: Flower) => {
-    console.log("켜져랏" + flower);
+    console.log(flower);
 
-    // try {
-    //   const res = await fetch(
-    //     `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/flower/${flower.id}`
-    //   );
-    //   const responseData = await res.json();
-    //   return responseData;
-    // } catch (err) {
-    //   console.log(err);
-    // }
-
-    // setCurrentFlower(flower);
-    setShowFlowerMessage(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/flower/${flower.id}`
+      );
+      const data = await res.json();
+      console.log(data);
+      setCurrentFlower(data.flower);
+      setShowFlowerMessage(true);
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const onFlowerSelectOpenButtonClick = () => {
@@ -105,7 +105,7 @@ const GardenPhaser = (props: Props) => {
     setFlowerMessageEdit(true);
   };
 
-  const getGardenInfo = async () => {
+  const fetchGardenInfo = async () => {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${props.gardenId}`,
@@ -126,8 +126,8 @@ const GardenPhaser = (props: Props) => {
   };
 
   useEffect(() => {
-    const fetchGarden = async () => {
-      const Data = await getGardenInfo();
+    const getGardenInfo = async () => {
+      const Data = await fetchGardenInfo();
       setGarden(Data.gardenInfo);
 
       const initPhaser = () => {
@@ -140,7 +140,7 @@ const GardenPhaser = (props: Props) => {
 
         const flowerEditScene = new FlowerEditScene({
           onFlowerPlantButtonClick: onFlowerPlantButtonClick,
-          garden: garden,
+          garden: Data.gardenInfo,
         });
 
         const treeEditScene = new TreeEditScene({ garden: Data.gardenInfo });
@@ -187,7 +187,7 @@ const GardenPhaser = (props: Props) => {
       initPhaser();
     };
 
-    fetchGarden();
+    getGardenInfo();
   }, []);
 
   return (
@@ -214,6 +214,8 @@ const GardenPhaser = (props: Props) => {
                 height={250}
               ></Image>
               <FlowerMessage
+                game={game!}
+                gardenId={garden.gardenId}
                 currentFlower={currentFlower}
                 onFormCloseButtonClick={onFormCloseButtonClick}
               />
@@ -270,6 +272,7 @@ const GardenPhaser = (props: Props) => {
                 gardenId={garden.gardenId}
                 onFormCloseButtonClick={onFormCloseButtonClick}
                 currentFlower={currentFlower}
+                game={game}
               />
             </div>
           </div>
@@ -300,6 +303,8 @@ const GardenPhaser = (props: Props) => {
             <CreateFruit
               onFormCloseButtonClick={onFormCloseButtonClick}
               currentTree={currnetTree}
+              gardenId={garden.gardenId}
+              game={game!}
             />
           </div>
         ) : null}

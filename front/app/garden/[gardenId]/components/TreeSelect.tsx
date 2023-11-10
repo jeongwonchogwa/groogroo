@@ -48,9 +48,7 @@ const TreeSelect = (props: Props) => {
     props.onFormCloseButtonClick();
     props.game?.scene.stop("gardenScene");
     props.game?.scene.start("treeEditScene", {
-      userTreeName: userTree?.name,
       selectedTreeUrl: selectedTreeUrl,
-      gardenId: garden.gardenId,
     });
   };
 

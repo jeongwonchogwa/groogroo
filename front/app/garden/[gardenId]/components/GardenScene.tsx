@@ -25,6 +25,7 @@ export default class GardenScene extends Scene {
   private onFlowerClick!: (flower: Flower) => void;
   private onFlowerSelectOpenButtonClick!: () => void;
   private onTreeSelectOpenButtonClick!: () => void;
+  private myTreeId!: string;
 
   constructor(props: Props) {
     super("gardenScene");
@@ -49,6 +50,41 @@ export default class GardenScene extends Scene {
   }
 
   create() {
+    const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+    const fetchTreeExistInfo = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/tree/${this.garden.gardenId}`,
+
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${AccessToken}`,
+            },
+          }
+        );
+        const data = await res.json();
+        console.log(data);
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const getTreeExistInfo = async () => {
+      const data = await fetchTreeExistInfo();
+      if (data.isExist) {
+        registModalBox.appendChild(treeModifyTextBox);
+        this.myTreeId = data.treeGardenId;
+      } else {
+        registModalBox.appendChild(treeRegistTextBox);
+      }
+
+      registModalBox.appendChild(flowerPlantTextBox);
+    };
+
+    getTreeExistInfo();
+
     //맵 생성. 레이어별로 foreach 돌면서.///////////////////////////////////////////////
     const map = this.make.tilemap({ key: "mainMap" });
     map.addTilesetImage("tileset", "tileset");
@@ -77,10 +113,6 @@ export default class GardenScene extends Scene {
     });
 
     //꽃sprite 목록 생성.///////////////////////////////////////////////////////////
-
-    // const fetchFlower = async (flower: Flower) => {
-    //   await this.onFlowerClick(flower);
-    // }
     const flowers: Character[] = [];
     this.garden.flowerPos?.forEach((flower) => {
       flowers.push({
@@ -107,12 +139,12 @@ export default class GardenScene extends Scene {
 
     // 맵 screen 사이즈에 맞춰서 zoom수치 설정. 너비/높이 중 더 큰 사이즈에 맞춰서.
     if (window.innerHeight >= window.innerWidth) {
-      console.log(
-        "높이가 너비보다 같거나 더큼" + window.innerHeight / 320 + "배"
-      );
+      // console.log(
+      //   "높이가 너비보다 같거나 더큼" + window.innerHeight / 320 + "배"
+      // );
       this.cameras.main.setZoom(window.innerHeight / 320);
     } else {
-      console.log("너비가 높이보다 더 큼" + window.innerWidth / 480 + "배");
+      // console.log("너비가 높이보다 더 큼" + window.innerWidth / 480 + "배");
       this.cameras.main.setZoom(window.innerWidth / 480);
     }
 
@@ -125,16 +157,14 @@ export default class GardenScene extends Scene {
     //맨처음 시작 위치 기준으로 이동 제한하기 위해서 저장
     const startX = this.cameras.main.scrollX;
     const startY = this.cameras.main.scrollY;
-    console.log("카메라 시작위치" + startX + " " + startY);
+    // 마우스 클릭 또는 터치 시작 시의 위치를 저장
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-      // 마우스 클릭 또는 터치 시작 시의 위치를 저장
       this.startX = pointer.x;
       this.startY = pointer.y;
     });
-
+    // 마우스 드래그 또는 터치 스와이프 시 스크롤 위치 조정
     this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
       if (pointer.isDown) {
-        // 마우스 드래그 또는 터치 스와이프 시 스크롤 위치 조정
         const dx = (this.startX - pointer.x) / this.cameras.main.zoom;
         const dy = (this.startY - pointer.y) / this.cameras.main.zoom;
         if (
@@ -167,7 +197,6 @@ export default class GardenScene extends Scene {
     //버튼, 모달 생성./////////////////////////////////////////////////////////
 
     //정원 타이틀 박스 생성, CSS 설정
-
     const titleStyle = {
       width: window.innerWidth + "px",
       height: "fit-content",
@@ -217,25 +246,39 @@ export default class GardenScene extends Scene {
       "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]";
 
     //에셋(나무, 꽃) 추가 텍스트 생성, 이벤트 등록
-    const textBox1 = document.createElement("div");
-    textBox1.className =
+    const treeRegistTextBox = document.createElement("div");
+    treeRegistTextBox.className =
       "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
     const treeRegistText = document.createTextNode("나무 심기");
-    textBox1.appendChild(treeRegistText);
-    textBox1.addEventListener("click", () => {
+    treeRegistTextBox.appendChild(treeRegistText);
+    treeRegistTextBox.addEventListener("click", () => {
       onPlusButtonClick();
       this.onTreeSelectOpenButtonClick();
-      // this.scene.stop("gardenScene");
-      // this.scene.start("treeEditScene", { gardenId: this.garden.gardenId });
     });
 
-    const textBox2 = document.createElement("div");
-    textBox2.className =
+    const flowerPlantTextBox = document.createElement("div");
+    flowerPlantTextBox.className =
       "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
     const flowerRegistText = document.createTextNode("꽃 심기");
-    textBox2.appendChild(flowerRegistText);
+    flowerPlantTextBox.appendChild(flowerRegistText);
+    flowerPlantTextBox.addEventListener("click", () => {
+      onPlusButtonClick();
+      this.onFlowerSelectOpenButtonClick();
+    });
 
-    //나무, 꽃 목록 생성. 이벤트 등록
+    //에셋(나무, 꽃) 수정 텍스트 생성, 이벤트 등록
+    const treeModifyTextBox = document.createElement("div");
+    treeModifyTextBox.className =
+      "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
+    const treeModifyText = document.createTextNode("나무 수정");
+    treeModifyTextBox.appendChild(treeModifyText);
+    treeModifyTextBox.addEventListener("click", () => {
+      onPlusButtonClick();
+      this.scene.stop("gardenScene");
+      this.scene.start("treeEditScene", { modifyTreeId: this.myTreeId });
+    });
+
+    //심겨져있는 나무 목록 생성. 이벤트 등록
     if (trees.length > 0) {
       trees.forEach((tree) => {
         let tmpTextBox = document.createElement("div");
@@ -283,9 +326,9 @@ export default class GardenScene extends Scene {
           const nameText = document.createTextNode(tree.id);
           nameTextBox.appendChild(nameText);
           nameTagBox.node.appendChild(nameTextBox);
-          console.log(
-            this.cameras.main.scrollX + " " + this.cameras.main.scrollY
-          );
+          // console.log(
+          //   this.cameras.main.scrollX + " " + this.cameras.main.scrollY
+          // );
 
           this.time.addEvent({
             delay: 4000,
@@ -306,9 +349,6 @@ export default class GardenScene extends Scene {
       treeModalBox.appendChild(tmpTextBox);
     }
 
-    registModalBox.appendChild(textBox1);
-    registModalBox.appendChild(textBox2);
-
     const footerStyle = {
       display: "flex",
       "justify-content": "space-between",
@@ -326,7 +366,7 @@ export default class GardenScene extends Scene {
         240 - window.innerWidth / this.cameras.main.zoom / 2,
         320 - 60 / this.cameras.main.zoom
       );
-      console.log(this.footer.x + " " + this.footer.y);
+      // console.log(this.footer.x + " " + this.footer.y);
     } else {
       this.footer.setPosition(
         0,
@@ -334,10 +374,10 @@ export default class GardenScene extends Scene {
           60 / this.cameras.main.zoom +
           window.innerHeight / this.cameras.main.zoom / 2
       );
-      console.log(this.footer.x + " " + this.footer.y);
+      // console.log(this.footer.x + " " + this.footer.y);
     }
 
-    console.log(this.footer.x + " " + this.footer.y);
+    // console.log(this.footer.x + " " + this.footer.y);
     this.footer.setClassName("!flex justify-between px-5");
     const registMenuSet = document.createElement("div");
     registMenuSet.className = "flex flex-col-reverse gap-2 h-[40px] w-[40px]";
@@ -378,11 +418,6 @@ export default class GardenScene extends Scene {
     //   }
     // };
 
-    textBox2.addEventListener("click", () => {
-      onPlusButtonClick();
-      this.onFlowerSelectOpenButtonClick();
-    });
-
     this.plusButton.addEventListener("click", onPlusButtonClick);
 
     const treeMenuSet = document.createElement("div");
@@ -393,15 +428,6 @@ export default class GardenScene extends Scene {
     this.treeButton.className = "w-full h-full";
     treeMenuSet.appendChild(this.treeButton);
     treeMenuSet.appendChild(treeModalBox);
-
-    // const flowerMenuSet = document.createElement("div");
-    // flowerMenuSet.className =
-    //   "flex flex-col-reverse gap-2 h-[40px] w-[40px] items-end";
-    // this.flowerButton = document.createElement("img");
-    // this.flowerButton.src = "/assets/images/flower.png";
-    // this.flowerButton.className = "w-full h-full";
-    // flowerMenuSet.appendChild(this.flowerButton);
-    // flowerMenuSet.appendChild(flowerModalBox);
 
     const rightsideMenu = document.createElement("div");
     rightsideMenu.className = "flex gap-5";

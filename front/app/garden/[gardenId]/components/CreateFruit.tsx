@@ -9,6 +9,8 @@ import { Tree } from "@/app/types";
 interface Props {
   onFormCloseButtonClick: () => void;
   currentTree: Tree;
+  gardenId: number;
+  game: Phaser.Game;
 }
 
 const CreateFruit = (props: Props) => {
@@ -32,7 +34,29 @@ const CreateFruit = (props: Props) => {
         }),
       });
       const data = await res.json();
-      return data;
+
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${props.gardenId}`,
+
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${AccessToken}`,
+            },
+          }
+        );
+        const gardenData = await res.json();
+        console.log(gardenData);
+        //@ts-ignore
+        props.game!.scene.getScene("preloader").garden = gardenData.gardenInfo;
+
+        console.log();
+        props.game?.scene.stop("flowerEditScene");
+        props.game?.scene.start("preloader");
+      } catch (error) {
+        console.log(error);
+      }
     } catch (err) {
       console.log(err);
     }

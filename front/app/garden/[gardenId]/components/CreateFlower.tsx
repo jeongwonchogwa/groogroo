@@ -10,6 +10,7 @@ interface Props {
   gardenId: number;
   onFormCloseButtonClick: () => void;
   currentFlower: Flower;
+  game?: Phaser.Game;
 }
 
 const CreateFlower = (props: Props) => {
@@ -19,6 +20,15 @@ const CreateFlower = (props: Props) => {
   const [content, setContent] = useState("");
 
   const handleFlowerSubmit = async () => {
+    const newFlower = {
+      gardenId: props.gardenId,
+      writerNickname: writer,
+      imageUrl: props.currentFlower.imageUrl,
+      content: content,
+      x: props.currentFlower.x,
+      y: props.currentFlower.y,
+    };
+
     try {
       console.log({
         gardenId: props.gardenId,
@@ -36,18 +46,35 @@ const CreateFlower = (props: Props) => {
             Authorization: `Bearer ${AccessToken}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            gardenId: props.gardenId,
-            writerNickname: writer,
-            imageUrl: props.currentFlower.imageUrl,
-            content: content,
-            x: props.currentFlower.x,
-            y: props.currentFlower.y,
-          }),
+          body: JSON.stringify(newFlower),
         }
       );
       const data = await res.json();
-      return data;
+      console.log(data);
+      props.onFormCloseButtonClick();
+
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${props.gardenId}`,
+
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${AccessToken}`,
+            },
+          }
+        );
+        const gardenData = await res.json();
+        console.log(gardenData);
+        //@ts-ignore
+        props.game!.scene.getScene("preloader").garden = gardenData.gardenInfo;
+
+        console.log();
+        props.game?.scene.stop("flowerEditScene");
+        props.game?.scene.start("preloader");
+      } catch (error) {
+        console.log(error);
+      }
     } catch (err) {
       console.log(err);
     }

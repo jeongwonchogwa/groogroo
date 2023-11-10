@@ -1,6 +1,4 @@
 import dynamic from "next/dynamic";
-import Garden from "./components/GardenPhaser";
-import { useParams, useSearchParams } from "next/navigation";
 
 const GardenCSR = dynamic(() => import("./components/GardenPhaser"), {
   ssr: false,

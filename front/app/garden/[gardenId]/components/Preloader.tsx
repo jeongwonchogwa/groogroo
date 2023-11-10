@@ -19,12 +19,10 @@ export default class Preloader extends Scene {
   preload() {
     console.log("Phaser에 렌더링 될 정원");
     console.log(this.garden);
-    console.log(this.garden.mapType);
-    // this.load.tilemapTiledJSON(
-    //   "mainMap",
-    //   "/assets/map" + this.garden.mapType + ".json"
-    // );
-    this.load.tilemapTiledJSON("mainMap", "/assets/map1.json");
+    this.load.tilemapTiledJSON(
+      "mainMap",
+      "/assets/map" + this.garden.mapType + ".json"
+    );
     this.load.image("tileset", "/assets/tileset.png");
     this.load.image("plusButton", "/assets/images/plus.svg");
     this.load.image("treeButton", "/assets/images/tree.svg");
