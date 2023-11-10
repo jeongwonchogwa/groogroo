@@ -1,11 +1,11 @@
 package com.jwcg.groogroo.config.oauth.handler;
 
 import com.jwcg.groogroo.model.dto.jwt.GeneratedToken;
-import com.jwcg.groogroo.model.entity.UserStatus;
-import com.jwcg.groogroo.util.JwtUtil;
 import com.jwcg.groogroo.model.entity.User;
 import com.jwcg.groogroo.model.entity.UserRole;
+import com.jwcg.groogroo.model.entity.UserStatus;
 import com.jwcg.groogroo.repository.UserRepository;
+import com.jwcg.groogroo.util.JwtUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -58,10 +58,14 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
 
         User user = userRepository.findByEmail(email);
-        long treeId = user.getTree().getId();
+        Long treeId = null;
+        if(user.getTree() != null){
+            treeId = user.getTree().getId();
+        }
+        log.info("treeId: {}", treeId);
         log.info("role: {}", user.getUserRole().toString());
         // accessToken과 refreshToken을 발행한다.
-        GeneratedToken token = jwtUtil.generateToken(user.getId(), email, user.getUserRole().toString(),treeId==null? null:treeId);
+        GeneratedToken token = jwtUtil.generateToken(user.getId(), email, user.getUserRole().toString(),treeId);
         log.info("AccessToken: {}", token.getAccessToken());
         log.info("RefreshToken: {}", token.getRefreshToken());
         String uri = UriComponentsBuilder.fromUriString(client_url+"/redirect")
