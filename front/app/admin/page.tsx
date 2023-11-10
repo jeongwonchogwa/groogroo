@@ -7,7 +7,7 @@ import AdminHeader from "./components/AdminHeader";
 import AdminDropdown from "./components/AdminDropdown";
 import AdminTable from "./components/AdminTable";
 import AdminPagenation from "./components/AdminPagenation";
-import { userInfoStore } from "@/stores/userInfoStore";
+// import { userInfoStore } from "@/stores/userInfoStore";
 
 interface DropdownItem {
   label: string;
@@ -24,10 +24,10 @@ const AdminPage = () => {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(0);
 
-  const { setMember } = userInfoStore();
+  // const { setMember } = userInfoStore();
 
   useEffect(() => {
-    setMember("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraW1qdzM5MjhAbmF2ZXIuY29tIiwiaWQiOjEsInJvbGUiOiJST0xFX0FETUlOIiwiaWF0IjoxNjk5NTAyOTk2LCJleHAiOjE3MDA3MTI1OTZ9.F9yzokfTwuiqV8D158LOhTj8Jyqj74PIo_NMjmnacYY");
+    // setMember("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraW1qdzM5MjhAbmF2ZXIuY29tIiwiaWQiOjEsInJvbGUiOiJST0xFX0FETUlOIiwiaWF0IjoxNjk5NTAyOTk2LCJleHAiOjE3MDA3MTI1OTZ9.F9yzokfTwuiqV8D158LOhTj8Jyqj74PIo_NMjmnacYY");
 
     // 세션 스토리지에서 userInfo 가져오기
     const userInfoString = sessionStorage.getItem('userInfo');
@@ -53,7 +53,7 @@ const AdminPage = () => {
 
     useEffect(() => {
     if(certified){
-      fetchGetReportList(pageNumber, sortType);
+      fetchGetReportList(0, sortType);
     }
   }, [certified]);
 
@@ -67,6 +67,7 @@ const AdminPage = () => {
       action: () => {
         console.log(sortType);
         setSortType(null);
+        setPageNumber(0);
       },
     },
     {
@@ -74,6 +75,7 @@ const AdminPage = () => {
       action: () => {
         console.log(sortType);
         setSortType(false);
+        setPageNumber(0);
       },
     },
     {
@@ -81,6 +83,7 @@ const AdminPage = () => {
       action: () => {
         console.log(sortType);
         setSortType(true);
+        setPageNumber(0);
       },
     },
   ];
@@ -217,7 +220,7 @@ const AdminPage = () => {
         clickDetail={clickDetail}
       />
       {/* Use the Pagination component here */}
-      <AdminPagenation totalPages={totalPages} onPageChange={handlePageChange} />
+      <AdminPagenation totalPages={totalPages} onPageChange={handlePageChange} currentPage={pageNumber + 1} />
     </div>
   );
 };
