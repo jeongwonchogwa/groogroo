@@ -271,10 +271,14 @@
 - 23.11.08 KJW
   - 신고 대상 상세 조회 API의 데이터 받는 형식 RequestBody에서 PathVariable로 변경
 
-- 23.11.10 CKH
-  - 정원에 mapType 추가
-  - 정원 상세조회, 소속 정원 목록 조회, 좋아요 순 정원 목록 조회 시 mapType 추가 반환
-
 - 23.11.09 KJW
   - SwaggerConfig에 https로 요청보내는 설정 추가
   - 로그인시 토큰 생성할 때 DB에서 role 가져오도록 변경
+
+- 23.11.10 CKH
+  - 정원에 mapType 추가
+  - 정원 상세조회, 소속 정원 목록 조회, 좋아요 순 정원 목록 조회 시 mapType 추가 반환
+  - (Flask) 이미지 생성 API 구현
+    - Dall-E 3 API를 활용함
+    - 전처리로 금칙어, 번역 OPEN API 사용
+    - prompt : please create animation-styled pixel art image of a OO tree without any fruits on this image and with a white background
