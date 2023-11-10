@@ -59,10 +59,12 @@ const AdminPage = () => {
     if(certified){
       fetchGetReportList(0, sortType);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [certified]);
 
   useEffect(() => {
     fetchGetReportList(pageNumber, sortType);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageNumber, sortType]);
 
   const items: DropdownItem[] = [
