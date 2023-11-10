@@ -65,7 +65,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         log.info("treeId: {}", treeId);
         log.info("role: {}", user.getUserRole().toString());
         // accessToken과 refreshToken을 발행한다.
-        GeneratedToken token = jwtUtil.generateToken(user.getId(), email, user.getUserRole().toString(),treeId);
+        GeneratedToken token = jwtUtil.generateToken(user.getId(), email, "ROLE_"+user.getUserRole().toString(),treeId);
         log.info("AccessToken: {}", token.getAccessToken());
         log.info("RefreshToken: {}", token.getRefreshToken());
         String uri = UriComponentsBuilder.fromUriString(client_url+"/redirect")

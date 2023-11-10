@@ -27,8 +27,12 @@ const AdminPage = () => {
   // const { setMember } = userInfoStore();
 
   useEffect(() => {
-    // setMember("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraW1qdzM5MjhAbmF2ZXIuY29tIiwiaWQiOjEsInJvbGUiOiJST0xFX0FETUlOIiwiaWF0IjoxNjk5NTAyOTk2LCJleHAiOjE3MDA3MTI1OTZ9.F9yzokfTwuiqV8D158LOhTj8Jyqj74PIo_NMjmnacYY");
+    // USER 테스트용 토큰
+    // setMember("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraW1qdzM5MjhAZGF1bS5uZXQiLCJpZCI6NjEsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE2OTk2MDA1OTksImV4cCI6MTcwMDgxMDE5OX0.1cx-Ey_Cytsii8yfQbPzGGWemuwis5NV9UOQUC3TosE");
 
+    // ADMIN 테스트용 토큰
+    // setMember("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraW1qdzM5MjhAbmF2ZXIuY29tIiwiaWQiOjEsInJvbGUiOiJST0xFX0FETUlOIiwiaWF0IjoxNjk5NjAwNDQ1LCJleHAiOjE3MDA4MTAwNDV9.TBwMmtWF-djIgUKN71vuraNX9MTQZmN1hLcK7RiuCjM");
+    
     // 세션 스토리지에서 userInfo 가져오기
     const userInfoString = sessionStorage.getItem('userInfo');
     
@@ -37,10 +41,10 @@ const AdminPage = () => {
         setUserToken(userInfo.state.userToken);
 
         const tokenParts = userInfo.state.userToken.split(".");
-        console.log(tokenParts[1]);
+        console.log("AccessToken: ", tokenParts[1]);
         const decodedToken = JSON.parse(atob(tokenParts[1]));
-        console.log("Role", decodedToken.role);
-        
+        console.log("Role: ", decodedToken.role);
+
         if(decodedToken.role !== "ROLE_ADMIN") {
           redirect("/not-found");
         }
