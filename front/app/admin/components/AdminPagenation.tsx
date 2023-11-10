@@ -1,12 +1,10 @@
-import { useState } from 'react';
-
 interface AdminPagenationProp {
   totalPages: number;
+  currentPage: number;
   onPageChange: (pageNumber: number) => void;
 }
 
-const AdminPagenation = ({ totalPages, onPageChange }: AdminPagenationProp) => {
-  const [currentPage, setCurrentPage] = useState(1);
+const AdminPagenation = ({ totalPages, currentPage, onPageChange }: AdminPagenationProp) => {
 
   const itemsPerPage = 5; // 한 번에 보여줄 페이지 수
   const totalPageGroups = Math.ceil(totalPages / itemsPerPage);
@@ -16,20 +14,20 @@ const AdminPagenation = ({ totalPages, onPageChange }: AdminPagenationProp) => {
   const endPage = Math.min(currentPageGroup * itemsPerPage, totalPages);
 
   const handlePageClick = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
+    currentPage = pageNumber;
     onPageChange(pageNumber-1);
   };
 
   const handlePrevClick = () => {
     if (currentPageGroup > 1) {
-      setCurrentPage((currentPageGroup - 1) * itemsPerPage);
+      currentPage = (currentPageGroup - 1) * itemsPerPage;
       onPageChange((currentPageGroup - 1) * itemsPerPage -1);
     }
   };
 
   const handleNextClick = () => {
     if (currentPageGroup < totalPageGroups) {
-      setCurrentPage(currentPageGroup * itemsPerPage + 1);
+      currentPage = currentPageGroup * itemsPerPage + 1;
       onPageChange(currentPageGroup * itemsPerPage);
     }
   };

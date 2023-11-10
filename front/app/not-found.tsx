@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function NotFound() {
+const NotFound = () => {
   return (
     <div className="h-screen flex flex-col justify-center items-center mx-10">
       <Image src="assets/images/not_found.svg" alt="404 not found" width={400} height={350} priority/>
@@ -8,3 +8,5 @@ export default function NotFound() {
     </div>
   );
 }
+
+export default NotFound;
