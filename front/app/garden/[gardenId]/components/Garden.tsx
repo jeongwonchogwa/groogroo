@@ -22,7 +22,7 @@ interface Props {
   gardenId: number;
 }
 
-const Garden = (props: Props) => {
+const GardenPhaser = (props: Props) => {
   const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
   // const AccessToken = localStorage.getItem("access_token");
   const [game, setGame] = useState<Phaser.Game>();
@@ -110,8 +110,8 @@ const Garden = (props: Props) => {
   const getGardenInfo = async () => {
     try {
       const res = await fetch(
-        // `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${props.gardenId}`
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/lanking/0`,
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${props.gardenId}`,
+
         {
           method: "GET",
           headers: {
@@ -119,15 +119,23 @@ const Garden = (props: Props) => {
           },
         }
       );
-      const data: Garden = await res.json();
+      const data = await res.json();
       console.log(data);
       return data;
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   useEffect(() => {
+    const fetchGarden = async () => {
+      const Data = await getGardenInfo();
+      console.log(Data);
+      setGarden(Data!.gardenInfo);
+    };
+
+    fetchGarden();
+
     const gardenScene = new GardenScene({
       onTreeClick: onTreeClick,
       onFlowerSelectOpenButtonClick: onFlowerSelectOpenButtonClick,
@@ -142,13 +150,6 @@ const Garden = (props: Props) => {
 
     const treeEditScene = new TreeEditScene({ garden: garden });
     const preloader = new Preloader({ myTree: myTree, garden: garden });
-
-    const fetchGarden = async () => {
-      const Data = await getGardenInfo();
-      // setGarden(Data!);
-    };
-
-    fetchGarden();
 
     const initPhaser = () => {
       const phaserGame = new Phaser.Game({
@@ -212,7 +213,10 @@ const Garden = (props: Props) => {
                 width={250}
                 height={250}
               ></Image>
-              <FlowerMessage currentFlower={currentFlower} />
+              <FlowerMessage
+                currentFlower={currentFlower}
+                onFormCloseButtonClick={onFormCloseButtonClick}
+              />
             </div>
           </div>
         ) : null}
@@ -304,4 +308,4 @@ const Garden = (props: Props) => {
   );
 };
 
-export default Garden;
+export default GardenPhaser;

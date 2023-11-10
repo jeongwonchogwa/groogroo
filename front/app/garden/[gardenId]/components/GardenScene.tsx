@@ -56,6 +56,9 @@ export default class GardenScene extends Scene {
       map.createLayer(index, "tileset", 0, 0);
     });
 
+    //정원 이름//////////////////////////////////////////////////////////////////////
+    this.add.text(200, 200, this.garden.name);
+
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
     const trees: Character[] = [];
     this.garden.treePosList!.forEach((tree) => {
