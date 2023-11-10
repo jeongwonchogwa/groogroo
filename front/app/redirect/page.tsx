@@ -14,8 +14,6 @@ const RedirectPage = () => {
       const accessToken = accesstoken as string;
       // accessToken을 저장하거나 다른 작업을 수행
       console.log('Received access token:', accessToken);
-      // 여기다가 추가 코드 작성해서
-      // 토큰을 저장해주세요.
       router.push('/enter/terms')
     }
   }, []);
