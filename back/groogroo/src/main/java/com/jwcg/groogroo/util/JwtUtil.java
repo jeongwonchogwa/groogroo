@@ -46,10 +46,10 @@ public class JwtUtil {
      * @param role
      * @return
      */
-    public GeneratedToken generateToken(Long id, String email, String role) {
+    public GeneratedToken generateToken(Long id, String email, String role, Long treeId) {
         // refreshToken과 accessToken을 생성한다.
         String refreshToken = generateRefreshToken(id, email, role);
-        String accessToken = generateAccessToken(id, email, role);
+        String accessToken = generateAccessToken(id, email, role, treeId);
 
         // 토큰을 Redis에 저장한다.
         saveTokenInfo(email, refreshToken, accessToken);
@@ -94,11 +94,12 @@ public class JwtUtil {
      * @param role
      * @return
      */
-    public String generateAccessToken(Long id, String email, String role) {
+    public String generateAccessToken(Long id, String email, String role, Long treeId) {
 
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("id", id);
         claims.put("role", role);
+        claims.put("treeId", treeId);
 
         Date now = new Date();
         return
@@ -197,6 +198,15 @@ public class JwtUtil {
     }
 
     /**
+     * RefreshToken에서 TreeId 추출
+     * @param token
+     * @return
+     */
+    public Long getTreeIdFromRefreshToken(String token) {
+        return Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(token).getBody().get("treeId", Long.class);
+    }
+
+    /**
      * RefreshToken 정보를 redis에 저장
      * @param email
      * @param refreshToken
@@ -237,7 +247,7 @@ public class JwtUtil {
             String token = refreshToken.get().getRefreshToken();
             log.info("refreshToken: {}", token);
             // UserId, Email, Role을 추출해 새로운 액세스토큰을 만든다.
-            String newAccessToken = generateAccessToken(getIdFromRefreshToken(token), getEmailFromRefreshToken(token), getRoleFromRefreshToken(token));
+            String newAccessToken = generateAccessToken(getIdFromRefreshToken(token), getEmailFromRefreshToken(token), getRoleFromRefreshToken(token), getTreeIdFromRefreshToken(token));
             // 액세스 토큰의 값을 수정해준다.
             refreshToken.get().updateAccessToken(newAccessToken);
             tokenRepository.save(refreshToken.get());

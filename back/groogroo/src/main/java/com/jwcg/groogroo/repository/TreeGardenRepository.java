@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface TreeGardenRepository extends JpaRepository<TreeGarden, Long> {
     TreeGarden findTreeGardenById(Long targetId);
 
-    boolean existsByTreeIdAndGardenId(Long treeId, Long gardenId);
+    TreeGarden findTreeGardenByTreeIdAndGardenId(Long treeId, Long gardenId);
 }

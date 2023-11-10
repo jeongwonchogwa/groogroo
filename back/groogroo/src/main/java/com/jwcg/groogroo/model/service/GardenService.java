@@ -498,8 +498,13 @@ public class GardenService {
     }
 
     // 정원에 나무가 존재하는지 확인
-    public boolean checkTreeGarden(Long userId, Long gardenId) {
+    public Long checkTreeGarden(Long userId, Long gardenId) {
         Tree tree = userRepository.findUserById(userId).getTree();
-        return treeGardenRepository.existsByTreeIdAndGardenId(tree.getId(), gardenId);
+        TreeGarden treeGarden = treeGardenRepository.findTreeGardenByTreeIdAndGardenId(tree.getId(), gardenId);
+        if(treeGarden != null){
+            return treeGarden.getId();
+        } else {
+            return null;
+        }
     }
 }
