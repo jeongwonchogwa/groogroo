@@ -1,39 +1,65 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { userInfoStore } from "@/stores/userInfoStore";
 import { redirect, useRouter } from "next/navigation";
 import { Report } from "@/app/types";
 import AdminHeader from "./components/AdminHeader";
 import AdminDropdown from "./components/AdminDropdown";
 import AdminTable from "./components/AdminTable";
 import AdminPagenation from "./components/AdminPagenation";
+import { userInfoStore } from "@/stores/userInfoStore";
 
 interface DropdownItem {
   label: string;
   action: () => void;
 }
+
 const AdminPage = () => { 
-  const { userToken } = userInfoStore();
   const router = useRouter();
-
-  useEffect(() => {
-    if (userToken === "") redirect("/not-found");
-
-    const tokenParts = userToken.split(".");  
-    const decodedToken = JSON.parse(atob(tokenParts[1]));
-    console.log(decodedToken.role);
-    if(decodedToken.role !== "ROLE_ADMIN") {
-      redirect("/not-found");
-    }
-  }, [userToken]);
-
-
+  const [userToken, setUserToken] = useState<string>("");
+  const [certified, setCertified] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
   const [sortType, setSortType] = useState<null | true | false>(false);
   const [reportList, setReportList] = useState<Report[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(0);
+
+  const { setMember } = userInfoStore();
+
+  useEffect(() => {
+    setMember("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraW1qdzM5MjhAbmF2ZXIuY29tIiwiaWQiOjEsInJvbGUiOiJST0xFX0FETUlOIiwiaWF0IjoxNjk5NTAyOTk2LCJleHAiOjE3MDA3MTI1OTZ9.F9yzokfTwuiqV8D158LOhTj8Jyqj74PIo_NMjmnacYY");
+
+    // 세션 스토리지에서 userInfo 가져오기
+    const userInfoString = sessionStorage.getItem('userInfo');
+    
+    if(userInfoString) {
+        const userInfo = JSON.parse(userInfoString);
+        setUserToken(userInfo.state.userToken);
+
+        const tokenParts = userInfo.state.userToken.split(".");
+        console.log(tokenParts[1]);
+        const decodedToken = JSON.parse(atob(tokenParts[1]));
+        console.log("Role", decodedToken.role);
+        
+        if(decodedToken.role !== "ROLE_ADMIN") {
+          redirect("/not-found");
+        }
+
+        setCertified(true);
+    } else {
+      redirect("/not-found");
+    }
+  }, []);
+
+    useEffect(() => {
+    if(certified){
+      fetchGetReportList(pageNumber, sortType);
+    }
+  }, [certified]);
+
+  useEffect(() => {
+    fetchGetReportList(pageNumber, sortType);
+  }, [pageNumber, sortType]);
 
   const items: DropdownItem[] = [
     {
@@ -59,6 +85,7 @@ const AdminPage = () => {
     },
   ];
 
+  // 신고 목록 API 요청
   const fetchGetReportList = async (pageNumber: number, completed: boolean | null) => {
     try {
       let url = `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/admin?pageNumber=${pageNumber}`;
@@ -80,10 +107,7 @@ const AdminPage = () => {
     } catch (error) {}
   };
 
-  useEffect(() => {
-    fetchGetReportList(pageNumber, sortType);
-  }, [pageNumber, sortType]);
-
+  // 회원 차단 API  요청
   const clickExpel = async (userId: number) => {
     console.log("차단버튼 클릭");
     console.log("userId: ", userId);
@@ -106,6 +130,7 @@ const AdminPage = () => {
     }
   };
 
+  // 신고 대상 삭제 API 요청
   const clickDelete = async (contentType: string, targetId: number) => {
     console.log("삭제버튼 클릭");
     try {
@@ -131,6 +156,7 @@ const AdminPage = () => {
     }
   };
 
+  // 신고 대상 상세 보기 API 요청
   const clickDetail = async (contentType: string, targetId: number, reportId: number) => {
     try {
       let url = `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/admin/detail?contentType=${contentType}&targetId=${targetId}`;
@@ -169,7 +195,8 @@ const AdminPage = () => {
     setPageNumber(pageNumber);
   };
 
-  return (
+  return ( 
+    certified &&
     <div className="w-full h-full">
       {/* Use the Header component here */}
       <AdminHeader />

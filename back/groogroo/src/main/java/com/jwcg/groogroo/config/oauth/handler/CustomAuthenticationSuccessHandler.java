@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -24,6 +25,9 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    @Value("${client_url}")
+    String client_url;
 
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
@@ -59,7 +63,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         GeneratedToken token = jwtUtil.generateToken(user.getId(), email, user.getUserRole().toString());
         log.info("AccessToken: {}", token.getAccessToken());
         log.info("RefreshToken: {}", token.getRefreshToken());
-        String uri = UriComponentsBuilder.fromUriString("http://localhost:3000/redirect")
+        String uri = UriComponentsBuilder.fromUriString(client_url+"/redirect")
                 .queryParam("accesstoken", token.getAccessToken())
                 .build().toUriString();
         response.sendRedirect(uri);

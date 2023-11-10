@@ -35,13 +35,13 @@ public class S3TestController {
             @ApiResponse(responseCode = "200", description = "S3 업로드 성공"),
             @ApiResponse(responseCode = "500", description = "S3 업로드 실패 - 내부 서버 오류")
     })
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Map<String, Object>> s3Upload(@RequestPart MultipartFile multipartFile) {
+    @PostMapping(value = "/upload/{dirName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> s3Upload(@RequestPart MultipartFile multipartFile, @PathVariable String dirName) {
         Map<String,Object> response = new HashMap<>();
 
         try {
             log.info("S3에 multipartfile 업로드");
-            String fileUrl = s3UploadService.upload(multipartFile, "test");
+            String fileUrl = s3UploadService.upload(multipartFile, "dirName");
             log.info("S3 업로드 성공");
             response.put("httpStatus", SUCCESS);
             response.put("message", "S3 업로드 성공");
