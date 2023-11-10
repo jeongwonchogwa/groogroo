@@ -21,13 +21,13 @@ CORS(app)
 
 context_path = '/flask'
 
-@app.route(context_path + '/')
-def hello():
-    return 'Hello!'
+# @app.route(context_path + '/')
+# def hello():
+#     return 'Hello!'
 
 @app.route(context_path + '/hello', methods=['GET'])
 def hello_world():
-    return 'Hello World!'
+    return 'Hello, Flask Server on :)'
 
 @app.route(context_path + '/image', methods=['POST'])
 def make_image():

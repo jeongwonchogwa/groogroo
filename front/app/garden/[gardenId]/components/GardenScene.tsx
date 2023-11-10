@@ -2,11 +2,12 @@ import { Scene } from "phaser";
 // @ts-ignore
 import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";
 import { treeList } from "@/app/dummies";
-import { Character, Garden, Tree } from "@/app/types";
+import { Character, Flower, Garden, Tree } from "@/app/types";
 import ReactDOM from "react-dom/client";
 
 interface Props {
-  onFormOpenButtonClick: (tree: Tree) => void;
+  onTreeClick: (tree: Tree) => void;
+  onFlowerClick: (flower: Flower) => void;
   onFlowerSelectOpenButtonClick: () => void;
   onTreeSelectOpenButtonClick: () => void;
 }
@@ -20,13 +21,15 @@ export default class GardenScene extends Scene {
   private plusButton!: HTMLImageElement;
   private treeButton!: HTMLImageElement;
   private flowerButton!: HTMLImageElement;
-  private onFormOpenButtonClick!: (tree: Tree) => void;
+  private onTreeClick!: (tree: Tree) => void;
+  private onFlowerClick!: (flower: Flower) => void;
   private onFlowerSelectOpenButtonClick!: () => void;
   private onTreeSelectOpenButtonClick!: () => void;
 
   constructor(props: Props) {
     super("gardenScene");
-    this.onFormOpenButtonClick = props.onFormOpenButtonClick;
+    this.onTreeClick = props.onTreeClick;
+    this.onFlowerClick = props.onFlowerClick;
     this.onFlowerSelectOpenButtonClick = props.onFlowerSelectOpenButtonClick;
     this.onTreeSelectOpenButtonClick = props.onTreeSelectOpenButtonClick;
   }
@@ -53,10 +56,13 @@ export default class GardenScene extends Scene {
       map.createLayer(index, "tileset", 0, 0);
     });
 
+    //정원 이름//////////////////////////////////////////////////////////////////////
+    this.add.text(200, 200, this.garden.name);
+
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
-    const characters: Character[] = [];
-    treeList.trees.forEach((tree) => {
-      characters.push({
+    const trees: Character[] = [];
+    this.garden.treePosList!.forEach((tree) => {
+      trees.push({
         id: tree.name,
         sprite: this.physics.add
           .sprite(0, 0, tree.name)
@@ -64,12 +70,37 @@ export default class GardenScene extends Scene {
           .setScale(0.25)
           .setInteractive()
           //열매 작성 폼 띄워줄거임.
-          .on("pointerup", () => this.onFormOpenButtonClick(tree)),
+          .on("pointerup", () => this.onTreeClick(tree)),
         startPosition: { x: tree.x!, y: tree.y! },
         tileHeight: 2,
         tileWidth: 2,
         offsetX: 8,
         offsetY: 16,
+      });
+    });
+
+    //꽃sprite 목록 생성.///////////////////////////////////////////////////////////
+
+    // const fetchFlower = async (flower: Flower) => {
+    //   await this.onFlowerClick(flower);
+    // }
+    const flowers: Character[] = [];
+    this.garden.flowerPosList!.forEach((flower) => {
+      flowers.push({
+        id: "flower" + flower.id,
+        sprite: this.physics.add
+          .sprite(0, 0, "flower" + flower.id)
+          .setDepth(3)
+          .setScale(0.25)
+          .setOrigin(0, 0)
+          .setInteractive()
+          //메세지 띄워주자
+          .on("pointerup", () => this.onFlowerClick(flower)),
+        startPosition: { x: flower.x!, y: flower.y! },
+        tileHeight: 2,
+        tileWidth: 2,
+        offsetX: 0,
+        offsetY: 0,
       });
     });
 
@@ -156,12 +187,12 @@ export default class GardenScene extends Scene {
       "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]";
 
     //꽃 목록 박스 생성, CSS 설정(현재 나무 더미 들어가있음 수정  필요.)
-    const flowerModalBox = document.createElement("div");
-    flowerModalBox.style.borderImage = `url("/assets/images/pixelBorder.png") 25`;
-    flowerModalBox.style.width = "200px";
-    flowerModalBox.style.height = "fit-content";
-    flowerModalBox.className =
-      "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]";
+    // const flowerModalBox = document.createElement("div");
+    // flowerModalBox.style.borderImage = `url("/assets/images/pixelBorder.png") 25`;
+    // flowerModalBox.style.width = "200px";
+    // flowerModalBox.style.height = "fit-content";
+    // flowerModalBox.className =
+    //   "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]";
 
     //에셋(나무, 꽃) 추가 텍스트 생성, 이벤트 등록
     const textBox1 = document.createElement("div");
@@ -183,7 +214,7 @@ export default class GardenScene extends Scene {
     textBox2.appendChild(flowerRegistText);
 
     //나무, 꽃 목록 생성. 이벤트 등록
-    characters.forEach((tree) => {
+    trees.forEach((tree) => {
       let tmpTextBox = document.createElement("div");
       tmpTextBox.className =
         "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
@@ -245,17 +276,67 @@ export default class GardenScene extends Scene {
       treeModalBox.appendChild(tmpTextBox);
     });
 
-    characters.forEach((flower) => {
-      let tmpTextBox = document.createElement("div");
-      tmpTextBox.className =
-        "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
-      tmpTextBox.appendChild(document.createTextNode(flower.id));
-      tmpTextBox.addEventListener("click", () => {
-        this.cameras.main.startFollow(flower);
-        this.cameras.main.stopFollow;
-      });
-      flowerModalBox.appendChild(tmpTextBox);
-    });
+    // flowers.forEach((flower) => {
+    //   let tmpTextBox = document.createElement("div");
+    //   tmpTextBox.className =
+    //     "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
+    //   tmpTextBox.appendChild(document.createTextNode(flower.id));
+    //   tmpTextBox.addEventListener("click", () => {
+    //     if (
+    //       (window.innerWidth / 2 >
+    //         (20 - flower.startPosition.x + 0.5) * 16 * this.cameras.main.zoom &&
+    //         window.innerWidth / 2) ||
+    //       window.innerWidth / 2 >
+    //         flower.startPosition.x + 0.5 * 16 * this.cameras.main.zoom
+    //     )
+    //       this.cameras.main.setScroll(
+    //         240 -
+    //           (240 * window.innerWidth) / 480 +
+    //           (flower.startPosition.x - 15) * 16,
+    //         this.cameras.main.scrollY
+    //       );
+
+    //     const nameTagStyle = {
+    //       borderImage: `url("/assets/images/pixelBorder.png") 25`,
+    //       width: "160px",
+    //       height: "fit-content",
+    //     };
+    //     const nameTagBox = this.add
+    //       .dom(
+    //         240 + (flower.startPosition.x - 15) * 16 - 4,
+    //         160 + (flower.startPosition.y - 10) * 16 + 34,
+
+    //         "div",
+    //         nameTagStyle
+    //       )
+    //       .setScale(0.25, 0.25)
+    //       .setOrigin(0, 0);
+
+    //     nameTagBox.setClassName(
+    //       "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]"
+    //     );
+
+    //     const nameTextBox = document.createElement("div");
+    //     nameTextBox.className =
+    //       "flex flex-col bg-white px-3 w-full font-bitBit text-[16px] text-center";
+    //     const nameText = document.createTextNode(flower.id);
+    //     nameTextBox.appendChild(nameText);
+    //     nameTagBox.node.appendChild(nameTextBox);
+    //     console.log(
+    //       this.cameras.main.scrollX + " " + this.cameras.main.scrollY
+    //     );
+
+    //     this.time.addEvent({
+    //       delay: 4000,
+    //       callback: function () {
+    //         nameTagBox.destroy();
+    //       },
+    //       callbackScope: this,
+    //       loop: false,
+    //     });
+    //   });
+    //   flowerModalBox.appendChild(tmpTextBox);
+    // });
 
     registModalBox.appendChild(textBox1);
     registModalBox.appendChild(textBox2);
@@ -305,7 +386,7 @@ export default class GardenScene extends Scene {
       } else {
         registModalBox.style.display = "flex";
         treeModalBox.style.display = "none";
-        flowerModalBox.style.display = "none";
+        // flowerModalBox.style.display = "none";
       }
     };
 
@@ -315,19 +396,19 @@ export default class GardenScene extends Scene {
       } else {
         treeModalBox.style.display = "flex";
         registModalBox.style.display = "none";
-        flowerModalBox.style.display = "none";
+        // flowerModalBox.style.display = "none";
       }
     };
 
-    const onFlowerButtonClick = () => {
-      if (flowerModalBox.style.display === "flex") {
-        flowerModalBox.style.display = "none";
-      } else {
-        flowerModalBox.style.display = "flex";
-        treeModalBox.style.display = "none";
-        registModalBox.style.display = "none";
-      }
-    };
+    // const onFlowerButtonClick = () => {
+    //   if (flowerModalBox.style.display === "flex") {
+    //     flowerModalBox.style.display = "none";
+    //   } else {
+    //     flowerModalBox.style.display = "flex";
+    //     treeModalBox.style.display = "none";
+    //     registModalBox.style.display = "none";
+    //   }
+    // };
 
     textBox2.addEventListener("click", () => {
       onPlusButtonClick();
@@ -345,23 +426,23 @@ export default class GardenScene extends Scene {
     treeMenuSet.appendChild(this.treeButton);
     treeMenuSet.appendChild(treeModalBox);
 
-    const flowerMenuSet = document.createElement("div");
-    flowerMenuSet.className =
-      "flex flex-col-reverse gap-2 h-[40px] w-[40px] items-end";
-    this.flowerButton = document.createElement("img");
-    this.flowerButton.src = "/assets/images/flower.png";
-    this.flowerButton.className = "w-full h-full";
-    flowerMenuSet.appendChild(this.flowerButton);
-    flowerMenuSet.appendChild(flowerModalBox);
+    // const flowerMenuSet = document.createElement("div");
+    // flowerMenuSet.className =
+    //   "flex flex-col-reverse gap-2 h-[40px] w-[40px] items-end";
+    // this.flowerButton = document.createElement("img");
+    // this.flowerButton.src = "/assets/images/flower.png";
+    // this.flowerButton.className = "w-full h-full";
+    // flowerMenuSet.appendChild(this.flowerButton);
+    // flowerMenuSet.appendChild(flowerModalBox);
 
     const rightsideMenu = document.createElement("div");
     rightsideMenu.className = "flex gap-5";
-    rightsideMenu.appendChild(flowerMenuSet);
+    // rightsideMenu.appendChild(flowerMenuSet);
     rightsideMenu.appendChild(treeMenuSet);
     this.footer.node.appendChild(rightsideMenu);
 
     this.treeButton.addEventListener("click", onTreeButtonClick);
-    this.flowerButton.addEventListener("click", onFlowerButtonClick);
+    // this.flowerButton.addEventListener("click", onFlowerButtonClick);
 
     if (this.garden.state !== "ACCEPT") {
       // this.plusButton.style.display = "none";
@@ -372,7 +453,7 @@ export default class GardenScene extends Scene {
     //그리드엔진 설정///////////////////////////////////////////////////
     const gridEngineConfig = {
       snapToCell: true,
-      characters: characters,
+      characters: trees.concat(flowers),
     };
     // @ts-ignore
     this.sys.animatedTiles.init(map); //타일 애니메이션 실행.

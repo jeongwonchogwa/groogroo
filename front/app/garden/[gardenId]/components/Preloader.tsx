@@ -17,17 +17,25 @@ export default class Preloader extends Scene {
   }
 
   preload() {
+    console.log(this.garden.treePosList);
     this.load.tilemapTiledJSON("mainMap", this.garden.imageUrl);
     this.load.image("tileset", "/assets/tileset.png");
     this.load.image("plusButton", "/assets/images/plus.svg");
     this.load.image("treeButton", "/assets/images/tree.svg");
     this.load.image("flowerButton", "/assets/images/flower.png");
     this.load.image("pixelBox", "/assets/images/pixelBorder.png");
-    treeList.trees.forEach((tree) => {
+    this.garden.treePosList!.forEach((tree) => {
       console.log(tree);
       this.load.spritesheet(tree.name, tree.imageUrl, {
         frameWidth: 128,
         frameHeight: 128,
+      });
+    });
+
+    this.garden.flowerPosList!.forEach((flower) => {
+      this.load.spritesheet("flower" + flower.id, flower.imageUrl, {
+        frameWidth: 64,
+        frameHeight: 64,
       });
     });
     this.load.spritesheet(this.myTree.name, this.myTree.imageUrl, {

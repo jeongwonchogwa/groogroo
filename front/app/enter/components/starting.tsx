@@ -7,9 +7,8 @@ import Image from 'next/image';
 
 const Starting = () => {
 	
-  const handleKakaoLogin = () => {
-    console.log('버튼눌린다')
-    
+  const handleKakaoLogin = async () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/oauth2/authorization/kakao`
   };
 
   return (

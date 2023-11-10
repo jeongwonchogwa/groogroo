@@ -13,13 +13,21 @@ interface DropdownItem {
   label: string;
   action: () => void;
 }
-const AdminPage = () => {
+const AdminPage = () => { 
   const { userToken } = userInfoStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (userToken === "") redirect("/");
+    if (userToken === "") redirect("/not-found");
+
+    const tokenParts = userToken.split(".");  
+    const decodedToken = JSON.parse(atob(tokenParts[1]));
+    console.log(decodedToken.role);
+    if(decodedToken.role !== "ROLE_ADMIN") {
+      redirect("/not-found");
+    }
   }, [userToken]);
+
 
   const [isOpen, setIsOpen] = useState(false);
   const [sortType, setSortType] = useState<null | true | false>(false);

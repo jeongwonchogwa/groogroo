@@ -1,5 +1,5 @@
 import { treeList } from "@/app/dummies";
-import { Character, Tree } from "@/app/types";
+import { Character, Garden, Tree } from "@/app/types";
 import { Scene } from "phaser";
 // @ts-ignore
 import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";
@@ -7,14 +7,13 @@ import Button from "@/app/components/Button";
 import ReactDOM from "react-dom/client";
 
 interface Props {
-  myTree: Tree;
+  garden: Garden;
 }
 
 export default class TreeEditScene extends Scene {
   private gridEngine!: any;
   private assetSprite!: Phaser.Physics.Arcade.Sprite;
   private moveCheck!: boolean;
-  private UIMoveCheck!: boolean;
   private spriteBox!: Phaser.GameObjects.Graphics;
   private errorSpriteBox!: Phaser.GameObjects.Graphics;
   private defaultSpriteBox!: Phaser.GameObjects.Graphics;
@@ -24,11 +23,16 @@ export default class TreeEditScene extends Scene {
   private rightKey!: HTMLButtonElement;
   private upKey!: HTMLButtonElement;
   private downKey!: HTMLButtonElement;
-  private myTree!: Tree;
+  private selectedTreeUrl!: string;
+  private garden: Garden;
 
   constructor(props: Props) {
     super("treeEditScene");
-    this.myTree = props.myTree;
+    this.garden = props.garden;
+  }
+
+  init(data: { selectedTreeUrl: string }) {
+    this.selectedTreeUrl = data.selectedTreeUrl;
   }
 
   preload() {
@@ -38,9 +42,14 @@ export default class TreeEditScene extends Scene {
       "animatedTiles",
       "animatedTiles"
     );
+
+    this.load.spritesheet("selectedTree", this.selectedTreeUrl, {
+      frameWidth: 128,
+      frameHeight: 128,
+    });
   }
 
-  create(data: { gardenId: number }) {
+  create(data: { gardenId: number; userTreeName: string }) {
     // const cancelButton = document.createElement("div")
 
     // cancelButton.style.display = "flex"
@@ -53,20 +62,15 @@ export default class TreeEditScene extends Scene {
       map.createLayer(index, "tileset", 0, 0);
     });
 
-    //심어져있는 나무 sprite 목록 생성./////////////////////////////////////////////////////////
-    const characters: Character[] = [];
-    treeList.trees.forEach((tree) => {
-      characters.push({
+    //나무sprite 목록 생성./////////////////////////////////////////////////////////
+    const trees: Character[] = [];
+    this.garden.treePosList!.forEach((tree) => {
+      trees.push({
         id: tree.name,
         sprite: this.physics.add
           .sprite(0, 0, tree.name)
           .setDepth(3)
-          .setScale(0.25)
-          .setInteractive()
-          //열매 작성 폼 띄워줄거임.
-          .on("pointerdown", () => {
-            console.log("누름!");
-          }),
+          .setScale(0.25),
         startPosition: { x: tree.x!, y: tree.y! },
         tileHeight: 2,
         tileWidth: 2,
@@ -75,16 +79,36 @@ export default class TreeEditScene extends Scene {
       });
     });
 
+    //꽃sprite 목록 생성.///////////////////////////////////////////////////////////
+    const flowers: Character[] = [];
+    this.garden.flowerPosList!.forEach((flower) => {
+      flowers.push({
+        id: "flower" + flower.id,
+        sprite: this.physics.add
+          .sprite(0, 0, "flower" + flower.id)
+          .setDepth(3)
+          .setScale(0.25)
+          .setOrigin(0, 0),
+        //열매 작성 폼 띄워줄거임.
+        // .on("pointerup", () => this.onFormOpenButtonClick(flower)),
+        startPosition: { x: flower.x!, y: flower.y! },
+        tileHeight: 2,
+        tileWidth: 2,
+        offsetX: 0,
+        offsetY: 0,
+      });
+    });
+
     //배치할 에셋 sprite 생성
 
     this.assetSprite = this.physics.add
-      .sprite(0, 0, this.myTree.name)
+      .sprite(0, 0, "selectedTree")
       .setScale(0.25)
       .setDepth(3)
       .setOrigin(0, 0);
 
-    characters.push({
-      id: this.myTree.name,
+    trees.push({
+      id: "selectedTree",
       sprite: this.assetSprite,
       startPosition: { x: 15, y: 10 },
       tileHeight: 0,
@@ -95,7 +119,6 @@ export default class TreeEditScene extends Scene {
 
     this.cameras.main.setBackgroundColor("#1E7CB8");
     this.moveCheck = false;
-    this.UIMoveCheck = false;
 
     //맵 screen 사이즈에 맞춰서 zoom수치 설정. 너비/높이 중 더 큰 사이즈에 맞춰서.
     if (window.innerHeight > window.innerWidth) {
@@ -154,9 +177,9 @@ export default class TreeEditScene extends Scene {
       //       },
       //       body: JSON.stringify({
       //         gardenId: data.gardenId,
-      //         imageUrl: this.myTree.imageUrl,
-      //         x: this.gridEngine.getPosition("myTree").x,
-      //         y: this.gridEngine.getPosition("myTree").y,
+      //         imageUrl: this.selecteTreeUrl,
+      //         x: this.gridEngine.getPosition("selectedTree").x,
+      //         y: this.gridEngine.getPosition("selectedTree").y,
       //         preset: true,
       //       }),
       //     }
@@ -270,20 +293,44 @@ export default class TreeEditScene extends Scene {
       .fillStyle(errorColor, 0.5)
       .fillRect(0, 0, 32, 32)
       .strokeRect(0, 0, 32, 32)
-      .setDepth(3)
-      .setVisible(false);
-
-    this.spriteBox = this.defaultSpriteBox;
+      .setDepth(3);
 
     const gridEngineConfig = {
       snapToCell: true,
-      characters: characters,
+      characters: trees.concat(flowers),
     };
 
     // @ts-ignore
     this.sys.animatedTiles.init(map);
     this.cameras.main.scrollY = 0;
     this.gridEngine.create(map, gridEngineConfig);
+
+    if (
+      this.gridEngine.isBlocked({
+        x: this.gridEngine.getPosition("selectedTree").x,
+        y: this.gridEngine.getPosition("selectedTree").y,
+      }) ||
+      this.gridEngine.isBlocked({
+        x: this.gridEngine.getPosition("selectedTree").x,
+        y: this.gridEngine.getPosition("selectedTree").y + 1,
+      }) ||
+      this.gridEngine.isBlocked({
+        x: this.gridEngine.getPosition("selectedTree").x + 1,
+        y: this.gridEngine.getPosition("selectedTree").y,
+      }) ||
+      this.gridEngine.isBlocked({
+        x: this.gridEngine.getPosition("selectedTree").x + 1,
+        y: this.gridEngine.getPosition("selectedTree").y + 1,
+      })
+    ) {
+      this.spriteBox = this.errorSpriteBox;
+      this.errorSpriteBox.setVisible(true);
+      this.defaultSpriteBox.setVisible(false);
+    } else {
+      this.spriteBox = this.defaultSpriteBox;
+      this.errorSpriteBox.setVisible(false);
+      this.defaultSpriteBox.setVisible(true);
+    }
   }
 
   update() {
@@ -296,7 +343,7 @@ export default class TreeEditScene extends Scene {
     this.errorSpriteBox.setY(this.assetSprite.y);
     //스프라이트와 키입력 변수
     const sprite = this.assetSprite;
-
+    console.log(sprite.x + " " + sprite.y);
     // 카메라 추적 로직./////////////////////////////////////////////////
     // 맵과 스크린 테두리가 맞을시 카메라 멈추기.
     // 다시 범위에 들어오면 추적
@@ -343,29 +390,29 @@ export default class TreeEditScene extends Scene {
     //좌측 버튼
     this.leftKey.onclick = () => {
       this.moveCheck = true;
-      if (this.gridEngine.getPosition(this.myTree.name).x - 1 >= 0)
-        this.gridEngine.setPosition(this.myTree.name, {
-          x: this.gridEngine.getPosition(this.myTree.name).x - 1,
-          y: this.gridEngine.getPosition(this.myTree.name).y,
+      if (this.gridEngine.getPosition("selectedTree").x - 1 >= 0)
+        this.gridEngine.setPosition("selectedTree", {
+          x: this.gridEngine.getPosition("selectedTree").x - 1,
+          y: this.gridEngine.getPosition("selectedTree").y,
         });
 
       //이동한 좌표에 장애물 존재시 박스 교체.
       if (
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x,
-          y: this.gridEngine.getPosition(this.myTree.name).y,
+          x: this.gridEngine.getPosition("selectedTree").x,
+          y: this.gridEngine.getPosition("selectedTree").y,
         }) ||
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x,
-          y: this.gridEngine.getPosition(this.myTree.name).y + 1,
+          x: this.gridEngine.getPosition("selectedTree").x,
+          y: this.gridEngine.getPosition("selectedTree").y + 1,
         }) ||
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x + 1,
-          y: this.gridEngine.getPosition(this.myTree.name).y,
+          x: this.gridEngine.getPosition("selectedTree").x + 1,
+          y: this.gridEngine.getPosition("selectedTree").y,
         }) ||
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x + 1,
-          y: this.gridEngine.getPosition(this.myTree.name).y + 1,
+          x: this.gridEngine.getPosition("selectedTree").x + 1,
+          y: this.gridEngine.getPosition("selectedTree").y + 1,
         })
       ) {
         this.spriteBox = this.errorSpriteBox;
@@ -381,28 +428,28 @@ export default class TreeEditScene extends Scene {
     //우측 버튼
     this.rightKey.onclick = () => {
       this.moveCheck = true;
-      if (this.gridEngine.getPosition(this.myTree.name).x + 1 < 29)
-        this.gridEngine.setPosition(this.myTree.name, {
-          x: this.gridEngine.getPosition(this.myTree.name).x + 1,
-          y: this.gridEngine.getPosition(this.myTree.name).y,
+      if (this.gridEngine.getPosition("selectedTree").x + 1 < 29)
+        this.gridEngine.setPosition("selectedTree", {
+          x: this.gridEngine.getPosition("selectedTree").x + 1,
+          y: this.gridEngine.getPosition("selectedTree").y,
         });
 
       if (
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x,
-          y: this.gridEngine.getPosition(this.myTree.name).y,
+          x: this.gridEngine.getPosition("selectedTree").x,
+          y: this.gridEngine.getPosition("selectedTree").y,
         }) ||
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x + 1,
-          y: this.gridEngine.getPosition(this.myTree.name).y,
+          x: this.gridEngine.getPosition("selectedTree").x + 1,
+          y: this.gridEngine.getPosition("selectedTree").y,
         }) ||
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x,
-          y: this.gridEngine.getPosition(this.myTree.name).y + 1,
+          x: this.gridEngine.getPosition("selectedTree").x,
+          y: this.gridEngine.getPosition("selectedTree").y + 1,
         }) ||
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x + 1,
-          y: this.gridEngine.getPosition(this.myTree.name).y + 1,
+          x: this.gridEngine.getPosition("selectedTree").x + 1,
+          y: this.gridEngine.getPosition("selectedTree").y + 1,
         })
       ) {
         this.spriteBox = this.errorSpriteBox;
@@ -418,28 +465,28 @@ export default class TreeEditScene extends Scene {
     //위 버튼
     this.upKey.onclick = () => {
       this.moveCheck = true;
-      if (this.gridEngine.getPosition(this.myTree.name).y - 1 >= 0)
-        this.gridEngine.setPosition(this.myTree.name, {
-          x: this.gridEngine.getPosition(this.myTree.name).x,
-          y: this.gridEngine.getPosition(this.myTree.name).y - 1,
+      if (this.gridEngine.getPosition("selectedTree").y - 1 >= 0)
+        this.gridEngine.setPosition("selectedTree", {
+          x: this.gridEngine.getPosition("selectedTree").x,
+          y: this.gridEngine.getPosition("selectedTree").y - 1,
         });
 
       if (
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x,
-          y: this.gridEngine.getPosition(this.myTree.name).y,
+          x: this.gridEngine.getPosition("selectedTree").x,
+          y: this.gridEngine.getPosition("selectedTree").y,
         }) ||
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x + 1,
-          y: this.gridEngine.getPosition(this.myTree.name).y,
+          x: this.gridEngine.getPosition("selectedTree").x + 1,
+          y: this.gridEngine.getPosition("selectedTree").y,
         }) ||
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x,
-          y: this.gridEngine.getPosition(this.myTree.name).y + 1,
+          x: this.gridEngine.getPosition("selectedTree").x,
+          y: this.gridEngine.getPosition("selectedTree").y + 1,
         }) ||
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x + 1,
-          y: this.gridEngine.getPosition(this.myTree.name).y + 1,
+          x: this.gridEngine.getPosition("selectedTree").x + 1,
+          y: this.gridEngine.getPosition("selectedTree").y + 1,
         })
       ) {
         this.spriteBox = this.errorSpriteBox;
@@ -455,28 +502,28 @@ export default class TreeEditScene extends Scene {
     //아래 버튼
     this.downKey.onclick = () => {
       this.moveCheck = true;
-      if (this.gridEngine.getPosition(this.myTree.name).y + 1 < 19)
-        this.gridEngine.setPosition(this.myTree.name, {
-          x: this.gridEngine.getPosition(this.myTree.name).x,
-          y: this.gridEngine.getPosition(this.myTree.name).y + 1,
+      if (this.gridEngine.getPosition("selectedTree").y + 1 < 19)
+        this.gridEngine.setPosition("selectedTree", {
+          x: this.gridEngine.getPosition("selectedTree").x,
+          y: this.gridEngine.getPosition("selectedTree").y + 1,
         });
 
       if (
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x,
-          y: this.gridEngine.getPosition(this.myTree.name).y,
+          x: this.gridEngine.getPosition("selectedTree").x,
+          y: this.gridEngine.getPosition("selectedTree").y,
         }) ||
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x + 1,
-          y: this.gridEngine.getPosition(this.myTree.name).y,
+          x: this.gridEngine.getPosition("selectedTree").x + 1,
+          y: this.gridEngine.getPosition("selectedTree").y,
         }) ||
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x,
-          y: this.gridEngine.getPosition(this.myTree.name).y + 1,
+          x: this.gridEngine.getPosition("selectedTree").x,
+          y: this.gridEngine.getPosition("selectedTree").y + 1,
         }) ||
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.myTree.name).x + 1,
-          y: this.gridEngine.getPosition(this.myTree.name).y + 1,
+          x: this.gridEngine.getPosition("selectedTree").x + 1,
+          y: this.gridEngine.getPosition("selectedTree").y + 1,
         })
       ) {
         this.errorSpriteBox.setVisible(true);

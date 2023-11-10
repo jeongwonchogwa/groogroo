@@ -2,15 +2,17 @@
 import Button from "@/app/components/Button";
 import Frame from "@/app/components/Frame";
 import IconButton from "@/app/components/IconButton";
+import { gardenInfoStore } from "@/stores/gardenInfoStore";
 import Image from "next/image";
 import { useState } from "react";
 
 interface Props {
   onFormCloseButtonClick: () => void;
-  onFlowerSelectButtonClick: (index: number) => void;
+  game?: Phaser.Game;
 }
 
 const FlowerSelect = (props: Props) => {
+  const { garden } = gardenInfoStore();
   const [flowerNumber, setFlowerNumber] = useState<number>(0);
   const flowerList = [
     "/assets/flowers/flower[1].svg",
@@ -37,6 +39,16 @@ const FlowerSelect = (props: Props) => {
     } else {
       setFlowerNumber((prev) => prev + 1);
     }
+  };
+
+  const onFlowerSelectButtonClick = (index: number) => {
+    console.log("꽃 선택 완료!" + (index + 1));
+    props.onFormCloseButtonClick();
+    props.game?.scene.stop("gardenScene");
+    props.game?.scene.start("flowerEditScene", {
+      selectedFlower: index + 1,
+      gardenId: garden.gardenId,
+    });
   };
 
   return (
@@ -77,7 +89,7 @@ const FlowerSelect = (props: Props) => {
         <Button
           color="secondary"
           label="선택완료"
-          onClick={() => props.onFlowerSelectButtonClick(flowerNumber)}
+          onClick={() => onFlowerSelectButtonClick(flowerNumber)}
         ></Button>
       </div>
     </div>
