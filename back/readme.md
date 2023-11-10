@@ -270,3 +270,7 @@
 
 - 23.11.08 KJW
   - 신고 대상 상세 조회 API의 데이터 받는 형식 RequestBody에서 PathVariable로 변경
+
+- 23.11.09 KJW
+  - SwaggerConfig에 https로 요청보내는 설정 추가
+  - 로그인시 토큰 생성할 때 DB에서 role 가져오도록 변경
