@@ -270,3 +270,7 @@
 
 - 23.11.08 KJW
   - 신고 대상 상세 조회 API의 데이터 받는 형식 RequestBody에서 PathVariable로 변경
+
+- 23.11.10 CKH
+  - 정원에 mapType 추가
+  - 정원 상세조회, 소속 정원 목록 조회, 좋아요 순 정원 목록 조회 시 mapType 추가 반환

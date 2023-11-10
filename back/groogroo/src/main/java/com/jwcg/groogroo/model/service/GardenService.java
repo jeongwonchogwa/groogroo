@@ -65,7 +65,7 @@ public class GardenService {
         else return makeURL();
     }
 
-    public String makeGarden(long userId, String name, String description, int capacity){
+    public String makeGarden(long userId, String name, String description, int capacity, int mapType){
 
         // url 생성
         String url = makeURL();
@@ -77,6 +77,7 @@ public class GardenService {
                 .url(url)
                 .capacity(capacity)
                 .memberCnt(1)
+                .mapType(mapType)
                 .build();
         log.info("garden 저장 성공");
         gardenRepository.save(garden);
@@ -127,6 +128,7 @@ public class GardenService {
                 .likes(gardenLikeService.getGardenLikes(gardenId))
                 .capacity(garden.getCapacity())
                 .memberCnt(garden.getMemberCnt())
+                .mapType(garden.getMapType())
                 .state(userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId).getJoinState().toString())
                 .build();
 
@@ -204,6 +206,7 @@ public class GardenService {
                         .memberCnt(garden.getMemberCnt())
                         .likes(likes)
                         .url(garden.getUrl())
+                        .mapType(garden.getMapType())
                         .build();
                 log.info(responseUserGardenDto.toString());
                 returnData.add(responseUserGardenDto);

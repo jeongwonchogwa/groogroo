@@ -22,6 +22,7 @@ public class ResponseGardenInfoDto {
     private int memberCnt;
     private long likes;
     private String state;
+    private int mapType;
 
     private List<ResponseFlowerPosDto> flowerPos;
     private List<ResponseTreePosDto> treePos;

@@ -14,4 +14,5 @@ public class RequestGardenGenerationDto {
     private String name;
     private String description;
     private int capacity;
+    private int mapType;
 }

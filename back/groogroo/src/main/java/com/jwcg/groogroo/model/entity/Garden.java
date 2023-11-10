@@ -42,6 +42,9 @@ public class Garden {
     @Column(name = "delete_date")
     private LocalDate deleteDate;
 
+    @Column(name = "map_type")
+    private int mapType;
+
     @Builder.Default
     @OneToMany(mappedBy = "garden")
     private List<UserGarden> userGardens = new ArrayList<>();

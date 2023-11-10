@@ -19,4 +19,5 @@ public class ResponseGardenRankingDto {
     private int memberCnt;
     private long likes;
     private String url;
+    private int mapType;
 }
