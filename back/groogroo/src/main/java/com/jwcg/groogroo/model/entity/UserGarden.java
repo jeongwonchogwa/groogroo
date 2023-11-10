@@ -50,9 +50,6 @@ public class UserGarden {
     // 양방향 매핑을 위한 setter
     public void setUser(User user) {
         if (user != null) {
-            if (user.getUserGardens() == null) {
-                user.setUserGardens(new ArrayList<>());
-            }
             user.getUserGardens().remove(this);
         }
         this.user = user;
@@ -62,8 +59,7 @@ public class UserGarden {
 
     public void setGarden(Garden garden) {
         if (garden != null) {
-            if (garden.getUserGardens() == null) garden.setUserGardens(new ArrayList<>());
-            else garden.getUserGardens().remove(this);
+            garden.getUserGardens().remove(this);
         }
         this.garden = garden;
         assert garden != null;

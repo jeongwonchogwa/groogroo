@@ -40,8 +40,8 @@ public class NotificationController {
      * 로그인 한 유저 sse 연결
      */
     @Operation(summary = "알림 구독", description = "로그인 상태의 유저가 알림을 구독하는 API")
-    @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId, @RequestParam long userId) {
+    @GetMapping(value = "/subscribe/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId, @PathVariable long userId) {
 
         return notificationService.subscribe(userId, lastEventId);
 

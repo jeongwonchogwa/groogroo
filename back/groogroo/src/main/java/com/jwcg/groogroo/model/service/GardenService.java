@@ -87,11 +87,20 @@ public class GardenService {
                 .gardenRole(GardenRole.MASTER)
                 .joinState(JoinState.ACCEPT)
                 .build();
+        log.info("userGarden 생성 성공");
 
         userGarden.setUser(user);
-        userGarden.setGarden(garden);
+        log.info("setUser 성공");
 
-        log.info("userGarden 생성 성공");
+        try{
+            userGarden.setGarden(garden);
+            log.info("setGarden 생성 성공");
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error(Arrays.toString(e.getStackTrace()));
+        }
+
         userGardenRepository.save(userGarden);
 
         // 나무 배치 부분 제거.. 정원 꾸미기 API에 사용할듯

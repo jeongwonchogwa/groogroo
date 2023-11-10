@@ -181,20 +181,18 @@ public class GardenLikeService {
 
         Pageable pageable = PageRequest.of(page, PAGESIZE, Sort.by(Sort.Order.desc("likes")));
 
-        List<MySQLGardenLike> gardenLikes = mySQLGardenLikeRepository.findAll();
-        List<ResponseGardenRankingDto> gardens = new ArrayList<>();
+        List<Garden> gardens = gardenRepository.findAll();
+        List<ResponseGardenRankingDto> returnData = new ArrayList<>();
+        log.info("==============리스트 생성 완료=============");
 
-        for (MySQLGardenLike mySQLGardenLike : gardenLikes) {
+        for (Garden garden : gardens) {
 
-            log.info("===========순회 : " + mySQLGardenLike.toString());
-
-            Garden garden = gardenRepository.findGardenById(mySQLGardenLike.getId());
-            log.info(garden.toString());
+            log.info("===========순회 : " + garden.getName());
 
             UserGarden userGarden = userGardenRepository.findUserGardenByUserIdAndGardenId(userId, garden.getId());
             log.info(userGarden.toString());
 
-            long likes = mySQLGardenLikeRepository.findAllByGardenId(garden.getId()).size();
+            long likes = getGardenLikes(garden.getId());
 
             ResponseGardenRankingDto responseGardenRankingDto = ResponseGardenRankingDto.builder()
                     .gardenId(garden.getId())
@@ -210,16 +208,16 @@ public class GardenLikeService {
 
             log.info(responseGardenRankingDto.toString());
 
-            gardens.add(responseGardenRankingDto);
+            returnData.add(responseGardenRankingDto);
         }
 
         // gardens 리스트에서 페이지네이션 적용
         int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), gardens.size());
+        int end = Math.min((start + pageable.getPageSize()), returnData.size());
 
-        List<ResponseGardenRankingDto> gardensOnPage = gardens.subList(start, end);
+        List<ResponseGardenRankingDto> gardensOnPage = returnData.subList(start, end);
 
-        return new PageImpl<>(gardensOnPage, pageable, gardens.size());
+        return new PageImpl<>(gardensOnPage, pageable, returnData.size());
     }
 
 }
