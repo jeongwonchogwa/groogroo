@@ -41,10 +41,7 @@ public class NotificationController {
      */
     @Operation(summary = "알림 구독", description = "로그인 상태의 유저가 알림을 구독하는 API")
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe(@RequestHeader("Authorization") String token, @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-        token = token.split(" ")[1];
-        long userId = jwtUtil.getId(token);
-
+    public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId, @RequestParam long userId) {
 
         return notificationService.subscribe(userId, lastEventId);
 

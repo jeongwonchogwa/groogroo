@@ -282,3 +282,4 @@
     - Dall-E 3 API를 활용함
     - 전처리로 금칙어, 번역 OPEN API 사용
     - prompt : please create animation-styled pixel art image of a OO tree without any fruits on this image and with a white background
+  - SSE Emitter 구독 API Request Header -> Request Param으로 변경
