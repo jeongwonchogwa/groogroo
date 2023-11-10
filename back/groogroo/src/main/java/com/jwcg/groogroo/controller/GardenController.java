@@ -577,11 +577,11 @@ public class GardenController {
             Long userId = jwtUtil.getId(token);
 
             log.info("정원 나무 존재 여부 확인");
-            boolean isExist = gardenService.checkTreeGarden(userId, gardenId);
+            Long treeGardenId = gardenService.checkTreeGarden(userId, gardenId);
             log.info("정원 나무 존재 여부 확인 성공");
             response.put("httpStatus", SUCCESS);
             response.put("message", "정원 나무 존재 여부 확인 성공");
-            response.put("isExist", isExist);
+            response.put("treeGardenId", treeGardenId);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
