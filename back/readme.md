@@ -289,3 +289,6 @@
   - JWT에 treeId 저장하도록 변경
   - 로그인 리다이렉트 url application.properties에서 가져오도록 변경
   - S3 업로드 테스트 시 폴더명 지정할 수 있게 변경
+  - 정원 랭킹 조회 에러 해결
+    - ResponseGardenRankingDto에서 state제거
+    - API 요청시 헤더에 토큰 없이 그냥 페이지만 보내면 조회 가능
