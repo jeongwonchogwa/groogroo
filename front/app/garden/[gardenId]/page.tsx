@@ -1,8 +1,10 @@
 import dynamic from "next/dynamic";
-import Garden from "./components/Garden";
+import Garden from "./components/GardenPhaser";
 import { useParams, useSearchParams } from "next/navigation";
 
-const GardenCSR = dynamic(() => import("./components/Garden"), { ssr: false });
+const GardenCSR = dynamic(() => import("./components/GardenPhaser"), {
+  ssr: false,
+});
 
 const GardenPage = ({ params }: { params: { gardenId: string } }) => {
   return (

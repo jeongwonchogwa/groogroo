@@ -17,14 +17,20 @@ export default class Preloader extends Scene {
   }
 
   preload() {
-    console.log(this.garden.treePosList);
-    this.load.tilemapTiledJSON("mainMap", this.garden.imageUrl);
+    console.log("Phaser에 렌더링 될 정원");
+    console.log(this.garden);
+    console.log(this.garden.mapType);
+    // this.load.tilemapTiledJSON(
+    //   "mainMap",
+    //   "/assets/map" + this.garden.mapType + ".json"
+    // );
+    this.load.tilemapTiledJSON("mainMap", "/assets/map1.json");
     this.load.image("tileset", "/assets/tileset.png");
     this.load.image("plusButton", "/assets/images/plus.svg");
     this.load.image("treeButton", "/assets/images/tree.svg");
     this.load.image("flowerButton", "/assets/images/flower.png");
     this.load.image("pixelBox", "/assets/images/pixelBorder.png");
-    this.garden.treePosList!.forEach((tree) => {
+    this.garden.treePos?.forEach((tree) => {
       console.log(tree);
       this.load.spritesheet(tree.name, tree.imageUrl, {
         frameWidth: 128,
@@ -32,7 +38,7 @@ export default class Preloader extends Scene {
       });
     });
 
-    this.garden.flowerPosList!.forEach((flower) => {
+    this.garden.flowerPos?.forEach((flower) => {
       this.load.spritesheet("flower" + flower.id, flower.imageUrl, {
         frameWidth: 64,
         frameHeight: 64,

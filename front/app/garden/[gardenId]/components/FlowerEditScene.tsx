@@ -72,7 +72,7 @@ export default class FlowerEditScene extends Scene {
 
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
     const trees: Character[] = [];
-    this.garden.treePosList!.forEach((tree) => {
+    this.garden.treePos!.forEach((tree) => {
       trees.push({
         id: tree.name,
         sprite: this.physics.add
@@ -89,7 +89,7 @@ export default class FlowerEditScene extends Scene {
 
     //꽃sprite 목록 생성.///////////////////////////////////////////////////////////
     const flowers: Character[] = [];
-    this.garden.flowerPosList!.forEach((flower) => {
+    this.garden.flowerPos!.forEach((flower) => {
       flowers.push({
         id: "flower" + flower.id,
         sprite: this.physics.add

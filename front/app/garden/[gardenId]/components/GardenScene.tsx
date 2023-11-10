@@ -17,10 +17,10 @@ export default class GardenScene extends Scene {
   private garden!: Garden;
   private startX!: number;
   private startY!: number;
+  private title!: Phaser.GameObjects.DOMElement;
   private footer!: Phaser.GameObjects.DOMElement;
   private plusButton!: HTMLImageElement;
   private treeButton!: HTMLImageElement;
-  private flowerButton!: HTMLImageElement;
   private onTreeClick!: (tree: Tree) => void;
   private onFlowerClick!: (flower: Flower) => void;
   private onFlowerSelectOpenButtonClick!: () => void;
@@ -56,12 +56,9 @@ export default class GardenScene extends Scene {
       map.createLayer(index, "tileset", 0, 0);
     });
 
-    //정원 이름//////////////////////////////////////////////////////////////////////
-    this.add.text(200, 200, this.garden.name);
-
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
     const trees: Character[] = [];
-    this.garden.treePosList!.forEach((tree) => {
+    this.garden.treePos?.forEach((tree) => {
       trees.push({
         id: tree.name,
         sprite: this.physics.add
@@ -85,7 +82,7 @@ export default class GardenScene extends Scene {
     //   await this.onFlowerClick(flower);
     // }
     const flowers: Character[] = [];
-    this.garden.flowerPosList!.forEach((flower) => {
+    this.garden.flowerPos?.forEach((flower) => {
       flowers.push({
         id: "flower" + flower.id,
         sprite: this.physics.add
@@ -168,7 +165,40 @@ export default class GardenScene extends Scene {
     });
 
     //버튼, 모달 생성./////////////////////////////////////////////////////////
-    //Footer DOM요소로 추가 //////////////////////////////////////////////////
+
+    //정원 타이틀 박스 생성, CSS 설정
+
+    const titleStyle = {
+      width: window.innerWidth + "px",
+      height: "fit-content",
+    };
+
+    const titleBox = document.createElement("div");
+    titleBox.style.borderImage = `url("/assets/images/pixelBorder.png") 25`;
+    titleBox.style.width = "fit-content";
+    titleBox.style.height = "fit-content";
+    titleBox.className =
+      "text-black font-bitBit flex-col justify-center items-center border-[15px]";
+
+    let titleText = document.createElement("div");
+    titleText.className =
+      "flex flex-col bg-white w-full font-bitBit text-[24px] text-center px-5";
+    titleText.appendChild(document.createTextNode(this.garden.name));
+
+    titleBox.appendChild(titleText);
+
+    this.title = this.add
+      .dom(0, 0, "div", titleStyle)
+      .setOrigin(0, 0)
+      .setDepth(3)
+      .setScale(1 / this.cameras.main.zoom)
+      .setScrollFactor(0, 0);
+    this.title.node.appendChild(titleBox);
+    this.title.setClassName("!flex justify-center");
+    this.title.setPosition(
+      window.innerWidth / 2 - 220 / this.cameras.main.zoom,
+      window.innerHeight / 2 - 440 / this.cameras.main.zoom
+    );
 
     //에셋추가 모달 박스 생성, CSS 설정
     const registModalBox = document.createElement("div");
@@ -185,14 +215,6 @@ export default class GardenScene extends Scene {
     treeModalBox.style.height = "fit-content";
     treeModalBox.className =
       "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]";
-
-    //꽃 목록 박스 생성, CSS 설정(현재 나무 더미 들어가있음 수정  필요.)
-    // const flowerModalBox = document.createElement("div");
-    // flowerModalBox.style.borderImage = `url("/assets/images/pixelBorder.png") 25`;
-    // flowerModalBox.style.width = "200px";
-    // flowerModalBox.style.height = "fit-content";
-    // flowerModalBox.className =
-    //   "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]";
 
     //에셋(나무, 꽃) 추가 텍스트 생성, 이벤트 등록
     const textBox1 = document.createElement("div");
@@ -214,129 +236,75 @@ export default class GardenScene extends Scene {
     textBox2.appendChild(flowerRegistText);
 
     //나무, 꽃 목록 생성. 이벤트 등록
-    trees.forEach((tree) => {
+    if (trees.length > 0) {
+      trees.forEach((tree) => {
+        let tmpTextBox = document.createElement("div");
+        tmpTextBox.className =
+          "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
+        tmpTextBox.appendChild(document.createTextNode(tree.id));
+        tmpTextBox.addEventListener("click", () => {
+          if (
+            (window.innerWidth / 2 >
+              (20 - tree.startPosition.x + 0.5) * 16 * this.cameras.main.zoom &&
+              window.innerWidth / 2) ||
+            window.innerWidth / 2 >
+              tree.startPosition.x + 0.5 * 16 * this.cameras.main.zoom
+          )
+            this.cameras.main.setScroll(
+              240 -
+                (240 * window.innerWidth) / 480 +
+                (tree.startPosition.x - 15) * 16,
+              this.cameras.main.scrollY
+            );
+
+          const nameTagStyle = {
+            borderImage: `url("/assets/images/pixelBorder.png") 25`,
+            width: "160px",
+            height: "fit-content",
+          };
+          const nameTagBox = this.add
+            .dom(
+              240 + (tree.startPosition.x - 15) * 16 - 4,
+              160 + (tree.startPosition.y - 10) * 16 + 34,
+
+              "div",
+              nameTagStyle
+            )
+            .setScale(0.25, 0.25)
+            .setOrigin(0, 0);
+
+          nameTagBox.setClassName(
+            "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]"
+          );
+
+          const nameTextBox = document.createElement("div");
+          nameTextBox.className =
+            "flex flex-col bg-white px-3 w-full font-bitBit text-[16px] text-center";
+          const nameText = document.createTextNode(tree.id);
+          nameTextBox.appendChild(nameText);
+          nameTagBox.node.appendChild(nameTextBox);
+          console.log(
+            this.cameras.main.scrollX + " " + this.cameras.main.scrollY
+          );
+
+          this.time.addEvent({
+            delay: 4000,
+            callback: function () {
+              nameTagBox.destroy();
+            },
+            callbackScope: this,
+            loop: false,
+          });
+        });
+        treeModalBox.appendChild(tmpTextBox);
+      });
+    } else {
       let tmpTextBox = document.createElement("div");
       tmpTextBox.className =
         "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
-      tmpTextBox.appendChild(document.createTextNode(tree.id));
-      tmpTextBox.addEventListener("click", () => {
-        if (
-          (window.innerWidth / 2 >
-            (20 - tree.startPosition.x + 0.5) * 16 * this.cameras.main.zoom &&
-            window.innerWidth / 2) ||
-          window.innerWidth / 2 >
-            tree.startPosition.x + 0.5 * 16 * this.cameras.main.zoom
-        )
-          this.cameras.main.setScroll(
-            240 -
-              (240 * window.innerWidth) / 480 +
-              (tree.startPosition.x - 15) * 16,
-            this.cameras.main.scrollY
-          );
-
-        const nameTagStyle = {
-          borderImage: `url("/assets/images/pixelBorder.png") 25`,
-          width: "160px",
-          height: "fit-content",
-        };
-        const nameTagBox = this.add
-          .dom(
-            240 + (tree.startPosition.x - 15) * 16 - 4,
-            160 + (tree.startPosition.y - 10) * 16 + 34,
-
-            "div",
-            nameTagStyle
-          )
-          .setScale(0.25, 0.25)
-          .setOrigin(0, 0);
-
-        nameTagBox.setClassName(
-          "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]"
-        );
-
-        const nameTextBox = document.createElement("div");
-        nameTextBox.className =
-          "flex flex-col bg-white px-3 w-full font-bitBit text-[16px] text-center";
-        const nameText = document.createTextNode(tree.id);
-        nameTextBox.appendChild(nameText);
-        nameTagBox.node.appendChild(nameTextBox);
-        console.log(
-          this.cameras.main.scrollX + " " + this.cameras.main.scrollY
-        );
-
-        this.time.addEvent({
-          delay: 4000,
-          callback: function () {
-            nameTagBox.destroy();
-          },
-          callbackScope: this,
-          loop: false,
-        });
-      });
+      tmpTextBox.appendChild(document.createTextNode("나무가 없습니다"));
       treeModalBox.appendChild(tmpTextBox);
-    });
-
-    // flowers.forEach((flower) => {
-    //   let tmpTextBox = document.createElement("div");
-    //   tmpTextBox.className =
-    //     "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
-    //   tmpTextBox.appendChild(document.createTextNode(flower.id));
-    //   tmpTextBox.addEventListener("click", () => {
-    //     if (
-    //       (window.innerWidth / 2 >
-    //         (20 - flower.startPosition.x + 0.5) * 16 * this.cameras.main.zoom &&
-    //         window.innerWidth / 2) ||
-    //       window.innerWidth / 2 >
-    //         flower.startPosition.x + 0.5 * 16 * this.cameras.main.zoom
-    //     )
-    //       this.cameras.main.setScroll(
-    //         240 -
-    //           (240 * window.innerWidth) / 480 +
-    //           (flower.startPosition.x - 15) * 16,
-    //         this.cameras.main.scrollY
-    //       );
-
-    //     const nameTagStyle = {
-    //       borderImage: `url("/assets/images/pixelBorder.png") 25`,
-    //       width: "160px",
-    //       height: "fit-content",
-    //     };
-    //     const nameTagBox = this.add
-    //       .dom(
-    //         240 + (flower.startPosition.x - 15) * 16 - 4,
-    //         160 + (flower.startPosition.y - 10) * 16 + 34,
-
-    //         "div",
-    //         nameTagStyle
-    //       )
-    //       .setScale(0.25, 0.25)
-    //       .setOrigin(0, 0);
-
-    //     nameTagBox.setClassName(
-    //       "text-black font-bitBit hidden flex-col justify-center items-center border-[15px]"
-    //     );
-
-    //     const nameTextBox = document.createElement("div");
-    //     nameTextBox.className =
-    //       "flex flex-col bg-white px-3 w-full font-bitBit text-[16px] text-center";
-    //     const nameText = document.createTextNode(flower.id);
-    //     nameTextBox.appendChild(nameText);
-    //     nameTagBox.node.appendChild(nameTextBox);
-    //     console.log(
-    //       this.cameras.main.scrollX + " " + this.cameras.main.scrollY
-    //     );
-
-    //     this.time.addEvent({
-    //       delay: 4000,
-    //       callback: function () {
-    //         nameTagBox.destroy();
-    //       },
-    //       callbackScope: this,
-    //       loop: false,
-    //     });
-    //   });
-    //   flowerModalBox.appendChild(tmpTextBox);
-    // });
+    }
 
     registModalBox.appendChild(textBox1);
     registModalBox.appendChild(textBox2);

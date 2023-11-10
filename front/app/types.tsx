@@ -82,12 +82,13 @@ export interface Garden {
   url?: string;
   role?: string;
   imageUrl?: string;
+  mapType?: number;
   capacity: number;
   state: "ACCEPT" | "REFUSE" | "KICK" | "WAIT" | "WITHDRAWAL" | null;
   memberCnt?: number;
   likes?: number;
-  treePosList?: Tree[];
-  flowerPosList?: Flower[];
+  treePos?: Tree[];
+  flowerPos?: Flower[];
 }
 
 export interface Report {

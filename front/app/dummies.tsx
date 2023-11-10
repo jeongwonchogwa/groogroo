@@ -79,7 +79,7 @@ export const gardenExample: type.Garden = {
   description: "정원정원정원",
   name: "카더가든",
   state: "ACCEPT",
-  flowerPosList: [
+  flowerPos: [
     { id: 1, imageUrl: "/assets/flowers/flower[1].svg", x: 5, y: 0 },
     { id: 2, imageUrl: "/assets/flowers/flower[2].svg", x: 6, y: 0 },
     { id: 3, imageUrl: "/assets/flowers/flower[3].svg", x: 5, y: 1 },
@@ -96,7 +96,7 @@ export const gardenExample: type.Garden = {
     { id: 14, imageUrl: "/assets/flowers/flower[4].svg", x: 13, y: 7 },
     { id: 15, imageUrl: "/assets/flowers/flower[3].svg", x: 14, y: 7 },
   ],
-  treePosList: [
+  treePos: [
     {
       id: 1,
       name: "자라나라나무나무",

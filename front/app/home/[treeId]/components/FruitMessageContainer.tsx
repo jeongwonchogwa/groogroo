@@ -23,7 +23,9 @@ const FruitMessageContainer = () => {
 
   const prevFruits = () => {
     if (data) {
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + data.length) % data.length);
+      setCurrentIndex(
+        (prevIndex) => (prevIndex - 1 + data.length) % data.length
+      );
     }
   };
 
@@ -50,7 +52,9 @@ const FruitMessageContainer = () => {
       if (res.status === 200) {
         if (userTree) {
           const updatedUserTree = { ...userTree };
-          updatedUserTree.fruits = userTree?.fruits.filter((fruit) => fruit.id !== id);
+          updatedUserTree.fruits = userTree?.fruits?.filter(
+            (fruit) => fruit.id !== id
+          );
           setUserTree(updatedUserTree);
         }
       } else {
@@ -96,14 +100,17 @@ const FruitMessageContainer = () => {
   // 신고하기 api 연결
   const fetchReport = async (reportData: object) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user/report`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${userToken}`,
-        },
-        body: JSON.stringify(reportData),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user/report`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userToken}`,
+          },
+          body: JSON.stringify(reportData),
+        }
+      );
 
       if (response.status === 200) {
         const responseData = await response.json();
@@ -149,7 +156,11 @@ const FruitMessageContainer = () => {
       {data && (
         <div className="w-full flex flex-col">
           <div className="w-full flex flex-row">
-            <div className="w-7 my-auto">{data.length > 0 && <IconButton iconSrc="arrow" onClick={prevFruits} />}</div>
+            <div className="w-7 my-auto">
+              {data.length > 0 && (
+                <IconButton iconSrc="arrow" onClick={prevFruits} />
+              )}
+            </div>
             <div className="w-full h-[350px] mr-3 ml-1">
               <MessageContainer
                 handleTextArea={handleTextArea} // 신고하기 내용 입력 받고 확인하는 곳
@@ -165,7 +176,13 @@ const FruitMessageContainer = () => {
               />
             </div>
             <div className="w-7 my-auto">
-              {data.length > 0 && <IconButton iconSrc="arrow" rotate={true} onClick={nextFruits} />}
+              {data.length > 0 && (
+                <IconButton
+                  iconSrc="arrow"
+                  rotate={true}
+                  onClick={nextFruits}
+                />
+              )}
             </div>
           </div>
         </div>

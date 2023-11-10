@@ -64,7 +64,7 @@ export default class TreeEditScene extends Scene {
 
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
     const trees: Character[] = [];
-    this.garden.treePosList!.forEach((tree) => {
+    this.garden.treePos?.forEach((tree) => {
       trees.push({
         id: tree.name,
         sprite: this.physics.add
@@ -81,7 +81,7 @@ export default class TreeEditScene extends Scene {
 
     //꽃sprite 목록 생성.///////////////////////////////////////////////////////////
     const flowers: Character[] = [];
-    this.garden.flowerPosList!.forEach((flower) => {
+    this.garden.flowerPos?.forEach((flower) => {
       flowers.push({
         id: "flower" + flower.id,
         sprite: this.physics.add
@@ -155,40 +155,42 @@ export default class TreeEditScene extends Scene {
       this.scene.stop("treeEditScene");
       this.scene.start("gardenScene");
     };
-    const AccessToken =
-      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJraW1qdzM5MjhAZ21haWwuY29tIiwiaWQiOjU5LCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNjk5MzM3OTc1LCJleHAiOjE3MDA1NDc1NzV9.Ql31eBvnvari9_g4o-s46SsURV9egVz1wcCo2m1vxVw";
+
+    //나무 등록 API요청////////////////////////////////////////////////////
+    const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
     // const AccessToken = localStorage.getItem("access_token");
 
     const onRegistButtonClick = async () => {
       if (this.defaultSpriteBox.visible) {
-        console.log("돼요");
+        try {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/tree`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${AccessToken}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                gardenId: data.gardenId,
+                imageUrl: this.selectedTreeUrl,
+                x: this.gridEngine.getPosition("selectedTree").x,
+                y: this.gridEngine.getPosition("selectedTree").y,
+                preset: true,
+              }),
+            }
+          );
+          const Data = await res.json();
+          console.log(Data);
+
+          this.scene.stop("treeEditScene");
+          this.scene.start("gardenScene");
+        } catch (err) {
+          console.log(err);
+        }
       } else {
         console.log("안돼요");
       }
-
-      // try {
-      //   const res = await fetch(
-      //     `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/tree`,
-      //     {
-      //       method: "POST",
-      //       headers: {
-      //         Authorization: `Bearer ${AccessToken}`,
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify({
-      //         gardenId: data.gardenId,
-      //         imageUrl: this.selecteTreeUrl,
-      //         x: this.gridEngine.getPosition("selectedTree").x,
-      //         y: this.gridEngine.getPosition("selectedTree").y,
-      //         preset: true,
-      //       }),
-      //     }
-      //   );
-      //   const responseData = await res.json();
-      // return responseData;
-      // } catch (err) {
-      //   console.log(err);
-      // }
     };
 
     let cancelButton = Button({

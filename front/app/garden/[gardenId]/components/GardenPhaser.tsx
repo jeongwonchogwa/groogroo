@@ -14,9 +14,7 @@ import FlowerEditScene from "./FlowerEditScene";
 import CreateFlower from "./CreateFlower";
 import TreeSelect from "./TreeSelect";
 import { gardenInfoStore } from "@/stores/gardenInfoStore";
-import { gardenExample } from "@/app/dummies";
 import FlowerMessage from "./FlowerMessage";
-import { get } from "https";
 
 interface Props {
   gardenId: number;
@@ -130,64 +128,66 @@ const GardenPhaser = (props: Props) => {
   useEffect(() => {
     const fetchGarden = async () => {
       const Data = await getGardenInfo();
-      console.log(Data);
-      setGarden(Data!.gardenInfo);
+      setGarden(Data.gardenInfo);
+
+      const initPhaser = () => {
+        const gardenScene = new GardenScene({
+          onTreeClick: onTreeClick,
+          onFlowerSelectOpenButtonClick: onFlowerSelectOpenButtonClick,
+          onTreeSelectOpenButtonClick: onTreeSelectOpenButtonClick,
+          onFlowerClick: onFlowerClick,
+        });
+
+        const flowerEditScene = new FlowerEditScene({
+          onFlowerPlantButtonClick: onFlowerPlantButtonClick,
+          garden: garden,
+        });
+
+        const treeEditScene = new TreeEditScene({ garden: Data.gardenInfo });
+        const preloader = new Preloader({
+          myTree: myTree,
+          garden: Data.gardenInfo,
+        });
+
+        const phaserGame = new Phaser.Game({
+          type: Phaser.AUTO,
+          title: "garden",
+          parent: "garden-content",
+          // 맵 크기
+          width: window.innerWidth,
+          height: window.innerHeight,
+          backgroundColor: 0x000000,
+          dom: {
+            createContainer: true,
+          },
+          scene: [preloader, gardenScene, treeEditScene, flowerEditScene],
+          pixelArt: true,
+
+          physics: {
+            default: "arcade",
+            arcade: {
+              // debug: true,
+            },
+          },
+
+          plugins: {
+            scene: [
+              {
+                key: "gridEngine",
+                plugin: GridEngine,
+                mapping: "gridEngine",
+              },
+            ],
+          },
+        });
+
+        setGame(phaserGame);
+      };
+
+      initPhaser();
     };
 
     fetchGarden();
-
-    const gardenScene = new GardenScene({
-      onTreeClick: onTreeClick,
-      onFlowerSelectOpenButtonClick: onFlowerSelectOpenButtonClick,
-      onTreeSelectOpenButtonClick: onTreeSelectOpenButtonClick,
-      onFlowerClick: onFlowerClick,
-    });
-
-    const flowerEditScene = new FlowerEditScene({
-      onFlowerPlantButtonClick: onFlowerPlantButtonClick,
-      garden: garden,
-    });
-
-    const treeEditScene = new TreeEditScene({ garden: garden });
-    const preloader = new Preloader({ myTree: myTree, garden: garden });
-
-    const initPhaser = () => {
-      const phaserGame = new Phaser.Game({
-        type: Phaser.AUTO,
-        title: "garden",
-        parent: "garden-content",
-        // 맵 크기
-        width: window.innerWidth,
-        height: window.innerHeight,
-        backgroundColor: 0x000000,
-        dom: {
-          createContainer: true,
-        },
-        scene: [preloader, gardenScene, treeEditScene, flowerEditScene],
-        pixelArt: true,
-
-        physics: {
-          default: "arcade",
-          arcade: {
-            // debug: true,
-          },
-        },
-
-        plugins: {
-          scene: [
-            {
-              key: "gridEngine",
-              plugin: GridEngine,
-              mapping: "gridEngine",
-            },
-          ],
-        },
-      });
-
-      setGame(phaserGame);
-    };
-
-    initPhaser();
   }, []);
 
   return (
