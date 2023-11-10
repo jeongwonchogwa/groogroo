@@ -23,14 +23,44 @@ const Create = () => {
       // 임시로 만들어서 route      
       router.push('/enter/pick');
     } else if (selectedComponent === 'text') {
+      let err = false;
+      let msg = '';
+
+      const regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
+
       if (inputValue.trim() === '') {
         // inputValue가 비어있는 경우 알림 표시
-        alert('텍스트를 입력하세요');
+        msg = '텍스트를 입력하세요.';
+        err = true;
+      } else if (!err && inputValue.trim().match(regExp)){
+        msg = '특수문자를 제거 해주세요.';
+        err = true;
       } else {
-        fetchTextToFlask(inputValue);
+        const foundBannedWord = checkBannedWords(inputValue);
+  
+        if (foundBannedWord) {
+          msg = `${foundBannedWord}은/는 금칙어입니다.`;
+          err = true;
+        } else {
+          fetchTextToFlask(inputValue);
+        }
       }
+
+      if (err) alert(msg);
     }
   };
+
+  const checkBannedWords = (inputWord: String) => {
+    const bannedWords = ['변태', '시발', '병신'];
+
+    for (const word of bannedWords) {
+      const regex = new RegExp(word, 'gi'); // 대소문자 구분 없이 검색
+      if (inputWord.match(regex)) {
+        return word; // 첫 번째 발견된 금칙어를 반환
+      }
+    }
+    return null; // 금칙어가 없는 경우 null 반환
+  }
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
