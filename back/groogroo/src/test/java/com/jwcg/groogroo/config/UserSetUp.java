@@ -28,9 +28,9 @@ public class UserSetUp {
                 .provider("test")
                 .build();
 
-        long userId = userRepository.save(user).getId();
+        User savedUser = userRepository.save(user);
 
-        GeneratedToken generatedToken = jwtUtil.generateToken(userId, user.getEmail(), "USER");
+        GeneratedToken generatedToken = jwtUtil.generateToken(savedUser.getId(), user.getEmail(), "USER", savedUser.getTree().getId());
 
         System.out.println("accessToken: "+generatedToken.getAccessToken());
         System.out.println("refreshToken: "+generatedToken.getRefreshToken());
@@ -47,9 +47,8 @@ public class UserSetUp {
                 .provider("test")
                 .build();
 
-        long userId = userRepository.save(user).getId();
-
-        GeneratedToken generatedToken = jwtUtil.generateToken(userId, user.getEmail(), "ADMIN");
+        User savedUser = userRepository.save(user);
+        GeneratedToken generatedToken = jwtUtil.generateToken(savedUser.getId(), user.getEmail(), "USER", savedUser.getTree().getId());
 
         System.out.println("accessToken: "+generatedToken.getAccessToken());
         System.out.println("refreshToken: "+generatedToken.getRefreshToken());

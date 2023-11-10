@@ -283,3 +283,9 @@
     - 전처리로 금칙어, 번역 OPEN API 사용
     - prompt : please create animation-styled pixel art image of a OO tree without any fruits on this image and with a white background
   - SSE Emitter 구독 API Request Header -> Request Param으로 변경
+
+- 23.11.10 KJW
+  - 정원 가입 여부 조회 시 treeGardenId 반환하도록 변경
+  - JWT에 treeId 저장하도록 변경
+  - 로그인 리다이렉트 url application.properties에서 가져오도록 변경
+  - S3 업로드 테스트 시 폴더명 지정할 수 있게 변경
