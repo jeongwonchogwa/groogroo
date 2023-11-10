@@ -112,3 +112,8 @@ export interface Content {
   name: string; // 나무 이름
   writerNickname: string; // 열매, 꽃 작성자 아이디
 }
+
+export interface Preset {
+  treeUserPresetId: number;
+  imageUrl: string;
+}

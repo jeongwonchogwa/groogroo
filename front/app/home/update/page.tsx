@@ -4,9 +4,17 @@ import Button from "@/app/components/Button";
 import UpdateContainer from "./components/updateContainer";
 import UpdateTreeSection from "./components/updateTreeSection";
 import { useEffect, useState } from "react";
-
+import { userInfoStore } from "@/stores/userInfoStore";
+import { Preset } from "@/app/types";
+import TextModal from "@/app/components/TextModal";
+import { useRouter, useSearchParams } from "next/navigation";
 const UpdatePage = () => {
+  // 토큰 이렇게 가져오면 안됨, 세션에 저장된 토큰 가져와야 함
+  const { userToken } = userInfoStore();
+
+  const router = useRouter();
   const [width, setWidth] = useState<number>(0);
+
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
@@ -14,12 +22,6 @@ const UpdatePage = () => {
       setWidth(window.innerWidth);
     }
   }, []);
-
-  const [openNext, setOpenNext] = useState<boolean>(false);
-
-  const handleNext = () => {
-    setOpenNext((prev) => !prev);
-  };
 
   const [newName, setNewName] = useState<string>("");
 
@@ -39,67 +41,155 @@ const UpdatePage = () => {
     if (!isValid) {
       setCheckTree(1);
     } else {
-      if ("중복확인 성공") {
-        setCheckTree(3);
-      } else {
-        setCheckTree(2);
-      }
+      fetchTreeNameCheck(newName);
     }
   };
 
-  // 변경하기 클릭시 checkTree가 3이 된 상태여야 함 그게 아니면 돌려보내야해
-  // 여기서 변경된 이름과 변경된 프리셋을 back으로 넘겨야함
-  console.log("page newName", newName);
+  const fetchTreeNameCheck = async (name: string) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/check/${name}`, {
+        method: "GET",
+      });
+      if (response.status === 200) {
+        const responseData = await response.json();
+        if (responseData.result) {
+          setCheckTree(2);
+        } else {
+          setCheckTree(3);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  // data는 back에서 가져와야해 back의 ㄹㄷㅅ초
-  const data = [
-    `/assets/trees/tree[0].svg`,
-    "/assets/trees/tree[1].svg",
-    "/assets/trees/tree[2].svg",
-    "/assets/trees/tree[3].svg",
-    "/assets/trees/tree[4].svg",
-  ];
+  // 프리셋 가져오기
+  const [treePreset, setTreePreset] = useState<Preset[]>([]);
+  const fetchPreset = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/preset`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      if (response.status === 200) {
+        const responseData = await response.json();
+        setTreePreset(responseData.presets);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPreset();
+  }, []);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % treePreset.length);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + data.length) % data.length);
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + treePreset.length) % treePreset.length);
   };
 
-  console.log(currentIndex);
+  const [checkIsValid, setCheckIsValid] = useState<boolean>(false);
+
+  const handleCheckIsValidModal = () => {
+    setCheckIsValid((prev) => !prev);
+  };
+
+  // timeout 이벤트 걸어줌
+  useEffect(() => {
+    if (checkIsValid) {
+      const timeoutId = setTimeout(() => {
+        setCheckIsValid(false);
+      }, 2000);
+
+      // 컴포넌트가 언마운트되면 타이머를 정리, 뭐든 왜 정리를 해줘야 하니..
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [checkIsValid]);
+  const newData: {
+    imageUrl: string;
+    name: string;
+  } = {
+    imageUrl: treePreset[currentIndex] && treePreset[currentIndex].imageUrl,
+    name: newName,
+  };
+
+  const params = useSearchParams();
+  const type = params.get("type");
+
+  const clickChange = async () => {
+    if (type === "name" && checkTree < 3) {
+      handleCheckIsValidModal();
+      return;
+    }
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: JSON.stringify(newData),
+      });
+      if (response.status === 200) {
+        // 사실 모달을 띄워야 할 것 같긴한데..ㅎ
+        const responseData = await response.json();
+        router.push("/home");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    // 높이는 계속 박아넣고 있어요 -> calc로 변경
-    <div className="w-full h-[calc(100%-60px)]">
-      <div className="flex flex-col">
-        <div className="mt-12 mb-7 mx-9">
-          <Button color="white" label="나무 바꾸기" active={false} />
-        </div>
-        <div className="mt-3 h-[400px]">
-          <UpdateTreeSection
-            currentIndex={currentIndex}
-            nextSlide={nextSlide}
-            prevSlide={prevSlide}
-            openNext={openNext}
-            data={data}
-          />
-        </div>
-        <div className="w-full h-[60px]">
-          <UpdateContainer
-            width={width}
-            openNext={openNext}
-            handleNext={handleNext}
-            value={newName}
-            onChange={handleInput}
-            checkTree={checkTree}
-            fetchTreeCheck={fetchTreeCheck}
-          />
+    <>
+      {/* 높이는 계속 박아넣고 있어요 -> calc로 변경 */}
+      <div className="w-full h-[calc(100%-60px)]">
+        <div className="flex flex-col">
+          <div className="mt-12 mb-7 mx-9">
+            <Button color="white" label="나무 바꾸기" active={false} />
+          </div>
+          <div className="mt-3 h-[400px]">
+            <UpdateTreeSection
+              currentIndex={currentIndex}
+              nextSlide={nextSlide}
+              prevSlide={prevSlide}
+              data={treePreset}
+            />
+          </div>
+          <div className="w-full h-[60px]">
+            <UpdateContainer
+              data={treePreset[currentIndex]}
+              width={width}
+              value={newName}
+              onChange={handleInput}
+              checkTree={checkTree}
+              fetchTreeCheck={fetchTreeCheck}
+              clickChange={clickChange}
+            />
+          </div>
         </div>
       </div>
-    </div>
+      {checkIsValid && (
+        <TextModal
+          title="유효성 확인 실패"
+          content="나무 이름 유효성을 확인해주세요"
+          isOpenModal={checkIsValid}
+          state="error"
+          handleModal={handleCheckIsValidModal}
+        />
+      )}
+    </>
   );
 };
 

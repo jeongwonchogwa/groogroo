@@ -41,7 +41,7 @@ const GardensHeader = ({ clickText, handlemenu, menuOpen }: GardenHeaderProp) =>
         <div className="flex w-full mt-5 justify-between px-5">
           <div className="ml-2">
             <div className="w-10 h-10">
-              <IconButton iconSrc="back" onClick={() => router.push("/home")} />
+              <IconButton iconSrc="back" onClick={() => router.back()} />
             </div>
           </div>
           <div className="flex flex-row gap-3">
@@ -50,7 +50,7 @@ const GardensHeader = ({ clickText, handlemenu, menuOpen }: GardenHeaderProp) =>
             </div>
             <div className={bellClick}>
               <IconButton iconSrc="bell" onClick={onAlarmButtonClick} />
-              {/* {openAlarm ? <Alarm /> : null} */}
+              {openAlarm ? <Alarm /> : null}
             </div>
             <div className="w-10 h-10">
               <IconButton

@@ -7,7 +7,7 @@ import { userInfoStore } from "@/stores/userInfoStore";
 import { redirect } from "next/navigation";
 
 const TreePage = ({ params }: { params: { treeId: string } }) => {
-  console.log(params.treeId);
+  // userToken 처리 필요
   const { userToken } = userInfoStore();
   useEffect(() => {
     if (userToken === "") redirect("/");

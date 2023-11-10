@@ -20,19 +20,20 @@ const SearchPage = () => {
   const handleInput = (e: any) => {
     const { value } = e.target;
     setTreeSearchInput(value);
-    console.log("여긴 searchpage", value);
   };
 
   useEffect(() => {
     if (clickSearch) {
       fetchSearch(treeSearchInput);
-      console.log("클릭했어?", treeSearchInput);
     }
   }, [clickSearch, treeSearchInput]);
 
   const [searchData, setSearchData] = useState<Tree[]>([]);
   // 검색 결과 가져오기
   const fetchSearch = async (name: string) => {
+    if (name === "") {
+      return;
+    }
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/${name}`, {
         method: "GET",
