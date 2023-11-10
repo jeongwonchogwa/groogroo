@@ -12,7 +12,6 @@ interface SearchContainerProp {
 }
 
 const SearchContainer = ({ searchData }: SearchContainerProp) => {
-  console.log(searchData);
   const { userTree } = userTreeStore();
   const { setSearchTreeInfo } = searchTreeStore();
   const router = useRouter();
@@ -26,21 +25,8 @@ const SearchContainer = ({ searchData }: SearchContainerProp) => {
             height={500}
             content={
               <div className="h-full bg-white overflow-scroll">
+                {/* 여기서 데이터를 들고 가야해 zustand로 하면 그 데이터가 새로고침하면 사라져 */}
                 {searchData.map((data, i) => (
-                  // {/* 여기에 클릭 이벤트 걸어야해 */}
-                  // <Link
-                  //   key={i}
-                  //   style={{ color: "black" }}
-                  //   href={
-                  //     data.id === userTree?.id
-                  //       ? { pathname: `/home/${data.id}` }
-                  //       : {
-                  //           pathname: `/home/search/${data.id}`,
-                  //           query: { data: JSON.stringify(data) },
-                  //         }
-                  //   }
-                  //   as={data.id === userTree?.id ? `/home/${data.id}` : `/home/search/${data.id}`}
-                  // >
                   <div
                     key={i}
                     onClick={() => {
@@ -73,19 +59,25 @@ const SearchContainer = ({ searchData }: SearchContainerProp) => {
           />
         </div>
       ) : (
-        <div className="h-full">
-          <div className="w-full h-full flex justify-center mx-3">
-            <Image src="/assets/images/cat_pixel.svg" width={80} height={104} alt="고양이_픽셀" />
-            <div className="py-[200px] h-full my-auto">
-              <div className="nes-balloon from-left flex items-center ">
-                <p className=" font-neoDunggeunmo_Pro mt-[-5px]">검색어를 입력하세요!</p>
+        <div className="h-fit w-full">
+          <Frame
+            height={500}
+            content={
+              <div className="h-full bg-white">
+                <div className="w-full h-full flex justify-center mx-3">
+                  <Image src="/assets/images/cat_pixel.svg" width={80} height={104} alt="고양이_픽셀" />
+                  <div className="h-fit my-auto">
+                    <div className="nes-balloon from-left flex items-center ">
+                      <p className=" font-neoDunggeunmo_Pro mt-[-5px]">검색어를 입력하세요!</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            }
+          />
         </div>
       )}
     </>
   );
 };
-
 export default SearchContainer;

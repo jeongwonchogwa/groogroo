@@ -28,6 +28,7 @@ const MessageContainer = ({
   isSearch,
 }: MessageContainerProps) => {
   const [openDelete, setOpenDelete] = useState(false);
+
   const handleDeleteModal = () => {
     setOpenDelete((prev: any) => !prev);
   };
