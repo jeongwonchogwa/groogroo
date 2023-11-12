@@ -75,6 +75,7 @@ export default class GardenScene extends Scene {
       const data = await fetchTreeExistInfo();
       if (data.treeGardenId != null ) {
         registModalBox.appendChild(treeModifyTextBox);
+        registModalBox.appendChild(treeRegistTextBox);
         this.garden.treePos?.forEach(tree => {
           if(tree.id === data.treeGardenId){
             this.myTree = tree
@@ -123,23 +124,18 @@ export default class GardenScene extends Scene {
           let tmpFruit = fruitArr [Math.floor(Math.random() * fruitArr.length)]
           selectedFruit.push(tmpFruit)
 
-          if(i = 0){
-          this.add.image(tree.x!*16+8,tree.y!*16,tmpFruit).setScale(0.25).setOrigin(0,0).setDepth(4)
-        }else if(i = 1 ){
-          this.add.image(tree.x!*16,tree.y!*16+8,tmpFruit).setScale(0.25).setOrigin(0,0).setDepth(4)
-        }else if(i = 2){
-          this.add.image(tree.x!*16+12,tree.y!*16+8,tmpFruit).setScale(0.25).setOrigin(0,0).setDepth(4)
-        }else {
-          this.add.image(tree.x!*16+6,tree.y!*16+8,tmpFruit).setScale(0.25).setOrigin(0,0).setDepth(4)
-        }
-          
+          if(i === 0){
+          this.add.image(tree.x!*16+12,tree.y!*16,tmpFruit).setScale(0.25).setOrigin(0,0).setDepth(3)
+          }else if(i === 1 ){
+          this.add.image(tree.x!*16+2,tree.y!*16+8,tmpFruit).setScale(0.25).setOrigin(0,0).setDepth(3)
+          }else if(i === 2){
+          this.add.image(tree.x!*16+12,tree.y!*16+8,tmpFruit).setScale(0.25).setOrigin(0,0).setDepth(3)
+          }else {
+          this.add.image(tree.x!*16+22,tree.y!*16+8,tmpFruit).setScale(0.25).setOrigin(0,0).setDepth(3)
+          }
         }
       }
   
-      
-      
-
-
 
       trees.push({
         id: tree.name,

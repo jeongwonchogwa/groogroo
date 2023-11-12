@@ -120,9 +120,11 @@ export default class TreeEditScene extends Scene {
       });
       this.selectedTreeHandle = "selectedTree";
     } else if (data.modifyTreeId) {
+
       this.assetSprite = trees.find(
         (tree) => tree.id === data.modifyTreeId
       )!.sprite;
+
       this.selectedTreeHandle = trees.find(
         (tree) => tree.id === data.modifyTreeId
       )!.id;
@@ -516,6 +518,7 @@ export default class TreeEditScene extends Scene {
           y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
         })
       ) {
+        console.log(this.gridEngine.getPosition(this.selectedTreeHandle).x+" "+this.gridEngine.getPosition(this.selectedTreeHandle).y)
         console.log("장애물 있음")
         // this.spriteBox = this.errorSpriteBox;
         this.errorSpriteBox.setVisible(true);
