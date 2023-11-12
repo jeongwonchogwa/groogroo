@@ -110,9 +110,9 @@ const FlowerMessage = (props: Props) => {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="p-5 flex flex-col gap-5"
+      className="p-5 flex flex-col gap-5 w-full"
     >
-      <div>
+      <div className="flex flex-col gap-5">
         <div className="pl-1 pr-3">
           <div className="nes-container is-rounded bg-white w-full h-full flex flex-col !p-4">
             <div className="w-full flex justify-between">
@@ -146,11 +146,13 @@ const FlowerMessage = (props: Props) => {
             </div>
           </div>
         </div>
+        <div className="px-2">
         <Button
           color="default"
           label="닫기"
           onClick={props.onFormCloseButtonClick}
         />
+        </div>
       </div>
     </div>
   );

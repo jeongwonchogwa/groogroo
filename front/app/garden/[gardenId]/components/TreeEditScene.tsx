@@ -126,6 +126,9 @@ export default class TreeEditScene extends Scene {
       this.selectedTreeHandle = trees.find(
         (tree) => tree.id === data.modifyTreeId
       )!.id;
+
+      console.log(this.assetSprite)
+      console.log(this.selectedTreeHandle)
     }
 
     this.cameras.main.setBackgroundColor("#1E7CB8");
@@ -442,7 +445,6 @@ export default class TreeEditScene extends Scene {
     this.errorSpriteBox.setY(this.assetSprite.y);
     //스프라이트와 키입력 변수
     const sprite = this.assetSprite;
-    console.log(sprite.x + " " + sprite.y);
     // 카메라 추적 로직./////////////////////////////////////////////////
     // 맵과 스크린 테두리가 맞을시 카메라 멈추기.
     // 다시 범위에 들어오면 추적
@@ -514,11 +516,12 @@ export default class TreeEditScene extends Scene {
           y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
         })
       ) {
-        this.spriteBox = this.errorSpriteBox;
+        console.log("장애물 있음")
+        // this.spriteBox = this.errorSpriteBox;
         this.errorSpriteBox.setVisible(true);
         this.defaultSpriteBox.setVisible(false);
       } else {
-        this.spriteBox = this.defaultSpriteBox;
+        // this.spriteBox = this.defaultSpriteBox;
         this.errorSpriteBox.setVisible(false);
         this.defaultSpriteBox.setVisible(true);
       }
@@ -551,11 +554,12 @@ export default class TreeEditScene extends Scene {
           y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
         })
       ) {
-        this.spriteBox = this.errorSpriteBox;
+        console.log("장애물 있음")
+        // this.spriteBox = this.errorSpriteBox;
         this.errorSpriteBox.setVisible(true);
         this.defaultSpriteBox.setVisible(false);
       } else {
-        this.spriteBox = this.defaultSpriteBox;
+        // this.spriteBox = this.defaultSpriteBox;
         this.errorSpriteBox.setVisible(false);
         this.defaultSpriteBox.setVisible(true);
       }
@@ -588,11 +592,12 @@ export default class TreeEditScene extends Scene {
           y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
         })
       ) {
-        this.spriteBox = this.errorSpriteBox;
+        console.log("장애물 있음")
+        // this.spriteBox = this.errorSpriteBox;
         this.errorSpriteBox.setVisible(true);
         this.defaultSpriteBox.setVisible(false);
       } else {
-        this.spriteBox = this.defaultSpriteBox;
+        // this.spriteBox = this.defaultSpriteBox;
         this.errorSpriteBox.setVisible(false);
         this.defaultSpriteBox.setVisible(true);
       }
@@ -625,11 +630,12 @@ export default class TreeEditScene extends Scene {
           y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
         })
       ) {
+        console.log("장애물 있음")
         this.errorSpriteBox.setVisible(true);
         this.defaultSpriteBox.setVisible(false);
-        this.spriteBox = this.errorSpriteBox;
+        // this.spriteBox = this.errorSpriteBox;
       } else {
-        this.spriteBox = this.defaultSpriteBox;
+        // this.spriteBox = this.defaultSpriteBox;
         this.errorSpriteBox.setVisible(false);
         this.defaultSpriteBox.setVisible(true);
       }

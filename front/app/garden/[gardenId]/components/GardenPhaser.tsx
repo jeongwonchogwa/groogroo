@@ -131,6 +131,10 @@ const GardenPhaser = (props: Props) => {
       setGarden(Data.gardenInfo);
 
       const initPhaser = () => {
+
+        //씬 생성시 매개변수로 추가된 데이터들은 constructor에서 불러옴
+        //이후 scene.start 에서 씬 생성과 같이 넘겨주는 데이터들은
+        //init or create 의 매개변수로 받아오기.
         const gardenScene = new GardenScene({
           onTreeClick: onTreeClick,
           onFlowerSelectOpenButtonClick: onFlowerSelectOpenButtonClick,
