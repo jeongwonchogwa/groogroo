@@ -2,28 +2,26 @@
 //todo. 이미지 사이즈를 그냥 w, h로 박아넣고 있는데 이게 맞는지 모르게쪄
 //정재웅 얼른 돌아와.
 import Button from "@/app/components/Button";
-import { searchTreeStore } from "@/stores/searchTreeInfo";
+import { Tree } from "@/app/types";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-const SearchTreeContainer = () => {
-  const router = useRouter();
+interface Props {
+  searchData: Tree;
+}
 
-  const { searchTreeInfoData } = searchTreeStore();
-
-  console.log("SearchTreeContainer 에요 - ", searchTreeInfoData);
-
+const SearchTreeContainer = ({ searchData }: Props) => {
   return (
     <>
-      {searchTreeInfoData && (
+      {searchData && (
         <div className="w-full h-full flex flex-col">
           <div className="mt-12 mb-7 mx-7">
-            <Button color="primary" label={searchTreeInfoData.name} active={false} />
+            <Button color="primary" label={searchData.name} active={false} />
           </div>
           <div className="w-full h-full flex justify-center">
             <div className="flex flex-col">
               {/* w를 박아 넣는게 맞는지 모르겠어요ㅠㅠ */}
-              <div className="w-[calc(100%-10px)] h-[calc(100%-3  60px)]">
+              <div className="w-[calc(100%-10px)] h-[calc(100%-60px)]">
                 <div className="relative w-full h-full flex justify-center">
                   <Image
                     className="w-full h-full object-contain"
@@ -41,19 +39,21 @@ const SearchTreeContainer = () => {
                 </div>
               </div>
               <div className="mx-auto">
-                {/* 이미지 클릭하면 페이지 이동이 일어나아 근데 나는 여기서 src에 뭘 넣어야 할지도 모르겠다..  */}
-                {/* 여기는 data가 들어가야해 나무 데이터, route 경로도 수정 필요 */}
-                <Image
-                  onClick={() => {
-                    router.push(`/home/search/${searchTreeInfoData.id}/fruits`);
+                {/* 나도 모르겠다 */}
+                <Link
+                  href={{
+                    pathname: `/search/result/fruits`,
+                    query: { name: searchData.name },
                   }}
-                  src={searchTreeInfoData.imageUrl}
-                  style={{ width: "auto" }}
-                  alt="나무테스트"
-                  width={340}
-                  height={300}
-                  priority
-                />
+                >
+                  <Image
+                    src={searchData.imageUrl}
+                    alt="나무테스트"
+                    width={300}
+                    height={300}
+                    priority
+                  />
+                </Link>
               </div>
             </div>
           </div>
