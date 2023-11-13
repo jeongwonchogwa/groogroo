@@ -6,16 +6,19 @@ import { useRouter } from "next/navigation";
 import Menu from "./Menu";
 import { MenuButton } from "@/app/types";
 import Alarm from "@/app/components/Alarm";
+import JoinModal from "./JoinModal";
 
 interface Props {
+  gardenId: number;
   state: "ACCEPT" | "REFUSE" | "KICK" | "WAIT" | "WITHDRAWAL" | null;
 }
 
 const GardenHeader = (props: Props) => {
   const router = useRouter();
 
-  const [openMenu, setOpenMenu] = useState(false);
-  const [openAlarm, setOpenAlarm] = useState(false);
+  const [openMenu, setOpenMenu] = useState<boolean>(false);
+  const [openAlarm, setOpenAlarm] = useState<boolean>(false);
+  const [openJoinModal, setOpenJoinModal] = useState<boolean>(false);
 
   const onMenuButtonClick = () => {
     setOpenMenu(!openMenu);
@@ -27,16 +30,27 @@ const GardenHeader = (props: Props) => {
     setOpenMenu(false);
   };
 
+  const onJoinButtonClick = () => {
+    setOpenJoinModal((prev) => !prev);
+  };
+
   let menuList: MenuButton[] = [];
 
   {
     props.state === "ACCEPT"
       ? (menuList = [
           { name: "초대하기", clickEvent: () => {} },
-          { name: "신고하기", clickEvent: () => {} },
+          // { name: "신고하기", clickEvent: () => {} },
         ])
       : props.state === null || "REFUSE" || "WITHDRAWAL"
-      ? (menuList = [{ name: "참여신청", clickEvent: () => {} }])
+      ? (menuList = [
+          {
+            name: "참여신청",
+            clickEvent: () => {
+              onJoinButtonClick;
+            },
+          },
+        ])
       : props.state === "KICK"
       ? (menuList = [{ name: "추방당하셨습니다.", clickEvent: () => {} }])
       : props.state === "WAIT"
@@ -56,7 +70,7 @@ const GardenHeader = (props: Props) => {
       className="absolute top-5 px-5 flex gap-5 font-bitBit justify-between"
       style={{ width: `${uiWidth}` }}
     >
-      <div className="h-10 w-10 z-40">
+      <div className="h-10 w-10">
         <IconButton iconSrc="home" onClick={() => router.push("../")} />
       </div>
 
@@ -72,6 +86,12 @@ const GardenHeader = (props: Props) => {
           </div>
         )}
       </div>
+      {openJoinModal ? null : (
+        <JoinModal
+          onJoinButtonClick={onJoinButtonClick}
+          gardenId={props.gardenId}
+        />
+      )}
     </div>
   );
 };

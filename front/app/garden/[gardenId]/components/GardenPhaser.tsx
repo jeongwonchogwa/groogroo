@@ -201,7 +201,10 @@ const GardenPhaser = (props: Props) => {
           id="garden-content"
           key="garden-content"
         >
-          <GardenHeader state={garden.gardenInfo.state} />
+          <GardenHeader
+            state={garden.gardenInfo.state}
+            gardenId={props.gardenId}
+          />
           {showFlowerMessage ? (
             <div
               className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]"
@@ -284,7 +287,7 @@ const GardenPhaser = (props: Props) => {
           ) : null}
           {fruitMessageEdit ? (
             <div
-              className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]"
+              className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[50]"
               onClick={(e) => {
                 onFormCloseButtonClick();
                 e.stopPropagation();
