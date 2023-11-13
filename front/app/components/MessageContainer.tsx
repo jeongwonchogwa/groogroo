@@ -17,20 +17,17 @@ interface MessageContainerProps {
   dataType: "TREE" | "GARDEN" | "FRUIT" | "FLOWER" | "TREEGARDEN";
   currentIndex?: number;
   data: Fruit;
+  availableDelete?: boolean;
   isSearch?: boolean;
-  isValidDelete?: boolean;
 }
 
 const MessageContainer = ({
   data,
   dataType,
+  availableDelete = true,
   isSearch,
-  isValidDelete,
 }: MessageContainerProps) => {
-  const { userToken } = userInfoStore();
-
   const [openDelete, setOpenDelete] = useState(false);
-
   const handleDeleteModal = () => {
     setOpenDelete((prev: any) => !prev);
   };
@@ -53,10 +50,14 @@ const MessageContainer = ({
           </p>
           <div className="flex flex-row">
             <div className="w-9 h-9 mr-2">
-              <IconButton iconSrc="trash" onClick={handleDeleteModal} />
+              {availableDelete && (
+                <IconButton iconSrc="trash" onClick={handleDeleteModal} />
+              )}
             </div>
             <div className=" w-9 h-9">
-              <IconButton iconSrc="siren" onClick={handleReportModal} />
+              {!isSearch && (
+                <IconButton iconSrc="siren" onClick={handleReportModal} />
+              )}
             </div>
           </div>
         </div>
@@ -68,7 +69,6 @@ const MessageContainer = ({
           <span className="font-nexonGothic text-xl">{data.content}</span>
         </div>
       </div>
-
       {/* 삭제하기 눌렀을때 나오는 모달 */}
       {openDelete && (
         <DeleteModal id={data.id} handleDeleteModal={handleDeleteModal} />
