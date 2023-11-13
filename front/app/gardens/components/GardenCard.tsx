@@ -2,17 +2,45 @@ import PixelCard from "../../components/PixelCard";
 import Image from "next/image";
 import GardenDetailModal from "./GardenDetailModal";
 import { Garden } from "@/app/types";
+import { useState } from "react";
 
 interface GardenCardProps {
   gardenList: Garden[];
-  handleToggle: (e: any) => void;
-  selectedGardenId: number;
-  open: boolean;
-  gardenData: Garden;
   sort: string;
 }
 
-const GardenCard = ({ sort, gardenList, handleToggle, selectedGardenId, open, gardenData }: GardenCardProps) => {
+const GardenCard = ({ sort, gardenList }: GardenCardProps) => {
+  const [selectedGardenId, setSelectedGardenId] = useState<number>(0);
+
+  const [open, setOpen] = useState<boolean>(false);
+
+  const handleToggle = (gardenId: number) => {
+    setOpen((prevOpen) => !prevOpen);
+    // 이거는 모달떄문에 필요한건가?
+    setSelectedGardenId(gardenId);
+    updateGardenData(gardenId);
+  };
+  const [gardenData, setGardenData] = useState<Garden>({
+    gardenId: 0,
+    capacity: 0,
+    name: "",
+    description: "",
+    imageUrl: "",
+    state: null,
+    likes: 0,
+    memberCnt: 0,
+    mapType: 0,
+  });
+  // gardenData를 업데이트하는 함수
+  const updateGardenData = (gardenId: number) => {
+    const selectedGarden = gardenList.find(
+      (garden) => garden.gardenId === gardenId
+    );
+    if (selectedGarden) {
+      setGardenData(selectedGarden);
+    }
+  };
+
   return (
     <>
       <div className="flex w-full">
@@ -22,7 +50,10 @@ const GardenCard = ({ sort, gardenList, handleToggle, selectedGardenId, open, ga
               <div className="mt-5 w-full flex justify-center " key={idx}>
                 <PixelCard
                   content={
-                    <div className="flex flex-col bg-white" onClick={() => handleToggle(garden.gardenId)}>
+                    <div
+                      className="flex flex-col bg-white"
+                      onClick={() => handleToggle(garden.gardenId)}
+                    >
                       <div className="w-[300px] h-[100px] outline-dashed outline-2 outline-[#1E3445] rounded-lg mr-1">
                         <div className="w-full h-full relative">
                           {sort === "정원 랭킹" && idx < 3 && (
@@ -31,12 +62,12 @@ const GardenCard = ({ sort, gardenList, handleToggle, selectedGardenId, open, ga
                               alt="등수"
                               width={40}
                               height={100}
-                              className="z-50 absolute top-[10px] left-[10px]"
+                              className="z-20 absolute top-[10px] left-[10px]"
                             />
                           )}
-                          <div className="h-[100px] z-30">
+                          <div className="h-[100px] z-10">
                             <Image
-                              src="/cat.jpg"
+                              src={`/assets/maps/map[${garden.mapType}].jpg`}
                               width={300}
                               height={100}
                               alt="템플릿1"
@@ -48,7 +79,9 @@ const GardenCard = ({ sort, gardenList, handleToggle, selectedGardenId, open, ga
                       <div className="flex my-4 px-2">
                         <div className="w-full h-full flex flex-col">
                           <div className="flex justify-between h-full">
-                            <p className="my-auto font-nexonGothic_Bold text-2xl">{garden.name}</p>
+                            <p className="my-auto font-nexonGothic_Bold text-2xl">
+                              {garden.name}
+                            </p>
                             <div className="flex justify-between">
                               <div className="flex flex-row mr-3">
                                 <div className="my-auto mr-1 w-6 h-6">
@@ -60,7 +93,9 @@ const GardenCard = ({ sort, gardenList, handleToggle, selectedGardenId, open, ga
                                     alt="heart"
                                   />
                                 </div>
-                                <p className="my-auto font-nexonGothic text-lg">{garden.likes}</p>
+                                <p className="my-auto font-nexonGothic text-lg">
+                                  {garden.likes}
+                                </p>
                               </div>
                               <div className="my-auto flex flex-row font-nexonGothic text-lg">
                                 <span>{garden.memberCnt}</span>
@@ -70,7 +105,9 @@ const GardenCard = ({ sort, gardenList, handleToggle, selectedGardenId, open, ga
                             </div>
                           </div>
                           <div className="mt-2 w-[290px]">
-                            <p className="my-auto font-nexonGothic text-lg">{garden.description}</p>
+                            <p className="my-auto font-nexonGothic text-lg">
+                              {garden.description}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -85,7 +122,6 @@ const GardenCard = ({ sort, gardenList, handleToggle, selectedGardenId, open, ga
         <GardenDetailModal
           isOpen={open}
           handleToggle={() => handleToggle(selectedGardenId)}
-          selectedGardenId={selectedGardenId}
           gardenData={gardenData}
         />
       )}

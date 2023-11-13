@@ -15,7 +15,11 @@ interface GardenHeaderProp {
   menuOpen: boolean;
 }
 
-const GardensHeader = ({ clickText, handlemenu, menuOpen }: GardenHeaderProp) => {
+const GardensHeader = ({
+  clickText,
+  handlemenu,
+  menuOpen,
+}: GardenHeaderProp) => {
   const router = useRouter();
 
   const [openAlarm, setOpenAlarm] = useState(false);
@@ -46,7 +50,10 @@ const GardensHeader = ({ clickText, handlemenu, menuOpen }: GardenHeaderProp) =>
           </div>
           <div className="flex flex-row gap-3">
             <div className="w-10 h-10">
-              <IconButton onClick={() => router.push("/garden/regist")} iconSrc="plus" />
+              <IconButton
+                onClick={() => router.push("/garden/regist")}
+                iconSrc="plus"
+              />
             </div>
             <div className={bellClick}>
               <IconButton iconSrc="bell" onClick={onAlarmButtonClick} />
@@ -65,8 +72,18 @@ const GardensHeader = ({ clickText, handlemenu, menuOpen }: GardenHeaderProp) =>
       </div>
       <div className="mt-[30px] mx-5">
         <div className="grid grid-flow-col gap-2">
+          {/* <Button color="primary" label="내 정원" onClickText={clickText} /> */}
           <Button color="primary" label="내 정원" onClickText={clickText} />
           <Button color="white" label="정원 랭킹" onClickText={clickText} />
+          {/* <Button
+            color="white"
+            label="정원 랭킹"
+            onClickText={(e) => {
+              clickText(e);
+              window.scrollTo(0, 0);
+              console.log("왜 맨위로 안가");
+            }}
+          /> */}
         </div>
       </div>
       {menuOpen ? <GardensMenu menuList={menuList}></GardensMenu> : null}
