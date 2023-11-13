@@ -1,18 +1,24 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from "../../components/Button";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
+import { userInfoStore } from '../../../stores/userInfoStore';
 
-
-// 이걸,, 지금은 imageCount를 직접넣는데
-// 자동으로 파일내에 파일갯수를 파악해주는 코드를짜야할까......?
-// 우리 이미지 자동저장 이런것도없는데 굳이...??????????????? ㅠㅠㅠ....
-const imageCount = 8;
 
 const Freeset = () => {
+
+  const getUserToken = () => {
+		const { userToken } = userInfoStore.getState();
+		return userToken;
+	}
+	const AccessToken = getUserToken();
+
+	// const AccessToken = localStorage.getItem("access_token");
+	const [imageCount, setImageCount] = useState(8);
 	const [currentImage, setCurrentImage] = useState(0);
+	const [treePresets, setTreePresets] = useState<{ treeUserPresetId: number; imageUrl: string }[]>([]);
 
 	const prevImage = () => {
 		setCurrentImage((prev) => (prev -1 + imageCount) % imageCount);
@@ -25,8 +31,31 @@ const Freeset = () => {
 	const router = useRouter();
 
 	const handlePickButtonClick = () => {
-		router.push(`/enter/check?selectedImage=${currentImage}`);
+		router.push(`/enter/check?selectedImageUrl=${treePresets[currentImage]?.imageUrl}`);
 	};
+
+	useEffect(() => {
+		const fetchTreePresets = async () => {
+			try {
+				const res = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/preset`, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${AccessToken}`
+					},
+				});
+				const data = await res.json();
+				setTreePresets(data.presets);
+				setImageCount(data.presets.length);
+				console.log(AccessToken)
+				console.log(data.presets)
+			} catch (error) {
+				console.error('프리셋 조회 중 오류 발생:', error)
+			}
+		};
+
+		fetchTreePresets();
+	}, []);
 
   return (
     <div className="w-full flex flex-col justify-center items-center ">    
@@ -61,7 +90,7 @@ const Freeset = () => {
 							<div className="w-[290px] h-[5px] bg-black"></div>
 							<div className="w-[290px] h-[490px] flex items-center justify-center bg-white">
 								<Image
-								src={`/assets/trees/tree[${currentImage}].svg`}
+								src={treePresets[currentImage]?.imageUrl}
 								alt = "나무 이미지"
 								width={256}
           			height={256}

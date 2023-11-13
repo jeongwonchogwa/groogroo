@@ -128,6 +128,9 @@ def make_image():
                 print('입력받은 데이터: ', prompt)
                 print("=====================")
 
+                # 테스트용 리턴
+                # return jsonify ({ 'image_data': 'makeImage' }), 200;
+                
                 # prompt = "Image of a tree with a burning dot art feel"
                 try:
                     response = client.images.generate(

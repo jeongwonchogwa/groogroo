@@ -2,17 +2,27 @@
 
 import Button from "../../components/Button";
 import NameInput from "../../components/NameInput";
-import Frame from "../../components/Frame";
 
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from 'next/image';
 
+import { userInfoStore } from '../../../stores/userInfoStore';
+
 const Check = () => {
+
+	const getUserToken = () => {
+		const { userToken } = userInfoStore.getState();
+		return userToken;
+	}
+	const AccessToken = getUserToken();
+
+	// const AccessToken = localStorage.getItem("access_token");
+
 	const router = useRouter();
 
 	const search = useSearchParams();
-	const selectedImage = search?.get("selectedImage")
+	const selectedImageUrl = search?.get("selectedImageUrl")
 
 	const [inputValue, setInputValue] = useState('');
   const [message, setMessage] = useState('닉네임은 12글자까지 가능합니다');
@@ -22,7 +32,7 @@ const Check = () => {
     setInputValue(e.target.value);
   };
 
-  const handleCheckDuplicate = () => {
+  const handleCheckDuplicate = async () => {
 		// 입력된 닉네임
 		const nickname = inputValue;
 	
@@ -36,15 +46,27 @@ const Check = () => {
 		} else {
 			// 입력된 닉네임이 유효한 경우, 서버로 중복 확인 요청을 보냅니다.
 			// 중복 여부에 따라 아래의 setMessage와 setMessageColor를 업데이트할 수 있습니다.
-			const isDuplicate = true; // 예시: 중복된 닉네임인 경우
-	
-			if (isDuplicate) {
-				setMessage('중복된 닉네임입니다');
-				setMessageColor('text-error');
-			} else {
-				setMessage('사용가능한 닉네임입니다');
-				setMessageColor('text-success');
-			}
+			try {
+				const res = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/check/${nickname}`,{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				});
+				const data = await res.json();
+				console.log(data)
+
+				if (data.result) {
+					setMessage('중복된 닉네임입니다');
+					setMessageColor('text-error');
+				} else {
+					setMessage('사용 가능한 닉네임입니다');
+					setMessageColor('text-success');
+				}
+
+		} catch (err) {
+			console.log(err);
+		}
 		}
 	};
 
@@ -52,8 +74,27 @@ const Check = () => {
     window.history.back()
   };
 
-	const handleStart = () => {
-		if (message === '사용가능한 닉네임입니다') {
+	const handleStart = async () => {
+		if (message === '사용 가능한 닉네임입니다') {
+			try {
+				const res = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${AccessToken}`,
+					},
+					body: JSON.stringify({
+						imageUrl: selectedImageUrl,
+						name: inputValue,
+					}),
+				});
+				const data = await res.json();
+				console.log("가자로그인")
+				console.log(data)
+				router.push('/home');
+			} catch (err) {
+				console.log(err);
+			}
 			// 사용가능한 닉네임일 경우 다음 페이지로 라우팅
 		} else {
 			// 닉네임 중복 확인 메시지를 업데이트
@@ -78,15 +119,17 @@ const Check = () => {
 						<div className="w-[290px] flex flex-col">
 							<div className="w-[290px] h-[5px] bg-black"></div>
 							<div className="w-[290px] h-[290px] flex items-center justify-center bg-white">
-							<Image
-								src={`/assets/trees/tree[${selectedImage}].svg`}
-								alt="나무 이미지"
-								width={192}
-								height={192}
-								style={{
-									objectFit: 'cover',
-								}}
-							/>
+							{selectedImageUrl && (
+								<Image
+									src={selectedImageUrl}
+									alt="나무 이미지"
+									width={192}
+									height={192}
+									style={{
+										objectFit: 'cover',
+									}}
+								/>
+							)}
 							</div>
 							<div className="w-[290px] h-[5px] bg-black"></div>
 						</div>
@@ -95,7 +138,7 @@ const Check = () => {
 						</div>
 					</div>
         </div>
-				<NameInput placeholder="닉네임을 입력하세요" value={inputValue} onChange={handleInputChange} ></NameInput>
+				<NameInput placeholder="닉네임을 입력하세요" value={inputValue} maxlength={12} onChange={handleInputChange} ></NameInput>
 				<div className="w-[290px] h-[20px] flex justify-start">
           <p className={`${messageColor} font-nexonGothic font-bold text-[16px]`}>				
 						{message}

@@ -17,6 +17,8 @@ const Create = () => {
   const [selectedComponent, setSelectedComponent] = useState('canvas');
   const [selectedTool, setSelectedTool] = useState('pen'); // 기본 도구를 'pen'으로 설정
   const [selectedColor, setSelectedColor] = useState('black'); // 기본 색상을 'black'으로 설정
+  const [isGenerated, setIsGenerated] = useState(false);
+  const [imageData, setImageData] = useState('');
 
 	const redirectHome = () => {
     router.push('/home');
@@ -99,10 +101,11 @@ const Create = () => {
 
       if (response.status === 200) {
         // image_data - 형식은 base64
-        const responseData = await response.json();
+        const data = await response.json();
+        setImageData(data.image_data); // 이미지 데이터를 상태 변수에 저장
+        setIsGenerated(true);
         // console.log(responseData.image_url)
         // router.push(`/enter/pick/${responseData.image_url}`)
-        console.log(responseData.image_data);
 
       } else {
         console.log('Server Response Error:', response.status);
@@ -136,7 +139,12 @@ const Create = () => {
             />
           <Canvas selectedTool={selectedTool} selectedColor={selectedColor} />
           </>
-        )}        
+        )}
+
+        {isGenerated && imageData && (
+        <img src={`data:image/png;base64,${imageData}`} alt='생성된 이미지' />
+        )}
+
         {selectedComponent === 'text' && <NameInput placeholder="뿡뿡이나무" value={inputValue} onChange={handleInputChange} />} { /* NameInput 컴포넌트를 렌더링 */ }    
         <div className="w-full h-[20px] flex justify-end mr-20">
           <a href="/enter/freeset" className="text-primary font-nexonGothic font-bold text-[20px] hover:no-underline hover:text-primary">				
@@ -144,7 +152,13 @@ const Create = () => {
           </a>
         </div>
         <div className="w-[80%] mt-[30px] ">      
-          <Button color="primary" label="생성 하기" onClick={handleCreateButtonClick} />
+          {isGenerated ?  <>
+                            <div className="grid grid-flow-col gap-4">
+                              <Button color="primary" label="다시 생성하기" onClick={handleCreateButtonClick} /> 
+                              <Button color="primary" label="선택 하기" onClick={handleCreateButtonClick} />
+                            </div>
+                          </> : 
+                          <Button color="primary" label="생성 하기" onClick={handleCreateButtonClick} />}
         </div>
       </div>
 		</div>
