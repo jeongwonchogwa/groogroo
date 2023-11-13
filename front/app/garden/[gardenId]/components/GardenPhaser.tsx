@@ -107,6 +107,7 @@ const GardenPhaser = (props: Props) => {
   };
 
   const fetchGardenInfo = async () => {
+    console.log(userToken);
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${props.gardenId}`,

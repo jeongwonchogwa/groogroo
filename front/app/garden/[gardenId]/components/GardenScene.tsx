@@ -51,8 +51,8 @@ export default class GardenScene extends Scene {
   }
 
   create() {
-    // const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
-    const { userToken } = userInfoStore();
+    const userToken = JSON.parse(sessionStorage.getItem("userInfo")!).state
+      .userToken;
     const fetchTreeExistInfo = async () => {
       try {
         const res = await fetch(
@@ -439,7 +439,6 @@ export default class GardenScene extends Scene {
       } else {
         registModalBox.style.display = "flex";
         treeModalBox.style.display = "none";
-        // flowerModalBox.style.display = "none";
       }
     };
 
@@ -449,7 +448,6 @@ export default class GardenScene extends Scene {
       } else {
         treeModalBox.style.display = "flex";
         registModalBox.style.display = "none";
-        // flowerModalBox.style.display = "none";
       }
     };
 

@@ -16,7 +16,6 @@ export default class FlowerEditScene extends Scene {
   private assetSprite!: Phaser.Physics.Arcade.Sprite;
   private moveCheck!: boolean;
   private UIMoveCheck!: boolean;
-  private spriteBox!: Phaser.GameObjects.Graphics;
   private errorSpriteBox!: Phaser.GameObjects.Graphics;
   private defaultSpriteBox!: Phaser.GameObjects.Graphics;
   private registButtonBox!: Phaser.GameObjects.DOMElement;
@@ -25,7 +24,9 @@ export default class FlowerEditScene extends Scene {
   private rightKey!: HTMLButtonElement;
   private upKey!: HTMLButtonElement;
   private downKey!: HTMLButtonElement;
-  private selectedFlower!: number;
+  private selectedFlower?: number;
+  private modifyFlowerId?: number;
+  private selectedFlowerHandle!: string;
   private garden: Garden;
   private onFlowerPlantButtonClick: (data: Flower) => void;
 
@@ -36,7 +37,7 @@ export default class FlowerEditScene extends Scene {
   }
 
   init(data: { selectedFlower: number }) {
-    this.selectedFlower = data.selectedFlower;
+    if (data.selectedFlower) this.selectedFlower = data.selectedFlower;
   }
 
   preload() {
@@ -46,19 +47,21 @@ export default class FlowerEditScene extends Scene {
       "animatedTiles",
       "animatedTiles"
     );
+    if (this.selectedFlower) {
+      this.load.spritesheet(
+        "selectedFlower",
+        `/assets/flowers/flower[${this.selectedFlower}].svg`,
 
-    this.load.spritesheet(
-      "selectedFlower",
-      `/assets/flowers/flower[${this.selectedFlower}].svg`,
-
-      {
-        frameWidth: 64,
-        frameHeight: 64,
-      }
-    );
+        {
+          frameWidth: 64,
+          frameHeight: 64,
+        }
+      );
+    }
   }
 
-  create() {
+  create(data: { modifyFlower: Flower }) {
+    // this.modifyFlowerId = data.modifyFlowerId;
     // cancelButton.style.display = "flex"
     // cancelButton.style.width = "100%"
     //맵 생성. 레이어별로 foreach 돌면서.///////////////////////////////////////////////
@@ -107,21 +110,43 @@ export default class FlowerEditScene extends Scene {
 
     //배치할 에셋 sprite 생성
 
-    this.assetSprite = this.physics.add
-      .sprite(0, 0, "selectedFlower")
-      .setScale(0.25)
-      .setDepth(3)
-      .setOrigin(0, 0);
+    if (this.selectedFlower) {
+      this.assetSprite = this.physics.add
+        .sprite(0, 0, "selectedFlower")
+        .setScale(0.25)
+        .setDepth(3)
+        .setOrigin(0, 0);
 
-    flowers.push({
-      id: "selectedFlower",
-      sprite: this.assetSprite,
-      startPosition: { x: 15, y: 10 },
-      tileHeight: 0,
-      tileWidth: 0,
-      offsetX: 0,
-      offsetY: 0,
-    });
+      flowers.push({
+        id: "selectedFlower",
+        sprite: this.assetSprite,
+        startPosition: { x: 15, y: 10 },
+        tileHeight: 0,
+        tileWidth: 0,
+        offsetX: 0,
+        offsetY: 0,
+      });
+      this.selectedFlowerHandle = "selectedFlower";
+    } else {
+      this.garden.flowerPos?.forEach((flower) => {
+        if (flower.id === data.modifyFlower.id) this.modifyFlowerId = flower.id;
+      });
+
+      flowers.forEach((flower) => {
+        if (flower.id === "flower" + data.modifyFlower.id) {
+          flower.tileHeight = 0;
+          flower.tileWidth = 0;
+          this.assetSprite = flower.sprite;
+        }
+      });
+
+      this.selectedFlowerHandle = flowers.find(
+        (flower) => flower.id === "flower" + data.modifyFlower.id
+      )!.id;
+
+      console.log(this.assetSprite);
+      console.log(this.selectedFlowerHandle);
+    }
 
     this.cameras.main.setBackgroundColor("#1E7CB8");
     this.moveCheck = false;
@@ -157,6 +182,9 @@ export default class FlowerEditScene extends Scene {
 
     //버튼 임포트해와서 DOM 요소로 렌더링하기.
 
+    const userToken = JSON.parse(sessionStorage.getItem("userInfo")!).state
+      .userToken;
+
     const onCancelButtonClick = () => {
       this.scene.stop("flowerEditScene");
       this.scene.start("gardenScene");
@@ -167,9 +195,64 @@ export default class FlowerEditScene extends Scene {
         console.log("돼요");
         this.onFlowerPlantButtonClick({
           imageUrl: `/assets/flowers/flower[${this.selectedFlower}].svg`,
-          x: this.gridEngine.getPosition("selectedFlower").x,
-          y: this.gridEngine.getPosition("selectedFlower").y,
+          x: this.gridEngine.getPosition(this.selectedFlowerHandle).x,
+          y: this.gridEngine.getPosition(this.selectedFlowerHandle).y,
         });
+      } else {
+        console.log("안돼요");
+      }
+    };
+
+    const onModifyButtonClick = async () => {
+      if (this.defaultSpriteBox.visible) {
+        try {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/decoration`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${userToken}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                trees: [],
+                flowers: [
+                  {
+                    id: data.modifyFlower.id,
+                    x: this.gridEngine.getPosition(this.selectedFlowerHandle).x,
+                    y: this.gridEngine.getPosition(this.selectedFlowerHandle).y,
+                  },
+                ],
+              }),
+            }
+          );
+          const Data = await res.json();
+          console.log(Data);
+
+          try {
+            const res = await fetch(
+              `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${this.garden.gardenId}`,
+
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${userToken}`,
+                },
+              }
+            );
+            const gardenData = await res.json();
+            console.log(gardenData);
+            //@ts-ignore
+            this.game.scene.getScene("preloader").garden =
+              gardenData.gardenInfo;
+            this.scene.stop("flowerEditScene");
+            this.scene.start("preloader");
+          } catch (error) {
+            console.log(error);
+          }
+        } catch (err) {
+          console.log(err);
+        }
       } else {
         console.log("안돼요");
       }
@@ -185,21 +268,36 @@ export default class FlowerEditScene extends Scene {
       label: "꽃 심기",
       onClick: onRegistButtonClick,
     });
+    let modifyButton = Button({
+      color: "secondary",
+      label: "수정 완료",
+      onClick: onModifyButtonClick,
+    });
+
     const DOMCancelButton = document.createElement("div");
     const DOMRegistButton = document.createElement("div");
+    const DOMModifyButton = document.createElement("div");
 
     ReactDOM.createRoot(DOMCancelButton).render(cancelButton);
     ReactDOM.createRoot(DOMRegistButton).render(registButton);
-
+    ReactDOM.createRoot(DOMModifyButton).render(modifyButton);
     DOMCancelButton.style.width = window.innerWidth / 2 - 40 + "px";
     DOMCancelButton.style.height = "60px";
 
     DOMRegistButton.style.width = window.innerWidth / 2 - 40 + "px";
     DOMRegistButton.style.height = "60px";
 
+    DOMModifyButton.style.width = window.innerWidth / 2 - 40 + "px";
+    DOMModifyButton.style.height = "60px";
+
     this.registButtonBox.node.appendChild(DOMCancelButton);
-    this.registButtonBox.node.appendChild(DOMRegistButton);
-    this.registButtonBox.setOrigin(0, 0).setScrollFactor(0, 0);
+    if (this.selectedFlower) {
+      this.registButtonBox.node.appendChild(DOMRegistButton);
+      this.registButtonBox.setOrigin(0, 0).setScrollFactor(0, 0);
+    } else if (data.modifyFlower) {
+      this.registButtonBox.node.appendChild(DOMModifyButton);
+      this.registButtonBox.setOrigin(0, 0).setScrollFactor(0, 0);
+    }
 
     if (window.innerHeight >= window.innerWidth) {
       this.registButtonBox.setPosition(
@@ -291,15 +389,13 @@ export default class FlowerEditScene extends Scene {
 
     if (
       this.gridEngine.isBlocked({
-        x: this.gridEngine.getPosition("selectedFlower").x,
-        y: this.gridEngine.getPosition("selectedFlower").y,
+        x: this.gridEngine.getPosition(this.selectedFlowerHandle).x,
+        y: this.gridEngine.getPosition(this.selectedFlowerHandle).y,
       })
     ) {
-      this.spriteBox = this.errorSpriteBox;
       this.errorSpriteBox.setVisible(true);
       this.defaultSpriteBox.setVisible(false);
     } else {
-      this.spriteBox = this.defaultSpriteBox;
       this.errorSpriteBox.setVisible(false);
       this.defaultSpriteBox.setVisible(true);
     }
@@ -307,8 +403,6 @@ export default class FlowerEditScene extends Scene {
 
   update() {
     //에셋 배치시 나무, 꽃 테두리 보여주기.////////////////////////////////
-    this.spriteBox.setX(this.assetSprite.x);
-    this.spriteBox.setY(this.assetSprite.y);
     this.defaultSpriteBox.setX(this.assetSprite.x);
     this.defaultSpriteBox.setY(this.assetSprite.y);
     this.errorSpriteBox.setX(this.assetSprite.x);
@@ -362,24 +456,22 @@ export default class FlowerEditScene extends Scene {
     //좌측 버튼
     this.leftKey.onclick = () => {
       this.moveCheck = true;
-      if (this.gridEngine.getPosition("selectedFlower").x - 1 >= 0)
-        this.gridEngine.setPosition("selectedFlower", {
-          x: this.gridEngine.getPosition("selectedFlower").x - 1,
-          y: this.gridEngine.getPosition("selectedFlower").y,
+      if (this.gridEngine.getPosition(this.selectedFlowerHandle).x - 1 >= 0)
+        this.gridEngine.setPosition(this.selectedFlowerHandle, {
+          x: this.gridEngine.getPosition(this.selectedFlowerHandle).x - 1,
+          y: this.gridEngine.getPosition(this.selectedFlowerHandle).y,
         });
 
       //이동한 좌표에 장애물 존재시 박스 교체.
       if (
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition("selectedFlower").x,
-          y: this.gridEngine.getPosition("selectedFlower").y,
+          x: this.gridEngine.getPosition(this.selectedFlowerHandle).x,
+          y: this.gridEngine.getPosition(this.selectedFlowerHandle).y,
         })
       ) {
-        this.spriteBox = this.errorSpriteBox;
         this.errorSpriteBox.setVisible(true);
         this.defaultSpriteBox.setVisible(false);
       } else {
-        this.spriteBox = this.defaultSpriteBox;
         this.errorSpriteBox.setVisible(false);
         this.defaultSpriteBox.setVisible(true);
       }
@@ -388,23 +480,21 @@ export default class FlowerEditScene extends Scene {
     //우측 버튼
     this.rightKey.onclick = () => {
       this.moveCheck = true;
-      if (this.gridEngine.getPosition("selectedFlower").x + 1 < 29)
-        this.gridEngine.setPosition("selectedFlower", {
-          x: this.gridEngine.getPosition("selectedFlower").x + 1,
-          y: this.gridEngine.getPosition("selectedFlower").y,
+      if (this.gridEngine.getPosition(this.selectedFlowerHandle).x + 1 < 29)
+        this.gridEngine.setPosition(this.selectedFlowerHandle, {
+          x: this.gridEngine.getPosition(this.selectedFlowerHandle).x + 1,
+          y: this.gridEngine.getPosition(this.selectedFlowerHandle).y,
         });
 
       if (
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition("selectedFlower").x,
-          y: this.gridEngine.getPosition("selectedFlower").y,
+          x: this.gridEngine.getPosition(this.selectedFlowerHandle).x,
+          y: this.gridEngine.getPosition(this.selectedFlowerHandle).y,
         })
       ) {
-        this.spriteBox = this.errorSpriteBox;
         this.errorSpriteBox.setVisible(true);
         this.defaultSpriteBox.setVisible(false);
       } else {
-        this.spriteBox = this.defaultSpriteBox;
         this.errorSpriteBox.setVisible(false);
         this.defaultSpriteBox.setVisible(true);
       }
@@ -413,23 +503,21 @@ export default class FlowerEditScene extends Scene {
     //위 버튼
     this.upKey.onclick = () => {
       this.moveCheck = true;
-      if (this.gridEngine.getPosition("selectedFlower").y - 1 >= 0)
-        this.gridEngine.setPosition("selectedFlower", {
-          x: this.gridEngine.getPosition("selectedFlower").x,
-          y: this.gridEngine.getPosition("selectedFlower").y - 1,
+      if (this.gridEngine.getPosition(this.selectedFlowerHandle).y - 1 >= 0)
+        this.gridEngine.setPosition(this.selectedFlowerHandle, {
+          x: this.gridEngine.getPosition(this.selectedFlowerHandle).x,
+          y: this.gridEngine.getPosition(this.selectedFlowerHandle).y - 1,
         });
 
       if (
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition("selectedFlower").x,
-          y: this.gridEngine.getPosition("selectedFlower").y,
+          x: this.gridEngine.getPosition(this.selectedFlowerHandle).x,
+          y: this.gridEngine.getPosition(this.selectedFlowerHandle).y,
         })
       ) {
-        this.spriteBox = this.errorSpriteBox;
         this.errorSpriteBox.setVisible(true);
         this.defaultSpriteBox.setVisible(false);
       } else {
-        this.spriteBox = this.defaultSpriteBox;
         this.errorSpriteBox.setVisible(false);
         this.defaultSpriteBox.setVisible(true);
       }
@@ -438,23 +526,21 @@ export default class FlowerEditScene extends Scene {
     //아래 버튼
     this.downKey.onclick = () => {
       this.moveCheck = true;
-      if (this.gridEngine.getPosition("selectedFlower").y + 1 < 19)
-        this.gridEngine.setPosition("selectedFlower", {
-          x: this.gridEngine.getPosition("selectedFlower").x,
-          y: this.gridEngine.getPosition("selectedFlower").y + 1,
+      if (this.gridEngine.getPosition(this.selectedFlowerHandle).y + 1 < 19)
+        this.gridEngine.setPosition(this.selectedFlowerHandle, {
+          x: this.gridEngine.getPosition(this.selectedFlowerHandle).x,
+          y: this.gridEngine.getPosition(this.selectedFlowerHandle).y + 1,
         });
 
       if (
         this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition("selectedFlower").x,
-          y: this.gridEngine.getPosition("selectedFlower").y,
+          x: this.gridEngine.getPosition(this.selectedFlowerHandle).x,
+          y: this.gridEngine.getPosition(this.selectedFlowerHandle).y,
         })
       ) {
         this.errorSpriteBox.setVisible(true);
         this.defaultSpriteBox.setVisible(false);
-        this.spriteBox = this.errorSpriteBox;
       } else {
-        this.spriteBox = this.defaultSpriteBox;
         this.errorSpriteBox.setVisible(false);
         this.defaultSpriteBox.setVisible(true);
       }
