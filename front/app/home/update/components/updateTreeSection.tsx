@@ -1,5 +1,5 @@
 "use client";
-
+// 분리 필요
 import IconButton from "@/app/components/IconButton";
 import { Preset } from "@/app/types";
 import Image from "next/image";
@@ -11,15 +11,25 @@ interface UpdateTreeSectionProps {
   prevSlide: () => void;
   data: Preset[];
 }
-const UpdateTreeSection = ({ currentIndex, nextSlide, prevSlide, data }: UpdateTreeSectionProps) => {
+const UpdateTreeSection = ({
+  currentIndex,
+  nextSlide,
+  prevSlide,
+  data,
+}: UpdateTreeSectionProps) => {
   const params = useSearchParams();
   const type = params.get("type");
+  console.log(data);
   return (
     <>
       {data[currentIndex] && (
         <div className="w-full flex flex-col">
           <div className="w-full flex flex-row px-5 gap-5">
-            <div className="w-8 my-auto">{type === "preset" && <IconButton iconSrc="arrow" onClick={prevSlide} />}</div>
+            <div className="w-8 my-auto">
+              {type === "preset" && (
+                <IconButton iconSrc="arrow" onClick={prevSlide} />
+              )}
+            </div>
             <div className="h-[300px]">
               <Image
                 className="h-full"
@@ -30,7 +40,9 @@ const UpdateTreeSection = ({ currentIndex, nextSlide, prevSlide, data }: UpdateT
               />
             </div>
             <div className="w-8 my-auto">
-              {type === "preset" && <IconButton iconSrc="arrow" rotate={true} onClick={nextSlide} />}
+              {type === "preset" && (
+                <IconButton iconSrc="arrow" rotate={true} onClick={nextSlide} />
+              )}
             </div>
           </div>
           {type === "preset" && (
@@ -39,7 +51,9 @@ const UpdateTreeSection = ({ currentIndex, nextSlide, prevSlide, data }: UpdateT
                 return (
                   <div
                     key={i}
-                    className={`bg-gray-200 h-[10px] w-[10px] mr-1 rounded ${i === currentIndex ? "bg-rose-400" : ""}`}
+                    className={`bg-gray-200 h-[10px] w-[10px] mr-1 rounded ${
+                      i === currentIndex ? "bg-rose-400" : ""
+                    }`}
                   />
                 );
               })}

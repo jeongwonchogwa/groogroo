@@ -7,10 +7,16 @@ import { useEffect, useState } from "react";
 import { userInfoStore } from "@/stores/userInfoStore";
 import { Preset } from "@/app/types";
 import TextModal from "@/app/components/TextModal";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 const UpdatePage = () => {
   // 토큰 이렇게 가져오면 안됨, 세션에 저장된 토큰 가져와야 함
+
   const { userToken } = userInfoStore();
+
+  useEffect(() => {
+    // 경로 수정 필요
+    if (userToken === "") redirect("/enter");
+  }, [userToken]);
 
   const router = useRouter();
   const [width, setWidth] = useState<number>(0);
@@ -47,9 +53,12 @@ const UpdatePage = () => {
 
   const fetchTreeNameCheck = async (name: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/check/${name}`, {
-        method: "GET",
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/check/${name}`,
+        {
+          method: "GET",
+        }
+      );
       if (response.status === 200) {
         const responseData = await response.json();
         if (responseData.result) {
@@ -63,17 +72,20 @@ const UpdatePage = () => {
     }
   };
 
-  // 프리셋 가져오기
+  // 프리셋 가져오기 -> updatePreset에서 처리
   const [treePreset, setTreePreset] = useState<Preset[]>([]);
   const fetchPreset = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/preset`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/preset`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
       if (response.status === 200) {
         const responseData = await response.json();
         setTreePreset(responseData.presets);
@@ -94,9 +106,12 @@ const UpdatePage = () => {
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + treePreset.length) % treePreset.length);
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + treePreset.length) % treePreset.length
+    );
   };
 
+  // --- 여기까지 preset에서 처리해야함
   const [checkIsValid, setCheckIsValid] = useState<boolean>(false);
 
   const handleCheckIsValidModal = () => {
@@ -133,14 +148,17 @@ const UpdatePage = () => {
       return;
     }
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: `Bearer ${userToken}`,
-        },
-        body: JSON.stringify(newData),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: `Bearer ${userToken}`,
+          },
+          body: JSON.stringify(newData),
+        }
+      );
       if (response.status === 200) {
         // 사실 모달을 띄워야 할 것 같긴한데..ㅎ
         const responseData = await response.json();
