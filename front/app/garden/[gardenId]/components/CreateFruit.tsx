@@ -23,20 +23,23 @@ const CreateFruit = (props: Props) => {
 
   const handleFruitSubmit = async () => {
     try {
-      const res = await fetch(`${process.env.URL}/fruit`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${userToken}`,
-        },
-        body: JSON.stringify({
-          treeId: props.currentTree.id,
-          writerNickname: writer,
-          content: content,
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/fruit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userToken}`,
+          },
+          body: JSON.stringify({
+            treeId: props.currentTree.id,
+            writerNickname: writer,
+            content: content,
+          }),
+        }
+      );
       const data = await res.json();
-
+      console.log(data);
       try {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${props.gardenId}`,
@@ -54,7 +57,8 @@ const CreateFruit = (props: Props) => {
         props.game!.scene.getScene("preloader").garden = gardenData.gardenInfo;
 
         console.log();
-        props.game?.scene.stop("flowerEditScene");
+        props.onFormCloseButtonClick();
+        props.game?.scene.stop("preloader");
         props.game?.scene.start("preloader");
       } catch (error) {
         console.log(error);

@@ -36,6 +36,15 @@ export default class FlowerEditScene extends Scene {
     this.onFlowerPlantButtonClick = props.onFlowerPlantButtonClick;
   }
 
+  updateGarden(garden: Garden) {
+    console.log("플라워에딧씬 가든 업데이트 메서드");
+    this.garden = garden;
+    //@ts-ignore
+    this.game.scene.getScene("treeEditScene").garden = garden;
+    //@ts-ignore
+    this.game.scene.getScene("preloader").garden = garden;
+  }
+
   init(data: { selectedFlower: number }) {
     if (data.selectedFlower) this.selectedFlower = data.selectedFlower;
   }
@@ -241,10 +250,8 @@ export default class FlowerEditScene extends Scene {
               }
             );
             const gardenData = await res.json();
-            console.log(gardenData);
-            //@ts-ignore
-            this.game.scene.getScene("preloader").garden =
-              gardenData.gardenInfo;
+            this.updateGarden(gardenData.gardenInfo);
+
             this.scene.stop("flowerEditScene");
             this.scene.start("preloader");
           } catch (error) {

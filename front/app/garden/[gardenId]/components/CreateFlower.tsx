@@ -32,14 +32,7 @@ const CreateFlower = (props: Props) => {
     };
 
     try {
-      console.log({
-        gardenId: props.gardenId,
-        writerNickname: writer,
-        imageUrl: props.currentFlower.imageUrl,
-        content: content,
-        x: props.currentFlower.x,
-        y: props.currentFlower.y,
-      });
+      console.log(newFlower);
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/flower`,
         {

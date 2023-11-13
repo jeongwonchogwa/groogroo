@@ -123,7 +123,7 @@ const FlowerMessage = (props: Props) => {
                 </p>
                 <div className="flex flex-row">
                   <div className="w-9 h-9 mr-2">
-                    <IconButton iconSrc="glass" onClick={onModifyButtonClick} />
+                    <IconButton iconSrc="move" onClick={onModifyButtonClick} />
                   </div>
                   {isDeleteable ? (
                     <div className="w-9 h-9 mr-2">

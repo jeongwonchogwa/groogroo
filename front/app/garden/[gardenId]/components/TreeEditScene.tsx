@@ -34,6 +34,15 @@ export default class TreeEditScene extends Scene {
     this.garden = props.garden;
   }
 
+  updateGarden(garden: Garden) {
+    console.log("트리에딧씬 가든 업데이트 메서드");
+    this.garden = garden;
+    //@ts-ignore
+    this.game.scene.getScene("flowerEditScene").garden = garden;
+    //@ts-ignore
+    this.game.scene.getScene("preloader").garden = garden;
+  }
+
   init(data: { selectedTreeUrl: string }) {
     this.selectedTreeUrl = data.selectedTreeUrl;
   }
@@ -226,6 +235,7 @@ export default class TreeEditScene extends Scene {
               gardenData.gardenInfo;
 
             console.log();
+            // this.updateGarden(gardenData.gardenInfo);
             this.scene.stop("treeEditScene");
             this.scene.start("preloader");
           } catch (error) {
@@ -277,10 +287,7 @@ export default class TreeEditScene extends Scene {
               }
             );
             const gardenData = await res.json();
-            console.log(gardenData);
-            //@ts-ignore
-            this.game.scene.getScene("preloader").garden =
-              gardenData.gardenInfo;
+            this.updateGarden(gardenData.gardenInfo);
             this.scene.stop("treeEditScene");
             this.scene.start("preloader");
           } catch (error) {
