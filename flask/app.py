@@ -27,9 +27,7 @@ def remove_background(image_src, image_path, image_filename):
     # 배경 제거
     output_image = remove(resized_image)
 
-    output_image_path = os.path.join("static", "images", image_filename)
-    with open(output_image_path, 'wb') as f:
-        f.write(output_image)
+    output_image.save(f'{image_path}', 'png')
 
 ##########################################################
 #   금칙어 필터링
@@ -154,7 +152,7 @@ def make_image():
                         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
                     # encoded_string = base64.b64encode(image_data).decode('utf-8')
                     # base64 인코딩된 이미지 데이터를 JSON으로 변환하여 반환
-                    return jsonify({ 'image_data': encoded_string }), 200
+                    return jsonify({ 'image_data': encoded_string, 'image_name': image_filename }), 200
                 except openai.error as e:
                     return jsonify({ 'error': e }), 400;
             
