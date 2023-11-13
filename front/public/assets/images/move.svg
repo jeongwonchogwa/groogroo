@@ -1,0 +1,37 @@
+<svg width="136" height="136" viewBox="0 0 136 136" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_d_1125_8781)">
+<path d="M20 8H116V16H124.5V112H116V120H20V112H12V16H20V8Z" fill="white"/>
+<path d="M12 0H124V8H20V16H12V112H20V120H116V112H124V16H116V8H124H132V120H125V128H20H12V120H4V16V8H12V0Z" fill="black"/>
+<rect x="116" y="16" width="8" height="96" fill="#DCD2D2"/>
+<rect x="61.25" y="25.75" width="13.5" height="76.5" fill="black"/>
+<rect x="29.75" y="57.25" width="76.5" height="13.5" fill="black"/>
+<rect x="85.25" y="94" width="34.5" height="5.25" transform="rotate(-180 85.25 94)" fill="black"/>
+<rect x="80" y="99.25" width="24" height="5.25" transform="rotate(-180 80 99.25)" fill="black"/>
+<rect x="76.25" y="104.5" width="16.5" height="5.25" transform="rotate(-180 76.25 104.5)" fill="black"/>
+<rect x="71" y="109" width="6" height="4.5" transform="rotate(-180 71 109)" fill="black"/>
+<rect x="98" y="46" width="34.5" height="5.25" transform="rotate(90 98 46)" fill="black"/>
+<rect x="103.25" y="51.25" width="24" height="5.25" transform="rotate(90 103.25 51.25)" fill="black"/>
+<rect x="108.5" y="55" width="16.5" height="5.25" transform="rotate(90 108.5 55)" fill="black"/>
+<rect x="113" y="60.25" width="6" height="4.5" transform="rotate(90 113 60.25)" fill="black"/>
+<rect x="38" y="81.25" width="34.5" height="5.25" transform="rotate(-90 38 81.25)" fill="black"/>
+<rect x="32.75" y="76" width="24" height="5.25" transform="rotate(-90 32.75 76)" fill="black"/>
+<rect x="27.5" y="72.25" width="16.5" height="5.25" transform="rotate(-90 27.5 72.25)" fill="black"/>
+<rect x="23" y="67" width="6" height="4.5" transform="rotate(-90 23 67)" fill="black"/>
+<rect x="50.75" y="34" width="34.5" height="5.25" fill="black"/>
+<rect x="56" y="28.75" width="24" height="5.25" fill="black"/>
+<rect x="59.75" y="23.5" width="16.5" height="5.25" fill="black"/>
+<rect x="65" y="19" width="6" height="4.5" fill="black"/>
+</g>
+<defs>
+<filter id="filter0_d_1125_8781" x="0" y="0" width="136" height="136" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1125_8781"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1125_8781" result="shape"/>
+</filter>
+</defs>
+</svg>
