@@ -5,7 +5,7 @@ import IconButton from "@/app/components/IconButton";
 const LinkCopyButton = () => {
   const url = usePathname();
   // 추후 배포된 url로 변경해야겠죠
-  const urlHref = "http://localhost:3000" + url;
+  const urlHref = "groogroo.site" + url;
 
   const doCopy = (text: string) => {
     if (navigator.clipboard) {
