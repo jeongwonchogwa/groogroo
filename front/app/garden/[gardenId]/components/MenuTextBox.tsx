@@ -5,7 +5,9 @@ interface Props {
   menuList?: MenuButton[];
   assetList?: Tree[];
 }
-const Menu = (props: Props) => {
+const MenuTextBox = (props: Props) => {
+
+  console.log(props.menuList)
   return (
     <>
       {props.menuList ? (
@@ -17,4 +19,4 @@ const Menu = (props: Props) => {
   );
 };
 
-export default Menu;
+export default MenuTextBox;

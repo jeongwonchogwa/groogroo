@@ -45,7 +45,7 @@ const TreeSelect = (props: Props) => {
 
   const onTreeSelectButtonClick = (selectedTreeUrl: string) => {
     console.log("나무 선택 완료!" + (selectedTreeUrl + 1));
-    props.onFormCloseButtonClick();
+    props.onFormCloseButtonClick;
     props.game?.scene.stop("gardenScene");
     props.game?.scene.start("treeEditScene", {
       selectedTreeUrl: selectedTreeUrl,

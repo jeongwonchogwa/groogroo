@@ -120,25 +120,25 @@ export default class GardenScene extends Scene {
 
           if (i === 0) {
             this.add
-              .image(tree.x! * 16 + 12, tree.y! * 16 + 2, tmpFruit)
+              .image(tree.x! * 16 + 13, tree.y! * 16 + 2, tmpFruit)
               .setScale(0.2)
               .setOrigin(0, 0)
               .setDepth(3);
           } else if (i === 1) {
             this.add
-              .image(tree.x! * 16 + 2, tree.y! * 16 + 8, tmpFruit)
+              .image(tree.x! * 16 + 3, tree.y! * 16 + 8, tmpFruit)
               .setScale(0.2)
               .setOrigin(0, 0)
               .setDepth(3);
           } else if (i === 2) {
             this.add
-              .image(tree.x! * 16 + 12, tree.y! * 16 + 12, tmpFruit)
+              .image(tree.x! * 16 + 14, tree.y! * 16 + 12, tmpFruit)
               .setScale(0.2)
               .setOrigin(0, 0)
               .setDepth(3);
-          } else {
+          } else if(i === 3){
             this.add
-              .image(tree.x! * 16 + 22, tree.y! * 16 + 8, tmpFruit)
+              .image(tree.x! * 16 + 23, tree.y! * 16 + 8, tmpFruit)
               .setScale(0.2)
               .setOrigin(0, 0)
               .setDepth(3);
@@ -488,27 +488,5 @@ export default class GardenScene extends Scene {
   }
 
   update() {
-    //ui 버튼 뷰포트에 고정
-    // if (window.innerHeight >= window.innerWidth) {
-    //   this.footer.setPosition(
-    //     240 -
-    //       window.innerWidth / this.cameras.main.zoom / 2 -
-    //       (240 - (240 * window.innerWidth) / 480) +
-    //       this.cameras.main.scrollX,
-    //     320 -
-    //       60 / this.cameras.main.zoom -
-    //       (160 - (160 * window.innerHeight) / 320) +
-    //       this.cameras.main.scrollY
-    //   );
-    // } else {
-    //   this.footer.setPosition(
-    //     -(240 - window.innerWidth / 2) + this.cameras.main.scrollX,
-    //     160 -
-    //       60 / this.cameras.main.zoom +
-    //       window.innerHeight / this.cameras.main.zoom / 2 -
-    //       (160 - window.innerHeight / 2) +
-    //       this.cameras.main.scrollY
-    //   );
-    // }
   }
 }

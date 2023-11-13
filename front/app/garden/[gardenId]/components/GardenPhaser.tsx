@@ -101,7 +101,6 @@ const GardenPhaser = (props: Props) => {
   };
 
   const fetchGardenInfo = async () => {
-    console.log(userToken);
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${props.gardenId}`,
@@ -203,15 +202,16 @@ const GardenPhaser = (props: Props) => {
         >
           <GardenHeader
             state={garden.gardenInfo.state}
-            gardenId={props.gardenId}
+            garden={garden.gardenInfo}
           />
           {showFlowerMessage ? (
             <div
               className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]"
-              onClick={(e) => {
-                onFormCloseButtonClick();
-                e.stopPropagation();
-              }}
+              onClick={(e) =>{
+                onFormCloseButtonClick()
+                e.stopPropagation()
+              }
+              }
             >
               <div className="flex flex-col items-center justify-center gap-10 pt-40">
                 <Image
@@ -233,10 +233,8 @@ const GardenPhaser = (props: Props) => {
           {treeSelect ? (
             <div
               className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]"
-              onClick={(e) => {
-                onFormCloseButtonClick();
-                e.stopPropagation();
-              }}
+              onClick={onFormCloseButtonClick
+              }
             >
               <TreeSelect
                 onFormCloseButtonClick={onFormCloseButtonClick}
@@ -248,10 +246,9 @@ const GardenPhaser = (props: Props) => {
           {flowerSelect ? (
             <div
               className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]"
-              onClick={(e) => {
-                onFormCloseButtonClick();
-                e.stopPropagation();
-              }}
+              onClick={
+                onFormCloseButtonClick
+              }
             >
               <FlowerSelect
                 onFormCloseButtonClick={onFormCloseButtonClick}
@@ -264,7 +261,7 @@ const GardenPhaser = (props: Props) => {
             <div
               className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]"
               onClick={(e) => {
-                onFormCloseButtonClick;
+                onFormCloseButtonClick();
                 e.stopPropagation();
               }}
             >
@@ -288,10 +285,7 @@ const GardenPhaser = (props: Props) => {
           {fruitMessageEdit ? (
             <div
               className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[50]"
-              onClick={(e) => {
-                onFormCloseButtonClick();
-                e.stopPropagation();
-              }}
+              onClick={onFormCloseButtonClick}
             >
               <div className="flex flex-col items-center justify-center gap-2 pt-20">
                 <PixelCard

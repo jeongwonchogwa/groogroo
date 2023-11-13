@@ -44,12 +44,19 @@ export default class Preloader extends Scene {
     this.load.image("peach", "/assets/fruits/peach.svg");
 
     //정원에 심어져있는 나무들 스프라이트 생성.
-    this.garden.treePos?.forEach((tree) => {
+    this.garden.treePos?.forEach((tree, index) => {
       console.log(tree);
+      if(tree.name === "" || null){
+        this.load.spritesheet("이름없는 나무"+index, tree.imageUrl, {
+          frameWidth: 128,
+          frameHeight: 128,
+        });
+      }else{
       this.load.spritesheet(tree.name, tree.imageUrl, {
         frameWidth: 128,
         frameHeight: 128,
       });
+    }
     });
 
     //정원에 심어져있는 꽃 스프라이트 생성.
