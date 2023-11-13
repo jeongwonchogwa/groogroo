@@ -8,4 +8,5 @@ interface EventSourceStore {
 export const useEventSourceStore = create<EventSourceStore>((set) => ({
   eventSource: undefined,
   setEventSource: (eventSource) => set({ eventSource }),
+  
 }));

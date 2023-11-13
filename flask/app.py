@@ -93,7 +93,7 @@ def make_image():
 
                 translatedWord = translateWord(user_input)
 
-                prompt = 'please create animation-styled pixel art image of a '
+                prompt = 'please create simple animation-styled pixel art image of a '
                 # 입력값이 '나무'로 끝나지 않으면 '나무'를 추가합니다.
                 if not translatedWord.endswith('tree'):
                     translatedWord += ' tree'
