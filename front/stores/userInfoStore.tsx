@@ -3,7 +3,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 interface UserInfo {
   userToken: string;
-  setMember: (memberEmail: string) => void;
+  setMember: (userToken: string) => void;
 }
 
 export const userInfoStore = create(
@@ -15,6 +15,7 @@ export const userInfoStore = create(
     }),
     {
       name: "userInfo", // unique name
+      // 추후 storage를 session으로 할지 local로 할지 확인해야함
       storage: createJSONStorage(() => sessionStorage),
     }
   )

@@ -6,43 +6,48 @@ import TreeContainer from "./components/TreeContainer";
 import { userInfoStore } from "@/stores/userInfoStore";
 import { redirect } from "next/navigation";
 import { userTreeStore } from "@/stores/userTreeStore";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../components/Loading";
 
 const HomePage = () => {
+  // 토큰 session에 있는 걸로 가져와야함
   const { userToken } = userInfoStore();
+
   useEffect(() => {
     // 경로 수정 필요
-    if (userToken === "") redirect("/");
+    if (userToken === "") redirect("/enter");
   }, [userToken]);
 
   const { setUserTree } = userTreeStore();
 
-  // 내 나무 불러오기, 이 정보는 store에 저장할게요, 캐싱을 사용해서 수정해야함
-  // useQuery를 공부해보세요.......
   const fetchTreeData = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
-      if (response.status === 200) {
-        const responseData = await response.json();
-        setUserTree(responseData.tree);
-      }
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+      const data = await response.json();
+      setUserTree(data.tree);
+      return data.tree;
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    fetchTreeData();
-  }, []);
+  const { data, isLoading, isError } = useQuery(["userTree"], fetchTreeData);
 
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="w-full h-[calc(100%-60px)]">
       <div className="mx-5 mb-8">
-        <TreeContainer />
+        <TreeContainer data={data} />
       </div>
       <div>
         <HomeFooter />

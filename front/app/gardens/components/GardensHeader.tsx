@@ -45,7 +45,7 @@ const GardensHeader = ({
         <div className="flex w-full mt-5 justify-between px-5">
           <div className="ml-2">
             <div className="w-10 h-10">
-              <IconButton iconSrc="home" onClick={() => router.push("/home")} />
+              <IconButton iconSrc="back" onClick={() => router.back()} />
             </div>
           </div>
           <div className="flex flex-row gap-3">
@@ -57,7 +57,7 @@ const GardensHeader = ({
             </div>
             <div className={bellClick}>
               <IconButton iconSrc="bell" onClick={onAlarmButtonClick} />
-              {/* {openAlarm ? <Alarm /> : null} */}
+              {openAlarm ? <Alarm /> : null}
             </div>
             <div className="w-10 h-10">
               <IconButton
@@ -72,8 +72,18 @@ const GardensHeader = ({
       </div>
       <div className="mt-[30px] mx-5">
         <div className="grid grid-flow-col gap-2">
+          {/* <Button color="primary" label="내 정원" onClickText={clickText} /> */}
           <Button color="primary" label="내 정원" onClickText={clickText} />
           <Button color="white" label="정원 랭킹" onClickText={clickText} />
+          {/* <Button
+            color="white"
+            label="정원 랭킹"
+            onClickText={(e) => {
+              clickText(e);
+              window.scrollTo(0, 0);
+              console.log("왜 맨위로 안가");
+            }}
+          /> */}
         </div>
       </div>
       {menuOpen ? <GardensMenu menuList={menuList}></GardensMenu> : null}

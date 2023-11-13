@@ -14,6 +14,7 @@ import Update from "/public/assets/images/update.svg";
 import Home from "/public/assets/images/home.svg";
 import Menu from "/public/assets/images/menu.svg";
 import User from "/public/assets/images/user.png";
+import Back from "/public/assets/images/back.svg";
 
 interface IconButtonProps {
   iconSrc:
@@ -31,7 +32,8 @@ interface IconButtonProps {
     | "home"
     | "menu"
     | "update"
-    | "user";
+    | "user"
+    | "back";
   onClick?: () => void;
   rotate?: boolean;
 }
@@ -52,6 +54,7 @@ const iconButtonConfig = {
   menu: Menu,
   update: Update,
   user: User,
+  back: Back,
 };
 
 const IconButton = ({ iconSrc, onClick, rotate }: IconButtonProps) => {

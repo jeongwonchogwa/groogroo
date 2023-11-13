@@ -9,9 +9,10 @@ import HomeMenu from "./HomeMenu";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Alarm from "@/app/components/Alarm";
-import PixelCard from "@/app/components/PixelCard";
 import ButtonModal from "@/app/components/ButtonModal";
 import Button from "@/app/components/Button";
+import { searchTreeStore } from "@/stores/searchTreeInfo";
+import Link from "next/link";
 
 interface HomeHeaderProps {
   handlemenu: () => void;
@@ -20,11 +21,11 @@ interface HomeHeaderProps {
 
 const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
   const router = useRouter();
-
   const pathname = usePathname();
 
   const [openAlarm, setOpenAlarm] = useState<boolean>(false);
 
+  // 모달 키는지 끄는지
   const onAlarmButtonClick = () => {
     setOpenAlarm((prev) => !prev);
   };
@@ -35,10 +36,16 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
     setOpenUpdate((prev) => !prev);
   };
 
+  // 이건 맞으려나..
+  const { searchTreeInfoData } = searchTreeStore();
+
   const menuList: MenuButton[] = [
     // link가 아니라 router로 해버렸다..
     { name: "로그아웃", clickEvent: () => {} },
-    { name: "문의하기", clickEvent: () => router.push("http://pf.kakao.com/_xoIkxbG") },
+    {
+      name: "문의하기",
+      clickEvent: () => router.push("http://pf.kakao.com/_xoIkxbG"),
+    },
   ];
 
   const bellClick = openAlarm ? "w-10 h-10 z-50" : "w-10 h-10";
@@ -51,9 +58,9 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
             {pathname != "/home" && (
               <div className="w-10 h-10">
                 <IconButton
-                  iconSrc="home"
+                  iconSrc="back"
                   onClick={() => {
-                    router.push("/home");
+                    router.back();
                   }}
                 />
               </div>
@@ -64,14 +71,15 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
               <IconButton
                 iconSrc="glass"
                 onClick={() => {
-                  router.push("/home/search");
+                  router.push("/search");
                 }}
               />
             </div>
-            <div className="w-10 h-10">
-              {/* <IconButton iconSrc="update" onClick={() => router.push("/home/update")} /> */}
-              <IconButton iconSrc="update" onClick={onUpdateButtonClick} />
-            </div>
+            {pathname.startsWith("/home") && (
+              <div className="w-10 h-10">
+                <IconButton iconSrc="update" onClick={onUpdateButtonClick} />
+              </div>
+            )}
             <div className={bellClick}>
               <IconButton iconSrc="bell" onClick={onAlarmButtonClick} />
               {openAlarm ? <Alarm /> : null}
@@ -87,30 +95,46 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
           </div>
         </div>
       </div>
-      {menuOpen && !openAlarm ? <HomeMenu menuList={menuList}></HomeMenu> : null}
+      {menuOpen && !openAlarm ? (
+        <HomeMenu menuList={menuList}></HomeMenu>
+      ) : null}
       {openUpdate && (
         <ButtonModal
           handleModal={onUpdateButtonClick}
           isOpenModal={openUpdate}
           title="나무 수정하기"
           button={
-            <div className="grid grid-flow-col gap-2">
+            <div className="grid grid-flow-row gap-2">
               <Button
-                color="default"
-                label="NEW"
+                color="secondary-container"
+                label="프리셋 만들기"
                 onClick={() => {
                   router.push("/enter/check");
                   onUpdateButtonClick();
                 }}
               />
-              <Button
-                color="primary"
-                label="PRESET"
-                onClick={() => {
-                  router.push("/home/update");
-                  onUpdateButtonClick();
-                }}
-              />
+              <Link
+                href={{ pathname: "/home/update", query: { type: "name" } }}
+              >
+                <Button
+                  color="secondary"
+                  label="이름 변경하기"
+                  onClick={() => {
+                    onUpdateButtonClick();
+                  }}
+                />
+              </Link>
+              <Link
+                href={{ pathname: "/home/update", query: { type: "preset" } }}
+              >
+                <Button
+                  color="primary"
+                  label="프리셋 변경하기"
+                  onClick={() => {
+                    onUpdateButtonClick();
+                  }}
+                />
+              </Link>
             </div>
           }
         />
