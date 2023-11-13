@@ -10,7 +10,7 @@ const HomeFooter = () => {
     <div className="w-full h-full mx-auto">
       <div className="text-center">
         <p className=" font-bitBit text-2xl text-white">
-          아래로 스크롤하여
+          화살표를 클릭하여
           <br /> 정원을 확인해보세요!
         </p>
       </div>
@@ -19,7 +19,6 @@ const HomeFooter = () => {
           <IconButton
             iconSrc="swipe"
             onClick={() => {
-              console.log("스와이프 클릭");
               router.push("/gardens");
             }}
           />

@@ -7,6 +7,7 @@ export interface Fruit {
 }
 
 export interface Tree {
+  email?: string;
   id: number;
   imageUrl: string;
   name: string;
@@ -110,4 +111,9 @@ export interface Content {
   imageUrl: string; // 나무, 정원 나무 이미지
   name: string; // 나무 이름
   writerNickname: string; // 열매, 꽃 작성자 아이디
+}
+
+export interface Preset {
+  treeUserPresetId: number;
+  imageUrl: string;
 }

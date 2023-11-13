@@ -13,6 +13,24 @@ const RegistPage = () => {
   const { userToken } = userInfoStore();
   const token = userToken;
 
+  const mapdata = ["/assets/maps/map[0].jpg", "/assets/maps/map[1].jpg"];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextMap = () => {
+    if (mapdata) {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % mapdata.length);
+    }
+  };
+
+  const prevMap = () => {
+    if (mapdata) {
+      setCurrentIndex(
+        (prevIndex) => (prevIndex - 1 + mapdata.length) % mapdata.length
+      );
+    }
+  };
+
   const [gardenInput, setGardenInput] = useState({
     name: "",
     description: "",
@@ -32,22 +50,27 @@ const RegistPage = () => {
     name: string;
     description: string;
     capacity: number;
+    mapType: number;
   } = {
     name: name,
     description: description,
     capacity: capacity,
+    mapType: currentIndex,
   };
 
   const fetchCreate = async (data: object) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (response.status === 200) {
         const responseData = await response.json();
@@ -70,20 +93,48 @@ const RegistPage = () => {
           <div className="nes-container w-full bg-white mx-auto is-rounded !px-4">
             <p
               className="flex justify-center text-white font-bitBit text-3xl"
-              style={{ textShadow: "-3px 0px black, 0px 3px  black, 3px 0px  black, 0px -3px black" }}
+              style={{
+                textShadow:
+                  "-3px 0px black, 0px 3px  black, 3px 0px  black, 0px -3px black",
+              }}
             >
               정원 만들기
             </p>
             <div className="flex flex-col">
-              <RegistNameSection name="name" onChange={handleInput} value={name} />
-              <RegistDescriptionSection name="description" onChange={handleInput} value={description} />
-              <RegistCapacitySection name="capacity" onChange={handleInput} value={capacity} />
-              <RegistTemplateSection />
+              <RegistNameSection
+                name="name"
+                onChange={handleInput}
+                value={name}
+              />
+              <RegistDescriptionSection
+                name="description"
+                onChange={handleInput}
+                value={description}
+              />
+              <RegistCapacitySection
+                name="capacity"
+                onChange={handleInput}
+                value={capacity}
+              />
+              <RegistTemplateSection
+                currentIndex={currentIndex}
+                mapdata={mapdata}
+                nextMap={nextMap}
+                prevMap={prevMap}
+              />
             </div>
             <div className="mt-7">
               <div className="grid grid-flow-col gap-2">
-                <Button color="default" label="취소하기" onClick={() => router.back()} />
-                <Button color="primary" label="생성하기" onClick={clickCreate} />
+                <Button
+                  color="default"
+                  label="취소하기"
+                  onClick={() => router.back()}
+                />
+                <Button
+                  color="primary"
+                  label="생성하기"
+                  onClick={clickCreate}
+                />
               </div>
             </div>
           </div>

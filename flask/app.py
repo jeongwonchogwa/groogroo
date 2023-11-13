@@ -6,34 +6,35 @@ from flask import Flask, jsonify, request, url_for, render_template_string
 from flask_cors import CORS
 
 from dotenv import load_dotenv
-import os
-import sys
+import os, io, sys
 import base64       # 이미지 인코딩하기 위해
 import time
 import json
 
-# .env 파일에서 api_key 불러오기
-load_dotenv()
-client = open_module(
-    api_key = os.environ.get("OPENAI_API_KEY"),
-)
+from PIL import Image
+from rembg import remove
 
-app = Flask(__name__)
-CORS(app)
-# CORS(app, supports_credentials=True, origins='*',allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"])
+##########################################################
+#   배경 제거 및 이미지 resize
+##########################################################
+def remove_background(image_src, image_path, image_filename):
+    # 이미지 데이터를 바이트 스트림으로 변환
+    image_byte_array = io.BytesIO(image_src)
+    # Pillow 이미지로 변환
+    origin_image = Image.open(image_byte_array)
+    # 128x128 나무 크기로 조정
+    resized_image = origin_image.resize((128,128), Image.NEAREST)
+    # 배경 제거
+    output_image = remove(resized_image)
 
-context_path = '/flask'
+    output_image_path = os.path.join("static", "images", image_filename)
+    with open(output_image_path, 'wb') as f:
+        f.write(output_image)
 
-# @app.route(context_path + '/')
-# def hello():
-#     return 'Hello!'
-
-@app.route(context_path + '/hello', methods=['GET'])
-def hello_world():
-    return 'Hello, Flask Server on :)'
-
+##########################################################
+#   금칙어 필터링
+##########################################################
 def checkValidation(user_input):
-    # 금칙어 필터링
     encText = urllib.parse.quote(user_input)
     url = "https://openapi.naver.com/v1/search/adult.json?query=" + encText
     request = urllib.request.Request(url)
@@ -58,6 +59,9 @@ def checkValidation(user_input):
         print(response)
         return True
 
+##########################################################
+#   번역(한글 -> 영어)
+##########################################################
 def translateWord(user_input):
     encText = urllib.parse.quote(user_input)
     data = "source=ko&target=en&text=" + encText
@@ -75,6 +79,27 @@ def translateWord(user_input):
         return result
     else:
         print("Error Code:" + rescode)
+
+
+
+##########################################################  메인 함수 부분
+# .env 파일에서 api_key 불러오기
+load_dotenv()
+client = open_module(
+    api_key = os.environ.get("OPENAI_API_KEY"),
+)
+
+app = Flask(__name__)
+CORS(app)
+# CORS(app, supports_credentials=True, origins='*',allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"])
+
+context_path = '/flask'
+
+# @app.route(context_path + '/')
+@app.route(context_path + '/hello', methods=['GET'])
+def hello_world():
+    return 'Hello, Flask Server on :)'
+
 
 @app.route(context_path + '/image', methods=['POST'])
 def make_image():
@@ -122,17 +147,15 @@ def make_image():
                     image_data = requests.get(image_url).content
                     image_filename = f"gen_img_{user_id}_{time.localtime().tm_year}_{time.localtime().tm_mon}_{time.localtime().tm_mday}_{time.localtime().tm_hour}{time.localtime().tm_min}{time.localtime().tm_sec}.jpg"
                     image_path = os.path.join("static", "images", image_filename)
-                    with open(image_path, "wb") as f:
-                        f.write(image_data)
-                    ###############################################################################
-                    # url 을 보내는 방식
-                    # image_url = url_for("static", filename=f"images/cat.jpg", _external=True)
-                    # return jsonify({'image_url': image_url}), 200
-                    ###############################################################################
+
+                    # with open(image_path, "wb") as f:
+                    #     f.write(image_data)
+                    remove_background(image_data, image_path, image_filename)
+
                     # 이미지 파일을 열고 base64로 인코딩
-                    # with open(image_path, "rb") as image_file:
-                    #     encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-                    encoded_string = base64.b64encode(image_data).decode('utf-8')
+                    with open(image_path, "rb") as image_file:
+                        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+                    # encoded_string = base64.b64encode(image_data).decode('utf-8')
                     # base64 인코딩된 이미지 데이터를 JSON으로 변환하여 반환
                     return jsonify({ 'image_data': encoded_string }), 200
                 except openai.error as e:
@@ -140,42 +163,15 @@ def make_image():
             
         else:
             print('유저 입력 데이터 없음!!')
- 
     else:
         print('잘못된 요청')
         return
-        ###########################################################################
-        # DALL-E 2 사용 코드
-        # response 3차원 배열 사용, 요청 보내는 함수도 create로 다름
-        # image_url = response["data"][0]["url"]
-        # image_data = requests.get(image_url).content
-        # image_filename = f"gen_img_{cnt}.jpg"
-        # image_path = os.path.join("static", "images", image_filename)
-        # with open(image_path, "wb") as f:
-        #     f.write(image_data)
-        # cnt += 1
-        # image_html = f'<img src="{url_for("static", filename=f"images/{image_filename}")}">'
-        # prompt_html = f'<p>{prompt}</p>'
-        ###########################################################################
 
-        
-        # return f'<img src="{url_for("static", filename="images/gen_img_.jpg")}">'
-
-
-# from googletrans import Translator
-
-# @app.route('/translate')
-# def translate():
-#     translator = Translator()
-#     # text1 = '안녕하세요, 이것은 나무입니다.'
-#     text2 = 'I am a LemonTree'
-
-#     # trans_result1 = translator.translate(text1, dest='en')
-#     trans_result2 = translator.translate(text2, dest='ko')
-
-#     # {trans_result1.text} & 
-#     print(trans_result2)
-#     return f'번역 결과: {trans_result2.text}'
+###############################################################################
+# url 을 보내는 방식
+# image_url = url_for("static", filename=f"images/cat.jpg", _external=True)
+# return jsonify({'image_url': image_url}), 200
+###############################################################################
 
 
 if __name__ == '__main__':

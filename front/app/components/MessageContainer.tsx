@@ -17,11 +17,16 @@ interface MessageContainerProps {
   dataType: "TREE" | "GARDEN" | "FRUIT" | "FLOWER" | "TREEGARDEN";
   currentIndex?: number;
   data: Fruit;
+  availableDelete?: boolean;
+  isSearch?: boolean;
 }
 
-const MessageContainer = ({ data, dataType }: MessageContainerProps) => {
-  const { userToken } = userInfoStore();
-
+const MessageContainer = ({
+  data,
+  dataType,
+  availableDelete = true,
+  isSearch,
+}: MessageContainerProps) => {
   const [openDelete, setOpenDelete] = useState(false);
 
   const handleDeleteModal = () => {
@@ -46,10 +51,14 @@ const MessageContainer = ({ data, dataType }: MessageContainerProps) => {
           </p>
           <div className="flex flex-row">
             <div className="w-9 h-9 mr-2">
-              <IconButton iconSrc="trash" onClick={handleDeleteModal} />
+              {availableDelete && (
+                <IconButton iconSrc="trash" onClick={handleDeleteModal} />
+              )}
             </div>
             <div className=" w-9 h-9">
-              <IconButton iconSrc="siren" onClick={handleReportModal} />
+              {!isSearch && (
+                <IconButton iconSrc="siren" onClick={handleReportModal} />
+              )}
             </div>
           </div>
         </div>

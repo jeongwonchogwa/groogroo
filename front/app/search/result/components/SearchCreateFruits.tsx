@@ -5,60 +5,51 @@ import Button from "@/app/components/Button";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Tree } from "@/app/types";
-import { userInfoStore } from "@/stores/userInfoStore";
 
 interface Props {
   onFormCloseButtonClick: () => void;
   currentTree: Tree;
-  gardenId: number;
-  game: Phaser.Game;
 }
 
-const CreateFruit = (props: Props) => {
-  // const AccessToken = localStorage.getItem("access_token");
-  const { userToken } = userInfoStore();
-  const router = useRouter();
+const SearchCreateFruits = (props: Props) => {
+  // const AccessToken = sessionStorage.getItem("userInfo");
+  const sessionData = sessionStorage.getItem("userInfo");
+  let userToken = "";
+  if (sessionData) {
+    const sessionObject = JSON.parse(sessionData);
+    userToken = sessionObject?.state?.userToken;
+    if (userToken) {
+      console.log(userToken);
+    } else {
+      console.log("userToken이 존재하지 않습니다.");
+    }
+
+    console.log(userToken);
+  }
+
   const [writer, setWriter] = useState("");
   const [content, setContent] = useState("");
 
   const handleFruitSubmit = async () => {
     try {
-      const res = await fetch(`${process.env.URL}/fruit`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${userToken}`,
-        },
-        body: JSON.stringify({
-          treeId: props.currentTree.id,
-          writerNickname: writer,
-          content: content,
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/fruit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userToken}`,
+          },
+          body: JSON.stringify({
+            treeId: props.currentTree.id,
+            writerNickname: writer,
+            content: content,
+          }),
+        }
+      );
       const data = await res.json();
-
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${props.gardenId}`,
-
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${userToken}`,
-            },
-          }
-        );
-        const gardenData = await res.json();
-        console.log(gardenData);
-        //@ts-ignore
-        props.game!.scene.getScene("preloader").garden = gardenData.gardenInfo;
-
-        console.log();
-        props.game?.scene.stop("flowerEditScene");
-        props.game?.scene.start("preloader");
-      } catch (error) {
-        console.log(error);
-      }
+      console.log(data);
+      return data;
     } catch (err) {
       console.log(err);
     }
@@ -96,4 +87,4 @@ const CreateFruit = (props: Props) => {
   );
 };
 
-export default CreateFruit;
+export default SearchCreateFruits;

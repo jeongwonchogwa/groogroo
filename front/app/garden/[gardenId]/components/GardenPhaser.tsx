@@ -15,14 +15,15 @@ import CreateFlower from "./CreateFlower";
 import TreeSelect from "./TreeSelect";
 import { gardenInfoStore } from "@/stores/gardenInfoStore";
 import FlowerMessage from "./FlowerMessage";
+import { userInfoStore } from "@/stores/userInfoStore";
 
 interface Props {
   gardenId: number;
 }
 
 const GardenPhaser = (props: Props) => {
-  const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
-  // const AccessToken = localStorage.getItem("access_token");
+  // const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  const { userToken } = userInfoStore();
   const [game, setGame] = useState<Phaser.Game>();
   const { garden, setGarden } = gardenInfoStore();
 
@@ -113,7 +114,7 @@ const GardenPhaser = (props: Props) => {
         {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${AccessToken}`,
+            Authorization: `Bearer ${userToken}`,
           },
         }
       );
@@ -131,7 +132,6 @@ const GardenPhaser = (props: Props) => {
       setGarden(Data.gardenInfo);
 
       const initPhaser = () => {
-
         //씬 생성시 매개변수로 추가된 데이터들은 constructor에서 불러옴
         //이후 scene.start 에서 씬 생성과 같이 넘겨주는 데이터들은
         //init or create 의 매개변수로 받아오기.
