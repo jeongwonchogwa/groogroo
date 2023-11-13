@@ -73,15 +73,13 @@ export default class GardenScene extends Scene {
 
     const getTreeExistInfo = async () => {
       const data = await fetchTreeExistInfo();
-      if (data.treeGardenId != null ) {
+      if (data.treeGardenId != null) {
         registModalBox.appendChild(treeModifyTextBox);
-        registModalBox.appendChild(treeRegistTextBox);
-        this.garden.treePos?.forEach(tree => {
-          if(tree.id === data.treeGardenId){
-            this.myTree = tree
+        this.garden.treePos?.forEach((tree) => {
+          if (tree.id === data.treeGardenId) {
+            this.myTree = tree;
           }
         });
-        
       } else {
         registModalBox.appendChild(treeRegistTextBox);
       }
@@ -101,41 +99,50 @@ export default class GardenScene extends Scene {
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
     const trees: Character[] = [];
     this.garden.treePos?.forEach((tree) => {
-
-
-      
-
       const initialSprite = this.physics.add
-      .sprite(0, 0, tree.name)
-      .setDepth(3)
-      .setScale(0.25)
-      .setInteractive()
-      //열매 작성 폼 띄워줄거임.
-      .on("pointerup", () => this.onTreeClick(tree))
+        .sprite(0, 0, tree.name)
+        .setDepth(3)
+        .setScale(0.25)
+        .setInteractive()
+        //열매 작성 폼 띄워줄거임.
+        .on("pointerup", () => this.onTreeClick(tree));
 
+      //열매 달아주기////////////////////////////////////
+      const fruitArr = ["apple", "cherry", "grape", "lemon", "orange", "peach"];
+      const selectedFruit = [];
 
-      
+      if (tree.fruitCnt! > 0) {
+        for (let i = 0; i < tree.fruitCnt!; i++) {
+          let tmpFruit = fruitArr[Math.floor(Math.random() * fruitArr.length)];
+          selectedFruit.push(tmpFruit);
 
-      const fruitArr = ["apple","cherry","grape","lemon","orange","peach"]
-      const selectedFruit = []
-      
-      if(tree.fruitCnt! > 0){
-        for(let i = 0 ; i<tree.fruitCnt! ; i++){
-          let tmpFruit = fruitArr [Math.floor(Math.random() * fruitArr.length)]
-          selectedFruit.push(tmpFruit)
-
-          if(i === 0){
-          this.add.image(tree.x!*16+12,tree.y!*16,tmpFruit).setScale(0.25).setOrigin(0,0).setDepth(3)
-          }else if(i === 1 ){
-          this.add.image(tree.x!*16+2,tree.y!*16+8,tmpFruit).setScale(0.25).setOrigin(0,0).setDepth(3)
-          }else if(i === 2){
-          this.add.image(tree.x!*16+12,tree.y!*16+8,tmpFruit).setScale(0.25).setOrigin(0,0).setDepth(3)
-          }else {
-          this.add.image(tree.x!*16+22,tree.y!*16+8,tmpFruit).setScale(0.25).setOrigin(0,0).setDepth(3)
+          if (i === 0) {
+            this.add
+              .image(tree.x! * 16 + 12, tree.y! * 16 + 2, tmpFruit)
+              .setScale(0.2)
+              .setOrigin(0, 0)
+              .setDepth(3);
+          } else if (i === 1) {
+            this.add
+              .image(tree.x! * 16 + 2, tree.y! * 16 + 8, tmpFruit)
+              .setScale(0.2)
+              .setOrigin(0, 0)
+              .setDepth(3);
+          } else if (i === 2) {
+            this.add
+              .image(tree.x! * 16 + 12, tree.y! * 16 + 12, tmpFruit)
+              .setScale(0.2)
+              .setOrigin(0, 0)
+              .setDepth(3);
+          } else {
+            this.add
+              .image(tree.x! * 16 + 22, tree.y! * 16 + 8, tmpFruit)
+              .setScale(0.2)
+              .setOrigin(0, 0)
+              .setDepth(3);
           }
         }
       }
-  
 
       trees.push({
         id: tree.name,
@@ -162,8 +169,8 @@ export default class GardenScene extends Scene {
           //메세지 띄워주자
           .on("pointerup", () => this.onFlowerClick(flower)),
         startPosition: { x: flower.x!, y: flower.y! },
-        tileHeight: 2,
-        tileWidth: 2,
+        tileHeight: 1,
+        tileWidth: 1,
         offsetX: 0,
         offsetY: 0,
       });
@@ -394,12 +401,13 @@ export default class GardenScene extends Scene {
       .dom(0, 0, "div", footerStyle)
       .setOrigin(0, 0)
       .setDepth(3)
-      .setScale(1 / this.cameras.main.zoom).setScrollFactor(0,0)
+      .setScale(1 / this.cameras.main.zoom)
+      .setScrollFactor(0, 0);
 
     if (window.innerHeight >= window.innerWidth) {
       this.footer.setPosition(
-        (window.innerWidth)/2-window.innerWidth/this.cameras.main.zoom/2,
-        window.innerHeight/2+160-60/this.cameras.main.zoom,
+        window.innerWidth / 2 - window.innerWidth / this.cameras.main.zoom / 2,
+        window.innerHeight / 2 + 160 - 60 / this.cameras.main.zoom
       );
       // console.log(this.footer.x + " " + this.footer.y);
     } else {
@@ -443,16 +451,6 @@ export default class GardenScene extends Scene {
       }
     };
 
-    // const onFlowerButtonClick = () => {
-    //   if (flowerModalBox.style.display === "flex") {
-    //     flowerModalBox.style.display = "none";
-    //   } else {
-    //     flowerModalBox.style.display = "flex";
-    //     treeModalBox.style.display = "none";
-    //     registModalBox.style.display = "none";
-    //   }
-    // };
-
     this.plusButton.addEventListener("click", onPlusButtonClick);
 
     const treeMenuSet = document.createElement("div");
@@ -488,7 +486,6 @@ export default class GardenScene extends Scene {
     this.sys.animatedTiles.init(map); //타일 애니메이션 실행.
     this.gridEngine.create(map, gridEngineConfig);
   }
-
 
   update() {
     //ui 버튼 뷰포트에 고정

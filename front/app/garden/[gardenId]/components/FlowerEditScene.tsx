@@ -98,8 +98,8 @@ export default class FlowerEditScene extends Scene {
         //열매 작성 폼 띄워줄거임.
         // .on("pointerup", () => this.onFormOpenButtonClick(flower)),
         startPosition: { x: flower.x!, y: flower.y! },
-        tileHeight: 2,
-        tileWidth: 2,
+        tileHeight: 1,
+        tileWidth: 1,
         offsetX: 0,
         offsetY: 0,
       });
