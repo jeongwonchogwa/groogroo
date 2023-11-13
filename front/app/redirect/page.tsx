@@ -34,11 +34,11 @@ const RedirectPage = () => {
         console.log('treeId:', treeId);
 
         // EventSource 생성
-        const sse = new EventSource(`/api/notification/subscribe/${userId}`);
+        const sse = new EventSource(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/notification/subscribe/${userId}`);
         useEventSourceStore.getState().setEventSource(sse);
-
         const destination = treeId === undefined ? '/enter/terms' : '/home';
         router.push(destination);
+        console.log(sse);
       } else {
         console.error('Invalid access token format');
       }
