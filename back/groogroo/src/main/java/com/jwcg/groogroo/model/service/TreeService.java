@@ -80,7 +80,10 @@ public class TreeService {
 
         List<ResponseFruitDto> fruits = new ArrayList<>();
 
-        for (Fruit fruit : tree.getFruits()) {
+        // 최신순으로 정렬
+        for (int i = responseTreeDto.getFruitsCount()-1; i>=0; i--) {
+            Fruit fruit = tree.getFruits().get(i);
+
             // 삭제된 열매면 건너 뛰기
             if(fruit.getDeleteDate() != null) continue;
 
@@ -125,34 +128,6 @@ public class TreeService {
                     .fruitsCount(tree.getFruits().size())
                     .email(tree.getUser().getEmail())
                     .build();
-            List<ResponseFruitDto> fruits = new ArrayList<>();
-
-            for (Fruit fruit : tree.getFruits()) {
-
-                // 삭제된 열매면 건너 뛰기
-                if(fruit.getDeleteDate() != null) continue;
-
-                if (fruit.getWriterId() == userId){
-                    ResponseFruitDto now = ResponseFruitDto.builder()
-                            .id(fruit.getId())
-                            .writerId(fruit.getWriterId())
-                            .content(fruit.getContent())
-                            .writerNickname(fruit.getWriterNickname())
-                            .build();
-
-                    LocalDateTime cur = LocalDateTime.now();
-                    LocalDateTime target = fruit.getCreateTime();
-                    if (cur.toLocalDate().isEqual(target.toLocalDate())) {
-                        now.setCreateTime(target.format(DateTimeFormatter.ofPattern("HH:mm")));
-                    }else {
-                        now.setCreateTime(target.format(DateTimeFormatter.ofPattern("YY.MM.dd")));
-                    }
-
-                    fruits.add(now);
-                }
-
-                responseTreeDto.setFruits(fruits);
-            }
 
             returnData.add(responseTreeDto);
         }
@@ -257,5 +232,50 @@ public class TreeService {
                 .imageUrl(treeGarden.getImageUrl())
                 .build();
         return simpleTreeGardenDto;
+    }
+
+    // userId가 treeId번 나무를 상세 조회 (나무 상세 정보 & userId가 작성한 열매 반환)
+    public ResponseTreeDto getDetailTreeContents(Long userId, Long treeId) {
+        Tree tree = treeRepository.findTreeById(treeId);
+        List<ResponseTreeDto> returnData = new ArrayList<>();
+
+        ResponseTreeDto responseTreeDto = ResponseTreeDto.builder()
+                .id(tree.getId())
+                .imageUrl(tree.getImageUrl())
+                .name(tree.getName())
+                .fruitsCount(tree.getFruits().size())
+                .email(tree.getUser().getEmail())
+                .build();
+        List<ResponseFruitDto> fruits = new ArrayList<>();
+
+        // 최신순 정렬
+        for (int i = responseTreeDto.getFruitsCount()-1; i>=0; i--) {
+            Fruit fruit = tree.getFruits().get(i);
+
+            // 삭제된 열매면 건너 뛰기
+            if (fruit.getDeleteDate() != null) continue;
+
+            if (fruit.getWriterId() == userId) {
+                ResponseFruitDto now = ResponseFruitDto.builder()
+                        .id(fruit.getId())
+                        .writerId(fruit.getWriterId())
+                        .content(fruit.getContent())
+                        .writerNickname(fruit.getWriterNickname())
+                        .build();
+
+                LocalDateTime cur = LocalDateTime.now();
+                LocalDateTime target = fruit.getCreateTime();
+                if (cur.toLocalDate().isEqual(target.toLocalDate())) {
+                    now.setCreateTime(target.format(DateTimeFormatter.ofPattern("HH:mm")));
+                } else {
+                    now.setCreateTime(target.format(DateTimeFormatter.ofPattern("YY.MM.dd")));
+                }
+
+                fruits.add(now);
+            }
+
+        }
+        responseTreeDto.setFruits(fruits);
+        return responseTreeDto;
     }
 }

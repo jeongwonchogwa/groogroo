@@ -183,7 +183,7 @@ public class TreeController {
             @ApiResponse(responseCode = "200", description = "나무 검색 성공"),
             @ApiResponse(responseCode = "500", description = "나무 검색 실패 - 내부 서버 오류"),
     })
-    @GetMapping("/{name}")
+    @GetMapping("search/{name}")
     public ResponseEntity<Map<String, Object>> searchTree(@RequestHeader("Authorization") String token, @PathVariable("name") String name) {
 
         token = token.split(" ")[1];
@@ -204,6 +204,36 @@ public class TreeController {
             log.info("Tree Controller - 나무 검색 실패");
             response.put("httpStatus", FAIL);
             response.put("message", "나무 검색 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "나무 상세 조회", description = "다른 사람의 나무 상세 및 내가 쓴 열매 조회하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "나무 상세 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "나무 상세 조회 실패 - 내부 서버 오류"),
+    })
+    @GetMapping("detail/{treeId}")
+    public ResponseEntity<Map<String, Object>> getDetailTreeContents(@RequestHeader("Authorization") String token, @PathVariable Long treeId) {
+        token = token.split(" ")[1];
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("Tree Controller - 나무 상세 조회");
+            Long userId = jwtUtil.getId(token);
+            log.info("id: {}", userId);
+            ResponseTreeDto tree = treeService.getDetailTreeContents(userId, treeId);
+
+            response.put("tree", tree);
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "나무 상세 조회 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("Tree Controller - 나무 상세 조회 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "나무 상세 조회 실패");
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
