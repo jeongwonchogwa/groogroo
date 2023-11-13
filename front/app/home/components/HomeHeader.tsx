@@ -36,11 +36,16 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
     setOpenUpdate((prev) => !prev);
   };
 
+  // 이건 맞으려나..
   const { searchTreeInfoData } = searchTreeStore();
+
   const menuList: MenuButton[] = [
     // link가 아니라 router로 해버렸다..
     { name: "로그아웃", clickEvent: () => {} },
-    { name: "문의하기", clickEvent: () => router.push("http://pf.kakao.com/_xoIkxbG") },
+    {
+      name: "문의하기",
+      clickEvent: () => router.push("http://pf.kakao.com/_xoIkxbG"),
+    },
   ];
 
   const bellClick = openAlarm ? "w-10 h-10 z-50" : "w-10 h-10";
@@ -66,11 +71,11 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
               <IconButton
                 iconSrc="glass"
                 onClick={() => {
-                  router.push("/home/search");
+                  router.push("/search");
                 }}
               />
             </div>
-            {pathname !== `/home/search/${searchTreeInfoData?.id}` && (
+            {pathname.startsWith("/home") && (
               <div className="w-10 h-10">
                 <IconButton iconSrc="update" onClick={onUpdateButtonClick} />
               </div>
@@ -90,7 +95,9 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
           </div>
         </div>
       </div>
-      {menuOpen && !openAlarm ? <HomeMenu menuList={menuList}></HomeMenu> : null}
+      {menuOpen && !openAlarm ? (
+        <HomeMenu menuList={menuList}></HomeMenu>
+      ) : null}
       {openUpdate && (
         <ButtonModal
           handleModal={onUpdateButtonClick}
@@ -106,7 +113,9 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
                   onUpdateButtonClick();
                 }}
               />
-              <Link href={{ pathname: "/home/update", query: { type: "name" } }}>
+              <Link
+                href={{ pathname: "/home/update", query: { type: "name" } }}
+              >
                 <Button
                   color="secondary"
                   label="이름 변경하기"
@@ -115,7 +124,9 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
                   }}
                 />
               </Link>
-              <Link href={{ pathname: "/home/update", query: { type: "preset" } }}>
+              <Link
+                href={{ pathname: "/home/update", query: { type: "preset" } }}
+              >
                 <Button
                   color="primary"
                   label="프리셋 변경하기"
