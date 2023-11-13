@@ -41,7 +41,7 @@ public class S3TestController {
 
         try {
             log.info("S3에 multipartfile 업로드");
-            String fileUrl = s3UploadService.upload(multipartFile, "dirName");
+            String fileUrl = s3UploadService.upload(multipartFile, dirName);
             log.info("S3 업로드 성공");
             response.put("httpStatus", SUCCESS);
             response.put("message", "S3 업로드 성공");
