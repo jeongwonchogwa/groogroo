@@ -173,30 +173,6 @@ export default class FlowerEditScene extends Scene {
       } else {
         console.log("안돼요");
       }
-
-      // try {
-      //   const res = await fetch(
-      //     `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/flower`,
-      //     {
-      //       method: "POST",
-      //       headers: {
-      //         Authorization: `Bearer ${AccessToken}`,
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify({
-      //         gardenId: this.gardenId,
-      //         imageUrl: `/assets/flowers/flower[${this.selectedFlower}].svg`,
-      //         x: this.gridEngine.getPosition("selectedFlower").x,
-      //         y: this.gridEngine.getPosition("selectedFlower").y,
-      //         preset: true,
-      //       }),
-      //     }
-      //   );
-      //   const responseData = await res.json();
-      // return responseData;
-      // } catch (err) {
-      //   console.log(err);
-      // }
     };
 
     let cancelButton = Button({

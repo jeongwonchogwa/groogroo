@@ -3,6 +3,7 @@ import IconButton from "@/app/components/IconButton";
 import MessageContainer from "@/app/components/MessageContainer";
 import ReportModal from "@/app/components/ReportModal";
 import { Flower } from "@/app/types";
+import { userInfoStore } from "@/stores/userInfoStore";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -12,7 +13,8 @@ interface Props {
   onFormCloseButtonClick: () => void;
 }
 const FlowerMessage = (props: Props) => {
-  const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  // const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  const { userToken } = userInfoStore();
   const [openReport, setOpenReport] = useState<boolean>(false);
   const [clickReport, setClickReport] = useState<boolean>(false);
   const [isDeleteable, setIsDeleteable] = useState<boolean>(true);
@@ -69,7 +71,7 @@ const FlowerMessage = (props: Props) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${AccessToken}`,
+            Authorization: `Bearer ${userToken}`,
           },
           body: JSON.stringify(reportData),
         }
@@ -94,7 +96,7 @@ const FlowerMessage = (props: Props) => {
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${AccessToken}`,
+            Authorization: `Bearer ${userToken}`,
           },
         }
       );
@@ -108,7 +110,7 @@ const FlowerMessage = (props: Props) => {
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${AccessToken}`,
+              Authorization: `Bearer ${userToken}`,
             },
           }
         );

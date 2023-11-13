@@ -5,6 +5,7 @@ import Button from "@/app/components/Button";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Flower } from "@/app/types";
+import { userInfoStore } from "@/stores/userInfoStore";
 
 interface Props {
   gardenId: number;
@@ -14,7 +15,8 @@ interface Props {
 }
 
 const CreateFlower = (props: Props) => {
-  const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  // const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  const { userToken } = userInfoStore();
   const router = useRouter();
   const [writer, setWriter] = useState("");
   const [content, setContent] = useState("");
@@ -43,7 +45,7 @@ const CreateFlower = (props: Props) => {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${AccessToken}`,
+            Authorization: `Bearer ${userToken}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(newFlower),
@@ -60,7 +62,7 @@ const CreateFlower = (props: Props) => {
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${AccessToken}`,
+              Authorization: `Bearer ${userToken}`,
             },
           }
         );

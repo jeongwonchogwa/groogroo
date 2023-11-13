@@ -4,6 +4,7 @@ import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.mi
 import { treeList } from "@/app/dummies";
 import { Character, Flower, Garden, Tree } from "@/app/types";
 import ReactDOM from "react-dom/client";
+import { userInfoStore } from "@/stores/userInfoStore";
 
 interface Props {
   onTreeClick: (tree: Tree) => void;
@@ -50,7 +51,8 @@ export default class GardenScene extends Scene {
   }
 
   create() {
-    const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+    // const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+    const { userToken } = userInfoStore();
     const fetchTreeExistInfo = async () => {
       try {
         const res = await fetch(
@@ -59,7 +61,7 @@ export default class GardenScene extends Scene {
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${AccessToken}`,
+              Authorization: `Bearer ${userToken}`,
             },
           }
         );

@@ -5,6 +5,7 @@ import Button from "@/app/components/Button";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Tree } from "@/app/types";
+import { userInfoStore } from "@/stores/userInfoStore";
 
 interface Props {
   onFormCloseButtonClick: () => void;
@@ -14,7 +15,8 @@ interface Props {
 }
 
 const CreateFruit = (props: Props) => {
-  const AccessToken = localStorage.getItem("access_token");
+  // const AccessToken = localStorage.getItem("access_token");
+  const { userToken } = userInfoStore();
   const router = useRouter();
   const [writer, setWriter] = useState("");
   const [content, setContent] = useState("");
@@ -25,7 +27,7 @@ const CreateFruit = (props: Props) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${AccessToken}`,
+          Authorization: `Bearer ${userToken}`,
         },
         body: JSON.stringify({
           treeId: props.currentTree.id,
@@ -42,7 +44,7 @@ const CreateFruit = (props: Props) => {
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${AccessToken}`,
+              Authorization: `Bearer ${userToken}`,
             },
           }
         );

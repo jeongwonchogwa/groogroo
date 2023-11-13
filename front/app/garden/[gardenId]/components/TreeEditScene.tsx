@@ -5,6 +5,7 @@ import { Scene } from "phaser";
 import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";
 import Button from "@/app/components/Button";
 import ReactDOM from "react-dom/client";
+import { userInfoStore } from "@/stores/userInfoStore";
 
 interface Props {
   garden: Garden;
@@ -177,9 +178,8 @@ export default class TreeEditScene extends Scene {
     };
 
     //나무 등록 API요청////////////////////////////////////////////////////
-    const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
-    // const AccessToken = localStorage.getItem("access_token");
-
+    // const userToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+    const { userToken } = userInfoStore();
     const onRegistButtonClick = async () => {
       if (this.defaultSpriteBox.visible) {
         try {
@@ -188,7 +188,7 @@ export default class TreeEditScene extends Scene {
             {
               method: "POST",
               headers: {
-                Authorization: `Bearer ${AccessToken}`,
+                Authorization: `Bearer ${userToken}`,
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
@@ -210,7 +210,7 @@ export default class TreeEditScene extends Scene {
               {
                 method: "GET",
                 headers: {
-                  Authorization: `Bearer ${AccessToken}`,
+                  Authorization: `Bearer ${userToken}`,
                 },
               }
             );
@@ -242,7 +242,7 @@ export default class TreeEditScene extends Scene {
             {
               method: "POST",
               headers: {
-                Authorization: `Bearer ${AccessToken}`,
+                Authorization: `Bearer ${userToken}`,
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
@@ -267,7 +267,7 @@ export default class TreeEditScene extends Scene {
               {
                 method: "GET",
                 headers: {
-                  Authorization: `Bearer ${AccessToken}`,
+                  Authorization: `Bearer ${userToken}`,
                 },
               }
             );
