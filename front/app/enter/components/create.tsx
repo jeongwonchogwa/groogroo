@@ -19,10 +19,15 @@ const Create = () => {
   const [selectedColor, setSelectedColor] = useState('black'); // 기본 색상을 'black'으로 설정
   const [isGenerated, setIsGenerated] = useState(false);
   const [imageData, setImageData] = useState('');
+  const [imageName, setImageName] = useState('');
 
 	const redirectHome = () => {
     router.push('/home');
   };
+
+  const redirectCheck = (imageUrl: String) => {
+    router.push(`/enter/check?selectedImageUrl=${imageUrl}`);
+  }
 
   const handleCreateButtonClick = () => {
     if (selectedComponent === 'canvas') {
@@ -103,8 +108,9 @@ const Create = () => {
         // image_data - 형식은 base64
         const data = await response.json();
         setImageData(data.image_data); // 이미지 데이터를 상태 변수에 저장
+        setImageName(data.image_name); // 이미지 url을 변수에 저장
         setIsGenerated(true);
-        // console.log(responseData.image_url)
+        console.log(data.image_data)
         // router.push(`/enter/pick/${responseData.image_url}`)
 
       } else {
@@ -112,6 +118,44 @@ const Create = () => {
       }
     } catch (error) {
       console.log('요청실패:', error);
+    }
+  };
+
+  const handleSelectButtonClick = async () => {
+
+    const base64String = `data:image/png;base64,${imageData}`;
+
+    // Base64 문자열을 Blob 객체로 변환
+    const blob = await (await fetch(base64String)).blob();
+
+    // FormData 객체 생성
+    const formData = new FormData();
+    formData.append("multipartFile", blob, imageName);
+    
+    // 서버에 POST 요청 보내기
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/image`, {
+        method: "POST",
+        body: formData
+      });
+
+      if (response.status === 200) {
+        // 처리 성공
+        console.log("이미지 업로드 성공", response);
+        const responseData = await response.json();
+        const imageUrl = responseData.imageUrl; // imageUrl 추출
+        
+        redirectCheck(imageUrl); 
+        
+        // redirectCheck();
+      } else {
+        // 처리 실패
+        alert("생성한 이미지를 서버에 저장하는 데 실패했습니다.")
+        console.log("이미지 업로드 실패");
+      }
+    } catch (error) {
+      alert("생성한 이미지를 서버에 저장하는 데 실패했습니다.")
+      console.error("요청 실패", error);
     }
   };
 
@@ -155,7 +199,7 @@ const Create = () => {
           {isGenerated ?  <>
                             <div className="grid grid-flow-col gap-4">
                               <Button color="primary" label="다시 생성하기" onClick={handleCreateButtonClick} /> 
-                              <Button color="primary" label="선택 하기" onClick={handleCreateButtonClick} />
+                              <Button color="primary" label="선택 하기" onClick={handleSelectButtonClick} />
                             </div>
                           </> : 
                           <Button color="primary" label="생성 하기" onClick={handleCreateButtonClick} />}
