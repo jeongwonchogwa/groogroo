@@ -3,13 +3,13 @@
 import Button from "../../components/Button";
 import SmallButton from "../../components/SmallButton";
 import NameInput from "../../components/NameInput";
-import Canvas from "./canvas";
 import PixelCanvas from "./pixelCanvas"
 import DrawingTools from "./DrawingTools";
+import html2canvas from "html2canvas";
+import Image from "next/image";
 
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useRouter } from "next/navigation";
-import { UrlObject } from 'url';
 import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
 
@@ -22,6 +22,7 @@ const Create = () => {
   const [isGenerated, setIsGenerated] = useState(false);
   const [imageData, setImageData] = useState('');
   const [imageName, setImageName] = useState('');
+  const [isBlank, setIsBlank] = useState<boolean>(true);
 
   
 	const redirectHome = () => {
@@ -33,8 +34,10 @@ const Create = () => {
   }
 
   const handleCreateButtonClick = () => {
+    console.log("버튼 클릭");
     if (selectedComponent === 'canvas') {
-      fetchImageToFlask();
+      console.log("캔버스");
+      getImageDataFromCanvas();
       // router.push('/enter/pick');
     } else if (selectedComponent === 'text') {
       let err = false;
@@ -112,21 +115,32 @@ const Create = () => {
 
       console.log(userId);
   }, []);
-  const getImageDataFromCanvas = () => {
-    return null;
-  };
 
-  const fetchImageToFlask = async () => {
-    const imageData = getImageDataFromCanvas();
-    if (imageData) {
+  const getImageDataFromCanvas = () => {
+  // PixelCanvas 컴포넌트의 ref를 사용하여 그리드 요소에 접근
+  const gridElement = document.getElementById('pixel-grid');
+
+  if(gridElement){
+    html2canvas(gridElement).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png'); // 이미지 데이터로 변환하여 PNG 형식으로 저장
+      console.log(imgData); // 콘솔에 base64 형태의 이미지 데이터 출력
+      console.log("이미지 가져왔다!");
+      fetchImageToFlask(imgData);
+    });
+  }
+};
+
+  const fetchImageToFlask = async (imgData:string) => {
+    if (imgData != '') {
+      console.log("flask에 요청 보낸다!");
       try {
-        const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/`, {
+        const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/remove_background`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            image: imageData,
+            image: imgData,
             id: 9999,   // 실제 아이디 가져와서 바꿔놔야할 부분
           })
         }, router);
@@ -137,7 +151,8 @@ const Create = () => {
           setImageData(data.image_data); // 이미지 데이터를 상태 변수에 저장
           setImageName(data.image_name); // 이미지 url을 변수에 저장
           setIsGenerated(true);
-          console.log(data.image_data)
+          console.log("flask 요청 성공");
+          console.log("받은 데이터: ", data);
           // router.push(`/enter/pick/${responseData.image_url}`)
         } else {
           console.log('Server Response Error:', response?.status);
@@ -170,7 +185,6 @@ const Create = () => {
         setImageData(data.image_data); // 이미지 데이터를 상태 변수에 저장
         setImageName(data.image_name); // 이미지 url을 변수에 저장
         setIsGenerated(true);
-        console.log(data.image_data)
         // router.push(`/enter/pick/${responseData.image_url}`)
 
       } else {
@@ -219,6 +233,9 @@ const Create = () => {
     }
   };
 
+  const checkIsBlank = (isBlank : boolean) => {
+    setIsBlank(isBlank);
+  }
 
   return (
     <div className="w-full flex flex-col justify-center items-center ">    
@@ -232,8 +249,8 @@ const Create = () => {
       </div>
       <div className="w-full flex flex-col items-center">
         <div className="w-full flex space-x-8 mt-5 mb-3">
-          <SmallButton color={selectedComponent === 'canvas' ? 'default' : 'white'} label="이미지" onClick={() => setSelectedComponent('canvas')} />
-          <SmallButton color={selectedComponent === 'text' ? 'default' : 'white'} label="텍스트" onClick={() => setSelectedComponent('text')} /> 
+          <SmallButton color={selectedComponent === 'canvas' ? 'default' : 'white'} label="이미지" onClick={() => {setSelectedComponent('canvas'); setInputValue('');}} />
+          <SmallButton color={selectedComponent === 'text' ? 'default' : 'white'} label="텍스트" onClick={() => {setSelectedComponent('text'); setIsBlank(true);}} /> 
         </div>
         {selectedComponent === 'canvas' && (
           <>
@@ -242,13 +259,14 @@ const Create = () => {
               onColorChange={(color) => handleColorChange(color)}
             />
             
-            <PixelCanvas selectedTool={selectedTool} selectedColor={selectedColor} />
+            <PixelCanvas selectedTool={selectedTool} selectedColor={selectedColor} checkIsBlank={checkIsBlank} />
           {/* <Canvas selectedTool={selectedTool} selectedColor={selectedColor} /> */}
           </>
         )}
 
         {isGenerated && imageData && (
-        <img src={`data:image/png;base64,${imageData}`} alt='생성된 이미지' />
+        // <img src={`data:image/png;base64,${imageData}`} alt='생성된 이미지' />
+        <Image className="mt-5" src={`data:image/png;base64,${imageData}`} alt="생성된 이미지" width={128} height={128} priority/>
         )}
 
         {selectedComponent === 'text' && <NameInput placeholder="뿡뿡이나무" value={inputValue} onChange={handleInputChange} />} { /* NameInput 컴포넌트를 렌더링 */ }    
@@ -264,7 +282,10 @@ const Create = () => {
                               <Button color="primary" label="선택 하기" onClick={handleSelectButtonClick} />
                             </div>
                           </> : 
-                          <Button color="primary" label="생성 하기" onClick={handleCreateButtonClick} />
+                          selectedComponent === 'canvas' ?
+                          <Button color={isBlank?"default":"primary"} label="생성 하기" onClick={handleCreateButtonClick} disabled={isBlank}/>
+                          :
+                          <Button color={inputValue==''?"default":"primary"} label="생성 하기" onClick={handleCreateButtonClick} disabled={inputValue==''}/>
           }
         </div>
       </div>

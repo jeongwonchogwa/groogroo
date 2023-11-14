@@ -1,11 +1,12 @@
-import React, { useState, MouseEvent } from 'react';
+import React, { useState } from 'react';
 
 interface PixelCanvasProps {
   selectedTool: string;
   selectedColor: string;
+  checkIsBlank: (isBlank: boolean) => void;
 }
 
-const PixelCanvas = ({ selectedTool, selectedColor }: PixelCanvasProps) => {
+const PixelCanvas = ({ selectedTool, selectedColor, checkIsBlank }: PixelCanvasProps) => {
   const [grid, setGrid] = useState<string[][]>(Array.from({ length: 16 }, () => Array(16).fill('white')));
   const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
 
@@ -17,6 +18,7 @@ const PixelCanvas = ({ selectedTool, selectedColor }: PixelCanvasProps) => {
       newGrid[row][col] = 'white';
     }
     setGrid(newGrid);
+    checkBlank();
   };
 
   const handleMouseUp = () => {
@@ -39,14 +41,28 @@ const PixelCanvas = ({ selectedTool, selectedColor }: PixelCanvasProps) => {
     setIsMouseDown(false);
   };
 
+  // 백지인지 확인
+  const checkBlank = () => {
+    for (let i = 0; i < grid.length; i++) {
+      for (let j = 0; j < grid[i].length; j++) {
+        if (grid[i][j] !== 'white') {
+          checkIsBlank(false);
+          return;
+        }
+      }
+    }
+    checkIsBlank(true);
+  };
+
   return (
     <div className="flex flex-col justify-center" onMouseLeave={handleMouseLeave} onMouseUp={handleMouseUp}>
+      <div id="pixel-grid">
     {grid.map((row, rowIndex) => (
       <div key={rowIndex} className="flex">
         {row.map((col, colIndex) => (
           <div
             key={colIndex}
-            className="w-4 h-4 border border-gray-300 cursor-pointer"
+            className="w-4 h-4 cursor-pointer"
             style={{ backgroundColor: col }}
             onClick={() => handleCellClick(rowIndex, colIndex)}
             onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
@@ -55,6 +71,7 @@ const PixelCanvas = ({ selectedTool, selectedColor }: PixelCanvasProps) => {
         ))}
       </div>
     ))}
+    </div>
   </div>
   );
 };
