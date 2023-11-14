@@ -4,6 +4,7 @@ import Button from "../../components/Button";
 import SmallButton from "../../components/SmallButton";
 import NameInput from "../../components/NameInput";
 import Canvas from "./canvas";
+import PixelCanvas from "./pixelCanvas"
 import DrawingTools from "./DrawingTools";
 
 import React, { useState, ChangeEvent } from 'react';
@@ -85,10 +86,13 @@ const Create = () => {
 
   const handleSelectTool = (tool: string) => {
     setSelectedTool(tool); // 선택한 도구를 업데이트
+    console.log("도구 변경: ", tool);
   };
 
   const handleColorChange = (color: string) => {
     setSelectedColor(color); // 선택한 색상을 업데이트
+    setSelectedTool('pen'); // 색 변경하면 도구도 펜으로 변경
+    console.log("색 변경: ", color);
   };
 
   const fetchTextToFlask = async (inputData : string) => {
@@ -181,7 +185,9 @@ const Create = () => {
               onSelectTool={(tool) => handleSelectTool(tool)}
               onColorChange={(color) => handleColorChange(color)}
             />
-          <Canvas selectedTool={selectedTool} selectedColor={selectedColor} />
+            
+            <PixelCanvas selectedTool={selectedTool} selectedColor={selectedColor} />
+          {/* <Canvas selectedTool={selectedTool} selectedColor={selectedColor} /> */}
           </>
         )}
 
