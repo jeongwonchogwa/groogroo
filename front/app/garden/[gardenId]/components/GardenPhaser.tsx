@@ -51,28 +51,28 @@ const GardenPhaser = (props: Props) => {
   const [treeSelect, setTreeSelect] = useState<boolean>(false);
   const [flowerMessageEdit, setFlowerMessageEdit] = useState<boolean>(false);
   const [showFlowerMessage, setShowFlowerMessage] = useState<boolean>(false);
-  const [flowerEditSceneState, setFlowerEditSceneState] =
-    useState<FlowerEditScene>();
-  const [treeEditSceneState, setTreeEditSceneState] = useState<TreeEditScene>();
+  const [stopBubbling, setStopBubbling] = useState<boolean>(false);
 
   const onFormCloseButtonClick = () => {
-    console.log("꺼져랏");
     setFruitMessageEdit(false);
     setFlowerMessageEdit(false);
     setFlowerSelect(false);
     setTreeSelect(false);
     setShowFlowerMessage(false);
+    setStopBubbling(false);
+    //@ts-ignore
+    game!.scene.getScene("gardenScene").modalCheck = false;
   };
 
   const onTreeClick = (tree: Tree) => {
-    console.log("켜져랏" + tree);
-    setCurrnetTree(tree);
-    setFruitMessageEdit(true);
+    if (!stopBubbling) {
+      setCurrnetTree(tree);
+      setFruitMessageEdit(true);
+      setStopBubbling(true);
+    }
   };
 
   const onFlowerClick = async (flower: Flower) => {
-    console.log(flower);
-
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/flower/${flower.id}`
@@ -146,7 +146,6 @@ const GardenPhaser = (props: Props) => {
 
       const treeEditScene = new TreeEditScene({ garden: garden.gardenInfo });
       const preloader = new Preloader({
-        // myTree: myTree,
         garden: garden.gardenInfo,
       });
 
@@ -195,24 +194,20 @@ const GardenPhaser = (props: Props) => {
   return (
     <div className="w-full h-full overflow-hidden border-2 border-point-orange ">
       {isLoading ? null : (
-        <div
-          className="relative w-full h-full"
-          id="garden-content"
-          key="garden-content"
-        >
-          <GardenHeader
-            state={garden.gardenInfo.state}
-            garden={garden.gardenInfo}
-          />
+        <div>
+          <div
+            className="relative w-full h-full"
+            id="garden-content"
+            key="garden-content"
+          >
+            <GardenHeader
+              state={garden.gardenInfo.state}
+              garden={garden.gardenInfo}
+            />
+          </div>
+
           {showFlowerMessage ? (
-            <div
-              className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]"
-              onClick={(e) =>{
-                onFormCloseButtonClick()
-                e.stopPropagation()
-              }
-              }
-            >
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]">
               <div className="flex flex-col items-center justify-center gap-10 pt-40">
                 <Image
                   alt="currentFlower"
@@ -231,11 +226,7 @@ const GardenPhaser = (props: Props) => {
           ) : null}
 
           {treeSelect ? (
-            <div
-              className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]"
-              onClick={onFormCloseButtonClick
-              }
-            >
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]">
               <TreeSelect
                 onFormCloseButtonClick={onFormCloseButtonClick}
                 game={game}
@@ -244,12 +235,7 @@ const GardenPhaser = (props: Props) => {
           ) : null}
 
           {flowerSelect ? (
-            <div
-              className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]"
-              onClick={
-                onFormCloseButtonClick
-              }
-            >
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]">
               <FlowerSelect
                 onFormCloseButtonClick={onFormCloseButtonClick}
                 game={game}
@@ -258,13 +244,7 @@ const GardenPhaser = (props: Props) => {
           ) : null}
 
           {flowerMessageEdit ? (
-            <div
-              className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]"
-              onClick={(e) => {
-                onFormCloseButtonClick();
-                e.stopPropagation();
-              }}
-            >
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]">
               <div className="flex flex-col items-center justify-center gap-10 pt-40">
                 <Image
                   alt="currentFlower"
@@ -283,10 +263,7 @@ const GardenPhaser = (props: Props) => {
             </div>
           ) : null}
           {fruitMessageEdit ? (
-            <div
-              className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[50]"
-              onClick={onFormCloseButtonClick}
-            >
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[50]">
               <div className="flex flex-col items-center justify-center gap-2 pt-20">
                 <PixelCard
                   content={

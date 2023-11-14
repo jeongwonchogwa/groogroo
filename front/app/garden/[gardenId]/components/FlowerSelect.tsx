@@ -43,7 +43,7 @@ const FlowerSelect = (props: Props) => {
 
   const onFlowerSelectButtonClick = (index: number) => {
     console.log("꽃 선택 완료!" + (index + 1));
-    props.onFormCloseButtonClick;
+    props.onFormCloseButtonClick();
     props.game?.scene.stop("gardenScene");
     props.game?.scene.start("flowerEditScene", {
       selectedFlower: index + 1,
@@ -56,7 +56,7 @@ const FlowerSelect = (props: Props) => {
       onClick={(e) => e.stopPropagation()}
       className="w-full flex flex-col gap-10 items-center"
     >
-      <div className="font-bitBit text-2xl text-white" >심을 꽃을 고르세요.</div>
+      <div className="font-bitBit text-2xl text-white">심을 꽃을 고르세요.</div>
       <div className="w-full flex gap-5">
         <div className="w-8 my-auto">
           {<IconButton iconSrc="arrow" onClick={prevFlower} />}

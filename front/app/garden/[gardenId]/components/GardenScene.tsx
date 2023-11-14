@@ -1,10 +1,7 @@
 import { Scene } from "phaser";
 // @ts-ignore
 import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";
-import { treeList } from "@/app/dummies";
 import { Character, Flower, Garden, Tree } from "@/app/types";
-import ReactDOM from "react-dom/client";
-import { userInfoStore } from "@/stores/userInfoStore";
 
 interface Props {
   onTreeClick: (tree: Tree) => void;
@@ -21,12 +18,15 @@ export default class GardenScene extends Scene {
   private title!: Phaser.GameObjects.DOMElement;
   private footer!: Phaser.GameObjects.DOMElement;
   private plusButton!: HTMLImageElement;
+  private heartButton!: HTMLImageElement;
   private treeButton!: HTMLImageElement;
   private onTreeClick!: (tree: Tree) => void;
   private onFlowerClick!: (flower: Flower) => void;
   private onFlowerSelectOpenButtonClick!: () => void;
   private onTreeSelectOpenButtonClick!: () => void;
   private myTree!: Tree;
+  private likeCheck!: boolean;
+  public modalCheck!: boolean;
 
   constructor(props: Props) {
     super("gardenScene");
@@ -51,6 +51,7 @@ export default class GardenScene extends Scene {
   }
 
   create() {
+    this.modalCheck = false;
     const userToken = JSON.parse(sessionStorage.getItem("userInfo")!).state
       .userToken;
     const fetchTreeExistInfo = async () => {
@@ -91,6 +92,91 @@ export default class GardenScene extends Scene {
 
     getTreeExistInfo();
 
+    const fetchLikeInfo = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/check/${this.garden.gardenId}`,
+
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${userToken}`,
+            },
+          }
+        );
+        const data = await res.json();
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const getLikeInfo = async () => {
+      const data = await fetchLikeInfo();
+      console.log(data);
+      if (data.result) {
+        this.likeCheck = true;
+        // this.heartButton = document.createElement("img");
+        this.heartButton.src = "/assets/images/heart_fill.svg";
+      } else {
+        this.likeCheck = false;
+        // this.heartButton = document.createElement("img");
+        this.heartButton.src = "/assets/images/heart_empty.svg";
+      }
+    };
+
+    getLikeInfo();
+
+    const onHearthButtonClick = async () => {
+      if (this.likeCheck) {
+        //좋아요 취소하기
+        try {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/${this.garden.gardenId}`,
+
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${userToken}`,
+              },
+            }
+          );
+          const data = await res.json();
+          console.log(data);
+          if (data.httpStatus === "success") {
+            this.heartButton.src = "/assets/images/heart_empty.svg";
+            this.likeCheck = false;
+          }
+          return data;
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        //좋아요 누르기
+        try {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/${this.garden.gardenId}`,
+
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${userToken}`,
+              },
+            }
+          );
+          const data = await res.json();
+          console.log(data);
+          if (data.httpStatus === "success") {
+            this.heartButton.src = "/assets/images/heart_fill.svg";
+            this.likeCheck = true;
+          }
+          return data;
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+
     //맵 생성. 레이어별로 foreach 돌면서.///////////////////////////////////////////////
     const map = this.make.tilemap({ key: "mainMap" });
     map.addTilesetImage("tileset", "tileset");
@@ -107,7 +193,12 @@ export default class GardenScene extends Scene {
         .setScale(0.25)
         .setInteractive()
         //열매 작성 폼 띄워줄거임.
-        .on("pointerup", () => this.onTreeClick(tree));
+        .on("pointerup", () => {
+          if (!this.modalCheck && this.garden.state === "ACCEPT") {
+            this.onTreeClick(tree);
+            this.modalCheck = true;
+          }
+        });
 
       //열매 달아주기////////////////////////////////////
       const fruitArr = ["apple", "cherry", "grape", "lemon", "orange", "peach"];
@@ -136,7 +227,7 @@ export default class GardenScene extends Scene {
               .setScale(0.2)
               .setOrigin(0, 0)
               .setDepth(3);
-          } else if(i === 3){
+          } else if (i === 3) {
             this.add
               .image(tree.x! * 16 + 23, tree.y! * 16 + 8, tmpFruit)
               .setScale(0.2)
@@ -169,7 +260,12 @@ export default class GardenScene extends Scene {
           .setOrigin(0, 0)
           .setInteractive()
           //메세지 띄워주자
-          .on("pointerup", () => this.onFlowerClick(flower)),
+          .on("pointerup", () => {
+            if (!this.modalCheck && this.garden.state === "ACCEPT") {
+              this.onFlowerClick(flower);
+              this.modalCheck = true;
+            }
+          }),
         startPosition: { x: flower.x!, y: flower.y! },
         tileHeight: 1,
         tileWidth: 1,
@@ -308,6 +404,7 @@ export default class GardenScene extends Scene {
     flowerPlantTextBox.addEventListener("click", () => {
       onPlusButtonClick();
       this.onFlowerSelectOpenButtonClick();
+      this.modalCheck = true;
     });
 
     //에셋(나무, 꽃) 수정 텍스트 생성, 이벤트 등록
@@ -320,9 +417,10 @@ export default class GardenScene extends Scene {
       onPlusButtonClick();
       this.scene.stop("gardenScene");
       this.scene.start("treeEditScene", { modifyTreeId: this.myTree.name });
+      this.modalCheck = true;
     });
 
-    //심겨져있는 나무 목록 생성. 이벤트 등록
+    //심겨져있는 나무 확인 목록 생성. 이벤트 등록
     if (trees.length > 0) {
       trees.forEach((tree) => {
         let tmpTextBox = document.createElement("div");
@@ -425,13 +523,33 @@ export default class GardenScene extends Scene {
     // console.log(this.footer.x + " " + this.footer.y);
     this.footer.setClassName("!flex justify-between px-5");
     const registMenuSet = document.createElement("div");
-    registMenuSet.className = "flex flex-col-reverse gap-2 h-[40px] w-[40px]";
+    registMenuSet.className =
+      "flex flex-col-reverse items-end gap-2 h-[40px] w-[40px]";
+
+    const heartMenuSet = document.createElement("div");
+    heartMenuSet.className = "flex flex-col-reverse gap-2 h-[40px] w-[40px]";
+
+    this.heartButton = document.createElement("img");
+    // if (this.likeCheck) {
+    //   this.heartButton.src = "/assets/images/heart_fill.svg";
+    // } else {
+    //   this.heartButton.src = "/assets/images/heart_empty.svg";
+    // }
+
+    this.heartButton.className = "w-full h-full";
+    this.heartButton.addEventListener("click", () => {
+      onHearthButtonClick();
+    });
+
+    heartMenuSet.appendChild(this.heartButton);
 
     this.plusButton = document.createElement("img");
     this.plusButton.src = "/assets/images/plus.svg";
-    this.plusButton.className = "w-full h-full";
+    this.plusButton.className = "w-[40px] h-[40px]";
+    // registMenuSet.appendChild(this.plusButton);
     registMenuSet.appendChild(this.plusButton);
-    this.footer.node.appendChild(registMenuSet);
+
+    this.footer.node.appendChild(heartMenuSet);
     registMenuSet.appendChild(registModalBox);
     const onPlusButtonClick = () => {
       if (registModalBox.style.display === "flex") {
@@ -464,8 +582,8 @@ export default class GardenScene extends Scene {
 
     const rightsideMenu = document.createElement("div");
     rightsideMenu.className = "flex gap-5";
-    // rightsideMenu.appendChild(flowerMenuSet);
     rightsideMenu.appendChild(treeMenuSet);
+    rightsideMenu.appendChild(registMenuSet);
     this.footer.node.appendChild(rightsideMenu);
 
     this.treeButton.addEventListener("click", onTreeButtonClick);
@@ -473,7 +591,6 @@ export default class GardenScene extends Scene {
 
     if (this.garden.state !== "ACCEPT") {
       // this.plusButton.style.display = "none";
-      // this.flowerButton.style.display = "none";
       // this.treeButton.style.display = "none";
     }
 
@@ -487,6 +604,5 @@ export default class GardenScene extends Scene {
     this.gridEngine.create(map, gridEngineConfig);
   }
 
-  update() {
-  }
+  update() {}
 }
