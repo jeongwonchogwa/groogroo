@@ -30,7 +30,7 @@ public class UserSetUp {
 
         User savedUser = userRepository.save(user);
 
-        GeneratedToken generatedToken = jwtUtil.generateToken(savedUser.getId(), user.getEmail(), "USER", savedUser.getTree().getId());
+        GeneratedToken generatedToken = jwtUtil.generateToken(savedUser.getId(), user.getEmail(), "USER");
 
         System.out.println("accessToken: "+generatedToken.getAccessToken());
         System.out.println("refreshToken: "+generatedToken.getRefreshToken());
@@ -48,7 +48,7 @@ public class UserSetUp {
                 .build();
 
         User savedUser = userRepository.save(user);
-        GeneratedToken generatedToken = jwtUtil.generateToken(savedUser.getId(), user.getEmail(), "USER", savedUser.getTree().getId());
+        GeneratedToken generatedToken = jwtUtil.generateToken(savedUser.getId(), user.getEmail(), "USER");
 
         System.out.println("accessToken: "+generatedToken.getAccessToken());
         System.out.println("refreshToken: "+generatedToken.getRefreshToken());
