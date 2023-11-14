@@ -130,6 +130,7 @@ public class GardenService {
         List<TreeGarden> treeInfo = garden.getTreeGardens();
         List<UserGarden> flowerInfo = garden.getUserGardens();
 
+        UserGarden ug = userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId);
         ResponseGardenInfoDto responseGardenInfoDto = ResponseGardenInfoDto.builder()
                 .gardenId(gardenId)
                 .name(garden.getName())
@@ -138,7 +139,7 @@ public class GardenService {
                 .capacity(garden.getCapacity())
                 .memberCnt(garden.getMemberCnt())
                 .mapType(garden.getMapType())
-                .state(userGardenRepository.findUserGardenByUserIdAndGardenId(userId, gardenId).getJoinState().toString())
+                .state(ug==null? null : ug.getJoinState().toString())
                 .build();
 
         responseGardenInfoDto.setTreePos(new ArrayList<>());
