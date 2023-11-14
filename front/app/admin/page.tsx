@@ -7,6 +7,7 @@ import AdminHeader from "./components/AdminHeader";
 import AdminDropdown from "./components/AdminDropdown";
 import AdminTable from "./components/AdminTable";
 import AdminPagenation from "./components/AdminPagenation";
+import { fetchWithTokenCheck } from "../components/FetchWithTokenCheck";
 // import { userInfoStore } from "@/stores/userInfoStore";
 
 interface DropdownItem {
@@ -101,12 +102,12 @@ const AdminPage = () => {
       if (completed !== null) {
         url += `&completed=${completed}`;
       }
-      const response = await fetch(url, {
+      const response = await fetchWithTokenCheck(url, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      });
+      }, router);
       if (response.status === 200) {
         const responseData = await response.json();
         console.log(responseData);
@@ -121,13 +122,13 @@ const AdminPage = () => {
     console.log("차단버튼 클릭");
     console.log("userId: ", userId);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/admin/user/${userId}`, {
+      const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/admin/user/${userId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${userToken}`,
         },
-      });
+      }, router);
 
       if (response.status === 200) {
         const responseData = await response.json();
@@ -143,7 +144,7 @@ const AdminPage = () => {
   const clickDelete = async (contentType: string, targetId: number) => {
     console.log("삭제버튼 클릭");
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/admin`, {
+      const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/admin`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -153,7 +154,7 @@ const AdminPage = () => {
           targetId,
           contentType,
         }),
-      });
+      }, router);
 
       if (response.status === 200) {
         const responseData = await response.json();
@@ -170,12 +171,12 @@ const AdminPage = () => {
     try {
       let url = `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/admin/detail?contentType=${contentType}&targetId=${targetId}`;
 
-      const response = await fetch(url, {
+      const response = await fetchWithTokenCheck(url, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      });
+      }, router);
       if (response.status === 200) {
         const responseData = await response.json();
         console.log(responseData);
