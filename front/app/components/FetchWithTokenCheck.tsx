@@ -13,13 +13,13 @@ async function refreshToken(accessToken: string) {
         }
     });
 
-    console.log('재발급 요청 보냈음')
+    // console.log('재발급 요청 보냈음')
     
 
     const data = await res.headers.get('Authorization');
-    console.log("data: ", data);
+    // console.log("data: ", data);
     const token = data?.split(' ')[1];
-    console.log('새로운 토큰:', token); 
+    // console.log('새로운 토큰:', token); 
     return token;
 }
 
@@ -58,8 +58,8 @@ export async function fetchWithTokenCheck(url: string, options: FetchOptions = {
         const updatedToken = await refreshToken(accessToken);
         userInfo.state.userToken = updatedToken;
         
-        console.log("재발급 받은 토큰: ", updatedToken);
-        console.log("userInfo 최신화: ", userInfo);
+        // console.log("재발급 받은 토큰: ", updatedToken);
+        // console.log("userInfo 최신화: ", userInfo);
 
         sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
         token = updatedToken ? updatedToken : "wrong";
