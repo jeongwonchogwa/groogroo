@@ -25,7 +25,14 @@ def remove_background(image_src, image_path, image_filename):
     # 128x128 나무 크기로 조정
     resized_image = origin_image.resize((128,128), Image.NEAREST)
     # 배경 제거
-    output_image = remove(resized_image)
+    output_image = remove(
+            resized_image,
+            alpha_matting=True,
+            alpha_matting_foreground_threshold=120,
+            alpha_matting_background_threshold=10,
+            alpha_matting_erode_structure_size=10,
+            alpha_matting_base_size=1500,
+        )
 
     output_image.save(f'{image_path}', 'png')
 
@@ -155,6 +162,9 @@ def make_image():
                         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
                     # encoded_string = base64.b64encode(image_data).decode('utf-8')
                     # base64 인코딩된 이미지 데이터를 JSON으로 변환하여 반환
+
+                    # 임시 저장된 파일 삭제
+                    os.remove(image_path)
                     return jsonify({ 'image_data': encoded_string, 'image_name': image_filename }), 200
                 except openai.error as e:
                     return jsonify({ 'error': e }), 400;
