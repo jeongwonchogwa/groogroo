@@ -77,7 +77,7 @@ const ReportModal = (props: Props) => {
       };
     }
   }, [clickReport]);
-
+  console.log(props.flowerData);
   return (
     <div>
       <CardModal
@@ -100,6 +100,7 @@ const ReportModal = (props: Props) => {
             <div className="grid grid-cols-4 mt-1">
               <div className="text-gray-500">작성자</div>
               <div className="col-span-3 trancate">
+                {props.flowerData?.writerNickName}
                 {props.fruitData?.writerNickname}
               </div>
             </div>

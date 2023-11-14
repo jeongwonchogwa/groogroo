@@ -2,11 +2,13 @@
 import Button from "@/app/components/Button";
 import Frame from "@/app/components/Frame";
 import IconButton from "@/app/components/IconButton";
-import { Tree } from "@/app/types";
+import { Preset, Tree } from "@/app/types";
 import { gardenInfoStore } from "@/stores/gardenInfoStore";
+import { userInfoStore } from "@/stores/userInfoStore";
 import { userTreeStore } from "@/stores/userTreeStore";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   onFormCloseButtonClick: () => void;
@@ -14,29 +16,29 @@ interface Props {
 }
 
 const TreeSelect = (props: Props) => {
-  const { garden } = gardenInfoStore();
+  const { userToken } = userInfoStore();
   const [treeNumber, setTreeNumber] = useState<number>(0);
-  const { userTree } = userTreeStore();
-  const treeList = [
-    "/assets/trees/tree[0].svg",
-    "/assets/trees/tree[1].svg",
-    "/assets/trees/tree[2].svg",
-    "/assets/trees/tree[3].svg",
-    "/assets/trees/tree[4].svg",
-    "/assets/trees/tree[5].svg",
-    "/assets/trees/tree[6].svg",
-    "/assets/trees/tree[7].svg",
-  ];
+  // const [treeList, setTreeList] = useState<Preset[]>([]);
+  // const treeList = [
+  //   "/assets/trees/tree[0].svg",
+  //   "/assets/trees/tree[1].svg",
+  //   "/assets/trees/tree[2].svg",
+  //   "/assets/trees/tree[3].svg",
+  //   "/assets/trees/tree[4].svg",
+  //   "/assets/trees/tree[5].svg",
+  //   "/assets/trees/tree[6].svg",
+  //   "/assets/trees/tree[7].svg",
+  // ];
   const prevTree = () => {
     if (treeNumber === 0) {
-      setTreeNumber(treeList.length - 1);
+      setTreeNumber(treeList.presets.length - 1);
     } else {
       setTreeNumber((prev) => prev - 1);
     }
   };
 
   const nextTree = () => {
-    if (treeNumber === treeList.length - 1) {
+    if (treeNumber === treeList.presets.length - 1) {
       setTreeNumber(0);
     } else {
       setTreeNumber((prev) => prev + 1);
@@ -44,13 +46,38 @@ const TreeSelect = (props: Props) => {
   };
 
   const onTreeSelectButtonClick = (selectedTreeUrl: string) => {
-    console.log("나무 선택 완료!" + (selectedTreeUrl + 1));
     props.onFormCloseButtonClick;
     props.game?.scene.stop("gardenScene");
     props.game?.scene.start("treeEditScene", {
       selectedTreeUrl: selectedTreeUrl,
     });
   };
+
+  const fetchTreeList = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/preset`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+      console.log(data);
+      // setTreeList(data.presets);
+      return data;
+    } catch (error) {
+      console.error("에러 발생: ", error);
+    }
+  };
+
+  const { data: treeList, isLoading } = useQuery({
+    queryKey: ["getTreeList"],
+    queryFn: fetchTreeList,
+  });
 
   return (
     <div
@@ -64,21 +91,24 @@ const TreeSelect = (props: Props) => {
         <div className="w-8 my-auto">
           {<IconButton iconSrc="arrow" onClick={prevTree} />}
         </div>
-        <Frame
-          content={
-            <div className="flex items-center bg-white w-full h-full">
-              <div className="mx-auto">
-                <Image
-                  alt="tree"
-                  src={treeList[treeNumber]}
-                  width={200}
-                  height={200}
-                />
+        {isLoading ? null : (
+          <Frame
+            content={
+              <div className="flex items-center bg-white w-full h-full">
+                <div className="mx-auto">
+                  <Image
+                    alt="tree"
+                    src={treeList.presets[treeNumber].imageUrl}
+                    width={200}
+                    height={200}
+                  />
+                </div>
               </div>
-            </div>
-          }
-          height={400}
-        />
+            }
+            height={400}
+          />
+        )}
+
         <div className="w-8 my-auto">
           {<IconButton iconSrc="arrow" rotate={true} onClick={nextTree} />}
         </div>
@@ -92,7 +122,10 @@ const TreeSelect = (props: Props) => {
         <Button
           color="secondary"
           label="선택완료"
-          onClick={() => onTreeSelectButtonClick(treeList[treeNumber])}
+          onClick={() => {
+            props.onFormCloseButtonClick();
+            onTreeSelectButtonClick(treeList.presets[treeNumber].imageUrl);
+          }}
         ></Button>
       </div>
     </div>

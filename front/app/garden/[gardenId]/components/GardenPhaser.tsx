@@ -16,7 +16,7 @@ import TreeSelect from "./TreeSelect";
 import { gardenInfoStore } from "@/stores/gardenInfoStore";
 import FlowerMessage from "./FlowerMessage";
 import { userInfoStore } from "@/stores/userInfoStore";
-import { useQuery } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 
 interface Props {
   gardenId: number;
@@ -24,6 +24,7 @@ interface Props {
 
 const GardenPhaser = (props: Props) => {
   // const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  const queryClient = useQueryClient();
   const { userToken } = userInfoStore();
   const [game, setGame] = useState<Phaser.Game>();
   const [currnetTree, setCurrnetTree] = useState<Tree>({
@@ -113,7 +114,7 @@ const GardenPhaser = (props: Props) => {
         }
       );
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       return data;
     } catch (error) {
       console.log(error);
@@ -121,17 +122,18 @@ const GardenPhaser = (props: Props) => {
   };
 
   const { data: garden, isLoading } = useQuery({
-    queryKey: ["myGarden"],
+    queryKey: ["getGardenInfo"],
     queryFn: fetchGardenInfo,
   });
 
+  useEffect(() => {}, []);
+
   useEffect(() => {
-    console.log(garden);
     const initPhaser = () => {
       //씬 생성시 매개변수로 추가된 데이터들은 constructor에서 불러옴
       //이후 scene.start 에서 씬 생성과 같이 넘겨주는 데이터들은
       //init or create 의 매개변수로 받아오기.
-
+      console.log("페이저 새로 생성 시작");
       const gardenScene = new GardenScene({
         onTreeClick: onTreeClick,
         onFlowerSelectOpenButtonClick: onFlowerSelectOpenButtonClick,
@@ -145,6 +147,7 @@ const GardenPhaser = (props: Props) => {
       });
 
       const treeEditScene = new TreeEditScene({ garden: garden.gardenInfo });
+      console.log(garden);
       const preloader = new Preloader({
         garden: garden.gardenInfo,
       });
@@ -185,11 +188,12 @@ const GardenPhaser = (props: Props) => {
     };
 
     if (!isLoading) {
-      console.log("데이터 새로 보내줘");
+      console.log("이니시!");
+
       initPhaser();
     }
     // };
-  }, [garden, isLoading]);
+  }, [garden]);
 
   return (
     <div className="w-full h-full overflow-hidden border-2 border-point-orange ">
@@ -203,6 +207,7 @@ const GardenPhaser = (props: Props) => {
             <GardenHeader
               state={garden.gardenInfo.state}
               garden={garden.gardenInfo}
+              game={game!}
             />
           </div>
 

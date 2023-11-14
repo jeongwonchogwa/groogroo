@@ -9,13 +9,16 @@ import Alarm from "@/app/components/Alarm";
 import JoinModal from "./JoinModal";
 import KakaoButton from "./KakaoButton";
 import { Prosto_One } from "next/font/google";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   garden: Garden;
+  game: Phaser.Game;
   state: string;
 }
 
 const GardenHeader = (props: Props) => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const [openAlarm, setOpenAlarm] = useState<boolean>(false);
@@ -74,6 +77,8 @@ const GardenHeader = (props: Props) => {
         <IconButton
           iconSrc="home"
           onClick={() => {
+            console.log("디스트로이");
+            queryClient.removeQueries({ queryKey: ["getGardenInfo"] });
             router.push("../home");
             console.log("홈");
           }}

@@ -26,6 +26,7 @@ export default class GardenScene extends Scene {
   private onTreeSelectOpenButtonClick!: () => void;
   private myTree!: Tree;
   private likeCheck!: boolean;
+  private likeCountText!: Text;
   public modalCheck!: boolean;
 
   constructor(props: Props) {
@@ -51,6 +52,8 @@ export default class GardenScene extends Scene {
   }
 
   create() {
+    console.log("가든씬 만들거임", this.garden);
+    const currentLikeCnt = this.garden.likes!;
     this.modalCheck = false;
     const userToken = JSON.parse(sessionStorage.getItem("userInfo")!).state
       .userToken;
@@ -67,7 +70,7 @@ export default class GardenScene extends Scene {
           }
         );
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
         return data;
       } catch (error) {
         console.log(error);
@@ -113,7 +116,7 @@ export default class GardenScene extends Scene {
 
     const getLikeInfo = async () => {
       const data = await fetchLikeInfo();
-      console.log(data);
+      // console.log(data);
       if (data.result) {
         this.likeCheck = true;
         // this.heartButton = document.createElement("img");
@@ -527,21 +530,21 @@ export default class GardenScene extends Scene {
       "flex flex-col-reverse items-end gap-2 h-[40px] w-[40px]";
 
     const heartMenuSet = document.createElement("div");
-    heartMenuSet.className = "flex flex-col-reverse gap-2 h-[40px] w-[40px]";
+    heartMenuSet.className = "flex gap-2 h-[40px] w-fit items-center";
 
     this.heartButton = document.createElement("img");
-    // if (this.likeCheck) {
-    //   this.heartButton.src = "/assets/images/heart_fill.svg";
-    // } else {
-    //   this.heartButton.src = "/assets/images/heart_empty.svg";
-    // }
-
     this.heartButton.className = "w-full h-full";
     this.heartButton.addEventListener("click", () => {
       onHearthButtonClick();
     });
 
+    const likeCount = document.createElement("div");
+    likeCount.className = "font-bitbit text-lg";
+    this.likeCountText = document.createTextNode(currentLikeCnt.toString());
+    likeCount.appendChild(this.likeCountText);
+
     heartMenuSet.appendChild(this.heartButton);
+    heartMenuSet.appendChild(likeCount);
 
     this.plusButton = document.createElement("img");
     this.plusButton.src = "/assets/images/plus.svg";
@@ -604,5 +607,17 @@ export default class GardenScene extends Scene {
     this.gridEngine.create(map, gridEngineConfig);
   }
 
-  update() {}
+  update() {
+    this.heartButton.addEventListener("click", () => {
+      if (this.likeCheck) {
+        this.likeCountText = document.createTextNode(
+          (this.garden.likes! - 1).toString()
+        );
+      } else if (!this.likeCheck) {
+        this.likeCountText = document.createTextNode(
+          (this.garden.likes! + 1).toString()
+        );
+      }
+    });
+  }
 }

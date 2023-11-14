@@ -43,8 +43,12 @@ export default class TreeEditScene extends Scene {
     this.game.scene.getScene("preloader").garden = garden;
   }
 
-  init(data: { selectedTreeUrl: string }) {
-    this.selectedTreeUrl = data.selectedTreeUrl;
+  init(data: { selectedTreeUrl: string; modifyTreeId: string }) {
+    if (data.selectedTreeUrl) {
+      this.selectedTreeUrl = data.selectedTreeUrl;
+    } else {
+      this.modifyTreeId = data.modifyTreeId;
+    }
   }
 
   preload() {
@@ -54,16 +58,23 @@ export default class TreeEditScene extends Scene {
       "animatedTiles",
       "animatedTiles"
     );
+    console.log("프리로드에서", this.selectedTreeUrl);
 
-    this.load.spritesheet("selectedTree", this.selectedTreeUrl, {
-      frameWidth: 128,
-      frameHeight: 128,
-    });
+    this.load
+      .spritesheet("selectedTree", this.selectedTreeUrl, {
+        frameWidth: 128,
+        frameHeight: 128,
+      })
+      .setCORS("anonymous");
   }
 
-  create(data: { modifyTreeId: string }) {
+  create() {
     // const cancelButton = document.createElement("div")
-
+    console.log("텍스쳐리스트", this.textures.list);
+    console.log(
+      "목록에서 selectedTree 가져오기",
+      this.textures.get("selectedTree")
+    );
     // cancelButton.style.display = "flex"
     // cancelButton.style.width = "100%"
 
@@ -118,7 +129,7 @@ export default class TreeEditScene extends Scene {
         .setScale(0.25)
         .setDepth(3)
         .setOrigin(0, 0);
-
+      console.log(this.assetSprite);
       trees.push({
         id: "selectedTree",
         sprite: this.assetSprite,
@@ -128,15 +139,16 @@ export default class TreeEditScene extends Scene {
         offsetX: 8,
         offsetY: 16,
       });
+      console.log("나무목록", trees);
       this.selectedTreeHandle = "selectedTree";
 
       //기존 나무 이동시 핸들 지정
-    } else if (data.modifyTreeId) {
+    } else if (this.modifyTreeId) {
       this.garden.treePos?.forEach((tree) => {
-        if (tree.name === data.modifyTreeId) this.modifyTreeGardenId = tree.id;
+        if (tree.name === this.modifyTreeId) this.modifyTreeGardenId = tree.id;
       });
 
-      this.modifyTreeId = data.modifyTreeId;
+      this.modifyTreeId = this.modifyTreeId;
 
       trees.forEach((tree) => {
         if (tree.id === this.modifyTreeId) {

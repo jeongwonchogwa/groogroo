@@ -7,7 +7,9 @@ const GardenCSR = dynamic(() => import("./components/GardenPhaser"), {
 const GardenPage = ({ params }: { params: { gardenId: string } }) => {
   return (
     <div className="w-screen h-screen">
-      <GardenCSR gardenId={Number(params.gardenId)} />
+      <GardenCSR
+        gardenId={Number(params.gardenId.slice(10, params.gardenId.length))}
+      />
     </div>
   );
 };
