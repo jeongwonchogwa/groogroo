@@ -33,8 +33,8 @@ const Create = () => {
 
   const handleCreateButtonClick = () => {
     if (selectedComponent === 'canvas') {
-      // 임시로 만들어서 route      
-      router.push('/enter/pick');
+      fetchImageToFlask();
+      // router.push('/enter/pick');
     } else if (selectedComponent === 'text') {
       let err = false;
       let msg = '';
@@ -60,7 +60,6 @@ const Create = () => {
           err = true;
         } else {
           fetchTextToFlask(inputValue);
-          
         }
       }
 
@@ -96,9 +95,48 @@ const Create = () => {
     console.log("색 변경: ", color);
   };
 
+  const getImageDataFromCanvas = () => {
+    return null;
+  };
+
+  const fetchImageToFlask = async () => {
+    const imageData = getImageDataFromCanvas();
+    if (imageData) {
+      try {
+        const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            image: imageData,
+            id: 9999,   // 실제 아이디 가져와서 바꿔놔야할 부분
+          })
+        }, router);
+  
+        if (response?.status === 200) {
+          // image_data - 형식은 base64
+          const data = await response.json();
+          setImageData(data.image_data); // 이미지 데이터를 상태 변수에 저장
+          setImageName(data.image_name); // 이미지 url을 변수에 저장
+          setIsGenerated(true);
+          console.log(data.image_data)
+          // router.push(`/enter/pick/${responseData.image_url}`)
+        } else {
+          console.log('Server Response Error:', response?.status);
+        }
+  
+      } catch (error) {
+        console.log('이미지 전송 실패:', error);
+      }
+    } else {
+      console.log('이미지 데이터가 없습니다.');
+    }
+  };
+
   const fetchTextToFlask = async (inputData : string) => {
     try {
-      const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/image`, {
+      const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/make_image`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
@@ -209,7 +247,8 @@ const Create = () => {
                               <Button color="primary" label="선택 하기" onClick={handleSelectButtonClick} />
                             </div>
                           </> : 
-                          <Button color="primary" label="생성 하기" onClick={handleCreateButtonClick} />}
+                          <Button color="primary" label="생성 하기" onClick={handleCreateButtonClick} />
+          }
         </div>
       </div>
 		</div>
