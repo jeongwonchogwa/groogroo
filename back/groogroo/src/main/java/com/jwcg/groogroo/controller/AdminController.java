@@ -56,7 +56,7 @@ public class AdminController {
             Page<ResponseReportListDto> reports = reportService.getReportList(requestReportListDto);
 
             log.info("신고 접수 내역 조회 성공");
-            response.put("httpStatus", "success");
+            response.put("httpStatus", SUCCESS);
             response.put("message", "신고 접수 내역 조회 성공");
             response.put("totalPages", reports.getTotalPages());
             response.put("reportList", reports.getContent());
@@ -111,7 +111,7 @@ public class AdminController {
             }
 
             log.info("신고 접수 대상 상세 조회 성공");
-            response.put("httpStatus", "success");
+            response.put("httpStatus", SUCCESS);
             response.put("message", "신고 접수 대상 상세 조회 성공");
 
             return new ResponseEntity<>(response, HttpStatus.OK);

@@ -105,7 +105,7 @@ const AlarmList = () => {
 
 const Alarm = () => {
   return (
-    <div className="absolute -top-5 left-0 z-0">
+    <div className="absolute -top-5 left-0 z-30">
       <PixelCard content={AlarmList()}></PixelCard>
     </div>
   );

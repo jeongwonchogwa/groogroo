@@ -45,27 +45,24 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         // CustomOAuth2UserService에서 셋팅한 로그인한 회원 존재 여부를 가져온다.
         boolean isExist = oAuth2User.getAttribute("exist");
 
-        // 회원이 존재하지 않을 경우 DB에 저장
+        // 회원이 존재하지 않을 경우 DB에 저장 & 크레딧 3개 지급
         if(!isExist){
-                User user = User.builder()
+            User user = User.builder()
                     .email(email)
                     .userStatus(UserStatus.USER)
                     .userRole(UserRole.USER)
                     .createTime(LocalDateTime.now())
                     .provider(provider)
+                    .credit(3)
                     .build();
             userRepository.save(user);
         }
 
         User user = userRepository.findByEmail(email);
-        Long treeId = null;
-        if(user.getTree() != null){
-            treeId = user.getTree().getId();
-        }
-        log.info("treeId: {}", treeId);
+
         log.info("role: {}", user.getUserRole().toString());
         // accessToken과 refreshToken을 발행한다.
-        GeneratedToken token = jwtUtil.generateToken(user.getId(), email, "ROLE_"+user.getUserRole().toString(),treeId);
+        GeneratedToken token = jwtUtil.generateToken(user.getId(), email, "ROLE_"+user.getUserRole().toString());
         log.info("AccessToken: {}", token.getAccessToken());
         log.info("RefreshToken: {}", token.getRefreshToken());
         String uri = UriComponentsBuilder.fromUriString(client_url+"/redirect")

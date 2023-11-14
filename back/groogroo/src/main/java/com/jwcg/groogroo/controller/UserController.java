@@ -188,4 +188,70 @@ public class UserController {
 //            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
 //    }
+
+    @Operation(summary = "크레딧 조회", description = "userId로 크레딧 조회하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "크레딧 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "크레딧 조회 실패 - 내부 서버 오류")
+    })
+    @GetMapping()
+    public ResponseEntity<Map<String, Object>> getCredit(@RequestHeader("Authorization") String token) {
+        Long userId = getUserIdFromAuthorization(token);
+
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("크레딧 조회");
+            int credit = userService.getCredit(userId);
+            log.info("크레딧 조회 성공");
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "크레딧 조회 성공");
+            response.put("credit", credit);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("크레딧 조회 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "크레딧 조회 실패");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "크레딧 차감", description = "userId로 크레딧 차감하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "크레딧 차감 성공"),
+            @ApiResponse(responseCode = "500", description = "크레딧 차감 실패 - 내부 서버 오류")
+    })
+    @PatchMapping("/credit")
+    public ResponseEntity<Map<String, Object>> deductCredit(@RequestHeader("Authorization") String token) {
+        Long userId = getUserIdFromAuthorization(token);
+
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("크레딧 차감");
+            userService.updateCredit(userId, -1);
+            log.info("크레딧 차감 성공");
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "크레딧 차감 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("크레딧 차감 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "크레딧 차감 실패");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * 헤더에서 토큰 추출해서 userId 가져오기
+     * @param token
+     * @return
+     */
+    private Long getUserIdFromAuthorization(String token) {
+        token = token.split(" ")[1];
+        return jwtUtil.getId(token);
+    }
 }

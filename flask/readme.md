@@ -26,3 +26,5 @@
   - [google cloud - Translation AI](https://cloud.google.com/translate/?hl=ko)
 
 - [블로그 - naver & kakao](https://www.dinolabs.ai/387)
+
+- [라이브러리 - rembg](https://pypi.org/project/rembg/)

@@ -16,6 +16,7 @@ import TreeSelect from "./TreeSelect";
 import { gardenInfoStore } from "@/stores/gardenInfoStore";
 import FlowerMessage from "./FlowerMessage";
 import { userInfoStore } from "@/stores/userInfoStore";
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   gardenId: number;
@@ -25,16 +26,6 @@ const GardenPhaser = (props: Props) => {
   // const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
   const { userToken } = userInfoStore();
   const [game, setGame] = useState<Phaser.Game>();
-  const { garden, setGarden } = gardenInfoStore();
-
-  console.log(garden);
-  const [myTree, setMyTree] = useState<Tree>({
-    id: 0,
-    fruits: [],
-    fruitCnt: 0,
-    imageUrl: "/assets/trees/tree[1].svg",
-    name: "myTree",
-  });
   const [currnetTree, setCurrnetTree] = useState<Tree>({
     id: 0,
     fruitCnt: 0,
@@ -60,25 +51,28 @@ const GardenPhaser = (props: Props) => {
   const [treeSelect, setTreeSelect] = useState<boolean>(false);
   const [flowerMessageEdit, setFlowerMessageEdit] = useState<boolean>(false);
   const [showFlowerMessage, setShowFlowerMessage] = useState<boolean>(false);
+  const [stopBubbling, setStopBubbling] = useState<boolean>(false);
 
   const onFormCloseButtonClick = () => {
-    console.log("꺼져랏");
     setFruitMessageEdit(false);
     setFlowerMessageEdit(false);
     setFlowerSelect(false);
     setTreeSelect(false);
     setShowFlowerMessage(false);
+    setStopBubbling(false);
+    //@ts-ignore
+    game!.scene.getScene("gardenScene").modalCheck = false;
   };
 
   const onTreeClick = (tree: Tree) => {
-    console.log("켜져랏" + tree);
-    setCurrnetTree(tree);
-    setFruitMessageEdit(true);
+    if (!stopBubbling) {
+      setCurrnetTree(tree);
+      setFruitMessageEdit(true);
+      setStopBubbling(true);
+    }
   };
 
   const onFlowerClick = async (flower: Flower) => {
-    console.log(flower);
-
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/flower/${flower.id}`
@@ -126,193 +120,176 @@ const GardenPhaser = (props: Props) => {
     }
   };
 
+  const { data: garden, isLoading } = useQuery({
+    queryKey: ["myGarden"],
+    queryFn: fetchGardenInfo,
+  });
+
   useEffect(() => {
-    const getGardenInfo = async () => {
-      const Data = await fetchGardenInfo();
-      setGarden(Data.gardenInfo);
+    console.log(garden);
+    const initPhaser = () => {
+      //씬 생성시 매개변수로 추가된 데이터들은 constructor에서 불러옴
+      //이후 scene.start 에서 씬 생성과 같이 넘겨주는 데이터들은
+      //init or create 의 매개변수로 받아오기.
 
-      const initPhaser = () => {
-        //씬 생성시 매개변수로 추가된 데이터들은 constructor에서 불러옴
-        //이후 scene.start 에서 씬 생성과 같이 넘겨주는 데이터들은
-        //init or create 의 매개변수로 받아오기.
-        const gardenScene = new GardenScene({
-          onTreeClick: onTreeClick,
-          onFlowerSelectOpenButtonClick: onFlowerSelectOpenButtonClick,
-          onTreeSelectOpenButtonClick: onTreeSelectOpenButtonClick,
-          onFlowerClick: onFlowerClick,
-        });
+      const gardenScene = new GardenScene({
+        onTreeClick: onTreeClick,
+        onFlowerSelectOpenButtonClick: onFlowerSelectOpenButtonClick,
+        onTreeSelectOpenButtonClick: onTreeSelectOpenButtonClick,
+        onFlowerClick: onFlowerClick,
+      });
 
-        const flowerEditScene = new FlowerEditScene({
-          onFlowerPlantButtonClick: onFlowerPlantButtonClick,
-          garden: Data.gardenInfo,
-        });
+      const flowerEditScene = new FlowerEditScene({
+        onFlowerPlantButtonClick: onFlowerPlantButtonClick,
+        garden: garden.gardenInfo,
+      });
 
-        const treeEditScene = new TreeEditScene({ garden: Data.gardenInfo });
-        const preloader = new Preloader({
-          myTree: myTree,
-          garden: Data.gardenInfo,
-        });
+      const treeEditScene = new TreeEditScene({ garden: garden.gardenInfo });
+      const preloader = new Preloader({
+        garden: garden.gardenInfo,
+      });
 
-        const phaserGame = new Phaser.Game({
-          type: Phaser.AUTO,
-          title: "garden",
-          parent: "garden-content",
-          // 맵 크기
-          width: window.innerWidth,
-          height: window.innerHeight,
-          backgroundColor: 0x000000,
-          dom: {
-            createContainer: true,
+      const phaserGame = new Phaser.Game({
+        type: Phaser.AUTO,
+        title: "garden",
+        parent: "garden-content",
+        // 맵 크기
+        width: window.innerWidth,
+        height: window.innerHeight,
+        backgroundColor: 0x000000,
+        dom: {
+          createContainer: true,
+        },
+        scene: [preloader, gardenScene, treeEditScene, flowerEditScene],
+        pixelArt: true,
+
+        physics: {
+          default: "arcade",
+          arcade: {
+            // debug: true,
           },
-          scene: [preloader, gardenScene, treeEditScene, flowerEditScene],
-          pixelArt: true,
+        },
 
-          physics: {
-            default: "arcade",
-            arcade: {
-              // debug: true,
+        plugins: {
+          scene: [
+            {
+              key: "gridEngine",
+              plugin: GridEngine,
+              mapping: "gridEngine",
             },
-          },
+          ],
+        },
+      });
 
-          plugins: {
-            scene: [
-              {
-                key: "gridEngine",
-                plugin: GridEngine,
-                mapping: "gridEngine",
-              },
-            ],
-          },
-        });
-
-        setGame(phaserGame);
-      };
-
-      initPhaser();
+      setGame(phaserGame);
     };
 
-    getGardenInfo();
-  }, []);
+    if (!isLoading) {
+      console.log("데이터 새로 보내줘");
+      initPhaser();
+    }
+    // };
+  }, [garden, isLoading]);
 
   return (
     <div className="w-full h-full overflow-hidden border-2 border-point-orange ">
-      <div
-        className="relative w-full h-full"
-        id="garden-content"
-        key="garden-content"
-      >
-        <GardenHeader state={garden.state} />
-        {showFlowerMessage ? (
+      {isLoading ? null : (
+        <div>
           <div
-            className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]"
-            onClick={(e) => {
-              onFormCloseButtonClick();
-              e.stopPropagation();
-            }}
+            className="relative w-full h-full"
+            id="garden-content"
+            key="garden-content"
           >
-            <div className="flex flex-col items-center justify-center gap-10 pt-40">
-              <Image
-                alt="currentFlower"
-                src={currentFlower.imageUrl}
-                width={250}
-                height={250}
-              ></Image>
-              <FlowerMessage
-                game={game!}
-                gardenId={garden.gardenId}
-                currentFlower={currentFlower}
-                onFormCloseButtonClick={onFormCloseButtonClick}
-              />
+            <GardenHeader
+              state={garden.gardenInfo.state}
+              garden={garden.gardenInfo}
+            />
+          </div>
+
+          {showFlowerMessage ? (
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]">
+              <div className="flex flex-col items-center justify-center gap-10 pt-40">
+                <Image
+                  alt="currentFlower"
+                  src={currentFlower.imageUrl}
+                  width={250}
+                  height={250}
+                ></Image>
+                <FlowerMessage
+                  game={game!}
+                  gardenId={garden.gardenInfo.gardenId}
+                  currentFlower={currentFlower}
+                  onFormCloseButtonClick={onFormCloseButtonClick}
+                />
+              </div>
             </div>
-          </div>
-        ) : null}
+          ) : null}
 
-        {treeSelect ? (
-          <div
-            className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]"
-            onClick={(e) => {
-              onFormCloseButtonClick();
-              e.stopPropagation();
-            }}
-          >
-            <TreeSelect
-              onFormCloseButtonClick={onFormCloseButtonClick}
-              game={game}
-            />
-          </div>
-        ) : null}
-
-        {flowerSelect ? (
-          <div
-            className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]"
-            onClick={(e) => {
-              onFormCloseButtonClick();
-              e.stopPropagation();
-            }}
-          >
-            <FlowerSelect
-              onFormCloseButtonClick={onFormCloseButtonClick}
-              game={game}
-            />
-          </div>
-        ) : null}
-
-        {flowerMessageEdit ? (
-          <div
-            className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]"
-            onClick={(e) => {
-              onFormCloseButtonClick;
-              e.stopPropagation();
-            }}
-          >
-            <div className="flex flex-col items-center justify-center gap-10 pt-40">
-              <Image
-                alt="currentFlower"
-                src={currentFlower.imageUrl}
-                width={250}
-                height={250}
-              ></Image>
-              <CreateFlower
-                gardenId={garden.gardenId}
+          {treeSelect ? (
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]">
+              <TreeSelect
                 onFormCloseButtonClick={onFormCloseButtonClick}
-                currentFlower={currentFlower}
                 game={game}
               />
             </div>
-          </div>
-        ) : null}
-        {fruitMessageEdit ? (
-          <div
-            className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]"
-            onClick={(e) => {
-              onFormCloseButtonClick();
-              e.stopPropagation();
-            }}
-          >
-            <div className="flex flex-col items-center justify-center gap-2 pt-20">
-              <PixelCard
-                content={
-                  <div className="bg-white font-bitBit py-2 px-3 text-xl">
-                    {currnetTree.name}
-                  </div>
-                }
-              ></PixelCard>
-              <Image
-                alt="currentTree"
-                src={currnetTree.imageUrl}
-                width={250}
-                height={250}
-              ></Image>
+          ) : null}
+
+          {flowerSelect ? (
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]">
+              <FlowerSelect
+                onFormCloseButtonClick={onFormCloseButtonClick}
+                game={game}
+              />
             </div>
-            <CreateFruit
-              onFormCloseButtonClick={onFormCloseButtonClick}
-              currentTree={currnetTree}
-              gardenId={garden.gardenId}
-              game={game!}
-            />
-          </div>
-        ) : null}
-      </div>
+          ) : null}
+
+          {flowerMessageEdit ? (
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]">
+              <div className="flex flex-col items-center justify-center gap-10 pt-40">
+                <Image
+                  alt="currentFlower"
+                  src={currentFlower.imageUrl}
+                  width={250}
+                  height={250}
+                ></Image>
+                <CreateFlower
+                  // updateGarden={updateGarden}
+                  gardenId={garden.gardenInfo.gardenId}
+                  onFormCloseButtonClick={onFormCloseButtonClick}
+                  currentFlower={currentFlower}
+                  game={game}
+                />
+              </div>
+            </div>
+          ) : null}
+          {fruitMessageEdit ? (
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[50]">
+              <div className="flex flex-col items-center justify-center gap-2 pt-20">
+                <PixelCard
+                  content={
+                    <div className="bg-white font-bitBit py-2 px-3 text-xl">
+                      {currnetTree.name}
+                    </div>
+                  }
+                ></PixelCard>
+                <Image
+                  alt="currentTree"
+                  src={currnetTree.imageUrl}
+                  width={250}
+                  height={250}
+                ></Image>
+              </div>
+              <CreateFruit
+                onFormCloseButtonClick={onFormCloseButtonClick}
+                // updateGarden={updateGarden}
+                currentTree={currnetTree}
+                gardenId={garden.gardenInfo.gardenId}
+                game={game!}
+              />
+            </div>
+          ) : null}
+        </div>
+      )}
     </div>
   );
 };

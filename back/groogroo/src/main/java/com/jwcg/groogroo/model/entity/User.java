@@ -43,6 +43,9 @@ public class User {
     @Column(name = "provider")
     private String provider;
 
+    @Column(name = "credit")
+    private int credit;
+
     @JsonBackReference
     @OneToOne
     @JoinColumn(name = "tree_id")

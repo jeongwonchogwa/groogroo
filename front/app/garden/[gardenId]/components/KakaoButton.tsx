@@ -1,16 +1,21 @@
 "use client";
 
 import IconButton from "@/app/components/IconButton";
+import { Garden } from "@/app/types";
+
+interface Props {
+  garden : Garden;
+}
 
 // description에 정원 이름이 정해진 경우 그 함께 .. 정원을 가꾸어 보아요!로 변경해야함
-const KakaoButton = () => {
+const KakaoButton = (props : Props) => {
   const onClick = () => {
     const { Kakao, location } = window;
     Kakao.Share.sendDefault({
       objectType: "feed",
       content: {
         title: "정원에 초대되셨습니다!🌳",
-        description: "함께 정원을 가꾸어 보아요!🌼🌷",
+        description: `함께 ${props.garden.name}을(를) 가꾸어 보아요!🌼🌷`,
         // 추후 s3에 올라올 logo 사진으로 변경해야함
         imageUrl: "https://mud-kage.kakao.com/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg",
         link: {
@@ -34,9 +39,7 @@ const KakaoButton = () => {
 
   return (
     <div className="w-full h-full">
-      <div className="h-5 w-5">
         <IconButton iconSrc="kakao" onClick={onClick} />
-      </div>
     </div>
   );
 };

@@ -42,50 +42,18 @@ const FlowerMessage = (props: Props) => {
     }
   }, []);
 
-  const [reportInput, setReportInput] = useState<string>("");
-
   // 신고하기 모달 오픈
   const handleReportModal = () => {
     setOpenReport((prev) => !prev);
     console.log("신고삐용삐용");
     // fetch로 현재 선택된 데이터 넘기기 위한 것
   };
-
-  const handleReport = () => {
-    setClickReport((prev) => !prev);
-    fetchReport({
-      content: reportInput,
-      contentType: "FLOWER",
-      targetId: props.currentFlower.id!,
+  const onModifyButtonClick = async () => {
+    props.onFormCloseButtonClick();
+    props.game.scene.stop("gardenScene");
+    props.game.scene.start("flowerEditScene", {
+      modifyFlower: props.currentFlower,
     });
-    if (openReport) {
-      setOpenReport(false);
-    }
-  };
-
-  const fetchReport = async (reportData: object) => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user/report`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${userToken}`,
-          },
-          body: JSON.stringify(reportData),
-        }
-      );
-
-      if (response.status === 200) {
-        const responseData = await response.json();
-        console.log(responseData);
-      } else {
-        console.log("신고 실패");
-      }
-    } catch (error) {
-      console.error("에러 발생: ", error);
-    }
   };
 
   const onTrashButtonClick = async () => {
@@ -131,10 +99,6 @@ const FlowerMessage = (props: Props) => {
     }
   };
 
-  const handleTextArea = (e: any) => {
-    setReportInput(e.target.value);
-  };
-
   console.log("꽃 메세지입니다.");
   return (
     <div
@@ -158,6 +122,9 @@ const FlowerMessage = (props: Props) => {
                   {props.currentFlower.createTime}
                 </p>
                 <div className="flex flex-row">
+                  <div className="w-9 h-9 mr-2">
+                    <IconButton iconSrc="move" onClick={onModifyButtonClick} />
+                  </div>
                   {isDeleteable ? (
                     <div className="w-9 h-9 mr-2">
                       <IconButton

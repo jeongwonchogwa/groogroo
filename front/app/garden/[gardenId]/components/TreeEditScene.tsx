@@ -34,6 +34,15 @@ export default class TreeEditScene extends Scene {
     this.garden = props.garden;
   }
 
+  updateGarden(garden: Garden) {
+    console.log("트리에딧씬 가든 업데이트 메서드");
+    this.garden = garden;
+    //@ts-ignore
+    this.game.scene.getScene("flowerEditScene").garden = garden;
+    //@ts-ignore
+    this.game.scene.getScene("preloader").garden = garden;
+  }
+
   init(data: { selectedTreeUrl: string }) {
     this.selectedTreeUrl = data.selectedTreeUrl;
   }
@@ -120,19 +129,23 @@ export default class TreeEditScene extends Scene {
         offsetY: 16,
       });
       this.selectedTreeHandle = "selectedTree";
+
+      //기존 나무 이동시 핸들 지정
     } else if (data.modifyTreeId) {
       this.garden.treePos?.forEach((tree) => {
         if (tree.name === data.modifyTreeId) this.modifyTreeGardenId = tree.id;
       });
 
       this.modifyTreeId = data.modifyTreeId;
-      this.assetSprite = trees.find(
-        (tree) => tree.id === this.modifyTreeId
-      )!.sprite;
 
-      this.selectedTreeHandle = trees.find(
-        (tree) => tree.id === this.modifyTreeId
-      )!.id;
+      trees.forEach((tree) => {
+        if (tree.id === this.modifyTreeId) {
+          tree.tileHeight = 0;
+          tree.tileWidth = 0;
+          this.assetSprite = tree.sprite;
+          this.selectedTreeHandle = tree.id;
+        }
+      });
 
       console.log(this.assetSprite);
       console.log(this.selectedTreeHandle);
@@ -179,7 +192,8 @@ export default class TreeEditScene extends Scene {
 
     //나무 등록 API요청////////////////////////////////////////////////////
     // const userToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
-    const { userToken } = userInfoStore();
+    const userToken = JSON.parse(sessionStorage.getItem("userInfo")!).state
+      .userToken;
     const onRegistButtonClick = async () => {
       if (this.defaultSpriteBox.visible) {
         try {
@@ -221,6 +235,7 @@ export default class TreeEditScene extends Scene {
               gardenData.gardenInfo;
 
             console.log();
+            // this.updateGarden(gardenData.gardenInfo);
             this.scene.stop("treeEditScene");
             this.scene.start("preloader");
           } catch (error) {
@@ -272,10 +287,7 @@ export default class TreeEditScene extends Scene {
               }
             );
             const gardenData = await res.json();
-            console.log(gardenData);
-            //@ts-ignore
-            this.game.scene.getScene("preloader").garden =
-              gardenData.gardenInfo;
+            this.updateGarden(gardenData.gardenInfo);
             this.scene.stop("treeEditScene");
             this.scene.start("preloader");
           } catch (error) {
@@ -416,90 +428,32 @@ export default class TreeEditScene extends Scene {
     this.cameras.main.scrollY = 0;
     this.gridEngine.create(map, gridEngineConfig);
 
-    if (this.selectedTreeUrl) {
-      if (
-        this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-        }) ||
-        this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-        }) ||
-        this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-        }) ||
-        this.gridEngine.isBlocked({
-          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-        })
-      ) {
-        // this.spriteBox = this.errorSpriteBox;
-        this.errorSpriteBox.setVisible(true);
-        this.defaultSpriteBox.setVisible(false);
-      } else {
-        // this.spriteBox = this.defaultSpriteBox;
-        this.errorSpriteBox.setVisible(false);
-        this.defaultSpriteBox.setVisible(true);
-      }
-    } else if (this.modifyTreeId) {
-      if (
-        this.gridEngine.isTileBlocked({
-          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-        }) ||
-        this.gridEngine.isTileBlocked({
-          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-        }) ||
-        this.gridEngine.isTileBlocked({
-          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-        }) ||
-        this.gridEngine.isTileBlocked({
-          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-        }) ||
-        this.gridEngine.getCharactersAt({
-          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-        }).length > 1 ||
-        this.gridEngine.getCharactersAt({
-          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-        }).length > 1 ||
-        this.gridEngine.getCharactersAt({
-          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-        }).length > 1 ||
-        this.gridEngine.getCharactersAt({
-          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-        }).length > 1
-      ) {
-        // this.spriteBox = this.errorSpriteBox;
-        this.errorSpriteBox.setVisible(true);
-        this.defaultSpriteBox.setVisible(false);
-      } else {
-        // this.spriteBox = this.defaultSpriteBox;
-        this.errorSpriteBox.setVisible(false);
-        this.defaultSpriteBox.setVisible(true);
-      }
-    }
-
-    console.log(
-      this.gridEngine.getCharactersAt({
-        x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-        y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-      })
-    );
-    console.log(
-      this.gridEngine.isTileBlocked({
+    if (
+      this.gridEngine.isBlocked({
         x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
         y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
+      }) ||
+      this.gridEngine.isBlocked({
+        x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
+        y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
+      }) ||
+      this.gridEngine.isBlocked({
+        x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
+        y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
+      }) ||
+      this.gridEngine.isBlocked({
+        x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
+        y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
       })
-    );
+    ) {
+      // this.spriteBox = this.errorSpriteBox;
+      this.errorSpriteBox.setVisible(true);
+      this.defaultSpriteBox.setVisible(false);
+    } else {
+      // this.spriteBox = this.defaultSpriteBox;
+      this.errorSpriteBox.setVisible(false);
+      this.defaultSpriteBox.setVisible(true);
+    }
   }
 
   update() {
@@ -565,76 +519,33 @@ export default class TreeEditScene extends Scene {
         });
 
       //이동한 좌표에 장애물 존재시 박스 교체.
-      if (this.selectedTreeUrl) {
-        if (
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }) ||
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          })
-        ) {
-          this.errorSpriteBox.setVisible(true);
-          this.defaultSpriteBox.setVisible(false);
-        } else {
-          // this.spriteBox = this.defaultSpriteBox;
-          this.errorSpriteBox.setVisible(false);
-          this.defaultSpriteBox.setVisible(true);
-        }
-      } else if (this.modifyTreeId) {
-        if (
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }) ||
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }) ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }).length > 1 ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }).length > 1 ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }).length > 1 ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }).length > 1
-        ) {
-          // this.spriteBox = this.errorSpriteBox;
-          this.errorSpriteBox.setVisible(true);
-          this.defaultSpriteBox.setVisible(false);
-        } else {
-          // this.spriteBox = this.defaultSpriteBox;
-          this.errorSpriteBox.setVisible(false);
-          this.defaultSpriteBox.setVisible(true);
-        }
+
+      if (
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
+        })
+      ) {
+        this.errorSpriteBox.setVisible(true);
+        this.defaultSpriteBox.setVisible(false);
+      } else {
+        // this.spriteBox = this.defaultSpriteBox;
+        this.errorSpriteBox.setVisible(false);
+        this.defaultSpriteBox.setVisible(true);
       }
+
       this.moveCheck = false;
     };
     //우측 버튼
@@ -646,76 +557,32 @@ export default class TreeEditScene extends Scene {
           y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
         });
 
-      if (this.selectedTreeUrl) {
-        if (
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }) ||
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          })
-        ) {
-          this.errorSpriteBox.setVisible(true);
-          this.defaultSpriteBox.setVisible(false);
-        } else {
-          // this.spriteBox = this.defaultSpriteBox;
-          this.errorSpriteBox.setVisible(false);
-          this.defaultSpriteBox.setVisible(true);
-        }
-      } else if (this.modifyTreeId) {
-        if (
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }) ||
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }) ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }).length > 1 ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }).length > 1 ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }).length > 1 ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }).length > 1
-        ) {
-          // this.spriteBox = this.errorSpriteBox;
-          this.errorSpriteBox.setVisible(true);
-          this.defaultSpriteBox.setVisible(false);
-        } else {
-          // this.spriteBox = this.defaultSpriteBox;
-          this.errorSpriteBox.setVisible(false);
-          this.defaultSpriteBox.setVisible(true);
-        }
+      if (
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
+        })
+      ) {
+        this.errorSpriteBox.setVisible(true);
+        this.defaultSpriteBox.setVisible(false);
+      } else {
+        // this.spriteBox = this.defaultSpriteBox;
+        this.errorSpriteBox.setVisible(false);
+        this.defaultSpriteBox.setVisible(true);
       }
+
       this.moveCheck = false;
     };
     //위 버튼
@@ -727,76 +594,32 @@ export default class TreeEditScene extends Scene {
           y: this.gridEngine.getPosition(this.selectedTreeHandle).y - 1,
         });
 
-      if (this.selectedTreeUrl) {
-        if (
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }) ||
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          })
-        ) {
-          this.errorSpriteBox.setVisible(true);
-          this.defaultSpriteBox.setVisible(false);
-        } else {
-          // this.spriteBox = this.defaultSpriteBox;
-          this.errorSpriteBox.setVisible(false);
-          this.defaultSpriteBox.setVisible(true);
-        }
-      } else if (this.modifyTreeId) {
-        if (
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }) ||
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }) ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }).length > 1 ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }).length > 1 ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }).length > 1 ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }).length > 1
-        ) {
-          // this.spriteBox = this.errorSpriteBox;
-          this.errorSpriteBox.setVisible(true);
-          this.defaultSpriteBox.setVisible(false);
-        } else {
-          // this.spriteBox = this.defaultSpriteBox;
-          this.errorSpriteBox.setVisible(false);
-          this.defaultSpriteBox.setVisible(true);
-        }
+      if (
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
+        })
+      ) {
+        this.errorSpriteBox.setVisible(true);
+        this.defaultSpriteBox.setVisible(false);
+      } else {
+        // this.spriteBox = this.defaultSpriteBox;
+        this.errorSpriteBox.setVisible(false);
+        this.defaultSpriteBox.setVisible(true);
       }
+
       this.moveCheck = false;
     };
     //아래 버튼
@@ -808,76 +631,32 @@ export default class TreeEditScene extends Scene {
           y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
         });
 
-      if (this.selectedTreeUrl) {
-        if (
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }) ||
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          })
-        ) {
-          this.errorSpriteBox.setVisible(true);
-          this.defaultSpriteBox.setVisible(false);
-        } else {
-          // this.spriteBox = this.defaultSpriteBox;
-          this.errorSpriteBox.setVisible(false);
-          this.defaultSpriteBox.setVisible(true);
-        }
-      } else if (this.modifyTreeId) {
-        if (
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }) ||
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }) ||
-          this.gridEngine.isTileBlocked({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }) ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }).length > 1 ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-          }).length > 1 ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }).length > 1 ||
-          this.gridEngine.getCharactersAt({
-            x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
-            y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
-          }).length > 1
-        ) {
-          // this.spriteBox = this.errorSpriteBox;
-          this.errorSpriteBox.setVisible(true);
-          this.defaultSpriteBox.setVisible(false);
-        } else {
-          // this.spriteBox = this.defaultSpriteBox;
-          this.errorSpriteBox.setVisible(false);
-          this.defaultSpriteBox.setVisible(true);
-        }
+      if (
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
+        }) ||
+        this.gridEngine.isBlocked({
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x + 1,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y + 1,
+        })
+      ) {
+        this.errorSpriteBox.setVisible(true);
+        this.defaultSpriteBox.setVisible(false);
+      } else {
+        // this.spriteBox = this.defaultSpriteBox;
+        this.errorSpriteBox.setVisible(false);
+        this.defaultSpriteBox.setVisible(true);
       }
+
       this.moveCheck = false;
     };
   }

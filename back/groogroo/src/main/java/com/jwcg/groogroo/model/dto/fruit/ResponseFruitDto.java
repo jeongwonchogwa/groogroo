@@ -14,6 +14,5 @@ public class ResponseFruitDto {
     private long writerId;
     private String writerNickname;
     private String content;
-    private String imageUrl;
     private String createTime;
 }

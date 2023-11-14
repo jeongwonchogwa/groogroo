@@ -4,15 +4,15 @@ import { Garden, Tree } from "@/app/types";
 
 interface Props {
   garden: Garden;
-  myTree: Tree;
+  // myTree: Tree;
 }
 
 export default class Preloader extends Scene {
   private garden: Garden;
-  private myTree: Tree;
+  // private myTree: Tree;
   constructor(props: Props) {
     super("preloader");
-    this.myTree = props.myTree;
+    // this.myTree = props.myTree;
     this.garden = props.garden;
   }
 
@@ -36,22 +36,27 @@ export default class Preloader extends Scene {
     this.load.image("pixelBox", "/assets/images/pixelBorder.png");
 
     //열매
-    this.load.image("apple","/assets/fruits/apple.svg");
-    this.load.image("cherry","/assets/fruits/cherry.svg");
-    this.load.image("grape","/assets/fruits/grape.svg");
-    this.load.image("lemon","/assets/fruits/lemon.svg");
-    this.load.image("orange","/assets/fruits/orange.svg");
-    this.load.image("peach","/assets/fruits/peach.svg");
+    this.load.image("apple", "/assets/fruits/apple.svg");
+    this.load.image("cherry", "/assets/fruits/cherry.svg");
+    this.load.image("grape", "/assets/fruits/grape.svg");
+    this.load.image("lemon", "/assets/fruits/lemon.svg");
+    this.load.image("orange", "/assets/fruits/orange.svg");
+    this.load.image("peach", "/assets/fruits/peach.svg");
 
     //정원에 심어져있는 나무들 스프라이트 생성.
-    this.garden.treePos?.forEach((tree) => {
+    this.garden.treePos?.forEach((tree, index) => {
       console.log(tree);
+      if(tree.name === "" || null){
+        this.load.spritesheet("이름없는 나무"+index, tree.imageUrl, {
+          frameWidth: 128,
+          frameHeight: 128,
+        });
+      }else{
       this.load.spritesheet(tree.name, tree.imageUrl, {
         frameWidth: 128,
         frameHeight: 128,
       });
-
-      
+    }
     });
 
     //정원에 심어져있는 꽃 스프라이트 생성.
@@ -61,7 +66,6 @@ export default class Preloader extends Scene {
         frameHeight: 64,
       });
     });
-
   }
 
   create() {

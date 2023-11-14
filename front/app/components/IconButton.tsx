@@ -5,7 +5,8 @@ import Glass from "/public/assets/images/glass.svg";
 import Plus from "/public/assets/images/plus.svg";
 import Arrow from "/public/assets/images/arrow.svg";
 import Swipe from "/public/assets/images/swipe.svg";
-import Kakao from "/public/assets/images/kakao.svg";
+// import Kakao from "/public/assets/images/kakao.svg";
+import Kakao from "/public/assets/images/kakaoBordered.svg";
 import Link from "/public/assets/images/link.svg";
 import Trash from "/public/assets/images/trash.svg";
 import Siren from "/public/assets/images/siren.svg";
@@ -15,6 +16,7 @@ import Home from "/public/assets/images/home.svg";
 import Menu from "/public/assets/images/menu.svg";
 import User from "/public/assets/images/user.png";
 import Back from "/public/assets/images/back.svg";
+import Move from "/public/assets/images/move.svg";
 
 interface IconButtonProps {
   iconSrc:
@@ -33,7 +35,8 @@ interface IconButtonProps {
     | "menu"
     | "update"
     | "user"
-    | "back";
+    | "back"
+    | "move";
   onClick?: () => void;
   rotate?: boolean;
 }
@@ -55,14 +58,24 @@ const iconButtonConfig = {
   update: Update,
   user: User,
   back: Back,
+  move: Move,
 };
 
 const IconButton = ({ iconSrc, onClick, rotate }: IconButtonProps) => {
   const IconComponent = iconButtonConfig[iconSrc];
   return (
-    <div className={iconSrc === "bell" ? "w-full h-full z-50 relative" : "w-full h-full"} onClick={onClick}>
+    <div
+      className={
+        iconSrc === "bell" ? "w-full h-full z-50 relative" : "w-full h-full"
+      }
+      onClick={onClick}
+    >
       {/* rotate는 arrow에만 사용할 예정 */}
-      <Image className={rotate ? "rotate-180" : ""} src={IconComponent} alt={iconSrc} />
+      <Image
+        className={rotate ? "rotate-180" : ""}
+        src={IconComponent}
+        alt={iconSrc}
+      />
     </div>
   );
 };
