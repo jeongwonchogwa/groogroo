@@ -17,8 +17,8 @@ export default class Preloader extends Scene {
   }
 
   preload() {
-    console.log("Phaser에 렌더링 될 정원");
-    console.log(this.garden);
+    // console.log("Phaser에 렌더링 될 정원");
+    // console.log(this.garden);
 
     //맵 불러오기
     this.load.tilemapTiledJSON(
@@ -46,17 +46,17 @@ export default class Preloader extends Scene {
     //정원에 심어져있는 나무들 스프라이트 생성.
     this.garden.treePos?.forEach((tree, index) => {
       console.log(tree);
-      if(tree.name === "" || null){
-        this.load.spritesheet("이름없는 나무"+index, tree.imageUrl, {
+      if (tree.name === "" || null) {
+        this.load.spritesheet("이름없는 나무" + index, tree.imageUrl, {
           frameWidth: 128,
           frameHeight: 128,
         });
-      }else{
-      this.load.spritesheet(tree.name, tree.imageUrl, {
-        frameWidth: 128,
-        frameHeight: 128,
-      });
-    }
+      } else {
+        this.load.spritesheet(tree.name, tree.imageUrl, {
+          frameWidth: 128,
+          frameHeight: 128,
+        });
+      }
     });
 
     //정원에 심어져있는 꽃 스프라이트 생성.

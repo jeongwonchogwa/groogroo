@@ -34,6 +34,11 @@ export interface TreesResponse {
   trees: Tree[];
 }
 
+export interface Preset {
+  treeUserPresetId: number;
+  imageUrl: string;
+}
+
 export interface Report {
   id: number;
   reporterId: number;

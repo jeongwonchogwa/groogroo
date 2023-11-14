@@ -54,7 +54,7 @@ const GardenDetailModal = ({
                   <div className="my-auto mr-1 w-6 h-6">
                     <Image
                       className="w-full h-full object-cover"
-                      src="/assets/images/heart.svg"
+                      src="/assets/images/heart_fill.svg"
                       width={24}
                       height={24}
                       alt="heart"
@@ -78,7 +78,10 @@ const GardenDetailModal = ({
             <div className="mx-5">
               <Button
                 onClick={() => {
-                  router.push(`/garden/${gardenData?.url}`);
+                  console.log(gardenData?.gardenId);
+                  router.push(
+                    `/garden/${gardenData?.url}${gardenData?.gardenId}`
+                  );
                 }}
                 color="secondary"
                 label="입장하기"
