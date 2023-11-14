@@ -28,6 +28,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserGardenRepository userGardenRepository;
 
+    // status 변경
     public void updateStatus(Long userId, UserStatus userStatus) {
         // 탈퇴 하려는 경우 MASTER로 속해있는 정원이 있는지 확인 => 있으면 예외 발생
         if(userStatus == UserStatus.WITHDRAWAL){
@@ -48,8 +49,29 @@ public class UserService {
                 .userRole(user.getUserRole())
                 .createTime(user.getCreateTime())
                 .provider(user.getProvider())
+                .credit(user.getCredit())
                 .tree(user.getTree())
-                .userGardens(user.getUserGardens())
+                .build();
+        userRepository.save(updatedUser);
+    }
+
+    // 크레딧 조회
+    public int getCredit(Long userId) {
+        return userRepository.findUserById(userId).getCredit();
+    }
+
+    // 크레딧 변경
+    public void updateCredit(Long userId, int i) {
+        User user = userRepository.findUserById(userId);
+        User updatedUser = User.builder()
+                .id(userId)
+                .email(user.getEmail())
+                .userStatus(user.getUserStatus())
+                .userRole(user.getUserRole())
+                .createTime(user.getCreateTime())
+                .provider(user.getProvider())
+                .credit(user.getCredit()+i)
+                .tree(user.getTree())
                 .build();
         userRepository.save(updatedUser);
     }
