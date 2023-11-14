@@ -105,8 +105,22 @@ context_path = '/flask'
 def hello_world():
     return 'Hello, Flask Server on :)'
 
+@app.route(context_path + '/remove_background', methods=['POST'])
+def remove_background():
+    if request.method == 'POST':
+        data = request.get_json()
+        print(data)
+        user_input = data.get('image')
+        user_id = data.get('id')
+        print('요청 들어옴: ', user_input, user_id)
+        return jsonify({ 'image_data': 'encoded_string', 'image_name': 'image_filename' }), 200
 
-@app.route(context_path + '/image', methods=['POST'])
+    else:
+        print('잘못된 요청: remove_background')
+        return
+
+
+@app.route(context_path + '/make_image', methods=['POST'])
 def make_image():
     # 입력 폼에서 프롬프트 입력받으면, 
     if request.method == 'POST':
