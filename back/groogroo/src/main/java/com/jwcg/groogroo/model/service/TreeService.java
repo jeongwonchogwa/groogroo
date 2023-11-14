@@ -278,4 +278,14 @@ public class TreeService {
         responseTreeDto.setFruits(fruits);
         return responseTreeDto;
     }
+
+    // 나무 존재하면 treeId 반환하고 존재하지 않으면 null 반환
+    public Long checkIsExist(Long userId) {
+        Tree tree = userRepository.findUserById(userId).getTree();
+        if(tree != null){
+            return tree.getId();
+        } else {
+            return null;
+        }
+    }
 }

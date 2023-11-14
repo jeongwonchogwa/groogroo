@@ -323,4 +323,35 @@ public class TreeController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Operation(summary = "메인 나무 존재 여부 조회", description = "메인 나무 존재 여부 조회하는 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "메인 나무 존재 여부 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "메인 나무 존재 여부 조회 실패 - 내부 서버 오류"),
+    })
+    @GetMapping("/exist")
+    public ResponseEntity<Map<String, Object>> checkIsExist(@RequestHeader("Authorization") String token) {
+        token = token.split(" ")[1];
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("Tree Controller - 메인 나무 존재 여부 조회");
+            Long userId = jwtUtil.getId(token);
+            log.info("id: {}", userId);
+            Long treeId = treeService.checkIsExist(userId);
+
+            response.put("treeId", treeId);
+
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "메인 나무 존재 여부 조회 성공");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            log.info("Tree Controller - 메인 나무 존재 여부 조회 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "메인 나무 존재 여부 조회 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
