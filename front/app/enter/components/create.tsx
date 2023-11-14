@@ -9,6 +9,7 @@ import DrawingTools from "./DrawingTools";
 import React, { useState, ChangeEvent } from 'react';
 import { useRouter } from "next/navigation";
 import { UrlObject } from 'url';
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
 
 const Create = () => {
@@ -93,7 +94,7 @@ const Create = () => {
 
   const fetchTextToFlask = async (inputData : string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/image`, {
+      const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/image`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
@@ -102,9 +103,9 @@ const Create = () => {
           text: inputData,
           id: 9999,   // 실제 아이디 가져와서 바꿔놔야할 부분
         })
-      });
+      }, router);
 
-      if (response.status === 200) {
+      if (response?.status === 200) {
         // image_data - 형식은 base64
         const data = await response.json();
         setImageData(data.image_data); // 이미지 데이터를 상태 변수에 저장
@@ -114,7 +115,7 @@ const Create = () => {
         // router.push(`/enter/pick/${responseData.image_url}`)
 
       } else {
-        console.log('Server Response Error:', response.status);
+        console.log('Server Response Error:', response?.status);
       }
     } catch (error) {
       console.log('요청실패:', error);

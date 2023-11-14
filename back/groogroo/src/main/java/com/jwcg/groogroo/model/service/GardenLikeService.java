@@ -141,8 +141,14 @@ public class GardenLikeService {
         log.info("레디스 정보 - 유저 {}은 {} 정원에 좋아요를 눌렀습니다: {}", userId, gardenId, Boolean.toString(existsOnRedis));
         if (existsOnRedis) return true;
         else {
-            updateOneToRedis(userId, gardenId);
-            return gardenLikeRepository.existsByUserIdAndGardenId(userId, gardenId);
+            boolean existsOnMySQL = mySQLGardenLikeRepository.existsByUserIdAndGardenId(userId, gardenId);
+
+            if (existsOnMySQL) {
+                updateOneToRedis(userId, gardenId);
+                return true;
+            }else {
+                return false;
+            }
         }
     }
 
