@@ -2,7 +2,7 @@
 
 // 2. 약관동의 체크박스 css 수정해야함
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "../../components/Button";
 import Image from 'next/image';

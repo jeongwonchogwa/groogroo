@@ -9,7 +9,7 @@ import { useEventSourceStore  } from '../../stores/eventSourceStore';
 const RedirectPage = () => {
   const router = useRouter();
   const search = useSearchParams();
-  const [treeId, settreeId] = useState<any[]>([]);
+  const [treeId, settreeId] = useState<number>();
 
   useEffect(() => {
     
@@ -53,7 +53,7 @@ const RedirectPage = () => {
         // EventSource 생성
         const sse = new EventSource(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/notification/subscribe/${userId}`);
         useEventSourceStore.getState().setEventSource(sse);
-        const destination = treeId === null ? '/enter/terms' : '/home';
+        const destination = treeId == null ? '/enter/terms' : '/home';
         router.push(destination);
         console.log(sse);
       } else {

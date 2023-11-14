@@ -7,7 +7,7 @@ import Canvas from "./canvas";
 import PixelCanvas from "./pixelCanvas"
 import DrawingTools from "./DrawingTools";
 
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 import { UrlObject } from 'url';
 import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
@@ -23,6 +23,7 @@ const Create = () => {
   const [imageData, setImageData] = useState('');
   const [imageName, setImageName] = useState('');
 
+  
 	const redirectHome = () => {
     router.push('/home');
   };
@@ -95,9 +96,42 @@ const Create = () => {
     setSelectedTool('pen'); // 색 변경하면 도구도 펜으로 변경
     console.log("색 변경: ", color);
   };
+  useEffect(() => {
+    const userInfoString = sessionStorage.getItem('userInfo');
+      if (!userInfoString) {
+        router.push('/enter');
+        throw new Error('사용자 정보가 없습니다.');
+      }
+    
+      const userInfo = JSON.parse(userInfoString);
+      const accessToken = userInfo?.state?.userToken;
 
+      const base64Url = accessToken.split('.')[1]; // JWT의 payload 부분 추출
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const payload = JSON.parse(atob(base64));
+      const userId = payload.id;
+
+      console.log(userId);
+  }, []);
   const fetchTextToFlask = async (inputData : string) => {
     try {
+
+      const userInfoString = sessionStorage.getItem('userInfo');
+      if (!userInfoString) {
+        router.push('/enter');
+        throw new Error('사용자 정보가 없습니다.');
+      }
+    
+      const userInfo = JSON.parse(userInfoString);
+      const accessToken = userInfo?.state?.userToken;
+
+      const base64Url = accessToken.split('.')[1]; // JWT의 payload 부분 추출
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const payload = JSON.parse(atob(base64));
+      const userId = payload.id;
+
+      console.log(userId);
+
       const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/image`, {
         method: "POST",
         headers: {
