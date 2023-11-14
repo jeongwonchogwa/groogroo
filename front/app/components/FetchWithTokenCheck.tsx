@@ -14,12 +14,13 @@ async function refreshToken(accessToken: string) {
     });
 
     console.log('재발급 요청 보냈음')
-    if (!res.ok) {
-        throw new Error(`토큰 재발급 실패: ${res.status}`);
-    }
+    
 
-    const data = await res.json();
-    return data.accessToken;
+    const data = await res.headers.get('Authorization');
+    console.log("data: ", data);
+    const token = data?.split(' ')[1];
+    console.log('새로운 토큰:', token); 
+    return token;
 }
 
 export async function fetchWithTokenCheck(url: string, options: FetchOptions = {}, router: AppRouterInstance) {
@@ -56,8 +57,12 @@ export async function fetchWithTokenCheck(url: string, options: FetchOptions = {
         
         const updatedToken = await refreshToken(accessToken);
         userInfo.state.userToken = updatedToken;
+        
+        console.log("재발급 받은 토큰: ", updatedToken);
+        console.log("userInfo 최신화: ", userInfo);
+
         sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
-        token = updatedToken;
+        token = updatedToken ? updatedToken : "wrong";
     }else {
         token = accessToken;
     }

@@ -89,7 +89,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 // 토큰 재발급 요청인 경우 새로운 AccessToken을 응답으로 반환
                 log.info("accessToken 재발급 요청");
                 String newAccessToken = jwtUtil.republishAccessToken(token);
+                response.setHeader("Access-Control-Expose-Headers", "Authorization");
                 response.setHeader("Authorization", "Bearer " + newAccessToken);
+
                 return;
             } else{
                 throw new JwtException("Access Token 만료");

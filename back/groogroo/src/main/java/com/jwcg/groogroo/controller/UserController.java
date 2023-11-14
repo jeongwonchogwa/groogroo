@@ -74,6 +74,7 @@ public class UserController {
         try {
             log.info("accessToken 재발급");
             String newAccessToken = jwtUtil.republishAccessToken(token);
+
             response.put("httpStatus", SUCCESS);
             response.put("message", "accessToken 재발급 성공");
             response.put("accessToken", newAccessToken);
