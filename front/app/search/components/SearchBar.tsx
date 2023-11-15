@@ -8,13 +8,21 @@ interface SearchBarProps {
   handleSearch: () => void;
 }
 
-const SearchBar = ({ name, value, handleInput, handleSearch }: SearchBarProps) => {
+const SearchBar = ({
+  name,
+  value,
+  handleInput,
+  handleSearch,
+}: SearchBarProps) => {
   return (
     <div className="w-full">
       <div className="flex flex-col">
         <p
           className="text-center text-white font-bitBit text-2xl mb-1"
-          style={{ textShadow: "-3px 0px black, 0px 3px  black, 3px 0px  black, 0px -3px black" }}
+          style={{
+            textShadow:
+              "-3px 0px black, 0px 3px  black, 3px 0px  black, 0px -3px black",
+          }}
         >
           나무 검색
         </p>
@@ -34,13 +42,15 @@ const SearchBar = ({ name, value, handleInput, handleSearch }: SearchBarProps) =
                 ></input>
                 <div className="h-full flex bg-white">
                   <div
-                    onClick={() => {
-                      handleSearch();
-                      console.log("검색버튼 클릭");
-                    }}
+                    onClick={handleSearch}
                     className="w-8 h-full flex align-middle justify-center"
                   >
-                    <Image src="/assets/images/search.svg" width={24} height={24} alt="search"></Image>
+                    <Image
+                      src="/assets/images/search.svg"
+                      width={24}
+                      height={24}
+                      alt="search"
+                    ></Image>
                   </div>
                 </div>
               </div>

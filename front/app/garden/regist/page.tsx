@@ -13,7 +13,7 @@ const RegistPage = () => {
   const { userToken } = userInfoStore();
   const token = userToken;
 
-  const mapdata = ["/assets/maps/map[0].jpg", "/assets/maps/map[1].jpg"];
+  const mapdata = ["/assets/maps/map[1].jpg", "/assets/maps/map[2].jpg"];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -74,7 +74,9 @@ const RegistPage = () => {
 
       if (response.status === 200) {
         const responseData = await response.json();
-        const gardenUrl = responseData.url;
+        const gardenUrl = responseData.url + responseData.gardenId;
+        console.log(responseData);
+        console.log(gardenUrl);
         router.push(`/garden/${gardenUrl}`);
       }
     } catch (error) {

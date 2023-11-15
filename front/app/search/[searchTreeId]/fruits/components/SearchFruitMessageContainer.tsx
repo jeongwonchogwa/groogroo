@@ -40,14 +40,16 @@ const SearchFruitMessageContainer = ({ data }: Props) => {
       const timeDifference =
         currentHours * 60 +
         currentMinutes -
-        Number(createTimeHours) * 60 +
-        Number(createTimeMinutes);
+        (Number(createTimeHours) * 60 + Number(createTimeMinutes));
 
+      console.log(timeDifference);
       if (timeDifference < 6) {
         setAvailableDelete(true);
       } else {
         setAvailableDelete(false);
       }
+    } else {
+      setAvailableDelete(false);
     }
   }, [data, currentIndex]);
 
@@ -62,7 +64,7 @@ const SearchFruitMessageContainer = ({ data }: Props) => {
               )}
             </div>
             {/* h를 박아 넣는게 맞나...? */}
-            <div className="w-full h-[350px] mr-3 ml-1">
+            <div className="w-full h-[300px] mr-3 ml-1">
               <MessageContainer
                 dataType="FRUIT"
                 availableDelete={availableDelete}

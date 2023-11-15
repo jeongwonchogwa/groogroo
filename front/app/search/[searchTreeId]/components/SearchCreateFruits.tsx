@@ -2,9 +2,10 @@
 
 import MessageCreator from "@/app/components/MessageCreator";
 import Button from "@/app/components/Button";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { redirect, useRouter } from "next/navigation";
 import { Tree } from "@/app/types";
+import { userInfoStore } from "@/stores/userInfoStore";
 
 interface Props {
   onFormCloseButtonClick: () => void;
@@ -13,19 +14,24 @@ interface Props {
 
 const SearchCreateFruits = (props: Props) => {
   // const AccessToken = sessionStorage.getItem("userInfo");
-  const sessionData = sessionStorage.getItem("userInfo");
-  let userToken = "";
-  if (sessionData) {
-    const sessionObject = JSON.parse(sessionData);
-    userToken = sessionObject?.state?.userToken;
-    if (userToken) {
-      console.log(userToken);
-    } else {
-      console.log("userToken이 존재하지 않습니다.");
-    }
+  // const sessionData = sessionStorage.getItem("userInfo");
+  // let userToken = "";
+  // if (sessionData) {
+  //   const sessionObject = JSON.parse(sessionData);
+  //   userToken = sessionObject?.state?.userToken;
+  //   if (userToken) {
+  //     console.log(userToken);
+  //   } else {
+  //     console.log("userToken이 존재하지 않습니다.");
+  //   }
 
-    console.log(userToken);
-  }
+  // }
+
+  const { userToken } = userInfoStore();
+  const router = useRouter();
+  useEffect(() => {
+    if (userToken === "") redirect("/enter");
+  }, [userToken]);
 
   const [writer, setWriter] = useState("");
   const [content, setContent] = useState("");
@@ -48,7 +54,8 @@ const SearchCreateFruits = (props: Props) => {
         }
       );
       const data = await res.json();
-      console.log(data);
+      props.onFormCloseButtonClick();
+      router.push(`/search/${props.currentTree.id}/fruits`);
       return data;
     } catch (err) {
       console.log(err);

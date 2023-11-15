@@ -17,7 +17,6 @@ import Menu from "/public/assets/images/menu.svg";
 import User from "/public/assets/images/user.png";
 import Back from "/public/assets/images/back.svg";
 import Move from "/public/assets/images/move.svg";
-import Close from "/public/assets/images/close.svg";
 
 interface IconButtonProps {
   iconSrc:
@@ -38,8 +37,9 @@ interface IconButtonProps {
     | "user"
     | "back"
     | "move"
-    | "close";
-
+    | "close"
+    | "speaker"
+    | "speaker_disabled";
   onClick?: () => void;
   rotate?: boolean;
 }
@@ -62,7 +62,6 @@ const iconButtonConfig = {
   user: User,
   back: Back,
   move: Move,
-  close: Close,
 };
 
 const IconButton = ({ iconSrc, onClick, rotate }: IconButtonProps) => {
@@ -76,6 +75,7 @@ const IconButton = ({ iconSrc, onClick, rotate }: IconButtonProps) => {
     >
       {/* rotate는 arrow에만 사용할 예정 */}
       <Image
+        id={iconSrc === "swipe" ? "swipe" : ""}
         className={rotate ? "rotate-180" : ""}
         src={IconComponent}
         alt={iconSrc}

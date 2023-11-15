@@ -31,7 +31,8 @@ def remove_background(image_src, image_path, image_filename):
             alpha_matting_foreground_threshold=120,
             alpha_matting_background_threshold=10,
             alpha_matting_erode_structure_size=10,
-            alpha_matting_base_size=1500,
+            alpha_matting_base_size=1300,
+            # I = αF + (1−α)B
         )
 
     output_image.save(f'{image_path}', 'png')
@@ -105,8 +106,41 @@ context_path = '/flask'
 def hello_world():
     return 'Hello, Flask Server on :)'
 
+@app.route(context_path + '/remove_bg', methods=['POST'])
+def remove_bg():
+    if request.method == 'POST':
+        if 'image' not in request.files:
+            return '이미지 파일이 전송되지 않았습니다.', 400
 
-@app.route(context_path + '/image', methods=['POST'])
+        file = request.files['image']
+        user_id = request.form.get('id')
+
+        if file and user_id:
+            image_data = file.read()
+
+        # param_foreground = data.get('foreground')
+        # param_background = data.get('background')
+        # print('요청 들어옴: ', user_image, user_id)
+
+        image_filename = f"gen_img_{user_id}_{time.localtime().tm_year}_{time.localtime().tm_mon}_{time.localtime().tm_mday}_{time.localtime().tm_hour}{time.localtime().tm_min}{time.localtime().tm_sec}.jpg"
+        image_path = os.path.join("static", "images", image_filename)
+
+        remove_background(image_data, image_path, image_filename)
+
+        with open(image_path, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+
+        # 임시 저장된 파일 삭제
+        os.remove(image_path)
+
+        return jsonify({ 'image_data': encoded_string, 'image_name': image_filename }), 200
+
+    else:
+        print('잘못된 요청: remove_background')
+        return
+
+
+@app.route(context_path + '/make_image', methods=['POST'])
 def make_image():
     # 입력 폼에서 프롬프트 입력받으면, 
     if request.method == 'POST':
@@ -165,6 +199,7 @@ def make_image():
 
                     # 임시 저장된 파일 삭제
                     os.remove(image_path)
+
                     return jsonify({ 'image_data': encoded_string, 'image_name': image_filename }), 200
                 except openai.error as e:
                     return jsonify({ 'error': e }), 400;

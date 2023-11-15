@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -115,16 +116,16 @@ public class GardenLikeService {
      */
     public void cancelLikeGarden(long userId, long gardenId) {
         GardenLike gardenLike = gardenLikeRepository.findByUserIdAndGardenId(userId, gardenId);
-        MySQLGardenLike mySQLGardenLike = mySQLGardenLikeRepository.findByUserIdAndGardenId(userId, gardenId);
 
         if (gardenLike != null) {
             log.info("Redis의 {} garden like 삭제 시도", gardenLike.getId());
-            gardenLikeRepository.delete(gardenLike);
+            gardenLikeRepository.deleteById(gardenLike.getId());
         }
 
+        MySQLGardenLike mySQLGardenLike = mySQLGardenLikeRepository.findByUserIdAndGardenId(userId, gardenId);
         if (mySQLGardenLike != null) {
             log.info("MySQL의 {} garden like 삭제 시도", mySQLGardenLike.getId());
-            mySQLGardenLikeRepository.delete(mySQLGardenLikeRepository.findByUserIdAndGardenId(userId, gardenId));
+            mySQLGardenLikeRepository.deleteById(mySQLGardenLike.getId());
         }
     }
 
@@ -183,8 +184,8 @@ public class GardenLikeService {
     페이지 번호와 페이지 크기를 받아 10개씩 좋아요 랭킹을 반환
     */
     @Transactional(readOnly = true)
-//    public Page<ResponseGardenRankingDto> getGardenRankingByPagination(int page) {
-    public List<ResponseGardenRankingDto> getGardenRankingByPagination(int page) {
+    public Page<ResponseGardenRankingDto> getGardenRankingByPagination(int page) {
+//    public List<ResponseGardenRankingDto> getGardenRankingByPagination(int page) {
 
         Pageable pageable = PageRequest.of(page, PAGESIZE, Sort.by(Sort.Order.desc("likes")));
 
@@ -220,8 +221,12 @@ public class GardenLikeService {
 
         List<ResponseGardenRankingDto> gardensOnPage = returnData.subList(start, end);
 
-//        return new PageImpl<>(gardensOnPage, pageable, returnData.size());
-        return gardensOnPage;
+        Collections.sort(gardensOnPage, (o1, o2) -> {
+            return (int)o2.getLikes() - (int)o1.getLikes();
+        });
+
+        return new PageImpl<>(gardensOnPage, pageable, returnData.size());
+//        return gardensOnPage;
     }
 
 }

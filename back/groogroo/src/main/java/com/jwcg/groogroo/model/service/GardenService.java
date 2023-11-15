@@ -65,7 +65,7 @@ public class GardenService {
         else return makeURL();
     }
 
-    public String makeGarden(long userId, String name, String description, int capacity, int mapType){
+    public ResponseGardenGenerationDto makeGarden(long userId, String name, String description, int capacity, int mapType){
 
         // url 생성
         String url = makeURL();
@@ -103,25 +103,12 @@ public class GardenService {
 
         userGardenRepository.save(userGarden);
 
-        // 나무 배치 부분 제거.. 정원 꾸미기 API에 사용할듯
-//        TreeGarden treeGarden = TreeGarden.builder()
-//                .x(x)
-//                .y(y)
-//                .imageUrl(imageUrl)
-//                .build();
-//
-//        log.info("treeGarden setGarden");
-//        treeGarden.setGarden(garden);
-//        log.info("treeGarden setTree");
-//        treeGarden.setTree(user.getTree());
-//
-//        log.info("treeGarden 생성 성공" + treeGarden.getGarden().toString());
-//        log.info(treeGarden.getTree().toString());
-//
-//        treeGardenRepository.save(treeGarden);
-//        log.info("treeGarden 저장 성공");
+        ResponseGardenGenerationDto response = ResponseGardenGenerationDto.builder()
+                .gardenId(garden.getId())
+                .url(url)
+                .build();
 
-        return url;
+        return response;
     }
 
     @Transactional(readOnly = true)
@@ -140,8 +127,9 @@ public class GardenService {
                 .memberCnt(garden.getMemberCnt())
                 .mapType(garden.getMapType())
                 .state(ug==null? null : ug.getJoinState().toString())
+                .gardenRole(ug==null? null:ug.getGardenRole().toString())
                 .build();
-
+        log.info("좋아요 개수: " + responseGardenInfoDto.getLikes());
         responseGardenInfoDto.setTreePos(new ArrayList<>());
         responseGardenInfoDto.setFlowerPos(new ArrayList<>());
 
@@ -516,5 +504,47 @@ public class GardenService {
         } else {
             return null;
         }
+    }
+
+    // 가입 신청자 목록
+    public List<ResponseGardenMemberInfoDto> getGardenWaitList(Long gardenId) {
+
+        List<UserGarden> userGardens = userGardenRepository.findAllByGardenIdAndJoinStateAndDeleteDateIsNull(gardenId, JoinState.WAIT);
+
+        List<ResponseGardenMemberInfoDto> waits = new ArrayList<>();
+
+        for(UserGarden userGarden : userGardens){
+            Tree tree = userGarden.getUser().getTree();
+            ResponseGardenMemberInfoDto responseGardenMemberInfoDto = ResponseGardenMemberInfoDto.builder()
+                    .userId(userGarden.getUser().getId())
+                    .treeName(tree==null ? null : tree.getName())
+                    .gardenRole("MEMBER")
+                    .build();
+
+            waits.add(responseGardenMemberInfoDto);
+        }
+
+        return waits;
+    }
+
+    // 소속 멤버 목록
+    public List<ResponseGardenMemberInfoDto> getGardenMemberList(Long gardenId) {
+
+        List<UserGarden> userGardens = userGardenRepository.findAllByGardenIdAndJoinStateAndDeleteDateIsNull(gardenId, JoinState.ACCEPT);
+
+        List<ResponseGardenMemberInfoDto> members = new ArrayList<>();
+
+        for(UserGarden userGarden : userGardens){
+            Tree tree = userGarden.getUser().getTree();
+            ResponseGardenMemberInfoDto responseGardenMemberInfoDto = ResponseGardenMemberInfoDto.builder()
+                    .userId(userGarden.getUser().getId())
+                    .treeName(tree==null ? null : tree.getName())
+                    .gardenRole(userGarden.getGardenRole().toString())
+                    .build();
+
+            members.add(responseGardenMemberInfoDto);
+        }
+
+        return members;
     }
 }

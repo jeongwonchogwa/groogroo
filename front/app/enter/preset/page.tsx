@@ -1,13 +1,13 @@
-import Freeset from "../components/freeset";
+import Preset from "../components/preset";
 
-const Freesetpage = () => {
+const Presetpage = () => {
   return (
     <div className="w-screen h-screen bg-background-home bg-cover">
       <div className="mx-5 mb-8">
-        <Freeset />
+        <Preset />
       </div>
     </div>
   );
 };
 
-export default Freesetpage;
+export default Presetpage;

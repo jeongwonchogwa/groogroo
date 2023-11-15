@@ -9,57 +9,60 @@ import { useEventSourceStore  } from '../../stores/eventSourceStore';
 const RedirectPage = () => {
   const router = useRouter();
   const search = useSearchParams();
-  const [treeId, settreeId] = useState<any[]>([]);
+
+  //나무 존재 여부 확인
+  const searchTree = async (accessToken:string) => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/exist`,{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const data = await res.json();
+      console.log(data);
+      console.log(data.treeId);
+      return data.treeId;
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
+    const fetchData = async () => {
+      const accessToken = search?.get("accesstoken")
     
-    const accessToken = search?.get("accesstoken")
     if (accessToken) {
 
       // accessToken을 userInfoStore에 저장
       userInfoStore.getState().setMember(accessToken);
-
-      // accessToken을 저장하거나 다른 작업을 수행
       console.log('Received access token:', accessToken);
-
-      const searchTree = async () => {
-        try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/exist`,{
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-          const data = await res.json();
-          console.log(data)
-          settreeId(data.treeId);
-        } catch (err) {
-          console.log(err);
-        }
-      };
-      searchTree();
 
       const tokenParts = accessToken.split(".");
       if (tokenParts.length === 3) {
         const decodedToken = JSON.parse(atob(tokenParts[1]));
-        console.log(tokenParts[1]);
-        console.log(decodedToken)
         const userId = decodedToken.id; 
 
-        // 여기서 userId와 treeId를 사용할 수 있음
         console.log('id:', userId);
+        
+        const treeId = await searchTree(accessToken);
+        console.log("treeId: ",treeId);
 
         // EventSource 생성
         const sse = new EventSource(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/notification/subscribe/${userId}`);
         useEventSourceStore.getState().setEventSource(sse);
-        const destination = treeId === null ? '/enter/terms' : '/home';
+        console.log("sse: ",sse);
+
+        // 트리 존재 여부에 따라 페이지 이동
+        const destination = treeId == null ? '/enter/terms' : '/home';
         router.push(destination);
-        console.log(sse);
       } else {
         console.error('Invalid access token format');
       }
     }
+    }
+    fetchData();
   }, []);
 
   return <div>Redirecting...</div>;

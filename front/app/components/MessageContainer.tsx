@@ -2,16 +2,10 @@
 
 // 너무 거지 같이 만들었어요 미안해요 쓰는 사람 저에게 알려주세요....
 import IconButton from "./IconButton";
-import CardModal from "./CardModal";
-import ButtonModal from "./ButtonModal";
-import Button from "./Button";
 import { Fruit } from "../types";
-import TextModal from "./TextModal";
 import ReportModal from "./ReportModal";
 import DeleteModal from "./DeleteModal";
 import { useEffect, useState } from "react";
-import { userTreeStore } from "@/stores/userTreeStore";
-import { userInfoStore } from "@/stores/userInfoStore";
 
 interface MessageContainerProps {
   dataType: "TREE" | "GARDEN" | "FRUIT" | "FLOWER" | "TREEGARDEN";
@@ -55,18 +49,20 @@ const MessageContainer = ({
                 <IconButton iconSrc="trash" onClick={handleDeleteModal} />
               )}
             </div>
-            <div className=" w-9 h-9">
-              {!isSearch && (
+            {!isSearch && (
+              <div className=" w-9 h-9">
                 <IconButton iconSrc="siren" onClick={handleReportModal} />
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
-        <div className="w-full mt-2">
-          <span className="font-bitBit text-2xl">From. </span>
-          <span className="font-bitBit text-2xl">{data.writerNickname}</span>
+        <div className="w-full mt-2 flex flex-row">
+          <p className="font-bitBit text-2xl w-[80px]">From. </p>
+          <p className="font-bitBit text-xl ml-2 flex mt-[3px]">
+            {data.writerNickname}
+          </p>
         </div>
-        <div className="w-full mt-5 overflow-auto">
+        <div className="w-full mt-3 overflow-auto">
           <span className="font-nexonGothic text-xl">{data.content}</span>
         </div>
       </div>
