@@ -31,7 +31,8 @@ def remove_background(image_src, image_path, image_filename):
             alpha_matting_foreground_threshold=120,
             alpha_matting_background_threshold=10,
             alpha_matting_erode_structure_size=10,
-            alpha_matting_base_size=1500,
+            alpha_matting_base_size=1300,
+            # I = αF + (1−α)B
         )
 
     output_image.save(f'{image_path}', 'png')
@@ -105,15 +106,33 @@ context_path = '/flask'
 def hello_world():
     return 'Hello, Flask Server on :)'
 
-@app.route(context_path + '/remove_background', methods=['POST'])
-def remove_background():
-    if request.method == 'POST':
+@app.route(context_path + '/remove_bg', methods=['POST'])
+def remove_bg():
+    if request.method == 'POST' or request.method == 'GET':
         data = request.get_json()
-        print(data)
-        user_input = data.get('image')
+        # # print(data)
+        user_image = data.get('image')
         user_id = data.get('id')
-        print('요청 들어옴: ', user_input, user_id)
-        return jsonify({ 'image_data': 'encoded_string', 'image_name': 'image_filename' }), 200
+        # param_foreground = data.get('foreground')
+        # param_background = data.get('background')
+        print('요청 들어옴: ', user_image, user_id)
+
+        user_image_path = './static/images/resized_image.png'
+        with open(user_image_path, "rb") as image_file:
+            image_data = image_file.read()
+
+        image_filename = f"gen_img_{user_id}_{time.localtime().tm_year}_{time.localtime().tm_mon}_{time.localtime().tm_mday}_{time.localtime().tm_hour}{time.localtime().tm_min}{time.localtime().tm_sec}.jpg"
+        image_path = os.path.join("static", "images", image_filename)
+
+        remove_background(image_data, image_path, image_filename)
+
+        with open(image_path, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+
+        # 임시 저장된 파일 삭제
+        os.remove(image_path)
+
+        return jsonify({ 'image_data': encoded_string, 'image_name': image_filename }), 200
 
     else:
         print('잘못된 요청: remove_background')
@@ -179,6 +198,7 @@ def make_image():
 
                     # 임시 저장된 파일 삭제
                     os.remove(image_path)
+
                     return jsonify({ 'image_data': encoded_string, 'image_name': image_filename }), 200
                 except openai.error as e:
                     return jsonify({ 'error': e }), 400;
