@@ -186,12 +186,14 @@ public class GardenService {
 
         List<UserGarden> userGardens = userGardenRepository.findAllByUserIdAndDeleteDateIsNull(userId);
         List<ResponseUserGardenDto> returnData = new ArrayList<>();
-
         for (UserGarden userGarden : userGardens) {
             JoinState joinState = userGarden.getJoinState();
             log.info(joinState.toString());
+
             if (joinState.equals(JoinState.WAIT) || joinState.equals(JoinState.ACCEPT)) {
                 Garden garden = userGarden.getGarden();
+                UserGarden masterGarden = userGardenRepository.findUserGardenByGardenIdAndGardenRole(garden.getId(), GardenRole.MASTER);
+
                 log.info(garden.toString());
 //                long likes = gardenLikeRepository.countByGardenId(garden.getId());
                 long likes = gardenLikeRepository.findAllByGardenId(garden.getId()).size();
@@ -205,6 +207,7 @@ public class GardenService {
                         .likes(likes)
                         .url(garden.getUrl())
                         .mapType(garden.getMapType())
+                        .master(masterGarden.getUser().getTree().getName())
                         .build();
                 log.info(responseUserGardenDto.toString());
                 returnData.add(responseUserGardenDto);

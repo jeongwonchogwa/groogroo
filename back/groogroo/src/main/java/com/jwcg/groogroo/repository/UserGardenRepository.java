@@ -10,6 +10,7 @@ import java.util.List;
 public interface UserGardenRepository extends JpaRepository<UserGarden, Long> {
     UserGarden findUserGardenByUserIdAndGardenId(long userId, long gardenId);
 
+    UserGarden findUserGardenByGardenIdAndGardenRole(long gardenId, GardenRole gardenRole);
     List<UserGarden> findAllByUserId(long userId);
 
     List<UserGarden> findAllByUserIdAndDeleteDateIsNull(Long userId);

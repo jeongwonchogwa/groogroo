@@ -1,10 +1,7 @@
 package com.jwcg.groogroo.model.service;
 
 import com.jwcg.groogroo.model.dto.garden.ResponseGardenRankingDto;
-import com.jwcg.groogroo.model.entity.Garden;
-import com.jwcg.groogroo.model.entity.GardenLike;
-import com.jwcg.groogroo.model.entity.MySQLGardenLike;
-import com.jwcg.groogroo.model.entity.UserGarden;
+import com.jwcg.groogroo.model.entity.*;
 import com.jwcg.groogroo.repository.GardenLikeRepository;
 import com.jwcg.groogroo.repository.GardenRepository;
 import com.jwcg.groogroo.repository.MySQLGardenLikeRepository;
@@ -199,6 +196,8 @@ public class GardenLikeService {
 
             long likes = getGardenLikes(garden.getId());
 
+            UserGarden masterGarden = userGardenRepository.findUserGardenByGardenIdAndGardenRole(garden.getId(), GardenRole.MASTER);
+
             ResponseGardenRankingDto responseGardenRankingDto = ResponseGardenRankingDto.builder()
                     .gardenId(garden.getId())
                     .name(garden.getName())
@@ -208,6 +207,7 @@ public class GardenLikeService {
                     .likes(likes)
                     .url(garden.getUrl())
                     .mapType(garden.getMapType())
+                    .master(masterGarden.getUser().getTree().getName())
                     .build();
 
             log.info(responseGardenRankingDto.toString());

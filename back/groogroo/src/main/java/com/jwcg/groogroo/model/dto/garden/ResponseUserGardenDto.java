@@ -20,4 +20,5 @@ public class ResponseUserGardenDto {
     private long likes;
     private String url;
     private int mapType;
+    private String master;
 }
