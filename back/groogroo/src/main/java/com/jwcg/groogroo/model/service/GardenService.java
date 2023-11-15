@@ -127,6 +127,7 @@ public class GardenService {
                 .memberCnt(garden.getMemberCnt())
                 .mapType(garden.getMapType())
                 .state(ug==null? null : ug.getJoinState().toString())
+                .gardenRole(ug==null? null:ug.getGardenRole().toString())
                 .build();
         log.info("좋아요 개수: " + responseGardenInfoDto.getLikes());
         responseGardenInfoDto.setTreePos(new ArrayList<>());
