@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { userInfoStore } from '../../../stores/userInfoStore';
 
 
-const Freeset = () => {
+const Preset = () => {
 
   const getUserToken = () => {
 		const { userToken } = userInfoStore.getState();
@@ -131,4 +131,4 @@ const Freeset = () => {
   );
 ;}
 
-export default Freeset;
+export default Preset;

@@ -275,7 +275,7 @@ const Create = () => {
 
         {selectedComponent === 'text' && <NameInput placeholder="뿡뿡이나무" value={inputValue} onChange={handleInputChange} />} { /* NameInput 컴포넌트를 렌더링 */ }    
         <div className="w-full h-[20px] flex justify-end mr-20">
-          <a href="/enter/freeset" className="text-primary font-nexonGothic font-bold text-[20px] hover:no-underline hover:text-primary">				
+          <a href="/enter/preset" className="text-primary font-nexonGothic font-bold text-[20px] hover:no-underline hover:text-primary">				
             나무 프리셋 구경하기
           </a>
         </div>
