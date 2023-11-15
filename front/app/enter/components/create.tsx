@@ -24,6 +24,19 @@ const Create = () => {
   const [imageName, setImageName] = useState('');
   const [isBlank, setIsBlank] = useState<boolean>(true);
 
+  const userInfoString = sessionStorage.getItem('userInfo');
+  if (!userInfoString) {
+    router.push('/enter');
+    throw new Error('사용자 정보가 없습니다.');
+  }
+
+  const userInfo = JSON.parse(userInfoString);
+  const accessToken = userInfo?.state?.userToken;
+
+  const base64Url = accessToken.split('.')[1]; // JWT의 payload 부분 추출
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const payload = JSON.parse(atob(base64));
+  const userId = payload.id;
   
 	const redirectHome = () => {
     router.push('/home');
@@ -98,23 +111,6 @@ const Create = () => {
     setSelectedTool('pen'); // 색 변경하면 도구도 펜으로 변경
     console.log("색 변경: ", color);
   };
-  useEffect(() => {
-    const userInfoString = sessionStorage.getItem('userInfo');
-      if (!userInfoString) {
-        router.push('/enter');
-        throw new Error('사용자 정보가 없습니다.');
-      }
-    
-      const userInfo = JSON.parse(userInfoString);
-      const accessToken = userInfo?.state?.userToken;
-
-      const base64Url = accessToken.split('.')[1]; // JWT의 payload 부분 추출
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const payload = JSON.parse(atob(base64));
-      const userId = payload.id;
-
-      console.log(userId);
-  }, []);
 
   const getImageDataFromCanvas = () => {
   // PixelCanvas 컴포넌트의 ref를 사용하여 그리드 요소에 접근
@@ -141,7 +137,7 @@ const Create = () => {
           },
           body: JSON.stringify({
             image: imgData,
-            id: 9999,   // 실제 아이디 가져와서 바꿔놔야할 부분
+            id: userId,   // 실제 아이디 가져와서 바꿔놔야할 부분
           })
         }, router);
   
@@ -168,6 +164,10 @@ const Create = () => {
 
   const fetchTextToFlask = async (inputData : string) => {
     try {
+      
+
+      console.log(userId);
+
       const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/image`, {
         method: "POST",
         headers: {
@@ -175,7 +175,7 @@ const Create = () => {
         },
         body: JSON.stringify({
           text: inputData,
-          id: 9999,   // 실제 아이디 가져와서 바꿔놔야할 부분
+          id: userId,   // 실제 아이디 가져와서 바꿔놔야할 부분
         })
       }, router);
 
