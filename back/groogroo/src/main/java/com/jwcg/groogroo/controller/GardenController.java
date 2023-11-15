@@ -262,8 +262,8 @@ public class GardenController {
         try {
             log.info("Garden Controller - 좋아요 랭킹 목록 조회");
 
-//            Page<ResponseGardenRankingDto> responseGardenRankingDtos = gardenLikeService.getGardenRankingByPagination(page);
-            List<ResponseGardenRankingDto> responseGardenRankingDtos = gardenLikeService.getGardenRankingByPagination(page);
+            Page<ResponseGardenRankingDto> responseGardenRankingDtos = gardenLikeService.getGardenRankingByPagination(page);
+//            List<ResponseGardenRankingDto> responseGardenRankingDtos = gardenLikeService.getGardenRankingByPagination(page);
             response.put("ranking", responseGardenRankingDtos);
             response.put("httpStatus", SUCCESS);
             response.put("message", "좋아요 랭킹 목록 조회 성공");

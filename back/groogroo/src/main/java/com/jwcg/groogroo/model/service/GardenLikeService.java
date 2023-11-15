@@ -184,8 +184,8 @@ public class GardenLikeService {
     페이지 번호와 페이지 크기를 받아 10개씩 좋아요 랭킹을 반환
     */
     @Transactional(readOnly = true)
-//    public Page<ResponseGardenRankingDto> getGardenRankingByPagination(int page) {
-    public List<ResponseGardenRankingDto> getGardenRankingByPagination(int page) {
+    public Page<ResponseGardenRankingDto> getGardenRankingByPagination(int page) {
+//    public List<ResponseGardenRankingDto> getGardenRankingByPagination(int page) {
 
         Pageable pageable = PageRequest.of(page, PAGESIZE, Sort.by(Sort.Order.desc("likes")));
 
@@ -225,8 +225,8 @@ public class GardenLikeService {
             return (int)o2.getLikes() - (int)o1.getLikes();
         });
 
-//        return new PageImpl<>(gardensOnPage, pageable, returnData.size());
-        return gardensOnPage;
+        return new PageImpl<>(gardensOnPage, pageable, returnData.size());
+//        return gardensOnPage;
     }
 
 }
