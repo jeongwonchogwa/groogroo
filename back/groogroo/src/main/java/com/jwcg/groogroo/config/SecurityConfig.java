@@ -59,12 +59,12 @@ public class SecurityConfig {
 
         //oauth2Login 설정
         http.oauth2Login(oauth2 -> oauth2
-                        .authorizationEndpoint(authorization -> authorization
-                                        .baseUri("/oauth2/authorize")  // 소셜 로그인 url
-                        )
-                        .redirectionEndpoint(redirection -> redirection
-                                .baseUri("/*/oauth2/code/*")
-                        )
+                        // .authorizationEndpoint(authorization -> authorization
+                        //                 .baseUri("/oauth2/authorize")  // 소셜 로그인 url
+                        // )
+                        // .redirectionEndpoint(redirection -> redirection
+                        //         .baseUri("/*/oauth2/code/*")
+                        // )
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)  // 회원 정보 처리
                         )
