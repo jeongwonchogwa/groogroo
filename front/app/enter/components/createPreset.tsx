@@ -42,7 +42,7 @@ const Create = () => {
   }, []);
   
   
-	const redirectHome = () => {
+  const redirectHome = () => {
     router.push('/home');
   };
 
@@ -209,8 +209,8 @@ const Create = () => {
     // FormData 객체 생성
     const formData = new FormData();
     formData.append("multipartFile", blob, imageName);
-
-    // 서버에 S3 POST 요청 보내기
+    
+    // 서버에 POST 요청 보내기
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/image`, {
         method: "POST",
@@ -222,35 +222,35 @@ const Create = () => {
         console.log("이미지 업로드 성공", response);
         const responseData = await response.json();
         const imageUrl = responseData.imageUrl; // imageUrl 추출
-
+        
         // 프리셋 저장
         try {
-          const updatePreset = await fetch(``, {
-            method: "POST",
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              imageUrl: imageUrl,
-            })
-          });
-
-          if (updatePreset.status === 200) {
-            // 프리셋 업데이트 성공
-            console.log("프리셋 저장 성공", updatePreset);
-          } else {
-            // 프리셋 업데이트 실패
-            alert("생성한 이미지를 프리셋으로 저장하는 데 실패했습니다.");
-            console.log("프리셋 저장 실패")
-          }
+            const updatePreset = await fetch(``, {
+                method: "POST",
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                imageUrl: imageUrl,
+                })
+            });
+    
+            if (updatePreset.status === 200) {
+                // 프리셋 업데이트 성공
+                console.log("프리셋 저장 성공", updatePreset);
+            } else {
+                // 프리셋 업데이트 실패
+                alert("생성한 이미지를 프리셋으로 저장하는 데 실패했습니다.");
+                console.log("프리셋 저장 실패")
+            }
         } catch (error) {
-          alert("생성한 이미지를 프리셋으로 저장하는 데 실패했습니다.")
-          console.error("요청 실패", error);
+            alert("생성한 이미지를 프리셋으로 저장하는 데 실패했습니다.")
+            console.error("요청 실패", error);
         }
 
+        redirectHome();
+        
         // redirectCheck();
-        redirectCheck(imageUrl); 
-
       } else {
         // 처리 실패
         alert("생성한 이미지를 서버에 저장하는 데 실패했습니다.")
@@ -260,10 +260,6 @@ const Create = () => {
       alert("생성한 이미지를 서버에 저장하는 데 실패했습니다.")
       console.error("요청 실패", error);
     }
-
-    
-
-
   };
 
   const checkIsBlank = (isBlank : boolean) => {
@@ -304,7 +300,7 @@ const Create = () => {
 
         {selectedComponent === 'text' && <NameInput placeholder="뿡뿡이나무" value={inputValue} onChange={handleInputChange} />} { /* NameInput 컴포넌트를 렌더링 */ }    
         <div className="w-full h-[20px] flex justify-end mr-20">
-          <a href="/enter/preset" className="text-primary font-nexonGothic font-bold text-[20px] hover:no-underline hover:text-primary">				
+          <a href="/enter/freeset" className="text-primary font-nexonGothic font-bold text-[20px] hover:no-underline hover:text-primary">				
             나무 프리셋 구경하기
           </a>
         </div>
@@ -312,7 +308,7 @@ const Create = () => {
           {isGenerated ?  <>
                             <div className="grid grid-flow-col gap-4">
                               <Button color="primary" label="다시 생성하기" onClick={handleCreateButtonClick} /> 
-                              <Button color="primary" label="선택 하기" onClick={handleSelectButtonClick} />
+                              <Button color="primary" label="결정 하기" onClick={handleSelectButtonClick} />
                             </div>
                           </> : 
                           selectedComponent === 'canvas' ?

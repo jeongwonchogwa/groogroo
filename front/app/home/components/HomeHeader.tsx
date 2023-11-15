@@ -138,7 +138,7 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
                 }}
               />
               <Link
-                href={{ pathname: "/home/update", query: { type: "name" } }}
+                href={{ pathname: "/enter/createPreset", query: { type: "name" } }}
               >
                 <Button
                   color="secondary"
