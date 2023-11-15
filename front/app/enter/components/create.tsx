@@ -24,6 +24,7 @@ const Create = () => {
   const [imageName, setImageName] = useState('');
   const [isBlank, setIsBlank] = useState<boolean>(true);
   const [userId, setUserId] = useState('');
+  const [userToken, setUserToken] = useState('');
 
   useEffect(() => {
     const userInfoString = sessionStorage.getItem('userInfo');
@@ -34,6 +35,7 @@ const Create = () => {
 
     const userInfo = JSON.parse(userInfoString);
     const accessToken = userInfo?.state?.userToken;
+    setUserToken(accessToken);
 
     const base64Url = accessToken.split('.')[1]; // JWT의 payload 부분 추출
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -117,32 +119,29 @@ const Create = () => {
   };
 
   const getImageDataFromCanvas = () => {
-  // PixelCanvas 컴포넌트의 ref를 사용하여 그리드 요소에 접근
-  const gridElement = document.getElementById('pixel-grid');
+    const gridElement = document.getElementById('pixel-grid');
 
-  if(gridElement){
-    html2canvas(gridElement).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png'); // 이미지 데이터로 변환하여 PNG 형식으로 저장
-      console.log(imgData); // 콘솔에 base64 형태의 이미지 데이터 출력
-      console.log("이미지 가져왔다!");
-      fetchImageToFlask(imgData);
-    });
-  }
-};
+    if(gridElement){
+      html2canvas(gridElement).then((canvas) => {
+        canvas.toBlob((blob: Blob | null) => {
+          const formData = new FormData();
+          if (blob) {
+            formData.append('image', blob);
+            formData.append('id', userId);
+            fetchImageToFlask(formData);
+          }
+        }, 'image/png');
+      });
+    }
+  };
 
-  const fetchImageToFlask = async (imgData:string) => {
-    if (imgData != '') {
+  const fetchImageToFlask = async (formData: FormData) => {
+    if (formData) {
       console.log("flask에 요청 보낸다!");
       try {
         const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/remove_bg`, {
           method: "POST",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            image: imgData,
-            id: userId,   // 실제 아이디 가져와서 바꿔놔야할 부분
-          })
+          body: formData,
         }, router);
   
         if (response?.status === 200) {
@@ -225,10 +224,11 @@ const Create = () => {
 
         // 프리셋 저장
         try {
-          const updatePreset = await fetch(``, {
+          const updatePreset = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/preset`, {
             method: "POST",
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${userToken}`,
             },
             body: JSON.stringify({
               imageUrl: imageUrl,
@@ -297,7 +297,7 @@ const Create = () => {
           </>
         )}
 
-        {isGenerated && imageData && (
+        {selectedComponent === 'text' && isGenerated && imageData && (
         // <img src={`data:image/png;base64,${imageData}`} alt='생성된 이미지' />
         <Image className="mt-5" src={`data:image/png;base64,${imageData}`} alt="생성된 이미지" width={128} height={128} priority/>
         )}
@@ -311,14 +311,14 @@ const Create = () => {
         <div className="w-[80%] mt-[30px] ">      
           {isGenerated ?  <>
                             <div className="grid grid-flow-col gap-4">
-                              <Button color="primary" label="다시 생성하기" onClick={handleCreateButtonClick} /> 
-                              <Button color="primary" label="선택 하기" onClick={handleSelectButtonClick} />
+                              <Button color="primary" label="다시 생성" onClick={handleCreateButtonClick} /> 
+                              <Button color="primary" label="결정하기" onClick={handleSelectButtonClick} />
                             </div>
                           </> : 
                           selectedComponent === 'canvas' ?
-                          <Button color={isBlank?"default":"primary"} label="생성 하기" onClick={handleCreateButtonClick} disabled={isBlank}/>
+                          <Button color={isBlank?"default":"primary"} label="생성하기" onClick={handleCreateButtonClick} disabled={isBlank}/>
                           :
-                          <Button color={inputValue==''?"default":"primary"} label="생성 하기" onClick={handleCreateButtonClick} disabled={inputValue==''}/>
+                          <Button color={inputValue==''?"default":"primary"} label="생성하기" onClick={handleCreateButtonClick} disabled={inputValue==''}/>
           }
         </div>
       </div>

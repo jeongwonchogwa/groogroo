@@ -14,7 +14,7 @@ import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
 
 const Create = () => {
-	const router = useRouter();
+  const router = useRouter();
   const [inputValue, setInputValue] = useState('');
   const [selectedComponent, setSelectedComponent] = useState('canvas');
   const [selectedTool, setSelectedTool] = useState('pen'); // 기본 도구를 'pen'으로 설정
@@ -24,6 +24,7 @@ const Create = () => {
   const [imageName, setImageName] = useState('');
   const [isBlank, setIsBlank] = useState<boolean>(true);
   const [userId, setUserId] = useState('');
+  const [userToken, setUserToken] = useState('');
 
   useEffect(() => {
     const userInfoString = sessionStorage.getItem('userInfo');
@@ -34,6 +35,7 @@ const Create = () => {
 
     const userInfo = JSON.parse(userInfoString);
     const accessToken = userInfo?.state?.userToken;
+    setUserToken(accessToken);
 
     const base64Url = accessToken.split('.')[1]; // JWT의 payload 부분 추출
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -117,32 +119,29 @@ const Create = () => {
   };
 
   const getImageDataFromCanvas = () => {
-  // PixelCanvas 컴포넌트의 ref를 사용하여 그리드 요소에 접근
-  const gridElement = document.getElementById('pixel-grid');
+    const gridElement = document.getElementById('pixel-grid');
 
-  if(gridElement){
-    html2canvas(gridElement).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png'); // 이미지 데이터로 변환하여 PNG 형식으로 저장
-      console.log(imgData); // 콘솔에 base64 형태의 이미지 데이터 출력
-      console.log("이미지 가져왔다!");
-      fetchImageToFlask(imgData);
-    });
-  }
-};
+    if(gridElement){
+      html2canvas(gridElement).then((canvas) => {
+        canvas.toBlob((blob: Blob | null) => {
+          const formData = new FormData();
+          if (blob) {
+            formData.append('image', blob);
+            formData.append('id', userId);
+            fetchImageToFlask(formData);
+          }
+        }, 'image/png');
+      });
+    }
+  };
 
-  const fetchImageToFlask = async (imgData:string) => {
-    if (imgData != '') {
+  const fetchImageToFlask = async (formData: FormData) => {
+    if (formData) {
       console.log("flask에 요청 보낸다!");
       try {
         const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/remove_bg`, {
           method: "POST",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            image: imgData,
-            id: userId,   // 실제 아이디 가져와서 바꿔놔야할 부분
-          })
+          body: formData,
         }, router);
   
         if (response?.status === 200) {
@@ -209,8 +208,8 @@ const Create = () => {
     // FormData 객체 생성
     const formData = new FormData();
     formData.append("multipartFile", blob, imageName);
-    
-    // 서버에 POST 요청 보내기
+
+    // 서버에 S3 POST 요청 보내기
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/image`, {
         method: "POST",
@@ -222,35 +221,36 @@ const Create = () => {
         console.log("이미지 업로드 성공", response);
         const responseData = await response.json();
         const imageUrl = responseData.imageUrl; // imageUrl 추출
-        
+
         // 프리셋 저장
         try {
-            const updatePreset = await fetch(``, {
-                method: "POST",
-                headers: {
-                'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                imageUrl: imageUrl,
-                })
-            });
-    
-            if (updatePreset.status === 200) {
-                // 프리셋 업데이트 성공
-                console.log("프리셋 저장 성공", updatePreset);
-            } else {
-                // 프리셋 업데이트 실패
-                alert("생성한 이미지를 프리셋으로 저장하는 데 실패했습니다.");
-                console.log("프리셋 저장 실패")
-            }
+          const updatePreset = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/preset`, {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${userToken}`,
+            },
+            body: JSON.stringify({
+              imageUrl: imageUrl,
+            })
+          });
+
+          if (updatePreset.status === 200) {
+            // 프리셋 업데이트 성공
+            console.log("프리셋 저장 성공", updatePreset);
+          } else {
+            // 프리셋 업데이트 실패
+            alert("생성한 이미지를 프리셋으로 저장하는 데 실패했습니다.");
+            console.log("프리셋 저장 실패")
+          }
         } catch (error) {
-            alert("생성한 이미지를 프리셋으로 저장하는 데 실패했습니다.")
-            console.error("요청 실패", error);
+          alert("생성한 이미지를 프리셋으로 저장하는 데 실패했습니다.")
+          console.error("요청 실패", error);
         }
 
-        redirectHome();
-        
         // redirectCheck();
+        redirectHome(); 
+
       } else {
         // 처리 실패
         alert("생성한 이미지를 서버에 저장하는 데 실패했습니다.")
@@ -260,6 +260,10 @@ const Create = () => {
       alert("생성한 이미지를 서버에 저장하는 데 실패했습니다.")
       console.error("요청 실패", error);
     }
+
+    
+
+
   };
 
   const checkIsBlank = (isBlank : boolean) => {
@@ -293,28 +297,28 @@ const Create = () => {
           </>
         )}
 
-        {isGenerated && imageData && (
+        {selectedComponent === 'text' && isGenerated && imageData && (
         // <img src={`data:image/png;base64,${imageData}`} alt='생성된 이미지' />
         <Image className="mt-5" src={`data:image/png;base64,${imageData}`} alt="생성된 이미지" width={128} height={128} priority/>
         )}
 
         {selectedComponent === 'text' && <NameInput placeholder="뿡뿡이나무" value={inputValue} onChange={handleInputChange} />} { /* NameInput 컴포넌트를 렌더링 */ }    
         <div className="w-full h-[20px] flex justify-end mr-20">
-          <a href="/enter/freeset" className="text-primary font-nexonGothic font-bold text-[20px] hover:no-underline hover:text-primary">				
+          <a href="/enter/preset" className="text-primary font-nexonGothic font-bold text-[20px] hover:no-underline hover:text-primary">				
             나무 프리셋 구경하기
           </a>
         </div>
         <div className="w-[80%] mt-[30px] ">      
           {isGenerated ?  <>
                             <div className="grid grid-flow-col gap-4">
-                              <Button color="primary" label="다시 생성하기" onClick={handleCreateButtonClick} /> 
-                              <Button color="primary" label="결정 하기" onClick={handleSelectButtonClick} />
+                              <Button color="primary" label="다시 생성" onClick={handleCreateButtonClick} /> 
+                              <Button color="primary" label="결정하기" onClick={handleSelectButtonClick} />
                             </div>
                           </> : 
                           selectedComponent === 'canvas' ?
-                          <Button color={isBlank?"default":"primary"} label="생성 하기" onClick={handleCreateButtonClick} disabled={isBlank}/>
+                          <Button color={isBlank?"default":"primary"} label="생성하기" onClick={handleCreateButtonClick} disabled={isBlank}/>
                           :
-                          <Button color={inputValue==''?"default":"primary"} label="생성 하기" onClick={handleCreateButtonClick} disabled={inputValue==''}/>
+                          <Button color={inputValue==''?"default":"primary"} label="생성하기" onClick={handleCreateButtonClick} disabled={inputValue==''}/>
           }
         </div>
       </div>

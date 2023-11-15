@@ -108,20 +108,20 @@ def hello_world():
 
 @app.route(context_path + '/remove_bg', methods=['POST'])
 def remove_bg():
-    if request.method == 'POST' or request.method == 'GET':
-        data = request.get_json()
-        # # print(data)
-        user_image = data.get('image')
-        user_id = data.get('id')
+    if request.method == 'POST':
+        if 'image' not in request.files:
+            return '이미지 파일이 전송되지 않았습니다.', 400
+
+        file = request.files['image']
+        user_id = request.form.get('id')
+
+        if file and user_id:
+            image_data = file.read()
+
         # param_foreground = data.get('foreground')
         # param_background = data.get('background')
-        print('요청 들어옴: ', user_image, user_id)
+        # print('요청 들어옴: ', user_image, user_id)
 
-        # user_image_path = './static/images/resized_image.png'
-        # with open(user_image_path, "rb") as image_file:
-        #     image_data = image_file.read()
-
-        image_data = user_image
         image_filename = f"gen_img_{user_id}_{time.localtime().tm_year}_{time.localtime().tm_mon}_{time.localtime().tm_mday}_{time.localtime().tm_hour}{time.localtime().tm_min}{time.localtime().tm_sec}.jpg"
         image_path = os.path.join("static", "images", image_filename)
 
