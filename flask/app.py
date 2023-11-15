@@ -117,10 +117,11 @@ def remove_bg():
         # param_background = data.get('background')
         print('요청 들어옴: ', user_image, user_id)
 
-        user_image_path = './static/images/resized_image.png'
-        with open(user_image_path, "rb") as image_file:
-            image_data = image_file.read()
+        # user_image_path = './static/images/resized_image.png'
+        # with open(user_image_path, "rb") as image_file:
+        #     image_data = image_file.read()
 
+        image_data = user_image
         image_filename = f"gen_img_{user_id}_{time.localtime().tm_year}_{time.localtime().tm_mon}_{time.localtime().tm_mday}_{time.localtime().tm_hour}{time.localtime().tm_min}{time.localtime().tm_sec}.jpg"
         image_path = os.path.join("static", "images", image_filename)
 
