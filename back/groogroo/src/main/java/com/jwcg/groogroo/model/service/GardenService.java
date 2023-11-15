@@ -65,7 +65,7 @@ public class GardenService {
         else return makeURL();
     }
 
-    public String makeGarden(long userId, String name, String description, int capacity, int mapType){
+    public ResponseGardenGenerationDto makeGarden(long userId, String name, String description, int capacity, int mapType){
 
         // url 생성
         String url = makeURL();
@@ -103,25 +103,12 @@ public class GardenService {
 
         userGardenRepository.save(userGarden);
 
-        // 나무 배치 부분 제거.. 정원 꾸미기 API에 사용할듯
-//        TreeGarden treeGarden = TreeGarden.builder()
-//                .x(x)
-//                .y(y)
-//                .imageUrl(imageUrl)
-//                .build();
-//
-//        log.info("treeGarden setGarden");
-//        treeGarden.setGarden(garden);
-//        log.info("treeGarden setTree");
-//        treeGarden.setTree(user.getTree());
-//
-//        log.info("treeGarden 생성 성공" + treeGarden.getGarden().toString());
-//        log.info(treeGarden.getTree().toString());
-//
-//        treeGardenRepository.save(treeGarden);
-//        log.info("treeGarden 저장 성공");
+        ResponseGardenGenerationDto response = ResponseGardenGenerationDto.builder()
+                .gardenId(garden.getId())
+                .url(url)
+                .build();
 
-        return url;
+        return response;
     }
 
     @Transactional(readOnly = true)
