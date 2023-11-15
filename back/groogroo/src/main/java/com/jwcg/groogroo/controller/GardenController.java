@@ -591,4 +591,34 @@ public class GardenController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Operation(summary = "정원 가입 신청자 & 소속 멤버 조회", description = "가입 신청자 & 소속 멤버 목록 조회 API")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정원 멤버 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "정원 멤버 조회 실패 - 내부 서버 오류"),
+    })
+    @GetMapping("/member/{gardenId}")
+    public ResponseEntity<Map<String, Object>> getGardenMemberInfo(@PathVariable Long gardenId) {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            log.info("정원 가입 신청자 & 소속 멤버 조회");
+            List<ResponseGardenMemberInfoDto> waits = gardenService.getGardenWaitList(gardenId);
+            log.info("정원 가입 신청자 조회 성공");
+            List<ResponseGardenMemberInfoDto> members = gardenService.getGardenMemberList(gardenId);
+            log.info("정원 멤버 조회 성공");
+            response.put("httpStatus", SUCCESS);
+            response.put("message", "정원 가입 신청자 & 소속 멤버 조회 성공");
+            response.put("waitList", waits);
+            response.put("memberList", members);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            log.info("정원 가입 신청자 & 소속 멤버 조회 실패");
+            response.put("httpStatus", FAIL);
+            response.put("message", "정원 가입 신청자 & 소속 멤버 조회 실패");
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
