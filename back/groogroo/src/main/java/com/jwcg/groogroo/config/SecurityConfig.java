@@ -7,6 +7,7 @@ import com.jwcg.groogroo.filter.JwtAuthFilter;
 import com.jwcg.groogroo.filter.JwtExceptionFilter;
 import com.jwcg.groogroo.model.entity.UserRole;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -55,15 +56,15 @@ public class SecurityConfig {
                 // 나머지 요청은 인증 필요
                 .anyRequest().authenticated();
 
+
         //oauth2Login 설정
         http.oauth2Login(oauth2 -> oauth2
-//                        .authorizationEndpoint(authorization -> authorization
-//                                        .baseUri("/oauth2/authorize")  // 소셜 로그인 url
-//                                .authorizationRequestRepository(cookieAuthorizationRequestRepository)  // 인증 요청을 cookie에 저장
-//                        )
-//                        .redirectionEndpoint(redirection -> redirection
-//                                .baseUri("/oauth2/code/*")  // 소셜 인증 후 redirect url
-//                        )
+                        .authorizationEndpoint(authorization -> authorization
+                                        .baseUri("/oauth2/authorize")  // 소셜 로그인 url
+                        )
+                        .redirectionEndpoint(redirection -> redirection
+                                .baseUri("/*/oauth2/code/*")
+                        )
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)  // 회원 정보 처리
                         )
