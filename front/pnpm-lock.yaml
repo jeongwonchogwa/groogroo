@@ -23,6 +23,9 @@ dependencies:
   next:
     specifier: 13.5.4
     version: 13.5.4(react-dom@18.2.0)(react@18.2.0)
+  phaser:
+    specifier: '3.60'
+    version: 3.60.0
   phaser-animated-tiles-phaser3.5:
     specifier: ^2.0.5
     version: 2.0.5(phaser@3.60.0)

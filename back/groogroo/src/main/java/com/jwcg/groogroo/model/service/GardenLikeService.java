@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -219,6 +220,10 @@ public class GardenLikeService {
         int end = Math.min((start + pageable.getPageSize()), returnData.size());
 
         List<ResponseGardenRankingDto> gardensOnPage = returnData.subList(start, end);
+
+        Collections.sort(gardensOnPage, (o1, o2) -> {
+            return (int)o2.getLikes() - (int)o1.getLikes();
+        });
 
 //        return new PageImpl<>(gardensOnPage, pageable, returnData.size());
         return gardensOnPage;

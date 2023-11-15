@@ -141,7 +141,7 @@ public class GardenService {
                 .mapType(garden.getMapType())
                 .state(ug==null? null : ug.getJoinState().toString())
                 .build();
-
+        log.info("좋아요 개수: " + responseGardenInfoDto.getLikes());
         responseGardenInfoDto.setTreePos(new ArrayList<>());
         responseGardenInfoDto.setFlowerPos(new ArrayList<>());
 
