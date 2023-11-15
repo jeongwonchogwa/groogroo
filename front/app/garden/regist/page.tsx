@@ -13,7 +13,7 @@ const RegistPage = () => {
   const { userToken } = userInfoStore();
   const token = userToken;
 
-  const mapdata = ["/assets/maps/map[0].jpg", "/assets/maps/map[1].jpg"];
+  const mapdata = ["/assets/maps/map[1].jpg", "/assets/maps/map[2].jpg"];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -55,7 +55,7 @@ const RegistPage = () => {
     name: name,
     description: description,
     capacity: capacity,
-    mapType: currentIndex + 1,
+    mapType: currentIndex,
   };
 
   const fetchCreate = async (data: object) => {
