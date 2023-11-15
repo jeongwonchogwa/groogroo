@@ -39,7 +39,6 @@ const SearchTreeFruitsPage = () => {
     }
   };
   const name = useSearchParams().get("name");
-  console.log(name);
   const { data, isLoading, isError } = useQuery(["searchResultData"], () =>
     fetchSearch(name as string)
   );

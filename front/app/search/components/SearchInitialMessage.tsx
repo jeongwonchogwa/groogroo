@@ -8,16 +8,16 @@ const SearchInitnalMessage = () => {
         height={500}
         content={
           <div className="h-full bg-white">
-            <div className="w-full h-full flex justify-center mx-3">
+            <div className="w-full h-full flex justify-center mx-auto">
               <Image
                 src="/assets/images/cat_pixel.svg"
-                width={80}
+                width={70}
                 height={104}
                 alt="고양이_픽셀"
               />
               <div className="h-fit my-auto">
                 <div className="nes-balloon from-left flex items-center ">
-                  <p className=" font-neoDunggeunmo_Pro mt-[-5px]">
+                  <p className=" font-neoDunggeunmo_Pro text-sm ">
                     검색어를 입력하세요!
                   </p>
                 </div>

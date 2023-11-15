@@ -38,21 +38,21 @@ const SearchTreeContainer = ({ searchData }: Props) => {
                   </p>
                 </div>
               </div>
-              <div className="mx-auto">
-                {/* 나도 모르겠다 */}
+              <div className="mx-auto h-full">
                 <Link
                   href={{
-                    pathname: `/search/result/fruits`,
-                    query: { name: searchData.name },
+                    pathname: `/search/${searchData.id}/fruits`,
                   }}
                 >
-                  <Image
-                    src={searchData.imageUrl}
-                    alt="나무테스트"
-                    width={300}
-                    height={300}
-                    priority
-                  />
+                  <div className="h-[300px] flex justify-center">
+                    <Image
+                      src={searchData.imageUrl}
+                      alt="검색결과 나무"
+                      width={300}
+                      height={300}
+                      priority
+                    />
+                  </div>
                 </Link>
               </div>
             </div>

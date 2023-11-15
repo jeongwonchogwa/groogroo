@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import FruitMessageContainer from "./components/FruitMessageContainer";
 import TreeSection from "./components/TreeSection";
 import { userInfoStore } from "@/stores/userInfoStore";
