@@ -1,0 +1,84 @@
+import Button from "@/app/components/Button";
+import { Preset, Tree } from "@/app/types";
+import { userInfoStore } from "@/stores/userInfoStore";
+import { useRouter } from "next/navigation";
+
+interface Props {
+  data: Preset;
+  userTree: Tree;
+}
+const UpdatePreset = ({ data, userTree }: Props) => {
+  const router = useRouter();
+
+  const { userToken } = userInfoStore();
+  console.log(userTree.name);
+
+  const newData: {
+    imageUrl: string;
+    name: string;
+  } = {
+    imageUrl: data.imageUrl,
+    name: userTree.name,
+  };
+
+  const clickChange = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: `Bearer ${userToken}`,
+          },
+          body: JSON.stringify(newData),
+        }
+      );
+      if (response.status === 200) {
+        console.log(newData);
+        // 사실 모달을 띄워야 할 것 같긴한데..ㅎ
+        const responseData = await response.json();
+        router.push("/home");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchDelete = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/preset/${data.treeUserPresetId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (response.status === 200) {
+        // 사실 모달을 띄워야 할 것 같긴한데..ㅎ
+        const responseData = await response.json();
+        router.push("/home");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  return (
+    <div className="flex flex-col p-2 mt-5">
+      <div className=" text-center  font-neoDunggeunmo_Pro text-2xl">
+        변경할 프리셋을 선택하세요
+      </div>
+      <div className="mt-3 p-6">
+        {data.treeUserPresetId === 0 ? (
+          <Button color="secondary" label="변경하기" onClick={clickChange} />
+        ) : (
+          <div className="grid grid-flow-col gap-4">
+            <Button color="error" label="삭제하기" onClick={fetchDelete} />
+            <Button color="secondary" label="변경하기" onClick={clickChange} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default UpdatePreset;

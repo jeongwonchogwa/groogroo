@@ -55,7 +55,7 @@ const RegistPage = () => {
     name: name,
     description: description,
     capacity: capacity,
-    mapType: currentIndex,
+    mapType: currentIndex + 1,
   };
 
   const fetchCreate = async (data: object) => {
@@ -74,7 +74,7 @@ const RegistPage = () => {
 
       if (response.status === 200) {
         const responseData = await response.json();
-        const gardenUrl = responseData.url;
+        const gardenUrl = responseData.url + responseData.gardenId;
         router.push(`/garden/${gardenUrl}`);
       }
     } catch (error) {

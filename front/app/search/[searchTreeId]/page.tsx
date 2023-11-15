@@ -8,11 +8,10 @@ import SearchTreeContainer from "./components/SearchTreeContainer";
 import SearchCreateFruits from "./components/SearchCreateFruits";
 import PixelCard from "@/app/components/PixelCard";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/app/components/Loading";
 
-const SearchTreePage = () => {
+const SearchTreePage = ({ params }: { params: { treeId: number } }) => {
   // const sessionData = sessionStorage.getItem("userInfo");
   // let userToken = "";
   // if (sessionData) {
@@ -32,9 +31,9 @@ const SearchTreePage = () => {
   useEffect(() => {
     if (userToken === "") redirect("/");
   }, [userToken]);
+  // console.log(params.treeId)
 
   // const userInfoString = sessionStorage.getItem("userInfo");
-  const name = useSearchParams().get("name");
 
   const [createFruit, setCreateFruit] = useState<boolean>(false);
 
@@ -43,13 +42,10 @@ const SearchTreePage = () => {
   };
 
   // 검색 결과 가져오기
-  const fetchSearch = async (name: string) => {
-    if (name === "") {
-      return;
-    }
+  const fetchSearch = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/${name}`,
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/detail/${params.treeId}`,
         {
           method: "GET",
           headers: {
@@ -59,14 +55,16 @@ const SearchTreePage = () => {
         }
       );
       const data = await response.json();
-      return data.trees[0];
+      console.log(data.tree);
+      return data.tree;
     } catch (error) {
       console.log(error);
     }
   };
 
-  const { data, isLoading, isError } = useQuery(["searchResultData"], () =>
-    fetchSearch(name as string)
+  const { data, isLoading, isError } = useQuery(
+    ["searchResultData"],
+    fetchSearch
   );
 
   if (isLoading) {
@@ -96,7 +94,13 @@ const SearchTreePage = () => {
             e.stopPropagation();
           }}
         >
-          <div className="flex flex-col items-center justify-center gap-2 pt-20">
+          <div className="flex flex-row items-center justify-center gap-2 pt-20">
+            <Image
+              alt="currentTree"
+              src={data.imageUrl}
+              width={250}
+              height={200}
+            />
             <PixelCard
               content={
                 <div className="bg-white font-bitBit py-2 px-3 text-xl">
@@ -104,12 +108,6 @@ const SearchTreePage = () => {
                 </div>
               }
             ></PixelCard>
-            <Image
-              alt="currentTree"
-              src={data.imageUrl}
-              width={250}
-              height={200}
-            />
             <div className="px-3">
               <SearchCreateFruits
                 onFormCloseButtonClick={onFormCloseButtonClick}

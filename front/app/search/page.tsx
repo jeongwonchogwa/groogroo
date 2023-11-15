@@ -45,7 +45,7 @@ const SearchPage = () => {
     }
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/${name}`,
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/search/${name}`,
         {
           method: "GET",
           headers: {

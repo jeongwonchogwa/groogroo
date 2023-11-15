@@ -3,16 +3,18 @@
 // 사실 이거는 놀랍게도 Gardens의 Header와 같아요.
 
 import IconButton from "@/app/components/IconButton";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { MenuButton } from "@/app/types";
 import HomeMenu from "./HomeMenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Alarm from "@/app/components/Alarm";
 import ButtonModal from "@/app/components/ButtonModal";
 import Button from "@/app/components/Button";
 import { searchTreeStore } from "@/stores/searchTreeInfo";
 import Link from "next/link";
+import { userInfoStore } from "@/stores/userInfoStore";
+import AudioPlayer from "./AudioPlayer";
 
 interface HomeHeaderProps {
   handlemenu: () => void;
@@ -23,9 +25,15 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
 
+  const { userToken } = userInfoStore();
+  useEffect(() => {
+    if (userToken === "") {
+      redirect("/");
+    }
+  }, [userToken]);
+
   const [openAlarm, setOpenAlarm] = useState<boolean>(false);
 
-  // 모달 키는지 끄는지
   const onAlarmButtonClick = () => {
     setOpenAlarm((prev) => !prev);
   };
@@ -36,12 +44,29 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
     setOpenUpdate((prev) => !prev);
   };
 
-  // 이건 맞으려나..
-  const { searchTreeInfoData } = searchTreeStore();
-
+  const fetchLogout = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        const responseData = await response.json();
+        console.log(responseData);
+        router.push("/enter");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const menuList: MenuButton[] = [
-    // link가 아니라 router로 해버렸다..
-    { name: "로그아웃", clickEvent: () => {} },
+    { name: "로그아웃", clickEvent: () => fetchLogout() },
     {
       name: "문의하기",
       clickEvent: () => router.push("http://pf.kakao.com/_xoIkxbG"),

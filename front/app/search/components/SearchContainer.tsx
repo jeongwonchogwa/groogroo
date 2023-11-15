@@ -30,8 +30,7 @@ const SearchContainer = ({ searchData }: SearchContainerProp) => {
                       data.id === userTree?.id
                         ? { pathname: `/home/${data.id}` }
                         : {
-                            pathname: `/search/result`,
-                            query: { name: data.name },
+                            pathname: `/search/${data.id}`,
                           }
                     }
                   >

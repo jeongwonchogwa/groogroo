@@ -23,7 +23,7 @@ const config: Config = {
         },
       },
       animation: {
-        typing: "typing 5s steps(19) infinite alternate, infinite",
+        typing: "typing 5s steps(18) infinite alternate, infinite",
       },
       backgroundImage: {
         "background-pixel": "url('/assets/images/background.png')",
