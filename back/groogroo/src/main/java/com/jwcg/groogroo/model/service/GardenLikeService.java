@@ -116,16 +116,16 @@ public class GardenLikeService {
      */
     public void cancelLikeGarden(long userId, long gardenId) {
         GardenLike gardenLike = gardenLikeRepository.findByUserIdAndGardenId(userId, gardenId);
-        MySQLGardenLike mySQLGardenLike = mySQLGardenLikeRepository.findByUserIdAndGardenId(userId, gardenId);
 
         if (gardenLike != null) {
             log.info("Redis의 {} garden like 삭제 시도", gardenLike.getId());
-            gardenLikeRepository.delete(gardenLike);
+            gardenLikeRepository.deleteById(gardenLike.getId());
         }
 
+        MySQLGardenLike mySQLGardenLike = mySQLGardenLikeRepository.findByUserIdAndGardenId(userId, gardenId);
         if (mySQLGardenLike != null) {
             log.info("MySQL의 {} garden like 삭제 시도", mySQLGardenLike.getId());
-            mySQLGardenLikeRepository.delete(mySQLGardenLikeRepository.findByUserIdAndGardenId(userId, gardenId));
+            mySQLGardenLikeRepository.deleteById(mySQLGardenLike.getId());
         }
     }
 
