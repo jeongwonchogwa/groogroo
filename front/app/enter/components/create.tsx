@@ -23,20 +23,24 @@ const Create = () => {
   const [imageData, setImageData] = useState('');
   const [imageName, setImageName] = useState('');
   const [isBlank, setIsBlank] = useState<boolean>(true);
+  const [userId, setUserId] = useState('');
 
-  const userInfoString = sessionStorage.getItem('userInfo');
-  if (!userInfoString) {
-    router.push('/enter');
-    throw new Error('사용자 정보가 없습니다.');
-  }
+  useEffect(() => {
+    const userInfoString = sessionStorage.getItem('userInfo');
+    if (!userInfoString) {
+      router.push('/enter');
+      throw new Error('사용자 정보가 없습니다.');
+    }
 
-  const userInfo = JSON.parse(userInfoString);
-  const accessToken = userInfo?.state?.userToken;
+    const userInfo = JSON.parse(userInfoString);
+    const accessToken = userInfo?.state?.userToken;
 
-  const base64Url = accessToken.split('.')[1]; // JWT의 payload 부분 추출
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const payload = JSON.parse(atob(base64));
-  const userId = payload.id;
+    const base64Url = accessToken.split('.')[1]; // JWT의 payload 부분 추출
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const payload = JSON.parse(atob(base64));
+    setUserId(payload.id);
+  }, []);
+  
   
 	const redirectHome = () => {
     router.push('/home');
