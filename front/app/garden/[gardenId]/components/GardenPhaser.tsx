@@ -126,8 +126,6 @@ const GardenPhaser = (props: Props) => {
     queryFn: fetchGardenInfo,
   });
 
-  useEffect(() => {}, []);
-
   useEffect(() => {
     const initPhaser = () => {
       //씬 생성시 매개변수로 추가된 데이터들은 constructor에서 불러옴

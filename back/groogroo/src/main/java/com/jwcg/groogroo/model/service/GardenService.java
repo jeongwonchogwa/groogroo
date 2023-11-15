@@ -508,4 +508,46 @@ public class GardenService {
             return null;
         }
     }
+
+    // 가입 신청자 목록
+    public List<ResponseGardenMemberInfoDto> getGardenWaitList(Long gardenId) {
+
+        List<UserGarden> userGardens = userGardenRepository.findAllByGardenIdAndJoinStateAndDeleteDateIsNull(gardenId, JoinState.WAIT);
+
+        List<ResponseGardenMemberInfoDto> waits = new ArrayList<>();
+
+        for(UserGarden userGarden : userGardens){
+            Tree tree = userGarden.getUser().getTree();
+            ResponseGardenMemberInfoDto responseGardenMemberInfoDto = ResponseGardenMemberInfoDto.builder()
+                    .userId(userGarden.getUser().getId())
+                    .treeName(tree==null ? null : tree.getName())
+                    .gardenRole("MEMBER")
+                    .build();
+
+            waits.add(responseGardenMemberInfoDto);
+        }
+
+        return waits;
+    }
+
+    // 소속 멤버 목록
+    public List<ResponseGardenMemberInfoDto> getGardenMemberList(Long gardenId) {
+
+        List<UserGarden> userGardens = userGardenRepository.findAllByGardenIdAndJoinStateAndDeleteDateIsNull(gardenId, JoinState.ACCEPT);
+
+        List<ResponseGardenMemberInfoDto> members = new ArrayList<>();
+
+        for(UserGarden userGarden : userGardens){
+            Tree tree = userGarden.getUser().getTree();
+            ResponseGardenMemberInfoDto responseGardenMemberInfoDto = ResponseGardenMemberInfoDto.builder()
+                    .userId(userGarden.getUser().getId())
+                    .treeName(tree==null ? null : tree.getName())
+                    .gardenRole(userGarden.getGardenRole().toString())
+                    .build();
+
+            members.add(responseGardenMemberInfoDto);
+        }
+
+        return members;
+    }
 }

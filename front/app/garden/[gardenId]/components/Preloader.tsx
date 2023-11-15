@@ -28,6 +28,10 @@ export default class Preloader extends Scene {
 
     //사용하는 타일맵. 한종류밖에 없음.
     this.load.image("tileset", "/assets/tileset.png");
+    this.load.image(
+      "tileset_basic_terrain",
+      "/assets/tileset_basic_terrain.png"
+    );
 
     //UI로 사용할 이미지
     this.load.image("plusButton", "/assets/images/plus.svg");

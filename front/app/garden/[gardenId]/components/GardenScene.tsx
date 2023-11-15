@@ -26,7 +26,7 @@ export default class GardenScene extends Scene {
   private onTreeSelectOpenButtonClick!: () => void;
   private myTree!: Tree;
   private likeCheck!: boolean;
-  private likeCountText!: Text;
+  private likeCount!: number;
   public modalCheck!: boolean;
 
   constructor(props: Props) {
@@ -108,8 +108,10 @@ export default class GardenScene extends Scene {
           }
         );
         const data = await res.json();
+        console.log(data);
         return data;
       } catch (error) {
+        console.log("좋아요 정보 가져오기 실패");
         console.log(error);
       }
     };
@@ -149,6 +151,7 @@ export default class GardenScene extends Scene {
           if (data.httpStatus === "success") {
             this.heartButton.src = "/assets/images/heart_empty.svg";
             this.likeCheck = false;
+            this.likeCount -= 1;
           }
           return data;
         } catch (error) {
@@ -172,6 +175,7 @@ export default class GardenScene extends Scene {
           if (data.httpStatus === "success") {
             this.heartButton.src = "/assets/images/heart_fill.svg";
             this.likeCheck = true;
+            this.likeCount += 1;
           }
           return data;
         } catch (error) {
@@ -367,10 +371,22 @@ export default class GardenScene extends Scene {
       .setScrollFactor(0, 0);
     this.title.node.appendChild(titleBox);
     this.title.setClassName("!flex justify-center");
-    this.title.setPosition(
-      window.innerWidth / 2 - 220 / this.cameras.main.zoom,
-      window.innerHeight / 2 - 440 / this.cameras.main.zoom
-    );
+
+    if (window.innerHeight >= window.innerWidth) {
+      this.title.setPosition(
+        window.innerWidth / 2 - window.innerWidth / this.cameras.main.zoom / 2,
+        window.innerHeight / 2 -
+          window.innerHeight / 2 / this.cameras.main.zoom +
+          20 / this.cameras.main.zoom
+      );
+    } else {
+      this.title.setPosition(
+        window.innerWidth / 2 - window.innerWidth / this.cameras.main.zoom / 2,
+        window.innerHeight / 2 -
+          window.innerHeight / 2 / this.cameras.main.zoom +
+          20 / this.cameras.main.zoom
+      );
+    }
 
     //에셋추가 모달 박스 생성, CSS 설정
     const registModalBox = document.createElement("div");
@@ -512,15 +528,13 @@ export default class GardenScene extends Scene {
         window.innerWidth / 2 - window.innerWidth / this.cameras.main.zoom / 2,
         window.innerHeight / 2 + 160 - 60 / this.cameras.main.zoom
       );
-      // console.log(this.footer.x + " " + this.footer.y);
     } else {
       this.footer.setPosition(
-        0,
-        160 -
-          60 / this.cameras.main.zoom +
-          window.innerHeight / this.cameras.main.zoom / 2
+        window.innerWidth / 2 - window.innerWidth / this.cameras.main.zoom / 2,
+        window.innerHeight / 2 +
+          window.innerHeight / 2 / this.cameras.main.zoom -
+          20
       );
-      // console.log(this.footer.x + " " + this.footer.y);
     }
 
     // console.log(this.footer.x + " " + this.footer.y);
@@ -540,8 +554,9 @@ export default class GardenScene extends Scene {
 
     const likeCount = document.createElement("div");
     likeCount.className = "font-bitbit text-lg";
-    this.likeCountText = document.createTextNode(currentLikeCnt.toString());
-    likeCount.appendChild(this.likeCountText);
+    this.likeCount = this.garden.likes!;
+    const likeCountText = document.createTextNode(this.likeCount.toString());
+    likeCount.appendChild(likeCountText);
 
     heartMenuSet.appendChild(this.heartButton);
     heartMenuSet.appendChild(likeCount);
@@ -593,8 +608,8 @@ export default class GardenScene extends Scene {
     // this.flowerButton.addEventListener("click", onFlowerButtonClick);
 
     if (this.garden.state !== "ACCEPT") {
-      // this.plusButton.style.display = "none";
-      // this.treeButton.style.display = "none";
+      this.plusButton.style.display = "none";
+      this.treeButton.style.display = "none";
     }
 
     //그리드엔진 설정///////////////////////////////////////////////////
@@ -607,17 +622,5 @@ export default class GardenScene extends Scene {
     this.gridEngine.create(map, gridEngineConfig);
   }
 
-  update() {
-    this.heartButton.addEventListener("click", () => {
-      if (this.likeCheck) {
-        this.likeCountText = document.createTextNode(
-          (this.garden.likes! - 1).toString()
-        );
-      } else if (!this.likeCheck) {
-        this.likeCountText = document.createTextNode(
-          (this.garden.likes! + 1).toString()
-        );
-      }
-    });
-  }
+  update() {}
 }

@@ -2,6 +2,7 @@ package com.jwcg.groogroo.repository;
 
 import com.jwcg.groogroo.model.entity.Garden;
 import com.jwcg.groogroo.model.entity.GardenRole;
+import com.jwcg.groogroo.model.entity.JoinState;
 import com.jwcg.groogroo.model.entity.UserGarden;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -19,4 +20,5 @@ public interface UserGardenRepository extends JpaRepository<UserGarden, Long> {
 
     List<UserGarden> findAllByGardenId(long gardenId);
 
+    List<UserGarden> findAllByGardenIdAndJoinStateAndDeleteDateIsNull(Long gardenId, JoinState joinState);
 }
