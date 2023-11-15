@@ -134,7 +134,7 @@ const Create = () => {
     if (imgData != '') {
       console.log("flask에 요청 보낸다!");
       try {
-        const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/remove_background`, {
+        const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/remove_bg`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'
