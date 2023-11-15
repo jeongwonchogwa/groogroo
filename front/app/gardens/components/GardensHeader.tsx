@@ -73,7 +73,7 @@ const GardensHeader = ({
         <div className="flex w-full mt-5 justify-between px-5">
           <div className="ml-2">
             <div className="w-10 h-10">
-              <IconButton iconSrc="back" onClick={() => router.back()} />
+              <IconButton iconSrc="back" onClick={() => router.push("/home")} />
             </div>
           </div>
           <div className="flex flex-row gap-3">

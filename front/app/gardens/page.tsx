@@ -4,11 +4,9 @@ import GardensHeader from "./components/GardensHeader";
 import GardenCard from "./components/GardenCard";
 
 import { Garden } from "../types";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { redirect } from "next/navigation";
 import { userInfoStore } from "@/stores/userInfoStore";
-
-//userToken은 local에서 꺼내와야함
 
 const GardensPage = () => {
   // let userToken = "";
@@ -39,19 +37,26 @@ const GardensPage = () => {
   const [gardenList, setGardenList] = useState<Garden[]>([]);
 
   const [pageNumber, setPageNumber] = useState<number>(0);
+  const [noDataMessage, setNoDataMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasNext, setHasNext] = useState<boolean>(true);
+  const loader = useRef(null);
 
   const [sort, setSort] = useState<string>("내 정원");
 
+  // GardenCard의 스크롤을 조작하기 위한 ref
+  const gardenCardRef = useRef<HTMLDivElement | null>(null);
+
+  // sort가 변경될 때마다 GardenCard의 스크롤을 맨 위로 이동
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    console.log(sort);
+    if (gardenCardRef.current) {
+      gardenCardRef.current.scrollTop = 0;
+    }
   }, [sort]);
 
-  console.log("무한?");
   const clickText = (e: any) => {
     const newSort = e.target.innerText;
     setSort(newSort);
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
@@ -64,6 +69,8 @@ const GardensPage = () => {
 
   const fetchGardenList = useCallback(
     async (pageNumber: number) => {
+      console.log(pageNumber);
+      setLoading(true);
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/list/${pageNumber}`,
@@ -77,7 +84,12 @@ const GardensPage = () => {
         if (response.status === 200) {
           const responseData = await response.json();
           setGardenList(responseData.gardenInfo.content);
+          setHasNext(true);
+        } else if (response.status === 500) {
+          setNoDataMessage("데이터가 없습니다.");
+          setHasNext(false);
         }
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -87,6 +99,7 @@ const GardensPage = () => {
 
   const fetchGardenRankingList = useCallback(
     async (pageNumber: number) => {
+      setLoading(true);
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/ranking/${pageNumber}`,
@@ -100,7 +113,12 @@ const GardensPage = () => {
         if (response.status === 200) {
           const responseData = await response.json();
           setGardenList(responseData.ranking);
+          setHasNext(true);
+        } else if (response.status === 500) {
+          setNoDataMessage("데이터가 없습니다.");
+          setHasNext(false);
         }
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -108,7 +126,31 @@ const GardensPage = () => {
     [userToken]
   );
 
-  // todo. 스크롤 맨 위로 올리는 코드가 필요
+  useEffect(() => {
+    if (window) {
+      const handleScroll = () => {
+        // 사용자가 페이지 하단에 도달했는지 확인
+        if (
+          window.innerHeight + document.documentElement.scrollTop >=
+          document.documentElement.offsetHeight
+        ) {
+          // hasNext 상태를 확인하여 더 불러올 데이터가 있는지 확인
+          if (hasNext) {
+            setPageNumber((prev) => prev + 1);
+          }
+        }
+      };
+
+      // 스크롤 이벤트 리스너 추가
+      window.addEventListener("scroll", handleScroll);
+
+      // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, [hasNext]);
+
   useEffect(() => {
     if (sort === "내 정원") {
       fetchGardenList(pageNumber);
@@ -124,10 +166,11 @@ const GardensPage = () => {
         handlemenu={() => handlemenu()}
         menuOpen={menuOpen}
       />
-      {/* h는 뭐로 줘야 */}
-      <div className="h-[650px] overflow-scroll mt-3">
+      <div className="h-[650px] overflow-scroll mt-3" ref={gardenCardRef}>
         <div className="flex w-full flex-col">
           <GardenCard sort={sort} gardenList={gardenList} />
+          {/* <div ref={loader}>Loading more...</div>
+          {noDataMessage && <div>{noDataMessage}</div>} */}
         </div>
       </div>
     </div>
