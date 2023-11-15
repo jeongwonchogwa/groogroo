@@ -14,7 +14,6 @@ import Button from "@/app/components/Button";
 import { searchTreeStore } from "@/stores/searchTreeInfo";
 import Link from "next/link";
 import { userInfoStore } from "@/stores/userInfoStore";
-import AudioPlayer from "./AudioPlayer";
 
 interface HomeHeaderProps {
   handlemenu: () => void;

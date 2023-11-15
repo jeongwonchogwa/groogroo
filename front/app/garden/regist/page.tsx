@@ -75,6 +75,8 @@ const RegistPage = () => {
       if (response.status === 200) {
         const responseData = await response.json();
         const gardenUrl = responseData.url + responseData.gardenId;
+        console.log(responseData);
+        console.log(gardenUrl);
         router.push(`/garden/${gardenUrl}`);
       }
     } catch (error) {
