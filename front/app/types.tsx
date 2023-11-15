@@ -95,6 +95,7 @@ export interface Garden {
   likes?: number;
   treePos?: Tree[];
   flowerPos?: Flower[];
+  gardenRole?: "MASTER" | "ADMIN" | "MEMBER" | null;
 }
 
 export interface Report {

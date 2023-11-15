@@ -28,6 +28,7 @@ export default class TreeEditScene extends Scene {
   private modifyTreeGardenId?: number;
   private garden: Garden;
   private selectedTreeHandle!: string;
+  private currentTime!: string;
 
   constructor(props: Props) {
     super("treeEditScene");
@@ -58,13 +59,19 @@ export default class TreeEditScene extends Scene {
       "animatedTiles",
       "animatedTiles"
     );
-    console.log("프리로드에서", this.selectedTreeUrl);
+    console.log(this.textures.list);
+    this.currentTime = " " + new Date().getTime();
 
+    console.log("없음");
     this.load
-      .spritesheet("selectedTree", this.selectedTreeUrl, {
-        frameWidth: 128,
-        frameHeight: 128,
-      })
+      .spritesheet(
+        "selectedTree" + this.currentTime,
+        this.selectedTreeUrl + "?timestamp=" + new Date().getTime(),
+        {
+          frameWidth: 128,
+          frameHeight: 128,
+        }
+      )
       .setCORS("anonymous");
   }
 
@@ -73,7 +80,7 @@ export default class TreeEditScene extends Scene {
     console.log("텍스쳐리스트", this.textures.list);
     console.log(
       "목록에서 selectedTree 가져오기",
-      this.textures.get("selectedTree")
+      this.textures.get("selectedTree" + this.currentTime)
     );
     // cancelButton.style.display = "flex"
     // cancelButton.style.width = "100%"
@@ -125,7 +132,7 @@ export default class TreeEditScene extends Scene {
 
     if (this.selectedTreeUrl) {
       this.assetSprite = this.physics.add
-        .sprite(0, 0, "selectedTree")
+        .sprite(0, 0, "selectedTree" + this.currentTime)
         .setScale(0.25)
         .setDepth(3)
         .setOrigin(0, 0);

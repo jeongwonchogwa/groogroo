@@ -5,6 +5,7 @@ import { userInfoStore } from "@/stores/userInfoStore";
 
 interface Props {
   onJoinButtonClick: () => void;
+  onFormCloseButtonClick: () => void;
   gardenId: number;
 }
 
@@ -38,7 +39,7 @@ const JoinModal = (props: Props) => {
       <ButtonModal
         isOpenModal={true}
         handleModal={props.onJoinButtonClick}
-        state="error"
+        state="success"
         title="정원 가입"
         content={<div>가입 요청을 보내시겠습니까?</div>}
         button={
@@ -47,11 +48,11 @@ const JoinModal = (props: Props) => {
               color="default"
               label="취소"
               onClick={() => {
-                props.onJoinButtonClick();
+                props.onFormCloseButtonClick();
               }}
             />
             <Button
-              color="error"
+              color="primary"
               label="가입하기"
               onClick={() => {
                 handleJoin();

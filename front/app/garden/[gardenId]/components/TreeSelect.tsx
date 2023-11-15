@@ -18,17 +18,6 @@ interface Props {
 const TreeSelect = (props: Props) => {
   const { userToken } = userInfoStore();
   const [treeNumber, setTreeNumber] = useState<number>(0);
-  // const [treeList, setTreeList] = useState<Preset[]>([]);
-  // const treeList = [
-  //   "/assets/trees/tree[0].svg",
-  //   "/assets/trees/tree[1].svg",
-  //   "/assets/trees/tree[2].svg",
-  //   "/assets/trees/tree[3].svg",
-  //   "/assets/trees/tree[4].svg",
-  //   "/assets/trees/tree[5].svg",
-  //   "/assets/trees/tree[6].svg",
-  //   "/assets/trees/tree[7].svg",
-  // ];
   const prevTree = () => {
     if (treeNumber === 0) {
       setTreeNumber(treeList.presets.length - 1);
