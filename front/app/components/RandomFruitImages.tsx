@@ -44,6 +44,7 @@ const RandomFruitImages = ({
       randomImages.push(fruitImages[randomIndex]);
     }
     setSelectedImages(randomImages);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fruitsCount]);
 
   const getImageStyle = (count: number) => {
