@@ -1,6 +1,9 @@
 import { userTreeStore } from "@/stores/userTreeStore";
 import ButtonModal from "./ButtonModal";
 import Button from "./Button";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import useUserToken from "../hooks/useUserToken";
+import { useRouter } from "next/navigation";
 
 interface Props {
   handleDeleteModal: () => void;
@@ -8,28 +11,39 @@ interface Props {
 }
 
 const DeleteModal = (props: Props) => {
-  const { userTree, setUserTree } = userTreeStore();
-  // 삭제 버튼 누르고 나면 실행할 함수
-  const handleDelete = (id: number) => {
-    fetchDelete(id);
-  };
+  const queryClient = useQueryClient();
 
-  const fetchDelete = (id: number) => {
-    fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/fruit/${id}`, {
-      method: "DELETE",
-    }).then((res) => {
-      if (res.status === 200) {
-        if (userTree) {
-          const updatedUserTree = { ...userTree };
-          updatedUserTree.fruits = userTree?.fruits?.filter(
-            (fruit) => fruit.id !== id
-          );
-          setUserTree(updatedUserTree);
+  // 삭제 로직을 useMutation으로 처리
+  const { mutate } = useMutation(
+    async (id: number) => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/fruit/${id}`,
+        {
+          method: "DELETE",
         }
-      } else {
-        console.log("삭제 실패");
+      );
+
+      if (!response.ok) {
+        throw new Error("삭제 실패");
       }
-    });
+
+      return id;
+    },
+    {
+      onSuccess: (id) => {
+        // 성공 후 캐시 업데이트
+        queryClient.setQueryData(["userTree"], (oldData: any) => {
+          return {
+            ...oldData,
+            fruits: oldData?.fruits?.filter((fruit: any) => fruit.id !== id),
+          };
+        });
+      },
+    }
+  );
+
+  const handleDelete = (id: number) => {
+    mutate(id);
   };
 
   return (
