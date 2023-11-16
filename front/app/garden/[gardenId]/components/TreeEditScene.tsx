@@ -226,7 +226,8 @@ export default class TreeEditScene extends Scene {
               },
               body: JSON.stringify({
                 gardenId: this.garden.gardenId,
-                imageUrl: this.selectedTreeUrl,
+                imageUrl:
+                  this.selectedTreeUrl + "?timestamp=" + new Date().getTime(),
                 x: this.gridEngine.getPosition("selectedTree").x,
                 y: this.gridEngine.getPosition("selectedTree").y,
                 preset: true,
@@ -250,7 +251,7 @@ export default class TreeEditScene extends Scene {
             const gardenData = await res.json();
             console.log(gardenData);
             //@ts-ignore
-            props.game!.scene.getScene("preloader").garden =
+            this.game.scene.getScene("preloader").garden =
               gardenData.gardenInfo;
 
             console.log();
