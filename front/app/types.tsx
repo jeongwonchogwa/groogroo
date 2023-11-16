@@ -90,6 +90,7 @@ export interface Garden {
   imageUrl?: string;
   mapType?: number;
   capacity: number;
+  master?: string;
   state: "ACCEPT" | "REFUSE" | "KICK" | "WAIT" | "WITHDRAWAL" | null;
   memberCnt?: number;
   likes?: number;

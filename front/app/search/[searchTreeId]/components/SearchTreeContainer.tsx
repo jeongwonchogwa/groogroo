@@ -1,4 +1,3 @@
-"use client";
 //todo. 이미지 사이즈를 그냥 w, h로 박아넣고 있는데 이게 맞는지 모르게쪄
 //정재웅 얼른 돌아와.
 import Button from "@/app/components/Button";

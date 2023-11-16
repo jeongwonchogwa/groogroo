@@ -8,6 +8,8 @@ import { MenuButton } from "@/app/types";
 import { useEffect, useState } from "react";
 import Alarm from "@/app/components/Alarm";
 import { userInfoStore } from "@/stores/userInfoStore";
+import useUserToken from "@/app/hooks/useUserToken";
+import useSearchTree from "@/app/hooks/useSearchTree";
 
 // Todo. HomeHeader와 GardensHeader는 완벽하게 같아요 왜 너는 안 합치고 있나요? 머리가 안돌아가세여?
 interface GardenHeaderProp {
@@ -23,12 +25,14 @@ const GardensHeader = ({
 }: GardenHeaderProp) => {
   const router = useRouter();
 
-  const { userToken } = userInfoStore();
+  const userToken = useUserToken();
+  const { treeId, loading, error } = useSearchTree(userToken);
+
   useEffect(() => {
-    if (userToken === "") {
-      redirect("/");
+    if (!loading && !error && treeId === null) {
+      redirect("/enter/terms");
     }
-  }, [userToken]);
+  }, [loading, error, treeId]);
 
   const [openAlarm, setOpenAlarm] = useState(false);
 
@@ -100,18 +104,8 @@ const GardensHeader = ({
       </div>
       <div className="mt-[30px] mx-5">
         <div className="grid grid-flow-col gap-2">
-          {/* <Button color="primary" label="내 정원" onClickText={clickText} /> */}
           <Button color="primary" label="내 정원" onClickText={clickText} />
           <Button color="white" label="정원 랭킹" onClickText={clickText} />
-          {/* <Button
-            color="white"
-            label="정원 랭킹"
-            onClickText={(e) => {
-              clickText(e);
-              window.scrollTo(0, 0);
-              console.log("왜 맨위로 안가");
-            }}
-          /> */}
         </div>
       </div>
       {menuOpen ? <GardensMenu menuList={menuList}></GardensMenu> : null}

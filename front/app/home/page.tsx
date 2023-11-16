@@ -1,35 +1,43 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import HomeFooter from "./components/HomeFooter";
 import TreeContainer from "./components/TreeContainer";
 import { userInfoStore } from "@/stores/userInfoStore";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { userTreeStore } from "@/stores/userTreeStore";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../components/Loading";
+import { fetchWithTokenCheck } from "../components/FetchWithTokenCheck";
+import useSearchTree from "../hooks/useSearchTree";
+import useUserToken from "../hooks/useUserToken";
 
 const HomePage = () => {
-  // 토큰 session에 있는 걸로 가져와야함
-  const { userToken } = userInfoStore();
+  const userToken = useUserToken();
+  const { treeId, loading, error } = useSearchTree(userToken);
 
   useEffect(() => {
-    // 경로 수정 필요
-    if (userToken === "") redirect("/enter");
-  }, [userToken]);
+    if (!loading && !error && treeId === null) {
+      redirect("/enter/terms");
+    }
+  }, [loading, error, treeId]);
 
   const { setUserTree } = userTreeStore();
+  const router = useRouter();
 
   const fetchTreeData = async () => {
+    if (!userToken) return; // userToken이 없으면 함수 실행 중단
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`,
+      let url = `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`;
+      const response = await fetchWithTokenCheck(
+        url,
         {
           method: "GET",
           headers: {
             Authorization: `Bearer ${userToken}`,
           },
-        }
+        },
+        router
       );
       const data = await response.json();
       setUserTree(data.tree);
@@ -39,7 +47,9 @@ const HomePage = () => {
     }
   };
 
-  const { data, isLoading, isError } = useQuery(["userTree"], fetchTreeData);
+  const { data, isLoading, isError } = useQuery(["userTree"], fetchTreeData, {
+    enabled: !!userToken, // userToken이 존재할 때만 쿼리 활성화
+  });
 
   if (isLoading) {
     return <Loading />;
