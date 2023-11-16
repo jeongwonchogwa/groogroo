@@ -1,4 +1,3 @@
-import { gardenExample } from "@/app/dummies";
 import { Garden } from "@/app/types";
 import { create } from "zustand";
 

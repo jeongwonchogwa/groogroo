@@ -1,5 +1,4 @@
 import { Scene } from "phaser";
-import { treeList } from "@/app/dummies";
 import { Garden, Tree } from "@/app/types";
 
 interface Props {

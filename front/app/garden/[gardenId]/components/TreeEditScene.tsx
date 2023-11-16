@@ -1,4 +1,3 @@
-import { treeList } from "@/app/dummies";
 import { Character, Garden, Tree } from "@/app/types";
 import { Scene } from "phaser";
 // @ts-ignore

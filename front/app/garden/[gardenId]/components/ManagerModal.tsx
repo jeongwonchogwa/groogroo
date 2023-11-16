@@ -192,7 +192,7 @@ const ManagerModal = (props: Props) => {
                     return (
                       <div
                         key={member.userId}
-                        className="w-[300px] min-h-[200px]"
+                        className="w-[300px] py-3"
                       >
                         <div className="flex justify-between text-2xl gap-10 font-nexonGothic_Medium px-2">
                           {member.treeName}
