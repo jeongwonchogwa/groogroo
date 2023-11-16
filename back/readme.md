@@ -322,3 +322,5 @@
 - 23.11.16 CKH
   - 나무 생성 로직에서 프리셋 저장하는 부분 삭제
   - 프론트 측에서 프리셋 저장 API 호출하여 사용
+  - 프리셋 조회 API에 현재 적용중인 프리셋 여부를 나타내는 boolean now 추가
+  - 가입 요청 알림 발송 기준 쿼리 변경 -> GardenRoleOrGardenRole -> GardenRoleIn
