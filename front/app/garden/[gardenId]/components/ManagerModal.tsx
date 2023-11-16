@@ -92,6 +92,7 @@ const ManagerModal = (props: Props) => {
       title: "관리자 임명",
       yesMessage: "확인",
     });
+    setOpenYesNoModal(true);
   };
 
   const fetchMemberList = async () => {

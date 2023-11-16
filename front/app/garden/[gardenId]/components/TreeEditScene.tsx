@@ -142,10 +142,7 @@ export default class TreeEditScene extends Scene {
         .sprite(0, 0, "selectedTree" + this.currentTime)
         .setScale(0.25)
         .setDepth(3)
-        .setOrigin(0, 0)
-        .on("pointerup", () => {
-          this.onTreeSelectOpenButtonClick("modify");
-        })),
+        .setOrigin(0, 0));
         console.log(this.assetSprite);
       trees.push({
         id: "selectedTree",
@@ -468,7 +465,10 @@ export default class TreeEditScene extends Scene {
       .fillStyle(color, 0.5)
       .fillRect(0, 0, 32, 32)
       .strokeRect(0, 0, 32, 32)
-      .setDepth(2);
+      .setDepth(3)
+      .on("pointerup", () => {
+        this.onTreeSelectOpenButtonClick("modify");
+      });
 
     this.errorSpriteBox = this.add
       .graphics()
@@ -476,7 +476,10 @@ export default class TreeEditScene extends Scene {
       .fillStyle(errorColor, 0.5)
       .fillRect(0, 0, 32, 32)
       .strokeRect(0, 0, 32, 32)
-      .setDepth(2);
+      .setDepth(3)
+      .on("pointerup", () => {
+        this.onTreeSelectOpenButtonClick("modify");
+      });
 
     const gridEngineConfig = {
       snapToCell: true,
