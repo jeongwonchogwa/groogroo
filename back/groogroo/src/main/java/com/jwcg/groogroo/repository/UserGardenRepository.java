@@ -6,6 +6,7 @@ import com.jwcg.groogroo.model.entity.JoinState;
 import com.jwcg.groogroo.model.entity.UserGarden;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface UserGardenRepository extends JpaRepository<UserGarden, Long> {
@@ -16,7 +17,7 @@ public interface UserGardenRepository extends JpaRepository<UserGarden, Long> {
 
     List<UserGarden> findAllByUserIdAndDeleteDateIsNull(Long userId);
 
-    List<UserGarden> findAllByGardenIdAndGardenRoleOrGardenRole(long gardenId, GardenRole gardenRole1, GardenRole gardenRole2);
+    List<UserGarden> findAllByGardenIdAndGardenRoleIn(Long gardenId, Collection<GardenRole> roles);
 
     List<UserGarden> findAllByGardenId(long gardenId);
 

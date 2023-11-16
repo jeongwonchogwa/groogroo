@@ -357,7 +357,7 @@ public class GardenService {
 
         // 알림 보내기
         // 정원의 관리자이상 권한 찾기
-        List<UserGarden> admins = userGardenRepository.findAllByGardenIdAndGardenRoleOrGardenRole(gardenId, GardenRole.ADMIN, GardenRole.MASTER);
+        List<UserGarden> admins = userGardenRepository.findAllByGardenIdAndGardenRoleIn(gardenId, Arrays.asList(GardenRole.MASTER, GardenRole.ADMIN));
 
         // 모든 관리자에게 알림 발송
         for (UserGarden admin : admins) {
