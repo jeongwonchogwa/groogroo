@@ -2,6 +2,8 @@ import { userTreeStore } from "@/stores/userTreeStore";
 import ButtonModal from "../../../components/ButtonModal";
 import Button from "../../../components/Button";
 import { userInfoStore } from "@/stores/userInfoStore";
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
+import { useRouter } from "next/navigation";
 
 interface Props {
   onJoinButtonClick: () => void;
@@ -10,6 +12,7 @@ interface Props {
 }
 
 const JoinModal = (props: Props) => {
+  const router = useRouter();
   const { userToken } = userInfoStore();
   // 삭제 버튼 누르고 나면 실행할 함수
   const handleJoin = () => {
@@ -17,14 +20,15 @@ const JoinModal = (props: Props) => {
   };
 
   const fetchJoin = () => {
-    fetch(
+    fetchWithTokenCheck(
       `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/process/${props.gardenId}`,
       {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }
+      },
+      router
     ).then((res) => {
       if (res.status === 200) {
         console.log("요청 성공");

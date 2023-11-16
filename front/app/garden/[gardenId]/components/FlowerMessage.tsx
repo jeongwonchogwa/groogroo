@@ -1,9 +1,12 @@
 import Button from "@/app/components/Button";
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 import IconButton from "@/app/components/IconButton";
 import MessageContainer from "@/app/components/MessageContainer";
 import ReportModal from "@/app/components/ReportModal";
 import { Flower } from "@/app/types";
 import { userInfoStore } from "@/stores/userInfoStore";
+import { useRouter } from "next/navigation";
+import Router from "next/router";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -14,6 +17,7 @@ interface Props {
 }
 const FlowerMessage = (props: Props) => {
   // const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  const router = useRouter();
   const { userToken } = userInfoStore();
   const [openReport, setOpenReport] = useState<boolean>(false);
   const [clickReport, setClickReport] = useState<boolean>(false);
@@ -58,7 +62,7 @@ const FlowerMessage = (props: Props) => {
 
   const onTrashButtonClick = async () => {
     try {
-      const res = await fetch(
+      const res = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/flower/${props.currentFlower.id}`,
 
         {
@@ -66,7 +70,8 @@ const FlowerMessage = (props: Props) => {
           headers: {
             Authorization: `Bearer ${userToken}`,
           },
-        }
+        },
+        router
       );
       const data = await res.json();
       console.log(data);

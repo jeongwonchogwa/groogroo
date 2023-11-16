@@ -62,7 +62,6 @@ export default class GardenScene extends Scene {
     console.log("가든씬 만들거임", this.garden);
     const bgm = this.sound.add("backgroundMusic", { volume: 0.5, loop: true });
     bgm.play();
-    const currentLikeCnt = this.garden.likes!;
     this.modalCheck = false;
     const userToken = JSON.parse(sessionStorage.getItem("userInfo")!).state
       .userToken;
@@ -373,7 +372,7 @@ export default class GardenScene extends Scene {
 
     let titleText = document.createElement("div");
     titleText.className =
-      "flex flex-col bg-white w-full font-bitBit text-[24px] text-center px-3";
+      "flex flex-col bg-white w-full font-bitBit text-[18px] text-center px-3";
     titleText.appendChild(document.createTextNode(this.garden.name));
 
     titleBox.appendChild(titleText);

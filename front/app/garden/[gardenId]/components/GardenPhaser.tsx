@@ -17,17 +17,18 @@ import { gardenInfoStore } from "@/stores/gardenInfoStore";
 import FlowerMessage from "./FlowerMessage";
 import { userInfoStore } from "@/stores/userInfoStore";
 import { useQuery } from "@tanstack/react-query";
-import { gameInfoStore } from "@/stores/gameInfoStore";
+import { useRouter } from "next/navigation";
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
 interface Props {
   gardenId: number;
 }
 
 const GardenPhaser = (props: Props) => {
+  const router = useRouter();
   const { setGarden } = gardenInfoStore();
   const { userToken } = userInfoStore();
-  const { game, setGame } = gameInfoStore();
-  // const [game, setGame] = useState<Phaser.Game>();
+  const [game, setGame] = useState<Phaser.Game>();
   const [currnetTree, setCurrnetTree] = useState<Tree>({
     id: 0,
     fruitCnt: 0,
@@ -75,8 +76,10 @@ const GardenPhaser = (props: Props) => {
 
   const onFlowerClick = async (flower: Flower) => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/flower/${flower.id}`
+      const res = await fetchWithTokenCheck(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/flower/${flower.id}`,
+        {},
+        router
       );
       const data = await res.json();
       console.log(data);
@@ -103,7 +106,7 @@ const GardenPhaser = (props: Props) => {
 
   const fetchGardenInfo = async () => {
     try {
-      const res = await fetch(
+      const res = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${props.gardenId}`,
 
         {
@@ -111,7 +114,8 @@ const GardenPhaser = (props: Props) => {
           headers: {
             Authorization: `Bearer ${userToken}`,
           },
-        }
+        },
+        router
       );
       const data = await res.json();
       // console.log(data);

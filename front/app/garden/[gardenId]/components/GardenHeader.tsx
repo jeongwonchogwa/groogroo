@@ -12,7 +12,7 @@ import ManagerModal from "./ManagerModal";
 
 interface Props {
   garden: Garden;
-  game: Phaser.Game;
+  game?: Phaser.Game;
   state: string;
 }
 
@@ -37,23 +37,28 @@ const GardenHeader = (props: Props) => {
 
   const onJoinButtonClick = () => {
     console.log("참여 모달 오픈");
-
-    //@ts-ignore
-    props.game!.scene!.getScene("gardenScene").modalCheck = true;
+    if (props.game) {
+      //@ts-ignore
+      props.game.scene.getScene("gardenScene").modalCheck = true;
+    }
     setOpenJoinModal((prev) => !prev);
   };
 
   const onManagerButtonClick = () => {
     setOpenMenu(false);
     console.log(props.game);
-    //@ts-ignore
-    props.game!.scene!.getScene("gardenScene").modalCheck = true;
+    if (props.game) {
+      //@ts-ignore
+      props.game.scene.getScene("gardenScene").modalCheck = true;
+    }
     setOpenManagermodal((prev) => !prev);
   };
 
   const onFormCloseButtonClick = () => {
-    //@ts-ignore
-    props.game!.scene!.getScene("gardenScene").modalCheck = false;
+    if (props.game) {
+      //@ts-ignore
+      props.game.scene.getScene("gardenScene").modalCheck = true;
+    }
     setOpenJoinModal(false);
     setOpenManagermodal(false);
   };

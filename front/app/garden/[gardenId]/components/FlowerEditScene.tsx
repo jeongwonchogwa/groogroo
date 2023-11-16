@@ -5,6 +5,8 @@ import { Scene } from "phaser";
 import AnimatedTiles from "phaser-animated-tiles-phaser3.5/dist/AnimatedTiles.min.js";
 import Button from "@/app/components/Button";
 import ReactDOM from "react-dom/client";
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
+import { useRouter } from "next/navigation";
 
 interface Props {
   onFlowerPlantButtonClick: (data: Flower) => void;

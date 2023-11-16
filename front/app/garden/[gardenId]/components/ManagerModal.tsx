@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import YesNoModal from "./YesNoModal";
 import { title } from "process";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
 interface Props {
   onFormCloseButtonClick: () => void;
@@ -14,6 +16,7 @@ interface Props {
 }
 
 const ManagerModal = (props: Props) => {
+  const router = useRouter();
   const { userToken } = userInfoStore();
   const [openYesNoModal, setOpenYesNoModal] = useState<boolean>(false);
   const [yesNoModalContent, setYesNoModalContent] = useState<{
@@ -75,12 +78,13 @@ const ManagerModal = (props: Props) => {
 
   const fetchMemberList = async () => {
     try {
-      const res = await fetch(
+      const res = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/member/${props.garden.gardenId}`,
 
         {
           method: "GET",
-        }
+        },
+        router
       );
       const data = await res.json();
       console.log(data);
@@ -92,7 +96,7 @@ const ManagerModal = (props: Props) => {
 
   const fetchStateChange = async (userId: number, state: string) => {
     try {
-      const res = await fetch(
+      const res = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/process`,
 
         {
@@ -106,7 +110,8 @@ const ManagerModal = (props: Props) => {
             gardenId: props.garden.gardenId,
             joinState: state,
           }),
-        }
+        },
+        router
       );
       const data = await res.json();
       console.log(data);

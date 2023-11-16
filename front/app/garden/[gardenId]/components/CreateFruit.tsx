@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Tree } from "@/app/types";
 import { userInfoStore } from "@/stores/userInfoStore";
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
 interface Props {
   onFormCloseButtonClick: () => void;
@@ -41,7 +42,7 @@ const CreateFruit = (props: Props) => {
       const data = await res.json();
       console.log(data);
       try {
-        const res = await fetch(
+        const res = await fetchWithTokenCheck(
           `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${props.gardenId}`,
 
           {
@@ -49,7 +50,8 @@ const CreateFruit = (props: Props) => {
             headers: {
               Authorization: `Bearer ${userToken}`,
             },
-          }
+          },
+          router
         );
         const gardenData = await res.json();
         console.log(gardenData);
