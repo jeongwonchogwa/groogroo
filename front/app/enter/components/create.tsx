@@ -222,6 +222,32 @@ const Create = () => {
         const responseData = await response.json();
         const imageUrl = responseData.imageUrl; // imageUrl 추출
 
+        // 프리셋 저장
+        try {
+          const updatePreset = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/preset`, {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${userToken}`,
+            },
+            body: JSON.stringify({
+              imageUrl: imageUrl,
+            })
+          });
+
+          if (updatePreset.status === 200) {
+            // 프리셋 업데이트 성공
+            console.log("프리셋 저장 성공", updatePreset);
+          } else {
+            // 프리셋 업데이트 실패
+            alert("생성한 이미지를 프리셋으로 저장하는 데 실패했습니다.");
+            console.log("프리셋 저장 실패")
+          }
+        } catch (error) {
+          alert("생성한 이미지를 프리셋으로 저장하는 데 실패했습니다.")
+          console.error("요청 실패", error);
+        }
+
         // redirectCheck();
         redirectCheck(imageUrl); 
 

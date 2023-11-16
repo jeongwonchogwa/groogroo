@@ -42,12 +42,12 @@ public class TreeService {
                 .build();
 
         // 유저 프리셋에 해당 이미지 추가
-        TreeUserPreset treeUserPreset = TreeUserPreset.builder()
-                .imageUrl(imageUrl)
-                .build();
-        treeUserPreset.setUser(user);
-
-        treeUserPresetRepository.save(treeUserPreset);
+//        TreeUserPreset treeUserPreset = TreeUserPreset.builder()
+//                .imageUrl(imageUrl)
+//                .build();
+//        treeUserPreset.setUser(user);
+//
+//        treeUserPresetRepository.save(treeUserPreset);
 
         treeRepository.save(tree);
         log.info("=========== 저장 성공 ===========");
