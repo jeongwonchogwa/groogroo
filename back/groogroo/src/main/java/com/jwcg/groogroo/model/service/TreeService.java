@@ -161,7 +161,7 @@ public class TreeService {
                     .imageUrl(preset.getImageUrl())
                     .build();
 
-            if (!preset.getImageUrl().equals(tree.getImageUrl())) {
+            if (tree == null || !preset.getImageUrl().equals(tree.getImageUrl())) {
                 returnData.add(responseTreePresetDto);
             }
         }
@@ -172,7 +172,7 @@ public class TreeService {
                     .imageUrl(treeUserPreset.getImageUrl())
                     .build();
 
-            if (!treeUserPreset.getImageUrl().equals(tree.getImageUrl())){
+            if (tree == null || !treeUserPreset.getImageUrl().equals(tree.getImageUrl())){
                 returnData.add(responseTreePresetDto);
             }
         }
