@@ -25,11 +25,10 @@ const GardensPage = () => {
     }
   }, [loading, error, treeId]);
 
-
   useEffect(() => {
     queryClient.removeQueries({ queryKey: ["getGardenInfo"] });
-  }, [])
-  
+  }, []);
+
   const [myGardenList, setMyGardenList] = useState<Garden[]>([]);
   const [rankingGardenList, setRankingGardenList] = useState<Garden[]>([]);
 
@@ -195,7 +194,6 @@ const GardensPage = () => {
     hasRankingGardenNext,
     userToken,
   ]);
-
   return (
     <div className="w-screen h-screen bg-background-pixel bg-blend-overlay bg-slate-300 bg-opacity-25 bg-cover">
       <GardensHeader
@@ -203,63 +201,51 @@ const GardensPage = () => {
         handlemenu={() => handlemenu()}
         menuOpen={menuOpen}
       />
-      <div className="h-[650px] overflow-scroll mt-3" ref={gardenCardRef}>
-        {sort === "내 정원" && myGardenList.length > 0 ? (
-          <div className="flex w-full flex-col">
-            <GardenCard
-              sort={sort}
-              // gardenList={sort === "내 정원" ? myGardenList : rankingGardenList}
-              gardenList={myGardenList}
-            />
-            {Nowloading && (
-              <div className="w-full flex justify-center">
-                <Image
-                  alt="로딩중"
-                  src="/assets/gif/loading.gif"
-                  width={100}
-                  height={60}
-                />
-              </div>
-            )}
-            <div ref={loader} />
-          </div>
-        ) : sort === "정원 랭킹" && rankingGardenList.length > 0 ? (
-          <div className="h-[650px] overflow-scroll mt-3" ref={gardenCardRef}>
+      {/* 로딩 상태 표시 */}
+      {Nowloading ? (
+        <div className="flex flex-col justify-center items-center h-[650px] ">
+          <Image
+            alt="로딩중"
+            src="/assets/gif/loading.gif"
+            width={100}
+            height={60}
+          />
+          <p className="w-full flex justify-center mt-3 font-neoDunggeunmo_Pro text-2xl text-white">
+            잠시만 기다려주세요!
+          </p>
+        </div>
+      ) : (
+        <div className="h-[650px] overflow-scroll mt-3" ref={gardenCardRef}>
+          {sort === "내 정원" && myGardenList.length > 0 ? (
             <div className="flex w-full flex-col">
-              <GardenCard
-                sort={sort}
-                // gardenList={sort === "내 정원" ? myGardenList : rankingGardenList}
-                gardenList={rankingGardenList}
-              />
-              {Nowloading && (
-                <div className="w-full flex justify-center">
-                  <Image
-                    alt="로딩중"
-                    src="/assets/gif/loading.gif"
-                    width={100}
-                    height={60}
-                  />
-                </div>
-              )}
+              <GardenCard sort={sort} gardenList={myGardenList} />
               <div ref={loader} />
             </div>
-          </div>
-        ) : (
-          <div className="h-full w-full flex flex-col justify-center">
-            <div className="flex justify-center">
-              <Image
-                alt="no_data"
-                src="/assets/images/no_data.svg"
-                width={150}
-                height={350}
-              />
+          ) : sort === "정원 랭킹" && rankingGardenList.length > 0 ? (
+            <div className="h-[650px] overflow-scroll mt-3" ref={gardenCardRef}>
+              <div className="flex w-full flex-col">
+                <GardenCard sort={sort} gardenList={rankingGardenList} />
+                <div ref={loader} />
+              </div>
             </div>
-            <p className="w-full flex justify-center mt-3 font-neoDunggeunmo_Pro text-2xl text-white">
-              정원 정보가 없습니다!
-            </p>
-          </div>
-        )}
-      </div>
+          ) : (
+            // 데이터가 없는 상태
+            <div className="h-full w-full flex flex-col justify-center">
+              <div className="flex justify-center">
+                <Image
+                  alt="no_data"
+                  src="/assets/images/no_data.svg"
+                  width={150}
+                  height={350}
+                />
+              </div>
+              <p className="w-full flex justify-center mt-3 font-neoDunggeunmo_Pro text-2xl text-white">
+                정원 정보가 없습니다!
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

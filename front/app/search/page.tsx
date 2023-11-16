@@ -83,6 +83,9 @@ const SearchPage = () => {
       enabled: !!userToken, // userToken이 존재할 때만 쿼리 활성화
     }
   );
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className=" bg-home-background">
@@ -97,7 +100,8 @@ const SearchPage = () => {
           <div className="mt-7 w-full h-[calc(100%-120px)]">
             {clickSearch ? (
               isLoading ? (
-                <div className="flex flex-col items-center justify-center">
+                //<div>
+                <div className="h-[500px] flex flex-col items-center justify-center">
                   <Image
                     alt="로딩중"
                     src="/assets/gif/loading.gif"
@@ -110,6 +114,7 @@ const SearchPage = () => {
                   </p>
                 </div>
               ) : (
+                //</div>
                 <SearchContainer searchData={data} />
               )
             ) : (
