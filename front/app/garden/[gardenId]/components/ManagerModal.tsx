@@ -119,7 +119,7 @@ const ManagerModal = (props: Props) => {
       const data = await res.json();
       console.log(data);
       if (data.httpStatus === "success") {
-        queryClient.removeQueries({ queryKey: ["getMemberListInfo"] });
+        queryClient.invalidateQueries({ queryKey: ["getMemberListInfo"] });
       }
     } catch (error) {
       console.log(error);

@@ -57,23 +57,30 @@ export default class GardenScene extends Scene {
   create() {
     console.log("가든씬 만들거임", this.garden);
 
-   
-
     if (!this.bgm?.isPlaying) {
-
       if (this.garden.mapType === 1) {
-        this.bgm = this.sound.add("backgroundMusic1", { volume: 0.3, loop: true });
+        this.bgm = this.sound.add("backgroundMusic1", {
+          volume: 0.3,
+          loop: true,
+        });
       } else if (this.garden.mapType === 2) {
         console.log(this.cache);
-        this.bgm = this.sound.add("backgroundMusic2", { volume: 0.3, loop: true });
+        this.bgm = this.sound.add("backgroundMusic2", {
+          volume: 0.3,
+          loop: true,
+        });
       }
       console.log("브금 시작");
       this.bgm!.play();
     }
 
     window.addEventListener("popstate", () => {
-        console.log("뒤로가기");
-        this.bgm.stop();
+      console.log("뒤로가기");
+      this.bgm.stop();
+    });
+
+    window.addEventListener("beforeunload", () => {
+      this.bgm.stop();
     });
 
     this.modalCheck = false;
@@ -101,7 +108,7 @@ export default class GardenScene extends Scene {
 
     const getTreeExistInfo = async () => {
       const data = await fetchTreeExistInfo();
-      if (data.treeGardenId != null) {  
+      if (data.treeGardenId != null) {
         registModalBox.appendChild(treeModifyTextBox);
         this.garden.treePos?.forEach((tree) => {
           if (tree.id === data.treeGardenId) {

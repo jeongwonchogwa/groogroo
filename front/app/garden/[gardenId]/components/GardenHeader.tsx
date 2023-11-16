@@ -163,12 +163,20 @@ const GardenHeader = (props: Props) => {
     } else if (props.state === "KICK") {
       console.log("추방");
       setMenuList([{ name: "추방당하셨습니다.", clickEvent: () => {} }]);
-    } else {
+    } else if(props.garden.capacity > props.garden.memberCnt!){
       setMenuList([
         {
           name: "참여신청",
           clickEvent: () => {
             onJoinButtonClick();
+          },
+        },
+      ]);
+    } else if(props.garden.capacity <= props.garden.memberCnt!){
+      setMenuList([
+        {
+          name: "정원이 모두 차 가입할 수 없습니다.",
+          clickEvent: () => {
           },
         },
       ]);

@@ -71,9 +71,9 @@ export default class FlowerEditScene extends Scene {
   }
 
   create(data: { modifyFlower: Flower }) {
-    console.log(this.game)
-    console.log(this.sound)
-    this.sound.stopAll()
+    console.log(this.game);
+    console.log(this.sound);
+    this.sound.stopAll();
     // this.modifyFlowerId = data.modifyFlowerId;
     // cancelButton.style.display = "flex"
     // cancelButton.style.width = "100%"
@@ -212,6 +212,7 @@ export default class FlowerEditScene extends Scene {
           x: this.gridEngine.getPosition(this.selectedFlowerHandle).x,
           y: this.gridEngine.getPosition(this.selectedFlowerHandle).y,
         });
+        this.selectedFlower = undefined;
       } else {
         console.log("안돼요");
       }
