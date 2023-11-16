@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { userInfoStore } from "@/stores/userInfoStore";
 
+// 토큰 처리 필요
 const RegistPage = () => {
   const { userToken } = userInfoStore();
   const token = userToken;
@@ -55,7 +56,7 @@ const RegistPage = () => {
     name: name,
     description: description,
     capacity: capacity,
-    mapType: currentIndex,
+    mapType: currentIndex + 1,
   };
 
   const fetchCreate = async (data: object) => {
