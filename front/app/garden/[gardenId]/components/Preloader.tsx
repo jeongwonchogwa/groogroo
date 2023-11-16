@@ -30,7 +30,7 @@ export default class Preloader extends Scene {
     
     //사용할 브금
     this.load.audio("backgroundMusic1", "/assets/music/왕궁의 정원사.mp3");
-    this.load.audio("bacdkgroundMusic2", "/assets/music/인형들의 행진.mp3");
+    this.load.audio("backgroundMusic2", "/assets/music/인형들의 행진.mp3");
 
     //UI로 사용할 이미지
     this.load.image("plusButton", "/assets/images/plus.svg");
