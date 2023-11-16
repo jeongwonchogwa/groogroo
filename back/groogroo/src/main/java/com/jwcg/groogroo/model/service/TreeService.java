@@ -154,13 +154,16 @@ public class TreeService {
         List<Preset> presets = presetRepository.findAllByContentType(ContentType.TREE);
         List<TreeUserPreset> treeUserPresets = treeUserPresetRepository.findAllByUserId(userId);
         List<ResponseTreePresetDto> returnData = new ArrayList<>();
+        Tree tree = treeRepository.findTreeByUserId(userId);
 
         for (Preset preset : presets) {
             ResponseTreePresetDto responseTreePresetDto = ResponseTreePresetDto.builder()
                     .imageUrl(preset.getImageUrl())
                     .build();
 
-            returnData.add(responseTreePresetDto);
+            if (!preset.getImageUrl().equals(tree.getImageUrl())) {
+                returnData.add(responseTreePresetDto);
+            }
         }
 
         for (TreeUserPreset treeUserPreset : treeUserPresets) {
@@ -169,7 +172,9 @@ public class TreeService {
                     .imageUrl(treeUserPreset.getImageUrl())
                     .build();
 
-            returnData.add(responseTreePresetDto);
+            if (!treeUserPreset.getImageUrl().equals(tree.getImageUrl())){
+                returnData.add(responseTreePresetDto);
+            }
         }
 
         return returnData;
