@@ -28,6 +28,10 @@ export default class GardenScene extends Scene {
   private likeCheck!: boolean;
   private likeCount!: HTMLDivElement;
   public modalCheck!: boolean;
+  public bgm!:
+    | Phaser.Sound.NoAudioSound
+    | Phaser.Sound.HTML5AudioSound
+    | Phaser.Sound.WebAudioSound;
 
   constructor(props: Props) {
     super("gardenScene");
@@ -48,26 +52,27 @@ export default class GardenScene extends Scene {
       "animatedTiles",
       "animatedTiles"
     );
-
   }
 
   create() {
     console.log("가든씬 만들거임", this.garden);
 
-    let bgm : Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound | null = null;
     if (this.garden.mapType === 1) {
-      bgm = this.sound.add("backgroundMusic1", { volume: 0.5, loop: true });
+      this.bgm = this.sound.add("backgroundMusic1", { volume: 0.4, loop: true });
     } else if (this.garden.mapType === 2) {
-      console.log(this.cache)
-      bgm = this.sound.add("backgroundMusic2", { volume: 0.5, loop: true });
-    }
-   
-
-    if(!bgm?.isPlaying){
-      bgm!.play();
+      console.log(this.cache);
+      this.bgm = this.sound.add("backgroundMusic2", { volume: 0.4, loop: true });
     }
 
-    window.addEventListener('popstate', ()=>{if(bgm !== null)bgm.stop()});
+    if (!this.bgm?.isPlaying) {
+      console.log("브금 시작");
+      this.bgm!.play();
+    }
+
+    window.addEventListener("popstate", () => {
+        console.log("뒤로가기");
+        this.bgm.stop();
+    });
 
     this.modalCheck = false;
     const userToken = JSON.parse(sessionStorage.getItem("userInfo")!).state

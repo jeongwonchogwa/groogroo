@@ -23,6 +23,7 @@ const CreateFruit = (props: Props) => {
   const [content, setContent] = useState("");
 
   const handleFruitSubmit = async () => {
+    console.log(props.currentTree.treeId, writer, content)
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/fruit`,
