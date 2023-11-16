@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
 
-const Create = () => {
+const CreatePreset = () => {
   const router = useRouter();
   const [inputValue, setInputValue] = useState('');
   const [selectedComponent, setSelectedComponent] = useState('canvas');
@@ -324,4 +324,4 @@ const Create = () => {
   );
 ;}
 
-export default Create;
+export default CreatePreset;
