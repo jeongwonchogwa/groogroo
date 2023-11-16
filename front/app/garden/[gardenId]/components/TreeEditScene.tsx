@@ -145,7 +145,6 @@ export default class TreeEditScene extends Scene {
         .setOrigin(0, 0)
         .on("pointerup", () => {
           this.onTreeSelectOpenButtonClick("modify");
-          this.changeCheck = true;
         })),
         console.log(this.assetSprite);
       trees.push({
@@ -172,6 +171,9 @@ export default class TreeEditScene extends Scene {
         if (tree.id === this.modifyTreeId) {
           tree.tileHeight = 0;
           tree.tileWidth = 0;
+          tree.sprite.on("pointerup", () => {
+            this.onTreeSelectOpenButtonClick("modify");
+          });
           this.assetSprite = tree.sprite;
           this.selectedTreeHandle = tree.id;
         }
@@ -182,7 +184,6 @@ export default class TreeEditScene extends Scene {
     }
 
     this.cameras.main.setBackgroundColor("#1E7CB8");
-    this.changeCheck = false;
     this.moveCheck = false;
 
     this.changeTree = (modifyTreeUrl: string) => {
@@ -281,7 +282,13 @@ export default class TreeEditScene extends Scene {
             const gardenData = await res.json();
             console.log(gardenData);
             //@ts-ignore
-            this.game.scene.getScene("preloader").garden =
+            props.game!.scene.getScene("preloader").garden =
+              gardenData.gardenInfo;
+            //@ts-ignore
+            props.game!.scene.getScene("flowerEditScene").garden =
+              gardenData.gardenInfo;
+            //@ts-ignore
+            props.game!.scene.getScene("treeEditScene").garden =
               gardenData.gardenInfo;
 
             console.log();

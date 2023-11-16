@@ -64,12 +64,12 @@ export default class GardenScene extends Scene {
           loop: true,
         });
       } else if (this.garden.mapType === 2) {
-        console.log(this.cache);
         this.bgm = this.sound.add("backgroundMusic2", {
           volume: 0.3,
           loop: true,
         });
       }
+      console.log(this.sound)
       console.log("브금 시작");
       this.bgm!.play();
     }

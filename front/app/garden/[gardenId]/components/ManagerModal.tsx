@@ -79,6 +79,21 @@ const ManagerModal = (props: Props) => {
     setOpenYesNoModal(true);
   };
 
+  const onAdminButtonClick = (id: number, name: string) => {
+    setYesNoModalContent({
+      noFunction: () => {
+        setOpenYesNoModal(false);
+      },
+      yesFunction: () => {
+        fetchAdmin(id);
+        setOpenYesNoModal(false);
+      },
+      question: `${name}님을 관리자로 지정하시겠습니까?`,
+      title: "관리자 임명",
+      yesMessage: "확인",
+    });
+  };
+
   const fetchMemberList = async () => {
     try {
       const res = await fetchWithTokenCheck(
@@ -92,6 +107,35 @@ const ManagerModal = (props: Props) => {
       const data = await res.json();
       console.log(data);
       return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchAdmin = async (userId: number) => {
+    try {
+      const res = await fetchWithTokenCheck(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/mater`,
+
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            targetId: userId,
+            gardenId: props.garden.gardenId,
+            role: "ADMIN",
+          }),
+        },
+        router
+      );
+      const data = await res.json();
+      console.log(data);
+      if (data.httpStatus === "success") {
+        queryClient.invalidateQueries({ queryKey: ["getMemberListInfo"] });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -192,23 +236,42 @@ const ManagerModal = (props: Props) => {
                     gardenRole: string;
                   }) => {
                     return (
-                      <div key={member.userId} className="w-[300px] py-3">
+                      <div key={member.userId} className="w-[320px] py-3">
                         <div className="flex justify-between text-2xl gap-10 font-nexonGothic_Medium px-2">
-                          {member.treeName}
+                          <div className="flex gap-2">
+                            {member.gardenRole !== "MEMBER" ? (
+                              <div className="text-primary">{member.gardenRole}</div>
+                            ) : null}
+                            {member.treeName}
+                          </div>
                           {member.gardenRole === "ADMIN" || "MASTER" ? null : (
-                            <Image
-                              src="/assets/images/kick.svg"
-                              alt="추방"
-                              width={20}
-                              height={20}
-                              onClick={() =>
-                                onStateChangeButtonClick(
-                                  member.userId,
-                                  member.treeName,
-                                  "KICK"
-                                )
-                              }
-                            />
+                            <div>
+                              <Image
+                                src="/assets/images/crown.svg"
+                                alt="관리자"
+                                width={20}
+                                height={20}
+                                onClick={() =>
+                                  onAdminButtonClick(
+                                    member.userId,
+                                    member.treeName
+                                  )
+                                }
+                              />
+                              <Image
+                                src="/assets/images/kick.svg"
+                                alt="추방"
+                                width={20}
+                                height={20}
+                                onClick={() =>
+                                  onStateChangeButtonClick(
+                                    member.userId,
+                                    member.treeName,
+                                    "KICK"
+                                  )
+                                }
+                              />
+                            </div>
                           )}
                         </div>
                       </div>
