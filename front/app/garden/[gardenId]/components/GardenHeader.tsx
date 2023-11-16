@@ -182,7 +182,9 @@ const GardenHeader = (props: Props) => {
         <IconButton
           iconSrc="close"
           onClick={() => {
+            props.game?.destroy(true,false)
             queryClient.removeQueries({ queryKey: ["getGardenInfo"] });
+            
             router.push("../gardens");
             console.log("홈");
           }}

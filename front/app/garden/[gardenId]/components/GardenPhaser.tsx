@@ -31,6 +31,7 @@ const GardenPhaser = (props: Props) => {
   const [game, setGame] = useState<Phaser.Game>();
   const [currnetTree, setCurrnetTree] = useState<Tree>({
     id: 0,
+    treeId : 0,
     fruitCnt: 0,
     imageUrl: "",
     name: "",

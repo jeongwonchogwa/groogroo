@@ -22,19 +22,11 @@ const YesNoModal = (props: Props) => {
         content={<div>{props.question}</div>}
         button={
           <div className="grid grid-flow-col gap-2">
-            <Button
-              color="default"
-              label="취소"
-              onClick={() => {
-                props.noFunction();
-              }}
-            />
+            <Button color="default" label="취소" onClick={props.noFunction} />
             <Button
               color="primary"
               label={props.yesMessage}
-              onClick={() => {
-                props.yesFunction();
-              }}
+              onClick={props.yesFunction}
             />
           </div>
         }

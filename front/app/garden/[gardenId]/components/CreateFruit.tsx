@@ -33,7 +33,7 @@ const CreateFruit = (props: Props) => {
             Authorization: `Bearer ${userToken}`,
           },
           body: JSON.stringify({
-            treeId: props.currentTree.id,
+            treeId: props.currentTree.treeId,
             writerNickname: writer,
             content: content,
           }),
@@ -60,7 +60,7 @@ const CreateFruit = (props: Props) => {
 
         console.log();
         props.onFormCloseButtonClick();
-        props.game?.scene.stop("preloader");
+        props.game?.scene.stop("gardenScene");
         props.game?.scene.start("preloader");
       } catch (error) {
         console.log(error);

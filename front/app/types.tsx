@@ -9,6 +9,7 @@ export interface Fruit {
 export interface Tree {
   email?: string;
   id: number;
+  treeId : number;
   imageUrl: string;
   name: string;
   fruits?: Fruit[];

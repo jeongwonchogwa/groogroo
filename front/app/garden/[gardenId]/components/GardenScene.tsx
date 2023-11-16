@@ -54,14 +54,21 @@ export default class GardenScene extends Scene {
   create() {
     console.log("가든씬 만들거임", this.garden);
 
-    let bgm = null;
+    let bgm : Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound | null = null;
     if (this.garden.mapType === 1) {
       bgm = this.sound.add("backgroundMusic1", { volume: 0.5, loop: true });
     } else if (this.garden.mapType === 2) {
       console.log(this.cache)
       bgm = this.sound.add("backgroundMusic2", { volume: 0.5, loop: true });
     }
-    bgm!.play();
+   
+
+    if(!bgm?.isPlaying){
+      bgm!.play();
+    }
+
+    window.addEventListener('popstate', ()=>{if(bgm !== null)bgm.stop()});
+
     this.modalCheck = false;
     const userToken = JSON.parse(sessionStorage.getItem("userInfo")!).state
       .userToken;

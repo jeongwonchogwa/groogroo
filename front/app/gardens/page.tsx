@@ -10,11 +10,13 @@ import useUserToken from "../hooks/useUserToken";
 import useSearchTree from "../hooks/useSearchTree";
 import { fetchWithTokenCheck } from "../components/FetchWithTokenCheck";
 import Image from "next/image";
+import { useQueryClient } from "@tanstack/react-query";
 
 // 리팩토링 필요
 
 const GardensPage = () => {
   const userToken = useUserToken();
+  const queryClient = useQueryClient();
   const { treeId, loading, error } = useSearchTree(userToken);
 
   useEffect(() => {
@@ -23,6 +25,11 @@ const GardensPage = () => {
     }
   }, [loading, error, treeId]);
 
+
+  useEffect(() => {
+    queryClient.removeQueries({ queryKey: ["getGardenInfo"] });
+  }, [])
+  
   const [myGardenList, setMyGardenList] = useState<Garden[]>([]);
   const [rankingGardenList, setRankingGardenList] = useState<Garden[]>([]);
 

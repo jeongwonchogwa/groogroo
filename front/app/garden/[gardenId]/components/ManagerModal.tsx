@@ -27,6 +27,10 @@ const ManagerModal = (props: Props) => {
     yesMessage: string;
   }>();
 
+  const onProcessComplete = () => {
+    
+  }
+
   const onStateChangeButtonClick = (
     id: number,
     name: string,
@@ -147,7 +151,7 @@ const ManagerModal = (props: Props) => {
                       >
                         <div className="flex justify-between w-full items-center">
                           <div className="font-nexonGothic_Medium text-2xl">
-                            {user.userId}
+                            {user.treeName}
                           </div>
                           <div className="flex gap-5 h-fit">
                             <Button
