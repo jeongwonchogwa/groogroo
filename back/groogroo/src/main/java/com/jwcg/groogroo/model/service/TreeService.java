@@ -159,22 +159,27 @@ public class TreeService {
         for (Preset preset : presets) {
             ResponseTreePresetDto responseTreePresetDto = ResponseTreePresetDto.builder()
                     .imageUrl(preset.getImageUrl())
+                    .now(false)
                     .build();
 
             if (tree == null || !preset.getImageUrl().equals(tree.getImageUrl())) {
-                returnData.add(responseTreePresetDto);
+                responseTreePresetDto.setNow(true);
             }
+            returnData.add(responseTreePresetDto);
         }
 
         for (TreeUserPreset treeUserPreset : treeUserPresets) {
             ResponseTreePresetDto responseTreePresetDto = ResponseTreePresetDto.builder()
                     .treeUserPresetId(treeUserPreset.getId())
                     .imageUrl(treeUserPreset.getImageUrl())
+                    .now(false)
                     .build();
 
             if (tree == null || !treeUserPreset.getImageUrl().equals(tree.getImageUrl())){
-                returnData.add(responseTreePresetDto);
+                responseTreePresetDto.setNow(true);
             }
+            returnData.add(responseTreePresetDto);
+
         }
 
         return returnData;

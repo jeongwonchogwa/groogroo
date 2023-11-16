@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class ResponseTreePresetDto {
     private long treeUserPresetId;
     private String imageUrl;
+    private boolean now;
 }
