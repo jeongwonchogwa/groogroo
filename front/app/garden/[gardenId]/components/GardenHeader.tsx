@@ -39,7 +39,7 @@ const GardenHeader = (props: Props) => {
     console.log("참여 모달 오픈");
     if (props.game) {
       //@ts-ignore
-      props.game.scene.getScene("gardenScene").modalCheck = true;
+      props.game.scene.getScene("gardenScene").modalChec = true;
     }
     setOpenJoinModal((prev) => !prev);
   };
@@ -116,7 +116,23 @@ const GardenHeader = (props: Props) => {
   useEffect(() => {
     setUiWidth(window.innerWidth + "px");
     if (props.garden.state === "ACCEPT") {
-      if (props.garden.gardenRole === "MASTER" || "ADMIN") {
+      if (props.garden.gardenRole === "MEMBER") {
+        setMenuList([
+          {
+            name: "초대 전송",
+            clickEvent: () => {
+              kakaoInvite();
+            },
+          },
+          {
+            name: "링크 복사",
+            clickEvent: () => {
+              doCopy(urlHref);
+            },
+          },
+        ]);
+      } else {
+        console.log(props.garden.gardenRole)
         setMenuList([
           {
             name: "초대 전송",
@@ -137,21 +153,7 @@ const GardenHeader = (props: Props) => {
             },
           },
         ]);
-      } else {
-        setMenuList([
-          {
-            name: "초대 전송",
-            clickEvent: () => {
-              kakaoInvite();
-            },
-          },
-          {
-            name: "링크 복사",
-            clickEvent: () => {
-              doCopy(urlHref);
-            },
-          },
-        ]);
+        
       }
     } else if (props.garden.state === "WAIT") {
       console.log("요청 진행중");
