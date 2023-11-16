@@ -171,7 +171,7 @@ const Create = () => {
 
       console.log(userId);
 
-      const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/image`, {
+      const response = await fetchWithTokenCheck(`${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/make_image`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
