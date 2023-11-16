@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { userInfoStore } from "@/stores/userInfoStore";
 
+// 토큰 처리 필요
 const RegistPage = () => {
   const { userToken } = userInfoStore();
   const token = userToken;
@@ -55,7 +56,7 @@ const RegistPage = () => {
     name: name,
     description: description,
     capacity: capacity,
-    mapType: currentIndex,
+    mapType: currentIndex + 1,
   };
 
   const fetchCreate = async (data: object) => {
@@ -74,9 +75,9 @@ const RegistPage = () => {
 
       if (response.status === 200) {
         const responseData = await response.json();
-        const gardenUrl = responseData.url + responseData.gardenId;
         console.log(responseData);
-        console.log(gardenUrl);
+        const gardenUrl =
+          responseData.gardenInfo.url + responseData.gardenInfo.gardenId;
         router.push(`/garden/${gardenUrl}`);
       }
     } catch (error) {

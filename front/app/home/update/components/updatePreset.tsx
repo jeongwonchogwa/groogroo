@@ -1,7 +1,13 @@
+"use client";
+
 import Button from "@/app/components/Button";
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
+import useSearchTree from "@/app/hooks/useSearchTree";
+import useUserToken from "@/app/hooks/useUserToken";
 import { Preset, Tree } from "@/app/types";
 import { userInfoStore } from "@/stores/userInfoStore";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 interface Props {
   data: Preset;
@@ -10,8 +16,14 @@ interface Props {
 const UpdatePreset = ({ data, userTree }: Props) => {
   const router = useRouter();
 
-  const { userToken } = userInfoStore();
-  console.log(userTree.name);
+  const userToken = useUserToken();
+  const { treeId, loading, error } = useSearchTree(userToken);
+
+  useEffect(() => {
+    if (!loading && !error && treeId === null) {
+      redirect("/enter/terms");
+    }
+  }, [loading, error, treeId]);
 
   const newData: {
     imageUrl: string;
@@ -23,7 +35,7 @@ const UpdatePreset = ({ data, userTree }: Props) => {
 
   const clickChange = async () => {
     try {
-      const response = await fetch(
+      const response = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`,
         {
           method: "PATCH",
@@ -32,7 +44,8 @@ const UpdatePreset = ({ data, userTree }: Props) => {
             Authorization: `Bearer ${userToken}`,
           },
           body: JSON.stringify(newData),
-        }
+        },
+        router
       );
       if (response.status === 200) {
         console.log(newData);
@@ -47,11 +60,12 @@ const UpdatePreset = ({ data, userTree }: Props) => {
 
   const fetchDelete = async () => {
     try {
-      const response = await fetch(
+      const response = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/preset/${data.treeUserPresetId}`,
         {
           method: "DELETE",
-        }
+        },
+        router
       );
       if (response.status === 200) {
         // 사실 모달을 띄워야 할 것 같긴한데..ㅎ

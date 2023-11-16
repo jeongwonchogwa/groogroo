@@ -1,0 +1,6 @@
+#custom-full-height {
+  height: 100vh; /* 기본 높이 설정 */
+  @supports (-webkit-touch-callout: none) {
+    height: -webkit-fill-available; /* 특정 브라우저에 대한 조건부 스타일 */
+  }
+}

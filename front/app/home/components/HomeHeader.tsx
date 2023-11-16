@@ -14,6 +14,8 @@ import Button from "@/app/components/Button";
 import { searchTreeStore } from "@/stores/searchTreeInfo";
 import Link from "next/link";
 import { userInfoStore } from "@/stores/userInfoStore";
+import useUserToken from "@/app/hooks/useUserToken";
+import useSearchTree from "@/app/hooks/useSearchTree";
 
 interface HomeHeaderProps {
   handlemenu: () => void;
@@ -24,12 +26,14 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { userToken } = userInfoStore();
+  const userToken = useUserToken();
+  const { treeId, loading, error } = useSearchTree(userToken);
+
   useEffect(() => {
-    if (userToken === "") {
-      redirect("/");
+    if (!loading && !error && treeId === null) {
+      redirect("/enter/terms");
     }
-  }, [userToken]);
+  }, [loading, error, treeId]);
 
   const [openAlarm, setOpenAlarm] = useState<boolean>(false);
 
@@ -138,7 +142,10 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
                 }}
               />
               <Link
-                href={{ pathname: "/enter/createPreset", query: { type: "name" } }}
+                href={{
+                  pathname: "/enter/createPreset",
+                  query: { type: "name" },
+                }}
               >
                 <Button
                   color="secondary"

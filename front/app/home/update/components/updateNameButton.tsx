@@ -1,19 +1,30 @@
 "use client";
 
 import Button from "@/app/components/Button";
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 import TextModal from "@/app/components/TextModal";
+import useSearchTree from "@/app/hooks/useSearchTree";
+import useUserToken from "@/app/hooks/useUserToken";
+import { Tree } from "@/app/types";
 import { userInfoStore } from "@/stores/userInfoStore";
 import { userTreeStore } from "@/stores/userTreeStore";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 interface Props {
   checkTree: number;
   newName: string;
+  userTree: Tree;
 }
-const UpdateNameButton = ({ checkTree, newName }: Props) => {
+const UpdateNameButton = ({ checkTree, newName, userTree }: Props) => {
   const router = useRouter();
-  const { userToken } = userInfoStore();
-  const { userTree } = userTreeStore();
+  const userToken = useUserToken();
+  const { treeId, loading, error } = useSearchTree(userToken);
+
+  useEffect(() => {
+    if (!loading && !error && treeId === null) {
+      redirect("/enter/terms");
+    }
+  }, [loading, error, treeId]);
 
   const [checkIsValid, setCheckIsValid] = useState<boolean>(false);
 
@@ -36,7 +47,7 @@ const UpdateNameButton = ({ checkTree, newName }: Props) => {
     name: string;
   } = {
     // 현재 나무 가져가야지?
-    imageUrl: userTree?.imageUrl as string,
+    imageUrl: userTree.imageUrl,
     name: newName,
   };
 
@@ -49,7 +60,7 @@ const UpdateNameButton = ({ checkTree, newName }: Props) => {
       return;
     }
     try {
-      const response = await fetch(
+      const response = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`,
         {
           method: "PATCH",
@@ -58,7 +69,8 @@ const UpdateNameButton = ({ checkTree, newName }: Props) => {
             Authorization: `Bearer ${userToken}`,
           },
           body: JSON.stringify(newData),
-        }
+        },
+        router
       );
       if (response.status === 200) {
         // 사실 모달을 띄워야 할 것 같긴한데..ㅎ

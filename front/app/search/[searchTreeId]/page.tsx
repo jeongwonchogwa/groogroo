@@ -10,30 +10,19 @@ import PixelCard from "@/app/components/PixelCard";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/app/components/Loading";
+import useUserToken from "@/app/hooks/useUserToken";
+import useSearchTree from "@/app/hooks/useSearchTree";
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
 const SearchTreePage = ({ params }: { params: { treeId: number } }) => {
-  // const sessionData = sessionStorage.getItem("userInfo");
-  // let userToken = "";
-  // if (sessionData) {
-  //   const sessionObject = JSON.parse(sessionData);
-  //   userToken = sessionObject?.state?.userToken;
-  //   if (userToken) {
-  //     console.log(userToken);
-  //   } else {
-  //     console.log("userToken이 존재하지 않습니다.");
-  //   }
+  const userToken = useUserToken();
+  const { treeId, loading, error } = useSearchTree(userToken);
 
-  //   console.log(userToken);
-  // }
-
-  // userToken 바꿔야 함
-  const { userToken } = userInfoStore();
   useEffect(() => {
-    if (userToken === "") redirect("/");
-  }, [userToken]);
-  // console.log(params.treeId)
-
-  // const userInfoString = sessionStorage.getItem("userInfo");
+    if (!loading && !error && treeId === null) {
+      redirect("/enter/terms");
+    }
+  }, [loading, error, treeId]);
 
   const [createFruit, setCreateFruit] = useState<boolean>(false);
 
@@ -41,10 +30,11 @@ const SearchTreePage = ({ params }: { params: { treeId: number } }) => {
     setCreateFruit((prev) => !prev);
   };
 
+  const router = useRouter();
   // 검색 결과 가져오기
   const fetchSearch = async () => {
     try {
-      const response = await fetch(
+      const response = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/detail/${params.treeId}`,
         {
           method: "GET",
@@ -52,7 +42,8 @@ const SearchTreePage = ({ params }: { params: { treeId: number } }) => {
             "Content-Type": "application/json; charset=utf-8",
             Authorization: `Bearer ${userToken}`,
           },
-        }
+        },
+        router
       );
       const data = await response.json();
       console.log(data.tree);
