@@ -5,14 +5,23 @@ import RegistNameSection from "./components/RegistNameSection";
 import RegistCapacitySection from "./components/RegistCapacitySection";
 import RegistTemplateSection from "./components/RegistTemplateSection";
 import Button from "@/app/components/Button";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { redirect, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { userInfoStore } from "@/stores/userInfoStore";
+import TextModal from "@/app/components/TextModal";
+import useUserToken from "@/app/hooks/useUserToken";
+import useSearchTree from "@/app/hooks/useSearchTree";
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
-// 토큰 처리 필요
 const RegistPage = () => {
-  const { userToken } = userInfoStore();
-  const token = userToken;
+  const userToken = useUserToken();
+  const { treeId, loading, error } = useSearchTree(userToken);
+
+  useEffect(() => {
+    if (!loading && !error && treeId === null) {
+      redirect("/enter/terms");
+    }
+  }, [loading, error, treeId]);
 
   const mapdata = ["/assets/maps/map[1].jpg", "/assets/maps/map[2].jpg"];
 
@@ -60,17 +69,19 @@ const RegistPage = () => {
   };
 
   const fetchCreate = async (data: object) => {
+    console.log("currentIndex가 뭐야?", currentIndex);
     try {
-      const response = await fetch(
+      const response = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${userToken}`,
           },
           body: JSON.stringify(data),
-        }
+        },
+        router
       );
 
       if (response.status === 200) {
@@ -85,8 +96,16 @@ const RegistPage = () => {
     }
   };
 
+  const [capacityValidFail, setCapacityValidFail] = useState<boolean>(false);
+  const handleModal = () => {
+    setCapacityValidFail((prev) => !prev);
+  };
   const clickCreate = () => {
-    fetchCreate(data);
+    if (capacity === 0 || name === "") {
+      setCapacityValidFail(true);
+    } else {
+      fetchCreate(data);
+    }
   };
 
   return (
@@ -143,6 +162,15 @@ const RegistPage = () => {
           </div>
         </div>
       </div>
+      {capacityValidFail && (
+        <TextModal
+          isOpenModal={capacityValidFail}
+          title="정원 생성 실패"
+          state="error"
+          content="정원 입력 폼을 확인해주세요"
+          handleModal={handleModal}
+        />
+      )}
     </div>
   );
 };

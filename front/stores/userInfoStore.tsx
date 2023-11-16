@@ -9,8 +9,7 @@ interface UserInfo {
 export const userInfoStore = create(
   persist<UserInfo>(
     (set) => ({
-      userToken:
-        "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqanc0MTk5QG5hdmVyLmNvbSIsImlkIjoxLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzAwMTE0NjQyLCJleHAiOjE3MDAxMTgyNDJ9.pm2EHxzkfZ_2xLBZN7x54XJiTxNLKZtDXOOpdJsMekY",
+      userToken: "",
       setMember: (userToken: string) => set({ userToken }),
     }),
     {

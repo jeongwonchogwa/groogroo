@@ -11,6 +11,9 @@ import { userTreeStore } from "@/stores/userTreeStore";
 import useSearchTree from "../hooks/useSearchTree";
 import useUserToken from "../hooks/useUserToken";
 import { fetchWithTokenCheck } from "../components/FetchWithTokenCheck";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../components/Loading";
+import Image from "next/image";
 
 const SearchPage = () => {
   const userToken = useUserToken();
@@ -25,21 +28,22 @@ const SearchPage = () => {
   const [clickSearch, setClickSearch] = useState<boolean>(false);
 
   const handleSearch = () => {
-    setClickSearch((prev) => !prev);
+    setClickSearch(true);
   };
 
   const [treeSearchInput, setTreeSearchInput] = useState<string>("");
 
   const handleInput = (e: any) => {
     const { value } = e.target;
+    setClickSearch(false);
     setTreeSearchInput(value);
   };
 
-  useEffect(() => {
-    if (clickSearch) {
-      fetchSearch(treeSearchInput);
-    }
-  }, [clickSearch, treeSearchInput]);
+  // useEffect(() => {
+  //   if (clickSearch) {
+  //     fetchSearch(treeSearchInput);
+  //   }
+  // }, [clickSearch, treeSearchInput]);
 
   const [searchData, setSearchData] = useState<Tree[]>([]);
 
@@ -47,7 +51,7 @@ const SearchPage = () => {
   // 검색 결과 가져오기
   const fetchSearch = async (name: string) => {
     if (name === "") {
-      return;
+      return [];
     }
     try {
       const response = await fetchWithTokenCheck(
@@ -62,13 +66,24 @@ const SearchPage = () => {
         router
       );
       if (response.status === 200) {
-        const responseData = await response.json();
-        setSearchData(responseData.trees);
+        const data = await response.json();
+        setSearchData(data.trees);
+
+        return data.trees;
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  const { data, isLoading, isError } = useQuery(
+    ["searchTree", clickSearch],
+    () => fetchSearch(treeSearchInput),
+    {
+      enabled: !!userToken, // userToken이 존재할 때만 쿼리 활성화
+    }
+  );
+
   return (
     <div className=" bg-home-background">
       <div className="w-full h-[calc(100%-100px)]">
@@ -81,7 +96,22 @@ const SearchPage = () => {
           />
           <div className="mt-7 w-full h-[calc(100%-120px)]">
             {clickSearch ? (
-              <SearchContainer searchData={searchData} />
+              isLoading ? (
+                <div className="flex flex-col items-center justify-center">
+                  <Image
+                    alt="로딩중"
+                    src="/assets/gif/loading.gif"
+                    width={100}
+                    height={60}
+                    className="w-auto h-full"
+                  />
+                  <p className=" font-bitBit text-2xl mt-3 text-white">
+                    잠시만 기다려주세요
+                  </p>
+                </div>
+              ) : (
+                <SearchContainer searchData={data} />
+              )
             ) : (
               <SearchInitnalMessage />
             )}

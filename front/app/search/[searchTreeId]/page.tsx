@@ -14,7 +14,7 @@ import useUserToken from "@/app/hooks/useUserToken";
 import useSearchTree from "@/app/hooks/useSearchTree";
 import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
-const SearchTreePage = ({ params }: { params: { treeId: number } }) => {
+const SearchTreePage = ({ params }: { params: { searchTreeId: number } }) => {
   const userToken = useUserToken();
   const { treeId, loading, error } = useSearchTree(userToken);
 
@@ -35,7 +35,7 @@ const SearchTreePage = ({ params }: { params: { treeId: number } }) => {
   const fetchSearch = async () => {
     try {
       const response = await fetchWithTokenCheck(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/detail/${params.treeId}`,
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/detail/${params.searchTreeId}`,
         {
           method: "GET",
           headers: {
@@ -46,7 +46,6 @@ const SearchTreePage = ({ params }: { params: { treeId: number } }) => {
         router
       );
       const data = await response.json();
-      console.log(data.tree);
       return data.tree;
     } catch (error) {
       console.log(error);
@@ -85,13 +84,7 @@ const SearchTreePage = ({ params }: { params: { treeId: number } }) => {
             e.stopPropagation();
           }}
         >
-          <div className="flex flex-row items-center justify-center gap-2 pt-20">
-            <Image
-              alt="currentTree"
-              src={data.imageUrl}
-              width={250}
-              height={200}
-            />
+          <div className="flex flex-col items-center justify-center gap-2 pt-10">
             <PixelCard
               content={
                 <div className="bg-white font-bitBit py-2 px-3 text-xl">
@@ -99,6 +92,13 @@ const SearchTreePage = ({ params }: { params: { treeId: number } }) => {
                 </div>
               }
             ></PixelCard>
+            <Image
+              alt="currentTree"
+              src={data.imageUrl}
+              width={250}
+              height={200}
+            />
+
             <div className="px-3">
               <SearchCreateFruits
                 onFormCloseButtonClick={onFormCloseButtonClick}

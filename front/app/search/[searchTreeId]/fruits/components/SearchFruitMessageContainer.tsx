@@ -3,7 +3,6 @@
 import IconButton from "@/app/components/IconButton";
 import MessageContainer from "@/app/components/MessageContainer";
 import { Fruit } from "@/app/types";
-import { searchTreeStore } from "@/stores/searchTreeInfo";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -30,7 +29,7 @@ const SearchFruitMessageContainer = ({ data }: Props) => {
   const [availableDelete, setAvailableDelete] = useState<boolean>(false);
 
   useEffect(() => {
-    if (data && data[currentIndex].createTime.includes(":")) {
+    if (data.length > 0 && data[currentIndex].createTime.includes(":")) {
       const [createTimeHours, createTimeMinutes] =
         data[currentIndex].createTime.split(":");
       const currentTime = new Date();

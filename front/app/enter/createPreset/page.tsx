@@ -1,6 +1,6 @@
 import CreatePreset from "../components/createPreset";
 
-const CreatePresetpage = () => {
+const CreatPresetpage = () => {
   return (
     <div className="w-screen h-screen bg-background-home bg-cover">
       <div className="mx-10 mb-8">
@@ -10,4 +10,4 @@ const CreatePresetpage = () => {
   );
 };
 
-export default CreatePresetpage;
+export default CreatePresetPage;
