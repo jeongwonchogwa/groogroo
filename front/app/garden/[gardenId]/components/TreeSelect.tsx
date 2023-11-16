@@ -84,7 +84,7 @@ const TreeSelect = (props: Props) => {
           <Frame
             content={
               <div className="flex items-center bg-white w-full h-full">
-                <div className="mx-auto">
+                <div className="mx-auto h-[400px] flex items-center justify-between">
                   <Image
                     alt="tree"
                     src={treeList.presets[treeNumber].imageUrl}

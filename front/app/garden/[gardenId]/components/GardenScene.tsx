@@ -48,7 +48,7 @@ export default class GardenScene extends Scene {
       "animatedTiles",
       "animatedTiles"
     );
-    this.load.html("menu", "app/garden/[gardenId]/Menu.tsx");
+    // this.load.html("menu", "app/garden/[gardenId]/Menu.tsx");
   }
 
   create() {
@@ -152,6 +152,10 @@ export default class GardenScene extends Scene {
             this.heartButton.src = "/assets/images/heart_empty.svg";
             this.likeCheck = false;
             this.likeCount -= 1;
+            console.log(this.likeCount);
+            likeCount.style.display = "none";
+            likeCount.offsetHeight; // 리플로우 트리거
+            likeCount.style.display = "";
           }
           return data;
         } catch (error) {
@@ -176,6 +180,10 @@ export default class GardenScene extends Scene {
             this.heartButton.src = "/assets/images/heart_fill.svg";
             this.likeCheck = true;
             this.likeCount += 1;
+            console.log(this.likeCount);
+            likeCount.style.display = "none";
+            likeCount.offsetHeight; // 리플로우 트리거
+            likeCount.style.display = "";
           }
           return data;
         } catch (error) {
@@ -187,8 +195,10 @@ export default class GardenScene extends Scene {
     //맵 생성. 레이어별로 foreach 돌면서.///////////////////////////////////////////////
     const map = this.make.tilemap({ key: "mainMap" });
     map.addTilesetImage("tileset", "tileset");
+    map.addTilesetImage("tileset_basic_terrain", "tileset_basic_terrain");
     map.layers.forEach((layer, index) => {
-      map.createLayer(index, "tileset", 0, 0);
+      console.log(layer);
+      map.createLayer(index, ["tileset", "tileset_basic_terrain"], 0, 0);
     });
 
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
@@ -358,7 +368,7 @@ export default class GardenScene extends Scene {
 
     let titleText = document.createElement("div");
     titleText.className =
-      "flex flex-col bg-white w-full font-bitBit text-[24px] text-center px-5";
+      "flex flex-col bg-white w-full font-bitBit text-[24px] text-center px-3";
     titleText.appendChild(document.createTextNode(this.garden.name));
 
     titleBox.appendChild(titleText);
@@ -555,8 +565,9 @@ export default class GardenScene extends Scene {
     const likeCount = document.createElement("div");
     likeCount.className = "font-bitbit text-lg";
     this.likeCount = this.garden.likes!;
-    const likeCountText = document.createTextNode(this.likeCount.toString());
-    likeCount.appendChild(likeCountText);
+    // const likeCountText = document.createTextNode(this.likeCount.toString());
+    // likeCount.appendChild(likeCountText);
+    likeCount.textContent = this.likeCount.toString();
 
     heartMenuSet.appendChild(this.heartButton);
     heartMenuSet.appendChild(likeCount);
