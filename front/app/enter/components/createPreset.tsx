@@ -274,7 +274,7 @@ const CreatePreset = () => {
     <div className="w-full flex flex-col justify-center items-center ">    
       <div className="w-full flex flex-col items-center mt-20">
         <p className="font-bitBit text-[48px]" style={{ marginBottom: 0 }}>
-          내 나무 만들기
+          프리셋 만들기
         </p>
         <p className="font-nexonGothic text-[18px]" style={{ marginBottom: 0 }}>
           AI 처리를 통해 나만의 나무를 만들 수 있답니다!

@@ -51,7 +51,7 @@ const AlarmList = () => {
   }, []);
 
   return (
-    <div className="bg-background overflow-y-auto max-h-[300px]" style={{ width: wWidth - 30 }}>
+    <div className="bg-background overflow-y-auto max-h-[300px]" style={{ minWidth: 320, maxWidth: 420, width: wWidth - 30 }}>
       <div className="align py-2 px-5 text-[24px] font-bitBit">알람</div>
       <div>
         {alarmData.map((alarm, index) => {
@@ -75,14 +75,29 @@ const AlarmList = () => {
           
           const gardenClick = async () => {
             try {
-              await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/notification/read/${alarm.id}`, {
+              const patchResponse = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/notification/read/${alarm.id}`, {
                 method: 'PATCH',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: `Bearer ${AccessToken}`,
                 },
               });
-              router.push(`/garden/${alarm.contentId}`);
+                
+              const getResponse = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/invite/${alarm.contentId}`, {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${AccessToken}`,
+                },
+              });
+
+              if (patchResponse.ok && getResponse.ok) {
+                await patchResponse.json();
+                const {url} = await getResponse.json();
+                router.push(`/garden/${url}${alarm.contentId}`);
+              } else {
+                console.error('비상!!!!!!!!');
+              }
             } catch (error) {
               console.error('Error while updating notification:', error);
             }
