@@ -120,28 +120,9 @@ const GardenCard = ({ sort, gardenList }: GardenCardProps) => {
                               </div>
                               <span>{garden.master}</span>
                             </div>
-
-                            {sort === "정원 랭킹" &&
-                            garden.state === "ACCEPT" ? (
-                              <div className="bg-primary-container rounded-lg w-fit p-2 font-neoDunggeunmo_Pro text-sm text-white flex flex-row">
-                                <span>내 정원</span>
-                              </div>
-                            ) : garden.state === "WAIT" ? (
-                              <div className="bg-primary-container rounded-lg w-fit p-2 font-neoDunggeunmo_Pro text-sm text-white flex flex-row">
-                                <div className="w-4 my-auto mr-1">
-                                  <Image
-                                    src="/assets/images/state/hourglass.svg"
-                                    alt="모래시계"
-                                    width={128}
-                                    height={108}
-                                  />
-                                </div>
-                                <span>대기</span>
-                              </div>
-                            ) : null}
                           </div>
-                          <div className="mt-2 w-[290px]">
-                            <p className="my-auto font-nexonGothic text-lg">
+                          <div className="mt-2 w-[290px] h-[30px]">
+                            <p className="h-full font-nexonGothic text-lg truncate">
                               {garden.description}
                             </p>
                           </div>

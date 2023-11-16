@@ -4,6 +4,7 @@ import Button from "@/app/components/Button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Garden } from "@/app/types";
+import GardenState from "./GardenState";
 
 interface GardenDetailModalProps {
   isOpen: boolean;
@@ -49,38 +50,11 @@ const GardenDetailModal = ({
                   height={350}
                 />
               </div>
-              <div className="absolute z-20 top-[10px] right-[5px]">
-                <div className="bg-primary-container rounded-lg w-fit p-2 font-neoDunggeunmo_Pro text-sm  flex flex-row">
-                  {/* 승인 | 거절 | 추방 | 대기 */}
-                  {gardenData?.state === "ACCEPT" ? (
-                    <>
-                      <div className="w-4 my-auto mr-1">
-                        <Image
-                          src="/assets/images/state/hourglass.svg"
-                          alt="모래시계"
-                          width={128}
-                          height={108}
-                        />
-                      </div>
-                      <span>승인</span>
-                    </>
-                  ) : gardenData?.state === "WAIT" ? (
-                    <>
-                      <div className="w-4 my-auto mr-1">
-                        <Image
-                          src="/assets/images/state/hourglass.svg"
-                          alt="모래시계"
-                          width={128}
-                          height={108}
-                        />
-                      </div>
-                      <span>대기</span>
-                    </>
-                  ) : (
-                    <p>{gardenData?.state}</p>
-                  )}
-                </div>
-              </div>
+              {gardenData?.state === "ACCEPT" ? (
+                <GardenState state="ACCEPT" />
+              ) : gardenData?.state === "WAIT" ? (
+                <GardenState state="WAIT" />
+              ) : null}
             </div>
             <div className="flex flex-col mt-4">
               <div className="flex justify-between mr-5   ml-3">
