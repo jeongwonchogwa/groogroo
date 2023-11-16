@@ -99,8 +99,7 @@ const UpdatePage = () => {
 
   const prevSlide = () => {
     setCurrentIndex(
-      (prevIndex) =>
-        (prevIndex - 1 + presetData.presets.length) % presetData.length
+      (prevIndex) => (prevIndex - 1 + presetData.length) % presetData.length
     );
   };
 
