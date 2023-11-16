@@ -47,7 +47,7 @@ const GardenCard = ({ sort, gardenList }: GardenCardProps) => {
     <>
       <div className="flex w-full">
         <div className="w-full flex flex-col">
-          {gardenList.length > 0 ? (
+          {gardenList.length > 0 &&
             gardenList.map((garden, idx) => (
               <div className="mt-5 w-full flex justify-center " key={idx}>
                 <PixelCard
@@ -68,6 +68,7 @@ const GardenCard = ({ sort, gardenList }: GardenCardProps) => {
                             />
                           )}
                           {/* <div className="h-[100px] z-10"> */}
+                          {/* mapType은 1부터 시작이에요 */}
                           <div className="h-[100px]">
                             <Image
                               src={`/assets/maps/map[${garden.mapType}].jpg`}
@@ -150,20 +151,7 @@ const GardenCard = ({ sort, gardenList }: GardenCardProps) => {
                   }
                 />
               </div>
-            ))
-          ) : (
-            <div className="flex flex-col justify-center h-full items-center">
-              <Image
-                alt="empty"
-                src="/assets/images/question.svg"
-                width={73}
-                height={99}
-              />
-              <p className="mt-5 font-neoDunggeunmo_Pro text-xl">
-                열매가 없습니다!
-              </p>
-            </div>
-          )}
+            ))}
         </div>
       </div>
       {open && (

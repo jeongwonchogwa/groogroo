@@ -28,7 +28,7 @@ const GardenDetailModal = ({
           onClick={handleToggle}
         ></div>
         {/* h를 박는게 맞는지 모르겠네요 */}
-        <div className="bg-modal-img h-[598px] w-[350px] mx-auto rounded z-50 overflow-y-auto">
+        <div className="bg-modal-img h-[598px] w-[350px] mx-auto rounded z-50 overflow-y-auto  scrollbar-hide">
           <div className="flex flex-col p-1 h-full">
             <div className="mt-5 mx-7">
               <Button
