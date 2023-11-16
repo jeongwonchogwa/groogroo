@@ -52,27 +52,34 @@ export default class GardenScene extends Scene {
       "animatedTiles",
       "animatedTiles"
     );
+
+    if (this.garden.mapType === 1) {
+      this.bgm = this.sound.add("backgroundMusic1", {
+        volume: 0.3,
+        loop: true,
+      });
+    } else if (this.garden.mapType === 2) {
+      this.bgm = this.sound.add("backgroundMusic2", {
+        volume: 0.3,
+        loop: true,
+      });
+    }
   }
 
   create() {
     console.log("가든씬 만들거임", this.garden);
 
-    if (!this.bgm?.isPlaying) {
-      if (this.garden.mapType === 1) {
-        this.bgm = this.sound.add("backgroundMusic1", {
-          volume: 0.3,
-          loop: true,
-        });
-      } else if (this.garden.mapType === 2) {
-        this.bgm = this.sound.add("backgroundMusic2", {
-          volume: 0.3,
-          loop: true,
-        });
+    let bgmCheck = false;
+    //@ts-ignore
+    if (this.sound.sounds.map((sound) => {
+        if (sound.isPlaying) {
+          bgmCheck = true;
+        }
+      })
+    )
+      if (!bgmCheck) {
+        this.bgm!.play();
       }
-      console.log(this.sound)
-      console.log("브금 시작");
-      this.bgm!.play();
-    }
 
     window.addEventListener("popstate", () => {
       console.log("뒤로가기");

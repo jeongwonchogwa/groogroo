@@ -71,8 +71,6 @@ const CreateFlower = (props: Props) => {
         //@ts-ignore
         props.game!.scene.getScene("treeEditScene").garden =
           gardenData.gardenInfo;
-
-        console.log();
         props.game?.sound.stopAll();
         props.game?.scene.stop("flowerEditScene");
         props.game?.scene.start("preloader");

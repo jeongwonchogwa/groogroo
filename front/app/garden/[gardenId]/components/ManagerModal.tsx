@@ -240,14 +240,14 @@ const ManagerModal = (props: Props) => {
                         <div className="flex justify-between text-2xl gap-10 font-nexonGothic_Medium px-2">
                           <div className="flex gap-2">
                             {member.gardenRole !== "MEMBER" ? (
-                              <div className="text-primary">{member.gardenRole}</div>
+                              <div className="text-primary text-sm">{member.gardenRole}</div>
                             ) : null}
                             {member.treeName}
                           </div>
-                          {member.gardenRole === "ADMIN" || "MASTER" ? null : (
+                          {member.gardenRole === "MEMBER" ?  (
                             <div>
                               <Image
-                                src="/assets/images/crown.svg"
+                                src="/assets/images/up.svg"
                                 alt="관리자"
                                 width={20}
                                 height={20}
@@ -272,7 +272,7 @@ const ManagerModal = (props: Props) => {
                                 }
                               />
                             </div>
-                          )}
+                          ):null}
                         </div>
                       </div>
                     );

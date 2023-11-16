@@ -172,6 +172,7 @@ export default class TreeEditScene extends Scene {
           tree.tileHeight = 0;
           tree.tileWidth = 0;
           tree.sprite.on("pointerup", () => {
+            console.log("누름")
             this.onTreeSelectOpenButtonClick("modify");
           });
           this.assetSprite = tree.sprite;

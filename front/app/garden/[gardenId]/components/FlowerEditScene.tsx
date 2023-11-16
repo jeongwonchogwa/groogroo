@@ -200,6 +200,7 @@ export default class FlowerEditScene extends Scene {
       .userToken;
 
     const onCancelButtonClick = () => {
+      this.selectedFlower = undefined;
       this.scene.stop("flowerEditScene");
       this.scene.start("gardenScene");
     };
