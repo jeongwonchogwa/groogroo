@@ -137,13 +137,13 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
                 color="secondary-container"
                 label="프리셋 만들기"
                 onClick={() => {
-                  router.push("/enter/check");
+                  router.push("/enter/createPreset");
                   onUpdateButtonClick();
                 }}
               />
               <Link
                 href={{
-                  pathname: "/enter/createPreset",
+                  pathname: "/home/update",
                   query: { type: "name" },
                 }}
               >
