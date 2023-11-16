@@ -35,7 +35,7 @@ def remove_background(image_src, image_path, image_filename):
             # I = αF + (1−α)B
         )
 
-    output_image.save(f'{image_path}', 'png')
+    output_image.save(image_path, 'png')
 
 ##########################################################
 #   금칙어 필터링
@@ -123,7 +123,12 @@ def remove_bg():
         # print('요청 들어옴: ', user_image, user_id)
 
         image_filename = f"gen_img_{user_id}_{time.localtime().tm_year}_{time.localtime().tm_mon}_{time.localtime().tm_mday}_{time.localtime().tm_hour}{time.localtime().tm_min}{time.localtime().tm_sec}.jpg"
-        image_path = os.path.join("static", "images", image_filename)
+
+        # 'static/images' 디렉토리가 없으면 생성
+        image_directory = os.path.join('static', 'images')
+        if not os.path.exists(image_directory):
+            os.makedirs(image_directory)
+        image_path = os.path.join(image_directory, image_filename)
 
         remove_background(image_data, image_path, image_filename)
 
@@ -185,10 +190,12 @@ def make_image():
                     image_url = response.data[0].url
                     image_data = requests.get(image_url).content
                     image_filename = f"gen_img_{user_id}_{time.localtime().tm_year}_{time.localtime().tm_mon}_{time.localtime().tm_mday}_{time.localtime().tm_hour}{time.localtime().tm_min}{time.localtime().tm_sec}.jpg"
-                    image_path = os.path.join("static", "images", image_filename)
+                    # 'static/images' 디렉토리가 없으면 생성
+                    image_directory = os.path.join('static', 'images')
+                    if not os.path.exists(image_directory):
+                        os.makedirs(image_directory)
+                    image_path = os.path.join(image_directory, image_filename)
 
-                    # with open(image_path, "wb") as f:
-                    #     f.write(image_data)
                     remove_background(image_data, image_path, image_filename)
 
                     # 이미지 파일을 열고 base64로 인코딩
@@ -197,7 +204,6 @@ def make_image():
                     # encoded_string = base64.b64encode(image_data).decode('utf-8')
                     # base64 인코딩된 이미지 데이터를 JSON으로 변환하여 반환
 
-                    # 임시 저장된 파일 삭제
                     os.remove(image_path)
 
                     return jsonify({ 'image_data': encoded_string, 'image_name': image_filename }), 200
