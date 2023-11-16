@@ -204,7 +204,7 @@ const GardenHeader = (props: Props) => {
       <div className="flex gap-5">
         <div className="flex flex-col gap-2 h-10 w-10">
           <IconButton iconSrc="bell" onClick={onAlarmButtonClick} />
-          {openAlarm ? <Alarm game={props.game}/> : null}
+          {openAlarm && props.game ? <Alarm game={props.game}/> : null}
         </div>
         {openAlarm ? null : (
           <div className="flex flex-col gap-2 h-10 w-10 items-end z-40">
