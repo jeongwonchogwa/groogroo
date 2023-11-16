@@ -7,8 +7,6 @@ import Menu from "./MenuTextBox";
 import { Garden, MenuButton } from "@/app/types";
 import Alarm from "@/app/components/Alarm";
 import JoinModal from "./JoinModal";
-import KakaoButton from "./KakaoButton";
-import { Prosto_One } from "next/font/google";
 import { useQueryClient } from "@tanstack/react-query";
 import ManagerModal from "./ManagerModal";
 
@@ -39,21 +37,23 @@ const GardenHeader = (props: Props) => {
 
   const onJoinButtonClick = () => {
     console.log("참여 모달 오픈");
+
     //@ts-ignore
-    props.game!.scene.getScene("gardenScene").modalCheck = true;
+    props.game!.scene!.getScene("gardenScene").modalCheck = true;
     setOpenJoinModal((prev) => !prev);
   };
 
   const onManagerButtonClick = () => {
     setOpenMenu(false);
+    console.log(props.game);
     //@ts-ignore
-    props.game!.scene.getScene("gardenScene").modalCheck = true;
+    props.game!.scene!.getScene("gardenScene").modalCheck = true;
     setOpenManagermodal((prev) => !prev);
   };
 
   const onFormCloseButtonClick = () => {
     //@ts-ignore
-    props.game!.scene.getScene("gardenScene").modalCheck = false;
+    props.game!.scene!.getScene("gardenScene").modalCheck = false;
     setOpenJoinModal(false);
     setOpenManagermodal(false);
   };

@@ -121,10 +121,10 @@ const ManagerModal = (props: Props) => {
   });
 
   return (
-    <div className="w-screen h-screen bg-black bg-opacity-50 z-50 flex flex-col justify-center items-center gap-5">
+    <div className="w-screen h-screen bg-black bg-opacity-50 z-50 flex flex-col justify-center items-center gap-5 px-5">
       <PixelCard
         content={
-          <div className="flex flex-col bg-white w- full">
+          <div className="flex flex-col bg-white w-full">
             <div className="font-bitbit text-3xl px-5 py-2">회원관리</div>
             <div className="bg-black w-full h-[2px] mb-2" />
             {isLoading ? null : (
@@ -138,11 +138,11 @@ const ManagerModal = (props: Props) => {
                     return (
                       <div
                         key={user.userId}
-                        className="flex justify-between w-[300px]"
+                        className="flex justify-between w-full px-2"
                       >
                         <div className="flex justify-between w-full items-center">
                           <div className="font-nexonGothic_Medium text-2xl">
-                            이름이름
+                            {user.userId}
                           </div>
                           <div className="flex gap-5 h-fit">
                             <Button
@@ -185,7 +185,7 @@ const ManagerModal = (props: Props) => {
                         key={member.userId}
                         className="w-[300px] min-h-[200px]"
                       >
-                        <div className="flex justify-between text-2xl gap-10 font-nexonGothic_Medium">
+                        <div className="flex justify-between text-2xl gap-10 font-nexonGothic_Medium px-2">
                           {member.treeName}
                           {member.gardenRole === "ADMIN" || "MASTER" ? null : (
                             <Image

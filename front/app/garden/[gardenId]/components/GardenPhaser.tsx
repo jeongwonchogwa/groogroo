@@ -16,17 +16,18 @@ import TreeSelect from "./TreeSelect";
 import { gardenInfoStore } from "@/stores/gardenInfoStore";
 import FlowerMessage from "./FlowerMessage";
 import { userInfoStore } from "@/stores/userInfoStore";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { gameInfoStore } from "@/stores/gameInfoStore";
 
 interface Props {
   gardenId: number;
 }
 
 const GardenPhaser = (props: Props) => {
-  // const AccessToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
-  const queryClient = useQueryClient();
+  const { setGarden } = gardenInfoStore();
   const { userToken } = userInfoStore();
-  const [game, setGame] = useState<Phaser.Game>();
+  const { game, setGame } = gameInfoStore();
+  // const [game, setGame] = useState<Phaser.Game>();
   const [currnetTree, setCurrnetTree] = useState<Tree>({
     id: 0,
     fruitCnt: 0,
@@ -37,15 +38,14 @@ const GardenPhaser = (props: Props) => {
   });
 
   const [currentFlower, setCurrentFlower] = useState<Flower>({
-    content:
-      "이 꽃은 영국에서 시작되어 지구한바퀴 돌고 한국 역삼 멀티캠퍼스까지 와버린 전설의 꽃.",
-    createTime: "14:30",
+    content: "",
+    createTime: "",
     id: 0,
     writerId: 0,
-    writerNickName: "운영자",
+    writerNickName: "",
     x: 0,
     y: 0,
-    imageUrl: "/assets/flowers/flower[1].svg",
+    imageUrl: "",
   });
   const [fruitMessageEdit, setFruitMessageEdit] = useState<boolean>(false);
   const [flowerSelect, setFlowerSelect] = useState<boolean>(false);
@@ -127,11 +127,17 @@ const GardenPhaser = (props: Props) => {
   });
 
   useEffect(() => {
+    //Phaser 생성 시작 함수////////////////////////////////////////////////////////
     const initPhaser = () => {
+      setGarden(garden.gardenInfo);
+      //씬 매개변수 담아서 생성////////////////////////////////////////////////////
       //씬 생성시 매개변수로 추가된 데이터들은 constructor에서 불러옴
       //이후 scene.start 에서 씬 생성과 같이 넘겨주는 데이터들은
       //init or create 의 매개변수로 받아오기.
-      console.log("페이저 새로 생성 시작");
+      const preloader = new Preloader({
+        garden: garden.gardenInfo,
+      });
+
       const gardenScene = new GardenScene({
         onTreeClick: onTreeClick,
         onFlowerSelectOpenButtonClick: onFlowerSelectOpenButtonClick,
@@ -145,16 +151,12 @@ const GardenPhaser = (props: Props) => {
       });
 
       const treeEditScene = new TreeEditScene({ garden: garden.gardenInfo });
-      console.log(garden);
-      const preloader = new Preloader({
-        garden: garden.gardenInfo,
-      });
 
+      //게임 생성///////////////////////////////////////////////////////////////////
       const phaserGame = new Phaser.Game({
         type: Phaser.AUTO,
         title: "garden",
         parent: "garden-content",
-        // 맵 크기
         width: window.innerWidth,
         height: window.innerHeight,
         backgroundColor: 0x000000,
@@ -163,7 +165,6 @@ const GardenPhaser = (props: Props) => {
         },
         scene: [preloader, gardenScene, treeEditScene, flowerEditScene],
         pixelArt: true,
-
         physics: {
           default: "arcade",
           arcade: {
@@ -185,9 +186,8 @@ const GardenPhaser = (props: Props) => {
       setGame(phaserGame);
     };
 
+    //garden데이터 다 받아왔을 때 시작////////////////////////////////
     if (!isLoading) {
-      console.log("이니시!");
-
       initPhaser();
     }
     // };

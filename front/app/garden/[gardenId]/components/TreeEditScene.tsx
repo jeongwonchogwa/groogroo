@@ -63,16 +63,14 @@ export default class TreeEditScene extends Scene {
     this.currentTime = " " + new Date().getTime();
 
     console.log("없음");
-    this.load
-      .spritesheet(
-        "selectedTree" + this.currentTime,
-        this.selectedTreeUrl + "?timestamp=" + new Date().getTime(),
-        {
-          frameWidth: 128,
-          frameHeight: 128,
-        }
-      )
-      .setCORS("anonymous");
+    this.load.spritesheet(
+      "selectedTree" + this.currentTime,
+      this.selectedTreeUrl + "?timestamp=" + new Date().getTime(),
+      {
+        frameWidth: 128,
+        frameHeight: 128,
+      }
+    );
   }
 
   create() {
@@ -88,8 +86,10 @@ export default class TreeEditScene extends Scene {
     //맵 생성. 레이어별로 foreach 돌면서.///////////////////////////////////////////////
     const map = this.make.tilemap({ key: "mainMap" });
     map.addTilesetImage("tileset", "tileset");
+    map.addTilesetImage("tileset_basic_terrain", "tileset_basic_terrain");
     map.layers.forEach((layer, index) => {
-      map.createLayer(index, "tileset", 0, 0);
+      console.log(layer);
+      map.createLayer(index, ["tileset", "tileset_basic_terrain"], 0, 0);
     });
 
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
