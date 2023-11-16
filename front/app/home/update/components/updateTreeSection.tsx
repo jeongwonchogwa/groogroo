@@ -21,6 +21,7 @@ const UpdateTreeSection = ({
 }: UpdateTreeSectionProps) => {
   const params = useSearchParams();
   const type = params.get("type");
+
   return (
     <div className="w-full flex flex-col h-full">
       <div className="flex align-middle h-full">

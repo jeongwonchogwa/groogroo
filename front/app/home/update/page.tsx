@@ -12,6 +12,7 @@ import useSearchTree from "@/app/hooks/useSearchTree";
 import useUserToken from "@/app/hooks/useUserToken";
 import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
+// 이거 참고해서 Gardens 수정하도록
 const UpdatePage = () => {
   const userToken = useUserToken();
   const { treeId, loading, error } = useSearchTree(userToken);
@@ -45,7 +46,13 @@ const UpdatePage = () => {
         router
       );
       const data = await response.json();
-      return data;
+      // 'now' 속성이 true인 요소들만 필터링
+      const filteredData = data.presets.filter(
+        (preset: { now: boolean }) => preset.now === true
+      );
+      console.log(filteredData);
+
+      return filteredData;
     } catch (error) {
       console.log(error);
     }
@@ -64,6 +71,8 @@ const UpdatePage = () => {
         router
       );
       const data = await response.json();
+      // data에서 isnow가 true인것 빼고 저장해야함
+      console.log(data);
       return data.tree;
     } catch (error) {
       console.log(error);
@@ -85,13 +94,13 @@ const UpdatePage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % presetData.presets.length);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % presetData.length);
   };
 
   const prevSlide = () => {
     setCurrentIndex(
       (prevIndex) =>
-        (prevIndex - 1 + presetData.presets.length) % presetData.presets.length
+        (prevIndex - 1 + presetData.presets.length) % presetData.length
     );
   };
 
@@ -111,13 +120,14 @@ const UpdatePage = () => {
             currentIndex={currentIndex}
             nextSlide={nextSlide}
             prevSlide={prevSlide}
-            data={presetData.presets}
+            //이때 presetData에서 now가 true가 아닌 애만 보내야해
+            data={presetData}
           />
         </div>
         <div className="w-full h-[60px]">
           <UpdateContainer
             userTree={treeData}
-            data={presetData.presets[currentIndex]}
+            data={presetData[currentIndex]}
             width={width}
           />
         </div>

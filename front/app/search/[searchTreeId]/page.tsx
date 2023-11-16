@@ -70,7 +70,7 @@ const SearchTreePage = ({ params }: { params: { searchTreeId: number } }) => {
         <div className="mx-9">
           <Button
             color="secondary"
-            label="열매 달러가기"
+            label="열매 달기"
             onClick={onFormCloseButtonClick}
           />
         </div>

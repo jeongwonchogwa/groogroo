@@ -37,7 +37,7 @@ const FruitMessageContainer = ({ fruits }: Props) => {
           )}
         </div>
         {fruits.length > 0 ? (
-          <div className="w-full h-[280px] mr-3 ml-1">
+          <div className="w-full h-[300px] mr-3 ml-1">
             <MessageContainer
               dataType="FRUIT"
               currentIndex={currentIndex} // 현재 열매가 Fruits 배열에서 어디 인덱스에 위치했는지 확인
@@ -45,7 +45,7 @@ const FruitMessageContainer = ({ fruits }: Props) => {
             />
           </div>
         ) : (
-          <div className="nes-container is-rounded bg-white w-full h-[280px]">
+          <div className="nes-container is-rounded bg-white w-full h-[300px]">
             <div className="flex flex-col justify-center h-full items-center">
               <Image
                 alt="empty"

@@ -88,7 +88,7 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
                 <IconButton
                   iconSrc="back"
                   onClick={() => {
-                    router.back();
+                    router.push("/home");
                   }}
                 />
               </div>

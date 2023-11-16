@@ -7,8 +7,8 @@ interface Props {
 const TreeSection = ({ treeImg }: Props) => {
   return (
     <div className="w-full h-full">
-      <div className="h-[280px] flex justify-center">
-        <Image src={treeImg} width={200} height={100} alt="나무" />
+      <div className="h-[250px] flex justify-center">
+        <Image src={treeImg} width={250} height={100} alt="나무" />
       </div>
     </div>
   );
