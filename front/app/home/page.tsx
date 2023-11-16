@@ -22,7 +22,6 @@ const HomePage = () => {
     }
   }, [loading, error, treeId]);
 
-  const { setUserTree } = userTreeStore();
   const router = useRouter();
 
   const fetchTreeData = async () => {
@@ -40,7 +39,6 @@ const HomePage = () => {
         router
       );
       const data = await response.json();
-      setUserTree(data.tree);
       return data.tree;
     } catch (error) {
       console.log(error);
@@ -54,6 +52,10 @@ const HomePage = () => {
   if (isLoading) {
     return <Loading />;
   }
+  // 현재 에러 발생 이유가 userTree가 작동이 안되서 인데, 이건 userToken 이 없어서 발생하는 에러이기때문에 로그인으로 보냄.
+  // if (isError) {
+  //   redirect("/enter");
+  // }
   return (
     <div className="w-full h-[calc(100%-60px)]">
       <div className="mx-5 mb-8">
