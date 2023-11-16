@@ -468,7 +468,7 @@ export default class TreeEditScene extends Scene {
       .fillStyle(color, 0.5)
       .fillRect(0, 0, 32, 32)
       .strokeRect(0, 0, 32, 32)
-      .setDepth(3);
+      .setDepth(2);
 
     this.errorSpriteBox = this.add
       .graphics()
@@ -476,7 +476,7 @@ export default class TreeEditScene extends Scene {
       .fillStyle(errorColor, 0.5)
       .fillRect(0, 0, 32, 32)
       .strokeRect(0, 0, 32, 32)
-      .setDepth(3);
+      .setDepth(2);
 
     const gridEngineConfig = {
       snapToCell: true,

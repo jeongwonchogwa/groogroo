@@ -240,12 +240,12 @@ const ManagerModal = (props: Props) => {
                         <div className="flex justify-between text-2xl gap-10 font-nexonGothic_Medium px-2">
                           <div className="flex gap-2">
                             {member.gardenRole !== "MEMBER" ? (
-                              <div className="text-primary text-sm">{member.gardenRole}</div>
+                              <div className="flex items-center text-primary text-sm">{member.gardenRole}</div>
                             ) : null}
                             {member.treeName}
                           </div>
                           {member.gardenRole === "MEMBER" ?  (
-                            <div>
+                            <div className="flex gap-5">
                               <Image
                                 src="/assets/images/up.svg"
                                 alt="관리자"
