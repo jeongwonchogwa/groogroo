@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -53,6 +54,7 @@ public class FlowerService {
         String msg = "정원에 새로운 꽃이 심어졌습니다. 확인 해보세요.";
         Garden garden = gardenRepository.findGardenById(gardenId);
         for (UserGarden member : members) {
+            if (member.getJoinState().toString().equals("WAIT")) continue;
             long receiverId = member.getUser().getId();
             Notification notification = notificationService.makeNotification(receiverId, gardenId, flower.getId(), msg, NotificationType.FLOWER, garden.getName());
             notificationService.send(member.getId(), notification);
