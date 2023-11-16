@@ -5,6 +5,8 @@ import { userTreeStore } from "@/stores/userTreeStore";
 import { useState } from "react";
 import UpdateNameButton from "./updateNameButton";
 import { Tree } from "@/app/types";
+import { useRouter } from "next/navigation";
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 interface Props {
   userTree: Tree;
 }
@@ -31,13 +33,16 @@ const UpdateName = ({ userTree }: Props) => {
     }
   };
 
+  const router = useRouter();
+
   const fetchTreeNameCheck = async (name: string) => {
     try {
-      const response = await fetch(
+      const response = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/check/${name}`,
         {
           method: "GET",
-        }
+        },
+        router
       );
       if (response.status === 200) {
         const responseData = await response.json();
@@ -91,7 +96,11 @@ const UpdateName = ({ userTree }: Props) => {
         )}
       </div>
       <div className="px-6 pb-4">
-        <UpdateNameButton checkTree={checkTree} newName={newName} />
+        <UpdateNameButton
+          checkTree={checkTree}
+          userTree={userTree}
+          newName={newName}
+        />
       </div>
     </div>
   );

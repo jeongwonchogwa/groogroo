@@ -6,6 +6,9 @@ import React, { useEffect, useState } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { Tree } from "@/app/types";
 import { userInfoStore } from "@/stores/userInfoStore";
+import useUserToken from "@/app/hooks/useUserToken";
+import useSearchTree from "@/app/hooks/useSearchTree";
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
 interface Props {
   onFormCloseButtonClick: () => void;
@@ -13,32 +16,22 @@ interface Props {
 }
 
 const SearchCreateFruits = (props: Props) => {
-  // const AccessToken = sessionStorage.getItem("userInfo");
-  // const sessionData = sessionStorage.getItem("userInfo");
-  // let userToken = "";
-  // if (sessionData) {
-  //   const sessionObject = JSON.parse(sessionData);
-  //   userToken = sessionObject?.state?.userToken;
-  //   if (userToken) {
-  //     console.log(userToken);
-  //   } else {
-  //     console.log("userToken이 존재하지 않습니다.");
-  //   }
+  const userToken = useUserToken();
+  const { treeId, loading, error } = useSearchTree(userToken);
 
-  // }
-
-  const { userToken } = userInfoStore();
-  const router = useRouter();
   useEffect(() => {
-    if (userToken === "") redirect("/enter");
-  }, [userToken]);
-
+    if (!loading && !error && treeId === null) {
+      redirect("/enter/terms");
+    }
+  }, [loading, error, treeId]);
   const [writer, setWriter] = useState("");
   const [content, setContent] = useState("");
 
+  const router = useRouter();
+
   const handleFruitSubmit = async () => {
     try {
-      const res = await fetch(
+      const res = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/fruit`,
         {
           method: "POST",
@@ -51,7 +44,8 @@ const SearchCreateFruits = (props: Props) => {
             writerNickname: writer,
             content: content,
           }),
-        }
+        },
+        router
       );
       const data = await res.json();
       props.onFormCloseButtonClick();

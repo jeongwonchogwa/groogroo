@@ -17,7 +17,7 @@ import java.util.Arrays;
                 description = "그루그루 API 명세서입니다.",
                 version = "v1"),
         servers = {@Server(url = "http://localhost:8080/api", description = "Local URL"),
-                @Server(url = "https://groogroo.site/api", description = "Server URL"),})
+                @Server(url = "https://groogroo.site:8888/api", description = "Server URL"),})
 @Configuration
 public class SwaggerConfig {
 

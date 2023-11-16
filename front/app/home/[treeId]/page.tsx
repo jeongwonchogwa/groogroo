@@ -3,29 +3,36 @@
 import { useEffect, useState } from "react";
 import FruitMessageContainer from "./components/FruitMessageContainer";
 import TreeSection from "./components/TreeSection";
-import { userInfoStore } from "@/stores/userInfoStore";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/app/components/Loading";
+import useSearchTree from "@/app/hooks/useSearchTree";
+import useUserToken from "@/app/hooks/useUserToken";
+import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
-const TreePage = () => {
-  // userToken 처리 필요
-  const { userToken } = userInfoStore();
+const TreePage = ({ params }: { params: { treeId: string } }) => {
+  const userToken = useUserToken();
+  const { treeId, loading, error } = useSearchTree(userToken);
+
   useEffect(() => {
-    if (userToken === "") redirect("/enter");
-  }, [userToken]);
+    if (!loading && !error && treeId === null) {
+      redirect("/enter/terms");
+    }
+  }, [loading, error, treeId]);
 
-  // 내 나무 불러오기, 이 정보는 store에 저장할게요, 캐싱을 사용해서 수정해야함
+  const router = useRouter();
+
   const fetchTreeData = async () => {
     try {
-      const response = await fetch(
+      const response = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`,
         {
           method: "GET",
           headers: {
             Authorization: `Bearer ${userToken}`,
           },
-        }
+        },
+        router
       );
       const data = await response.json();
       return data.tree;

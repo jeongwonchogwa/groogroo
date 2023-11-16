@@ -6,17 +6,21 @@ import SearchContainer from "./components/SearchContainer";
 import { userInfoStore } from "@/stores/userInfoStore";
 import { Tree } from "@/app/types";
 import SearchInitnalMessage from "./components/SearchInitialMessage";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { userTreeStore } from "@/stores/userTreeStore";
+import useSearchTree from "../hooks/useSearchTree";
+import useUserToken from "../hooks/useUserToken";
+import { fetchWithTokenCheck } from "../components/FetchWithTokenCheck";
 
 const SearchPage = () => {
-  // 토큰 처리 필요
-  const { userToken } = userInfoStore();
+  const userToken = useUserToken();
+  const { treeId, loading, error } = useSearchTree(userToken);
 
   useEffect(() => {
-    // 경로 수정 필요
-    if (userToken === "") redirect("/enter");
-  }, [userToken]);
+    if (!loading && !error && treeId === null) {
+      redirect("/enter/terms");
+    }
+  }, [loading, error, treeId]);
 
   const [clickSearch, setClickSearch] = useState<boolean>(false);
 
@@ -38,13 +42,15 @@ const SearchPage = () => {
   }, [clickSearch, treeSearchInput]);
 
   const [searchData, setSearchData] = useState<Tree[]>([]);
+
+  const router = useRouter();
   // 검색 결과 가져오기
   const fetchSearch = async (name: string) => {
     if (name === "") {
       return;
     }
     try {
-      const response = await fetch(
+      const response = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/search/${name}`,
         {
           method: "GET",
@@ -52,7 +58,8 @@ const SearchPage = () => {
             "Content-Type": "application/json; charset=utf-8",
             Authorization: `Bearer ${userToken}`,
           },
-        }
+        },
+        router
       );
       if (response.status === 200) {
         const responseData = await response.json();

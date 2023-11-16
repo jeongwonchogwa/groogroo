@@ -4,6 +4,7 @@ import GardenDetailModal from "./GardenDetailModal";
 import { Garden } from "@/app/types";
 import { useState } from "react";
 
+// todo. 컴포 분리 필요
 interface GardenCardProps {
   gardenList: Garden[];
   sort: string;
@@ -30,6 +31,7 @@ const GardenCard = ({ sort, gardenList }: GardenCardProps) => {
     likes: 0,
     memberCnt: 0,
     mapType: 0,
+    master: "",
   });
   // gardenData를 업데이트하는 함수
   const updateGardenData = (gardenId: number) => {
@@ -45,7 +47,7 @@ const GardenCard = ({ sort, gardenList }: GardenCardProps) => {
     <>
       <div className="flex w-full">
         <div className="w-full flex flex-col">
-          {gardenList &&
+          {gardenList.length > 0 ? (
             gardenList.map((garden, idx) => (
               <div className="mt-5 w-full flex justify-center " key={idx}>
                 <PixelCard
@@ -65,13 +67,14 @@ const GardenCard = ({ sort, gardenList }: GardenCardProps) => {
                               className="z-20 absolute top-[10px] left-[10px]"
                             />
                           )}
-                          <div className="h-[100px] z-10">
+                          {/* <div className="h-[100px] z-10"> */}
+                          <div className="h-[100px]">
                             <Image
                               src={`/assets/maps/map[${garden.mapType}].jpg`}
                               width={300}
                               height={100}
                               alt="템플릿1"
-                              className="rounded-lg w-full h-full object-cover"
+                              className="rounded-lg w-full h-full absolute object-cover z-10"
                             />
                           </div>
                         </div>
@@ -104,6 +107,38 @@ const GardenCard = ({ sort, gardenList }: GardenCardProps) => {
                               </div>
                             </div>
                           </div>
+                          <div className="flex justify-between my-2">
+                            <div className=" bg-secondary-container rounded-lg w-fit p-2 font-neoDunggeunmo_Pro text-sm flex flex-row">
+                              <div className="w-5 my-auto mr-2">
+                                <Image
+                                  src="/assets/images/crown.svg"
+                                  alt="왕관"
+                                  width={100}
+                                  height={87}
+                                />
+                              </div>
+                              <span>{garden.master}</span>
+                            </div>
+
+                            {sort === "정원 랭킹" &&
+                            garden.state === "ACCEPT" ? (
+                              <div className="bg-primary-container rounded-lg w-fit p-2 font-neoDunggeunmo_Pro text-sm text-white flex flex-row">
+                                <span>내 정원</span>
+                              </div>
+                            ) : garden.state === "WAIT" ? (
+                              <div className="bg-primary-container rounded-lg w-fit p-2 font-neoDunggeunmo_Pro text-sm text-white flex flex-row">
+                                <div className="w-4 my-auto mr-1">
+                                  <Image
+                                    src="/assets/images/state/hourglass.svg"
+                                    alt="모래시계"
+                                    width={128}
+                                    height={108}
+                                  />
+                                </div>
+                                <span>대기</span>
+                              </div>
+                            ) : null}
+                          </div>
                           <div className="mt-2 w-[290px]">
                             <p className="my-auto font-nexonGothic text-lg">
                               {garden.description}
@@ -115,7 +150,20 @@ const GardenCard = ({ sort, gardenList }: GardenCardProps) => {
                   }
                 />
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="flex flex-col justify-center h-full items-center">
+              <Image
+                alt="empty"
+                src="/assets/images/question.svg"
+                width={73}
+                height={99}
+              />
+              <p className="mt-5 font-neoDunggeunmo_Pro text-xl">
+                열매가 없습니다!
+              </p>
+            </div>
+          )}
         </div>
       </div>
       {open && (
