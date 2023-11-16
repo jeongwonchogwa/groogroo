@@ -26,7 +26,7 @@ export default class GardenScene extends Scene {
   private onTreeSelectOpenButtonClick!: () => void;
   private myTree!: Tree;
   private likeCheck!: boolean;
-  private likeCount!: number;
+  private likeCount!: HTMLDivElement;
   public modalCheck!: boolean;
 
   constructor(props: Props) {
@@ -151,11 +151,9 @@ export default class GardenScene extends Scene {
           if (data.httpStatus === "success") {
             this.heartButton.src = "/assets/images/heart_empty.svg";
             this.likeCheck = false;
-            this.likeCount -= 1;
-            console.log(this.likeCount);
-            likeCount.style.display = "none";
-            likeCount.offsetHeight; // 리플로우 트리거
-            likeCount.style.display = "";
+            this.likeCount.textContent = (
+              parseInt(this.likeCount.textContent!) - 1
+            ).toString();
           }
           return data;
         } catch (error) {
@@ -179,11 +177,9 @@ export default class GardenScene extends Scene {
           if (data.httpStatus === "success") {
             this.heartButton.src = "/assets/images/heart_fill.svg";
             this.likeCheck = true;
-            this.likeCount += 1;
-            console.log(this.likeCount);
-            likeCount.style.display = "none";
-            likeCount.offsetHeight; // 리플로우 트리거
-            likeCount.style.display = "";
+            this.likeCount.textContent = (
+              parseInt(this.likeCount.textContent!) + 1
+            ).toString();
           }
           return data;
         } catch (error) {
@@ -440,7 +436,7 @@ export default class GardenScene extends Scene {
     const treeModifyTextBox = document.createElement("div");
     treeModifyTextBox.className =
       "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
-    const treeModifyText = document.createTextNode("나무 수정");
+    const treeModifyText = document.createTextNode("나무 이동");
     treeModifyTextBox.appendChild(treeModifyText);
     treeModifyTextBox.addEventListener("click", () => {
       onPlusButtonClick();
@@ -562,15 +558,12 @@ export default class GardenScene extends Scene {
       onHearthButtonClick();
     });
 
-    const likeCount = document.createElement("div");
-    likeCount.className = "font-bitbit text-lg";
-    this.likeCount = this.garden.likes!;
-    // const likeCountText = document.createTextNode(this.likeCount.toString());
-    // likeCount.appendChild(likeCountText);
-    likeCount.textContent = this.likeCount.toString();
+    this.likeCount = document.createElement("div");
+    this.likeCount.className = "font-bitbit text-lg";
+    this.likeCount.textContent = this.garden.likes!.toString();
 
     heartMenuSet.appendChild(this.heartButton);
-    heartMenuSet.appendChild(likeCount);
+    heartMenuSet.appendChild(this.likeCount);
 
     this.plusButton = document.createElement("img");
     this.plusButton.src = "/assets/images/plus.svg";

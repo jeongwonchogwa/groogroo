@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
+    dangerouslyAllowSVG: true,
     remotePatterns: [
       {
         // Be as specific as possible to prevent malicious usage.
