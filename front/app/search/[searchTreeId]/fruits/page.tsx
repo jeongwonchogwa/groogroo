@@ -62,6 +62,7 @@ const SearchTreeFruitsPage = ({
         <SearchTreeSection
           name={data.name as string}
           imageUrl={data.imageUrl as string}
+          fruitsCount={data.fruitsCount as number}
         />
       </div>
       <div className="mx-4 my-4 h-full">

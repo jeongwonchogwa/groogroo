@@ -4,7 +4,7 @@ import Button from "@/app/components/Button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Tree } from "@/app/types";
-import RandomFruitImages from "./RandomFruitImages";
+import RandomFruitImages from "@/app/components/RandomFruitImages";
 
 interface Props {
   data: Tree;
@@ -14,7 +14,7 @@ const TreeContainer = ({ data }: Props) => {
 
   // `RandomFruitImages`에 전달할 props 설정
   const randomFruitProps = {
-    fruitsCount: data.fruitsCount as number, // 가정: data 객체에 fruitsCount가 있다고 가정
+    fruitsCount: data.fruitsCount as number,
     imageUrl: data.imageUrl,
     width: 300, // 이미지의 너비
   };
@@ -25,10 +25,10 @@ const TreeContainer = ({ data }: Props) => {
         <Button color="primary" label={data.name} active={false} />
       </div>
       <div className="w-full h-full flex justify-center">
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full">
           {/* w를 박아 넣는게 맞는지 모르겠어요ㅠㅠ */}
-          <div className="w-[calc(100%-10px)] h-[calc(100%-60px)] mx-auto">
-            <div className="relative w-full h-full flex justify-center">
+          <div className="w-[calc(100%-60px)] h-[calc(100%-60px)] mx-auto">
+            <div className=" w-full h-full flex justify-center relative">
               <Image
                 className="w-full h-full object-contain"
                 src="/assets/images/speech_bubble.svg"
@@ -45,42 +45,24 @@ const TreeContainer = ({ data }: Props) => {
               </p>
             </div>
           </div>
-          <div className="h-full">
-            <div className="h-[300px] flex justify-center relative">
-              {/* 감싸는 컨테이너에 position: relative 적용 */}
-              <div className="relative">
+          <div className="h-full w-[calc(100%-50px)] mx-auto">
+            <div className="h-[300px] flex justify-center ">
+              <div className="w-full h-full relative">
                 <Image
-                  onClick={() => router.push(`/home/${data.id}`)}
+                  onClick={() => {
+                    router.push(`/home/${data.id}`);
+                  }}
                   src={data.imageUrl}
                   alt="나무테스트"
                   width={300}
                   height={250}
-                  style={{ zIndex: 10 }}
+                  className="z-10 absolute"
                 />
-
-                {/* RandomFruitImages 컴포넌트를 같은 컨테이너 안에 배치 */}
-                <RandomFruitImages {...randomFruitProps} />
+                <RandomFruitImages
+                  fruitsCount={data.fruitsCount as number}
+                  width={300}
+                />
               </div>
-              {/* `relative` 추가 */}
-              {/* <Image
-                onClick={() => {
-                  router.push(`/home/${data.id}`);
-                }}
-                src={data.imageUrl}
-                alt="나무테스트"
-                width={300}
-                height={250}
-                style={{ zIndex: 10 }} // 나무 이미지의 z-index 설정
-              /> */}
-              {/* `RandomFruitImages` 컴포넌트 추가 */}
-              {/* <Image
-                src={`/assets/fruits/apple.svg`}
-                alt="등수"
-                width={40}
-                height={100}
-                className="z-20 absolute top-[5 0px] left-[10px]"
-              /> */}
-              {/* <RandomFruitImages {...randomFruitProps} /> */}
             </div>
           </div>
         </div>

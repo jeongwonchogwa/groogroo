@@ -1,0 +1,111 @@
+import Image from "next/image";
+import { useState, useEffect } from "react";
+
+interface Props {
+  fruitsCount: number;
+  width: number;
+  isFruitDetail?: boolean;
+}
+
+const RandomFruitImages = ({
+  isFruitDetail = false,
+  fruitsCount,
+  width,
+}: Props) => {
+  const fruitImages = [
+    "apple.svg",
+    "cherry.svg",
+    "grape.svg",
+    "lemon.svg",
+    "lemon.svg",
+    "orange.svg",
+    "peach.svg",
+  ];
+
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    let imageCount;
+    if (fruitsCount >= 13) {
+      imageCount = 4;
+    } else if (fruitsCount >= 9) {
+      imageCount = 3;
+    } else if (fruitsCount >= 5) {
+      imageCount = 2;
+    } else if (fruitsCount >= 1) {
+      imageCount = 1;
+    } else {
+      imageCount = 0;
+    }
+
+    const randomImages = [];
+    for (let i = 0; i < imageCount; i++) {
+      const randomIndex = Math.floor(Math.random() * fruitImages.length);
+      randomImages.push(fruitImages[randomIndex]);
+    }
+    setSelectedImages(randomImages);
+  }, [fruitsCount]);
+
+  const getImageStyle = (count: number) => {
+    switch (count) {
+      case 1:
+        return `z-20 absolute top-[30px] left-[150px]`;
+      case 2:
+        return `z-20 absolute top-[90px] left-[60px]`;
+      case 3:
+        return `z-20 absolute top-[135px] right-[150px]`;
+      case 4:
+        return `z-20 absolute top-[90px] right-[60px]`;
+    }
+  };
+
+  const getSmallImageStyle = (count: number) => {
+    switch (count) {
+      case 1:
+        return `z-20 absolute top-[7px] left-[110px]`;
+      case 2:
+        return `z-20 absolute top-[70px] left-[40px]`;
+      case 3:
+        return `z-20 absolute top-[115px] right-[120px]`;
+      case 4:
+        return `z-20 absolute top-[70px] right-[40px]`;
+    }
+  };
+  return (
+    <>
+      {selectedImages.map((image, index) => (
+        <Image
+          key={index}
+          src={`/assets/fruits/${image}`}
+          alt="열매"
+          width={40}
+          height={40}
+          className={
+            isFruitDetail
+              ? getSmallImageStyle(index + 1)
+              : getImageStyle(index + 1)
+          }
+        />
+      ))}
+    </>
+  );
+};
+
+export default RandomFruitImages;
+
+// const getImageStyle = (count: number) => {
+//   switch (count) {
+//     case 1:
+//       return `z-20 absolute top-[${width * 0.1}px] left-[${width * 0.5}px]`;
+//     case 2:
+//       return `z-20 absolute top-[${width * 0.3}px] left-[${width * 0.2}px]`;
+//     case 3:
+//       return `z-20 absolute top-[${width * 0.5 - width * 0.05}px] right-[${
+//         width * 0.5
+//       }px]`;
+//     case 4:
+//       return `z-20 absolute top-[${width * 0.3}px] right-[${width * 0.2}px]`;
+//     default:
+//       return "z-20 absolute top-[5px] left-[10px]";
+//   }
+// };
