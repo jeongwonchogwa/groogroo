@@ -17,6 +17,7 @@ import Menu from "/public/assets/images/menu.svg";
 import User from "/public/assets/images/user.png";
 import Back from "/public/assets/images/back.svg";
 import Move from "/public/assets/images/move.svg";
+import Close from "/public/assets/images/close.svg";
 
 interface IconButtonProps {
   iconSrc:
@@ -37,9 +38,7 @@ interface IconButtonProps {
     | "user"
     | "back"
     | "move"
-    | "close"
-    | "speaker"
-    | "speaker_disabled";
+    | "close";
   onClick?: () => void;
   rotate?: boolean;
 }
@@ -62,6 +61,7 @@ const iconButtonConfig = {
   user: User,
   back: Back,
   move: Move,
+  close: Close,
 };
 
 const IconButton = ({ iconSrc, onClick, rotate }: IconButtonProps) => {
