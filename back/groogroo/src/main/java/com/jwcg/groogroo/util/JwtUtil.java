@@ -214,10 +214,10 @@ public class JwtUtil {
      */
     @Transactional
     public void deleteRefreshToken(String accessToken) {
-        RefreshToken token = tokenRepository.findByAccessToken(accessToken)
-                .orElseThrow(IllegalArgumentException::new);
-
-        tokenRepository.delete(token);
+        RefreshToken token = tokenRepository.findByAccessToken(accessToken).get();
+        if(token != null){
+            tokenRepository.delete(token);
+        }
     }
 
 
