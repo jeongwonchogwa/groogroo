@@ -438,6 +438,7 @@ public class GardenService {
                 .capacity(garden.getCapacity())
                 .memberCnt(garden.getMemberCnt()+cnt) // 인원수 변경
                 .treeGardens(garden.getTreeGardens())
+                .mapType(garden.getMapType())
                 .build();
 
         updatedUserGarden.setGarden(updatedGarden);
