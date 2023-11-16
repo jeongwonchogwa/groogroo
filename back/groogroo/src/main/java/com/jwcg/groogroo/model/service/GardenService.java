@@ -143,6 +143,7 @@ public class GardenService {
 
             ResponseTreePosDto responseTreePosDto = ResponseTreePosDto.builder()
                     .id(treeGarden.getId())
+                    .treeId(treeGarden.getTree().getId())
                     .x(treeGarden.getX())
                     .y(treeGarden.getY())
                     .imageUrl(treeGarden.getImageUrl())

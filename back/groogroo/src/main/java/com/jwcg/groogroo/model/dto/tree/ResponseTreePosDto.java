@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResponseTreePosDto {
     private long id;
+    private long treeId;
     private String name;
     private int x;
     private int y;
