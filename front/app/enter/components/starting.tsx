@@ -20,13 +20,13 @@ const Starting = () => {
           height={120}
           className="my-10"
         />        
-				<p className="font-nexonGothic font-bold text-[22px] mb-24">
+				<p className="font-nexonGothic font-bold text-[22px] mb-32">
           함께 만들어가는 우리의 정원
         </p>
 				<div className="w-[90%] space-y-4 mt-32 mb-4">
 					<Button color="secondary" label="카카오톡 로그인" onClick={() => handleSocialLogin('kakao')}/>
 					<Button color="white" label="구글 로그인" onClick={() => handleSocialLogin('google')}/>
-					<Button color="primary" label="네이버 로그인" onClick={() => handleSocialLogin('naver')}/>
+					{/* <Button color="primary" label="네이버 로그인" onClick={() => handleSocialLogin('naver')}/> */}
 				</div>
 			</div>
 		</div>

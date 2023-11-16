@@ -36,12 +36,12 @@ export default function Terms() {
             <div className="w-full">
               <div className="w-full h-[430px] bg-primary border border-black flex flex-col items-center">
                 <p className="text-white font-nexonGothic font-bold text-[32px] mt-5 mb-5">그루그루 이용약관</p>
-                <p className="text-white font-nexonGothic text-[20px] ml-5 mr-5">
-                  1. 다른 회원의 계정 및 비밀번호를 &nbsp;&nbsp;&nbsp;&nbsp;도용하면 안 돼요. <br/>
-                  2. 타인의 명예를 손상시키는 행위는 &nbsp;&nbsp;&nbsp;&nbsp;안 돼요. <br/>
-                  3. 공공질서에 위반되는 내용 작성은 &nbsp;&nbsp;&nbsp;&nbsp;안 돼요. <br/>
-                  4. 회사 또는 제3자의 저작권 등 <br/>&nbsp;&nbsp;&nbsp;&nbsp;권리를 침해하는 행위는 안 돼요. <br/>
-                  5. 다른 회원의 개인정보를 수집, <br/>&nbsp;&nbsp;&nbsp;&nbsp;저장, 공개하는 행위는 안 돼요. <br/>
+                <p className="text-white font-nexonGothic text-[20px] ml-5 mr-5" style={{ lineHeight: '2.5' }}>
+                  1. 타인의 계정을 도용하면 안 돼요. <br/>
+                  2. 타인의 명예를 손상시키면 안 돼요. <br/>
+                  3. 질서에 위반된 내용작성은 안 돼요. <br/>
+                  4. 저작권 등 권리를 침해하면 안 돼요. <br/>
+                  5. 타인의 개인정보 사용은 안 돼요. <br/>
                   6. 기타 불법한 행위는 안 돼요.
                 </p>
               </div>

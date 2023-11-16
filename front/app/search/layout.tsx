@@ -10,7 +10,7 @@ const SearchLayout = ({ children }: any) => {
   };
 
   return (
-    <div className="w-screen h-screen bg-background-pixel bg-cover">
+    <div className="min-w-[350px] max-w-[450px] h-screen bg-background-pixel bg-cover mx-auto">
       <HomeHeader handlemenu={() => handlemenu()} menuOpen={menuOpen} />
       {children}
     </div>
