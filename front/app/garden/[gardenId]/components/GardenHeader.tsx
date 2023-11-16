@@ -57,7 +57,7 @@ const GardenHeader = (props: Props) => {
   const onFormCloseButtonClick = () => {
     if (props.game) {
       //@ts-ignore
-      props.game.scene.getScene("gardenScene").modalCheck = true;
+      props.game.scene.getScene("gardenScene").modalCheck = false;
     }
     setOpenJoinModal(false);
     setOpenManagermodal(false);
