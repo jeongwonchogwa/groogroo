@@ -61,6 +61,7 @@ const CreateFruit = (props: Props) => {
 
         console.log();
         props.onFormCloseButtonClick();
+        props.game.sound.stopAll()
         props.game?.scene.stop("gardenScene");
         props.game?.scene.start("preloader");
       } catch (error) {

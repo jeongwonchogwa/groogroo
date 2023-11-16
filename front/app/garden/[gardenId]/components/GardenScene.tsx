@@ -57,14 +57,16 @@ export default class GardenScene extends Scene {
   create() {
     console.log("가든씬 만들거임", this.garden);
 
-    if (this.garden.mapType === 1) {
-      this.bgm = this.sound.add("backgroundMusic1", { volume: 0.4, loop: true });
-    } else if (this.garden.mapType === 2) {
-      console.log(this.cache);
-      this.bgm = this.sound.add("backgroundMusic2", { volume: 0.4, loop: true });
-    }
+   
 
     if (!this.bgm?.isPlaying) {
+
+      if (this.garden.mapType === 1) {
+        this.bgm = this.sound.add("backgroundMusic1", { volume: 0.3, loop: true });
+      } else if (this.garden.mapType === 2) {
+        console.log(this.cache);
+        this.bgm = this.sound.add("backgroundMusic2", { volume: 0.3, loop: true });
+      }
       console.log("브금 시작");
       this.bgm!.play();
     }

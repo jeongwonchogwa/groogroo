@@ -71,6 +71,9 @@ export default class FlowerEditScene extends Scene {
   }
 
   create(data: { modifyFlower: Flower }) {
+    console.log(this.game)
+    console.log(this.sound)
+    this.sound.stopAll()
     // this.modifyFlowerId = data.modifyFlowerId;
     // cancelButton.style.display = "flex"
     // cancelButton.style.width = "100%"

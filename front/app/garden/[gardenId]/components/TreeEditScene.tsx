@@ -73,6 +73,9 @@ export default class TreeEditScene extends Scene {
   }
 
   create() {
+    console.log(this.game)
+    console.log(this.sound)
+    this.sound.stopAll()
     // const cancelButton = document.createElement("div")
     console.log("텍스쳐리스트", this.textures.list);
     console.log(
