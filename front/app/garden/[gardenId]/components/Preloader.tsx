@@ -9,17 +9,12 @@ interface Props {
 
 export default class Preloader extends Scene {
   private garden: Garden;
-  // private myTree: Tree;
   constructor(props: Props) {
     super("preloader");
-    // this.myTree = props.myTree;
     this.garden = props.garden;
   }
 
   preload() {
-    // console.log("Phaser에 렌더링 될 정원");
-    // console.log(this.garden);
-
     //맵 불러오기
     this.load.tilemapTiledJSON(
       "mainMap",
@@ -32,6 +27,10 @@ export default class Preloader extends Scene {
       "tileset_basic_terrain",
       "/assets/tileset_basic_terrain.png"
     );
+    
+    //사용할 브금
+    this.load.audio("backgroundMusic1", "/assets/music/왕궁의 정원사.mp3");
+    this.load.audio("bacdkgroundMusic2", "/assets/music/인형들의 행진.mp3");
 
     //UI로 사용할 이미지
     this.load.image("plusButton", "/assets/images/plus.svg");

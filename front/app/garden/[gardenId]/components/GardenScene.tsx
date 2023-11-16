@@ -49,9 +49,6 @@ export default class GardenScene extends Scene {
       "animatedTiles"
     );
 
-    this.load.audio("backgroundMusic1", "/assets/music/왕궁의 정원사.mp3");
-
-    this.load.audio("bacdkgroundMusic2", "/assets/music/인형들의 행진.mp3");
   }
 
   create() {
@@ -61,6 +58,7 @@ export default class GardenScene extends Scene {
     if (this.garden.mapType === 1) {
       bgm = this.sound.add("backgroundMusic1", { volume: 0.5, loop: true });
     } else if (this.garden.mapType === 2) {
+      console.log(this.cache)
       bgm = this.sound.add("backgroundMusic2", { volume: 0.5, loop: true });
     }
     bgm!.play();
