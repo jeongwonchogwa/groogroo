@@ -8,6 +8,7 @@ import { userInfoStore } from "@/stores/userInfoStore";
 
 interface Props {
   garden: Garden;
+  onTreeSelectOpenButtonClick: (type?: string) => void;
 }
 
 export default class TreeEditScene extends Scene {
@@ -28,10 +29,14 @@ export default class TreeEditScene extends Scene {
   private garden: Garden;
   private selectedTreeHandle!: string;
   private currentTime!: string;
+  private onTreeSelectOpenButtonClick: (type?: string) => void;
+  private changeCheck!: boolean;
+  public changeTree!: (modifyTreeUrl: string) => void;
 
   constructor(props: Props) {
     super("treeEditScene");
     this.garden = props.garden;
+    this.onTreeSelectOpenButtonClick = props.onTreeSelectOpenButtonClick;
   }
 
   updateGarden(garden: Garden) {
@@ -73,9 +78,9 @@ export default class TreeEditScene extends Scene {
   }
 
   create() {
-    console.log(this.game)
-    console.log(this.sound)
-    this.sound.stopAll()
+    console.log(this.game);
+    console.log(this.sound);
+    this.sound.stopAll();
     // const cancelButton = document.createElement("div")
     console.log("텍스쳐리스트", this.textures.list);
     console.log(
@@ -133,12 +138,16 @@ export default class TreeEditScene extends Scene {
     //배치할 에셋 sprite 생성 (새 나무)
 
     if (this.selectedTreeUrl) {
-      this.assetSprite = this.physics.add
+      (this.assetSprite = this.physics.add
         .sprite(0, 0, "selectedTree" + this.currentTime)
         .setScale(0.25)
         .setDepth(3)
-        .setOrigin(0, 0);
-      console.log(this.assetSprite);
+        .setOrigin(0, 0)
+        .on("pointerup", () => {
+          this.onTreeSelectOpenButtonClick("modify");
+          this.changeCheck = true;
+        })),
+        console.log(this.assetSprite);
       trees.push({
         id: "selectedTree",
         sprite: this.assetSprite,
@@ -173,7 +182,26 @@ export default class TreeEditScene extends Scene {
     }
 
     this.cameras.main.setBackgroundColor("#1E7CB8");
+    this.changeCheck = false;
     this.moveCheck = false;
+
+    this.changeTree = (modifyTreeUrl: string) => {
+      if (this.selectedTreeUrl) {
+        this.load.image("modifyImage", modifyTreeUrl);
+        this.load.on("filecomplete-image-modifyImage", () => {
+          this.assetSprite.setTexture("modifyImage");
+        });
+      } else {
+        this.load.image("modifyImage", modifyTreeUrl);
+        this.load.on("filecomplete-image-modifyImage", () => {
+          trees.forEach((tree) => {
+            if (tree.id === this.modifyTreeId) {
+              tree.sprite.setTexture("modifyImage");
+            }
+          });
+        });
+      }
+    };
 
     //맵 screen 사이즈에 맞춰서 zoom수치 설정. 너비/높이 중 더 큰 사이즈에 맞춰서.
     if (window.innerHeight > window.innerWidth) {
@@ -310,7 +338,8 @@ export default class TreeEditScene extends Scene {
             );
             const gardenData = await res.json();
             //@ts-ignore
-            this.game.scene.getScene("preloader").garden = gardenData.gardenInfo;
+            this.game.scene.getScene("preloader").garden =
+              gardenData.gardenInfo;
             this.scene.stop("treeEditScene");
             this.scene.start("preloader");
           } catch (error) {

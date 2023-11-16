@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 interface Props {
   onFormCloseButtonClick: () => void;
   game?: Phaser.Game;
+  modify?: boolean;
 }
 
 const TreeSelect = (props: Props) => {
@@ -36,10 +37,15 @@ const TreeSelect = (props: Props) => {
 
   const onTreeSelectButtonClick = (selectedTreeUrl: string) => {
     props.onFormCloseButtonClick;
-    props.game?.scene.stop("gardenScene");
-    props.game?.scene.start("treeEditScene", {
-      selectedTreeUrl: selectedTreeUrl,
-    });
+    if (props.modify && props.game) {
+      //@ts-ignore
+      props.game.scene.getScene("treeEditScene")!.changeTree("selectedTree")
+    } else {
+      props.game?.scene.stop("gardenScene");
+      props.game?.scene.start("treeEditScene", {
+        selectedTreeUrl: selectedTreeUrl,
+      });
+    }
   };
 
   const fetchTreeList = async () => {

@@ -79,10 +79,6 @@ export default class GardenScene extends Scene {
       this.bgm.stop();
     });
 
-    window.addEventListener("beforeunload", () => {
-      this.bgm.stop();
-    });
-
     this.modalCheck = false;
     const userToken = JSON.parse(sessionStorage.getItem("userInfo")!).state
       .userToken;

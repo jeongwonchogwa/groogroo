@@ -52,6 +52,7 @@ const GardenPhaser = (props: Props) => {
   const [fruitMessageEdit, setFruitMessageEdit] = useState<boolean>(false);
   const [flowerSelect, setFlowerSelect] = useState<boolean>(false);
   const [treeSelect, setTreeSelect] = useState<boolean>(false);
+  const [treeModify, setTreeModify] = useState<boolean>(false);
   const [flowerMessageEdit, setFlowerMessageEdit] = useState<boolean>(false);
   const [showFlowerMessage, setShowFlowerMessage] = useState<boolean>(false);
   const [stopBubbling, setStopBubbling] = useState<boolean>(false);
@@ -96,7 +97,10 @@ const GardenPhaser = (props: Props) => {
     setFlowerSelect(true);
   };
 
-  const onTreeSelectOpenButtonClick = () => {
+  const onTreeSelectOpenButtonClick = (type?: string) => {
+    if (type === "modify") {
+      setTreeModify(true);
+    }
     setTreeSelect(true);
   };
 
@@ -155,7 +159,10 @@ const GardenPhaser = (props: Props) => {
         garden: garden.gardenInfo,
       });
 
-      const treeEditScene = new TreeEditScene({ garden: garden.gardenInfo });
+      const treeEditScene = new TreeEditScene({
+        garden: garden.gardenInfo,
+        onTreeSelectOpenButtonClick: onTreeSelectOpenButtonClick,
+      });
 
       //게임 생성///////////////////////////////////////////////////////////////////
       const phaserGame = new Phaser.Game({
@@ -236,12 +243,22 @@ const GardenPhaser = (props: Props) => {
           ) : null}
 
           {treeSelect ? (
-            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]">
-              <TreeSelect
-                onFormCloseButtonClick={onFormCloseButtonClick}
-                game={game}
-              />
-            </div>
+            treeModify ? (
+              <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]">
+                <TreeSelect
+                  onFormCloseButtonClick={onFormCloseButtonClick}
+                  game={game}
+                  modify
+                />
+              </div>
+            ) : (
+              <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]">
+                <TreeSelect
+                  onFormCloseButtonClick={onFormCloseButtonClick}
+                  game={game}
+                />
+              </div>
+            )
           ) : null}
 
           {flowerSelect ? (
