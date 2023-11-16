@@ -197,7 +197,8 @@ public class GardenService {
 
                 log.info(garden.toString());
 //                long likes = gardenLikeRepository.countByGardenId(garden.getId());
-                long likes = gardenLikeRepository.findAllByGardenId(garden.getId()).size();
+//                long likes = gardenLikeRepository.findAllByGardenId(garden.getId()).size();
+                long likes = gardenLikeService.getGardenLikes(garden.getId());
                 ResponseUserGardenDto responseUserGardenDto = ResponseUserGardenDto.builder()
                         .gardenId(garden.getId())
                         .name(garden.getName())

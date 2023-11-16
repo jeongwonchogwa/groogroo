@@ -324,3 +324,4 @@
   - 프론트 측에서 프리셋 저장 API 호출하여 사용
   - 프리셋 조회 API에 현재 적용중인 프리셋 여부를 나타내는 boolean now 추가
   - 가입 요청 알림 발송 기준 쿼리 변경 -> GardenRoleOrGardenRole -> GardenRoleIn
+  - 소속 정원 목록 조회 API의 좋아요 개수 GardenLikeService의 메서드를 통해 조회하도록 변경
