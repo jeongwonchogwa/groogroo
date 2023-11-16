@@ -12,7 +12,11 @@ import useUserToken from "@/app/hooks/useUserToken";
 import useSearchTree from "@/app/hooks/useSearchTree";
 import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
-const SearchTreeFruitsPage = () => {
+const SearchTreeFruitsPage = ({
+  params,
+}: {
+  params: { searchTreeId: number };
+}) => {
   const userToken = useUserToken();
   const { treeId, loading, error } = useSearchTree(userToken);
 
@@ -25,13 +29,10 @@ const SearchTreeFruitsPage = () => {
   const router = useRouter();
 
   // 검색 결과 가져오기
-  const fetchSearch = async (name: string) => {
-    if (name === "") {
-      return;
-    }
+  const fetchSearch = async () => {
     try {
       const response = await fetchWithTokenCheck(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/${name}`,
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/detail/${params.searchTreeId}`,
         {
           method: "GET",
           headers: {
@@ -42,14 +43,14 @@ const SearchTreeFruitsPage = () => {
         router
       );
       const data = await response.json();
-      return data.trees[0];
+      return data.tree;
     } catch (error) {
       console.log(error);
     }
   };
-  const name = useSearchParams().get("name");
-  const { data, isLoading, isError } = useQuery(["searchResultData"], () =>
-    fetchSearch(name as string)
+  const { data, isLoading, isError } = useQuery(
+    ["searchResultData"],
+    fetchSearch
   );
   if (isLoading) {
     return <Loading />;
@@ -59,7 +60,7 @@ const SearchTreeFruitsPage = () => {
     <div className="w-full h-[100%-60px]">
       <div className="mx-5 my-8">
         <SearchTreeSection
-          name={name as string}
+          name={data.name as string}
           imageUrl={data.imageUrl as string}
         />
       </div>
