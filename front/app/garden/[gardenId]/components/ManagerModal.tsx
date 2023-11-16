@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import YesNoModal from "./YesNoModal";
 import { title } from "process";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
@@ -17,6 +17,7 @@ interface Props {
 
 const ManagerModal = (props: Props) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { userToken } = userInfoStore();
   const [openYesNoModal, setOpenYesNoModal] = useState<boolean>(false);
   const [yesNoModalContent, setYesNoModalContent] = useState<{
@@ -27,9 +28,7 @@ const ManagerModal = (props: Props) => {
     yesMessage: string;
   }>();
 
-  const onProcessComplete = () => {
-    
-  }
+  const onProcessComplete = () => {};
 
   const onStateChangeButtonClick = (
     id: number,
@@ -119,13 +118,16 @@ const ManagerModal = (props: Props) => {
       );
       const data = await res.json();
       console.log(data);
+      if (data.httpStatus === "success") {
+        queryClient.removeQueries({ queryKey: ["getMemberListInfo"] });
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
   const { data: memberData, isLoading } = useQuery({
-    queryKey: ["getUserListInfo"],
+    queryKey: ["getMemberListInfo"],
     queryFn: fetchMemberList,
   });
 
@@ -190,10 +192,7 @@ const ManagerModal = (props: Props) => {
                     gardenRole: string;
                   }) => {
                     return (
-                      <div
-                        key={member.userId}
-                        className="w-[300px] py-3"
-                      >
+                      <div key={member.userId} className="w-[300px] py-3">
                         <div className="flex justify-between text-2xl gap-10 font-nexonGothic_Medium px-2">
                           {member.treeName}
                           {member.gardenRole === "ADMIN" || "MASTER" ? null : (

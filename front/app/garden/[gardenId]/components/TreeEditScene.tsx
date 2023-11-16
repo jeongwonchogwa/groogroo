@@ -309,7 +309,8 @@ export default class TreeEditScene extends Scene {
               }
             );
             const gardenData = await res.json();
-            this.updateGarden(gardenData.gardenInfo);
+            //@ts-ignore
+            this.game.scene.getScene("preloader").garden = gardenData.gardenInfo;
             this.scene.stop("treeEditScene");
             this.scene.start("preloader");
           } catch (error) {
