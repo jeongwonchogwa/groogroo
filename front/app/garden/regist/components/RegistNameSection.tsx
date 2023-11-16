@@ -4,10 +4,16 @@ interface RegistNameSectionProps {
   onChange: (e: any) => void;
 }
 
-const RegistNameSection = ({ name, value, onChange }: RegistNameSectionProps) => {
+const RegistNameSection = ({
+  name,
+  value,
+  onChange,
+}: RegistNameSectionProps) => {
   return (
     <div className="flex flex-col mb-5">
-      <div className="flex justify-start font-neoDunggeunmo_Pro text-lg">정원 이름</div>
+      <div className="flex justify-start font-neoDunggeunmo_Pro text-lg">
+        정원 이름
+      </div>
       <div className="w-full">
         <input
           type="text"

@@ -9,11 +9,12 @@ export interface Fruit {
 export interface Tree {
   email?: string;
   id: number;
-  treeId : number;
+  treeId: number;
   imageUrl: string;
   name: string;
   fruits?: Fruit[];
   fruitCnt?: number;
+  fruitsCount?: number;
   x?: number;
   y?: number;
 }
@@ -38,6 +39,7 @@ export interface TreesResponse {
 export interface Preset {
   treeUserPresetId: number;
   imageUrl: string;
+  now?: boolean;
 }
 
 export interface Report {

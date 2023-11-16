@@ -1,13 +1,19 @@
 interface RegistCapacitySectionProps {
   name: string;
   onChange: (e: any) => void;
-  value: number;
+  value: string;
 }
 
-const RegistCapacitySection = ({ name, onChange, value }: RegistCapacitySectionProps) => {
+const RegistCapacitySection = ({
+  name,
+  onChange,
+  value,
+}: RegistCapacitySectionProps) => {
   return (
     <div className="flex flex-row mb-5">
-      <div className="w-full my-auto font-neoDunggeunmo_Pro text-lg">정원 최대 인원 : </div>
+      <div className="w-full my-auto font-neoDunggeunmo_Pro text-lg">
+        정원 최대 인원 :{" "}
+      </div>
       <div className="w-full">
         <input
           type="number"

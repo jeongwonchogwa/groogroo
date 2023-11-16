@@ -44,7 +44,7 @@ const RegistPage = () => {
   const [gardenInput, setGardenInput] = useState({
     name: "",
     description: "",
-    capacity: 0,
+    capacity: "1",
   });
 
   const { name, description, capacity } = gardenInput;
@@ -59,7 +59,7 @@ const RegistPage = () => {
   const data: {
     name: string;
     description: string;
-    capacity: number;
+    capacity: string;
     mapType: number;
   } = {
     name: name,
@@ -70,6 +70,11 @@ const RegistPage = () => {
 
   const fetchCreate = async (data: object) => {
     console.log("currentIndex가 뭐야?", currentIndex);
+    console.log(data);
+    if (name === "" || capacity === "" || capacity === "0") {
+      setCapacityValidFail(true);
+      return;
+    }
     try {
       const response = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden`,
@@ -101,11 +106,7 @@ const RegistPage = () => {
     setCapacityValidFail((prev) => !prev);
   };
   const clickCreate = () => {
-    if (capacity === 0 || name === "") {
-      setCapacityValidFail(true);
-    } else {
-      fetchCreate(data);
-    }
+    fetchCreate(data);
   };
 
   return (
@@ -152,6 +153,7 @@ const RegistPage = () => {
                   label="취소하기"
                   onClick={() => router.back()}
                 />
+
                 <Button
                   color="primary"
                   label="생성하기"
