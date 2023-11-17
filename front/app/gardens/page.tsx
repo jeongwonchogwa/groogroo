@@ -11,6 +11,7 @@ import useSearchTree from "../hooks/useSearchTree";
 import { fetchWithTokenCheck } from "../components/FetchWithTokenCheck";
 import Image from "next/image";
 import { useQueryClient } from "@tanstack/react-query";
+import Loading from "../components/Loading";
 
 // 리팩토링 필요
 
@@ -68,7 +69,11 @@ const GardensPage = () => {
   const router = useRouter();
   const fetchGardenList = useCallback(
     async (pageNumber: number) => {
-      setNowLoading(true);
+      if (pageNumber === 0) {
+        setFirstLoading(true);
+      } else {
+        setNowLoading(true);
+      }
       console.log("이건 fetchGardenList", pageNumber);
       try {
         const response = await fetchWithTokenCheck(
@@ -83,21 +88,22 @@ const GardensPage = () => {
         );
         if (response.status === 200) {
           const responseData = await response.json();
-          console.log(`${pageNumber}의`, responseData);
-          setMyGardenList((prev: any) => [
-            ...prev,
-            ...responseData.gardenInfo.content,
-          ]);
-          if (
-            responseData.gardenInfo.totalElememts < responseData.gardenInfo.size
-          ) {
-            setHasMyGardenNext(true);
+          if (pageNumber === 0) {
+            setMyGardenList(responseData.gardenInfo.content);
+            setFirstLoading(false);
           } else {
-            setHasMyGardenNext(false);
+            setMyGardenList((prev: any) => [
+              ...prev,
+              ...responseData.gardenInfo.content,
+            ]);
           }
+          setHasRankingGardenNext(
+            pageNumber < responseData.gardenInfo.totalPages
+          );
         } else if (response.status === 500) {
           setHasMyGardenNext(false);
         }
+
         setNowLoading(false);
       } catch (error) {
         console.log(error);
@@ -106,11 +112,14 @@ const GardensPage = () => {
     [userToken]
   );
 
+  const [firstLoading, setFirstLoading] = useState<boolean>(false);
   const fetchGardenRankingList = useCallback(
     async (pageNumber: number) => {
-      console.log("여기는 fetchGardenRanking 들어왔니?");
-
-      setNowLoading(true);
+      if (pageNumber === 0) {
+        setFirstLoading(true);
+      } else {
+        setNowLoading(true);
+      }
       try {
         const response = await fetchWithTokenCheck(
           `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/ranking/${pageNumber}`,
@@ -124,20 +133,20 @@ const GardensPage = () => {
         );
         if (response.status === 200) {
           const responseData = await response.json();
-          console.log(`${pageNumber}의`, responseData);
-          setRankingGardenList((prev: any) => [
-            ...prev,
-            ...responseData.ranking.content,
-          ]);
-
-          if (responseData.ranking.totalElememts < responseData.ranking.size) {
-            setHasRankingGardenNext(true);
+          if (pageNumber === 0) {
+            setRankingGardenList(responseData.ranking.content);
+            setFirstLoading(false);
           } else {
-            setHasRankingGardenNext(false);
+            setRankingGardenList((prev: any) => [
+              ...prev,
+              ...responseData.ranking.content,
+            ]);
           }
+          setHasRankingGardenNext(pageNumber < responseData.ranking.totalPages);
         } else if (response.status === 500) {
           setHasRankingGardenNext(false);
         }
+
         setNowLoading(false);
       } catch (error) {
         console.log(error);
@@ -149,11 +158,21 @@ const GardensPage = () => {
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       if (sort === "내 정원") {
-        if (entries[0].isIntersecting && hasMyGardenNext && !Nowloading) {
+        if (
+          entries[0].isIntersecting &&
+          hasMyGardenNext &&
+          !Nowloading &&
+          !firstLoading
+        ) {
           setMyGardenPageNumber((prevPage) => prevPage + 1);
         }
       } else {
-        if (entries[0].isIntersecting && hasRankingGardenNext && !Nowloading) {
+        if (
+          entries[0].isIntersecting &&
+          hasRankingGardenNext &&
+          !Nowloading &&
+          !firstLoading
+        ) {
           setRankingGardenPageNumber((prevPage) => prevPage + 1);
         }
       }
@@ -168,17 +187,30 @@ const GardensPage = () => {
         observer.unobserve(loader.current);
       }
     };
-  }, [loader, hasMyGardenNext, hasRankingGardenNext, Nowloading, sort]);
+  }, [
+    loader,
+    hasMyGardenNext,
+    hasRankingGardenNext,
+    Nowloading,
+    sort,
+    firstLoading,
+  ]);
+  useEffect(() => {
+    if (userToken) {
+      fetchGardenList(myGardenPageNumber);
+      fetchGardenRankingList(rankingGardenPageNumber);
+    }
+  }, [userToken, fetchGardenList, fetchGardenRankingList]);
 
   useEffect(() => {
     if (userToken) {
       if (sort === "내 정원") {
-        if (hasMyGardenNext) {
+        if (!Nowloading && hasMyGardenNext) {
           console.log(myGardenPageNumber);
           fetchGardenList(myGardenPageNumber);
         }
       } else {
-        if (hasRankingGardenNext) {
+        if (!Nowloading && hasRankingGardenNext) {
           console.log(rankingGardenPageNumber);
           fetchGardenRankingList(rankingGardenPageNumber);
         }
@@ -201,51 +233,75 @@ const GardensPage = () => {
         handlemenu={() => handlemenu()}
         menuOpen={menuOpen}
       />
-      {/* 로딩 상태 표시 */}
-      {Nowloading ? (
-        <div className="flex flex-col justify-center items-center h-[650px] ">
-          <Image
-            alt="로딩중"
-            src="/assets/gif/loading.gif"
-            width={100}
-            height={60}
-          />
-          <p className="w-full flex justify-center mt-3 font-neoDunggeunmo_Pro text-2xl text-white">
-            잠시만 기다려주세요!
-          </p>
-        </div>
-      ) : (
-        <div className="h-[650px] overflow-scroll mt-3" ref={gardenCardRef}>
-          {sort === "내 정원" && myGardenList.length > 0 ? (
-            <div className="flex w-full flex-col">
-              <GardenCard sort={sort} gardenList={myGardenList} />
-              <div ref={loader} />
-            </div>
-          ) : sort === "정원 랭킹" && rankingGardenList.length > 0 ? (
-            <div className="h-[650px] overflow-scroll mt-3" ref={gardenCardRef}>
-              <div className="flex w-full flex-col">
-                <GardenCard sort={sort} gardenList={rankingGardenList} />
-                <div ref={loader} />
-              </div>
-            </div>
-          ) : (
-            // 데이터가 없는 상태
-            <div className="h-full w-full flex flex-col justify-center">
-              <div className="flex justify-center">
+
+      <div className="h-[650px] overflow-scroll mt-3" ref={gardenCardRef}>
+        {sort === "내 정원" && myGardenList.length > 0 ? (
+          <div className="flex w-full flex-col">
+            <GardenCard
+              sort={sort}
+              // gardenList={sort === "내 정원" ? myGardenList : rankingGardenList}
+              gardenList={myGardenList}
+            />
+            {Nowloading && (
+              <div className="mt-3 w-full flex justify-center">
                 <Image
-                  alt="no_data"
-                  src="/assets/images/no_data.svg"
-                  width={150}
-                  height={350}
+                  alt="로딩중"
+                  src="/assets/gif/loading.gif"
+                  width={100}
+                  height={60}
                 />
               </div>
-              <p className="w-full flex justify-center mt-3 font-neoDunggeunmo_Pro text-2xl text-white">
-                정원 정보가 없습니다!
-              </p>
+            )}
+            <div ref={loader} />
+          </div>
+        ) : sort === "정원 랭킹" && rankingGardenList.length > 0 ? (
+          <div className="h-[650px] overflow-scroll mt-3" ref={gardenCardRef}>
+            <div className="flex w-full flex-col">
+              <GardenCard sort={sort} gardenList={rankingGardenList} />
+              {Nowloading && (
+                <div className="mt-3 w-full flex justify-center">
+                  <Image
+                    alt="로딩중"
+                    src="/assets/gif/loading.gif"
+                    width={100}
+                    height={60}
+                  />
+                </div>
+              )}
+              <div ref={loader} />
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        ) : firstLoading ? (
+          <div className="h-full w-full flex flex-col justify-center">
+            <div className="flex justify-center">
+              <Image
+                alt="로딩중"
+                src="/assets/gif/loading.gif"
+                width={100}
+                height={60}
+              />
+            </div>
+            <p className="text-center font-bitBit text-2xl mt-3 text-white">
+              정원 목록을 가져오는 중입니다
+              <br /> 잠시만 기다려주세요
+            </p>
+          </div>
+        ) : (
+          <div className="h-full w-full flex flex-col justify-center">
+            <div className="flex justify-center">
+              <Image
+                alt="no_data"
+                src="/assets/images/no_data.svg"
+                width={150}
+                height={350}
+              />
+            </div>
+            <p className="w-full flex justify-center mt-3 font-neoDunggeunmo_Pro text-2xl text-white">
+              정원 정보가 없습니다!
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
