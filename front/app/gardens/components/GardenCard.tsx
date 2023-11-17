@@ -122,7 +122,10 @@ const GardenCard = ({ sort, gardenList }: GardenCardProps) => {
                             </div>
                           </div>
                           <div className="mt-2 w-[290px] h-[30px]">
-                            <p className="h-full font-nexonGothic text-lg truncate">
+                            <p
+                              className="h-full font-nexonGothic text-lg truncate "
+                              style={{ whiteSpace: "pre-line" }}
+                            >
                               {garden.description}
                             </p>
                           </div>
