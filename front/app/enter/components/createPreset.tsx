@@ -19,6 +19,7 @@ const CreatePreset = () => {
   const [selectedComponent, setSelectedComponent] = useState('canvas');
   const [selectedTool, setSelectedTool] = useState('pen'); // 기본 도구를 'pen'으로 설정
   const [selectedColor, setSelectedColor] = useState('black'); // 기본 색상을 'black'으로 설정
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const [imageData, setImageData] = useState('');
   const [imageName, setImageName] = useState('');
@@ -136,6 +137,7 @@ const CreatePreset = () => {
   };
 
   const fetchImageToFlask = async (formData: FormData) => {
+    setIsLoading(true);
     if (formData) {
       console.log("flask에 요청 보낸다!");
       try {
@@ -145,6 +147,7 @@ const CreatePreset = () => {
         }, router);
   
         if (response?.status === 200) {
+          setIsLoading(false);
           // image_data - 형식은 base64
           const data = await response.json();
           setImageData(data.image_data); // 이미지 데이터를 상태 변수에 저장
@@ -166,6 +169,7 @@ const CreatePreset = () => {
   };
 
   const fetchTextToFlask = async (inputData : string) => {
+    setIsLoading(true);
     try {
       
 
@@ -183,6 +187,7 @@ const CreatePreset = () => {
       }, router);
 
       if (response?.status === 200) {
+        setIsLoading(false);
         // image_data - 형식은 base64
         const data = await response.json();
         setImageData(data.image_data); // 이미지 데이터를 상태 변수에 저장
@@ -285,21 +290,63 @@ const CreatePreset = () => {
           <SmallButton color={selectedComponent === 'canvas' ? 'default' : 'white'} label="이미지" onClick={() => {setSelectedComponent('canvas'); setInputValue('');}} />
           <SmallButton color={selectedComponent === 'text' ? 'default' : 'white'} label="텍스트" onClick={() => {setSelectedComponent('text'); setIsBlank(true);}} /> 
         </div>
-        {selectedComponent === 'canvas' && (
-          <>
-            <DrawingTools
-              onSelectTool={(tool) => handleSelectTool(tool)}
-              onColorChange={(color) => handleColorChange(color)}
-            />
-            
-            <PixelCanvas selectedTool={selectedTool} selectedColor={selectedColor} checkIsBlank={checkIsBlank} />
-          {/* <Canvas selectedTool={selectedTool} selectedColor={selectedColor} /> */}
-          </>
-        )}
+        {selectedComponent === "canvas" ? (
+          isLoading ? (
+            <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
+              <Image
+                alt="loading"
+                src={"/assets/gif/loading.gif"}
+                width={100}
+                height={30}
+              ></Image>
+            </div>
+          ) : (
+            <>
+              <DrawingTools
+                onSelectTool={(tool) => handleSelectTool(tool)}
+                onColorChange={(color) => handleColorChange(color)}
+              />
 
-        {selectedComponent === 'text' && isGenerated && imageData && (
-        // <img src={`data:image/png;base64,${imageData}`} alt='생성된 이미지' />
-        <Image className="mt-5" src={`data:image/png;base64,${imageData}`} alt="생성된 이미지" width={128} height={128} priority/>
+              <PixelCanvas
+                selectedTool={selectedTool}
+                selectedColor={selectedColor}
+                checkIsBlank={checkIsBlank}
+              />
+              {/* <Canvas selectedTool={selectedTool} selectedColor={selectedColor} /> */}
+            </>
+          )
+        ) : null}
+
+{selectedComponent === "text" && isGenerated && imageData ? (
+          // <img src={`data:image/png;base64,${imageData}`} alt='생성된 이미지' />
+          <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
+            <Image
+              className="mt-5"
+              src={`data:image/png;base64,${imageData}`}
+              alt="생성된 이미지"
+              width={128}
+              height={128}
+              priority
+            />
+          </div>
+        ) : isLoading ? (
+          <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
+            <Image
+              alt="loading"
+              src={"/assets/gif/loading.gif"}
+              width={100}
+              height={30}
+            ></Image>
+          </div>
+        ) : (
+          <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
+            <Image
+              alt="none"
+              src={"/assets/images/question.gif"}
+              width={73}
+              height={99}
+            ></Image>
+          </div>
         )}
 
         {selectedComponent === 'text' && <NameInput placeholder="뿡뿡이나무" value={inputValue} onChange={handleInputChange} />} { /* NameInput 컴포넌트를 렌더링 */ }    
