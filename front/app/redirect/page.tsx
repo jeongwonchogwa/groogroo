@@ -9,7 +9,7 @@ import { useEventSourceStore  } from '../../stores/eventSourceStore';
 const RedirectPage = () => {
   const router = useRouter();
   const search = useSearchParams();
-
+  const {approachUrl} = userInfoStore()
   //나무 존재 여부 확인
   const searchTree = async (accessToken:string) => {
     try {
@@ -55,7 +55,17 @@ const RedirectPage = () => {
         console.log("sse: ",sse);
 
         // 트리 존재 여부에 따라 페이지 이동
-        const destination = treeId == null ? '/enter/terms' : '/home';
+
+        let destination = null
+
+        if(treeId === null){
+          destination = '/enter/terms'
+        }else if(approachUrl){
+          destination = `/garden/${approachUrl}`
+        }else{
+          destination ='home'
+        }
+        
         router.push(destination);
       } else {
         console.error('Invalid access token format');
