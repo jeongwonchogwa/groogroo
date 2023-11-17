@@ -64,7 +64,7 @@ const RedirectPage = () => {
 
           if (treeId === null) {
             destination = "/enter/terms";
-          } else if (approachUrl) {
+          } else if (approachUrl !== "") {
             destination = `/garden/${approachUrl}`;
           } else {
             destination = "home";
