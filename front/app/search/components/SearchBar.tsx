@@ -6,6 +6,7 @@ interface SearchBarProps {
   value?: string;
   handleInput?: (e: any) => void;
   handleSearch: () => void;
+  onKeyUp: (e: any) => void;
 }
 
 const SearchBar = ({
@@ -13,6 +14,7 @@ const SearchBar = ({
   value,
   handleInput,
   handleSearch,
+  onKeyUp,
 }: SearchBarProps) => {
   return (
     <div className="w-full">
@@ -37,6 +39,7 @@ const SearchBar = ({
                   name={name}
                   value={value}
                   onChange={handleInput}
+                  onKeyUp={onKeyUp}
                   className="px-2 py-1 outline-none border-r-[5px] border-r-frame-border font-nexonGothic_Medium w-full"
                   placeholder="검색할 나무를 입력하세요"
                 ></input>
