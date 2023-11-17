@@ -195,6 +195,12 @@ const GardensPage = () => {
     sort,
     firstLoading,
   ]);
+  useEffect(() => {
+    if (userToken) {
+      fetchGardenList(myGardenPageNumber);
+      fetchGardenRankingList(rankingGardenPageNumber);
+    }
+  }, [userToken, fetchGardenList, fetchGardenRankingList]);
 
   useEffect(() => {
     if (userToken) {
