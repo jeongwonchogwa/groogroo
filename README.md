@@ -4,6 +4,7 @@
   <img src="https://groogroo.s3.ap-northeast-2.amazonaws.com/logos/logo_background.jpg" height="200">
 </div>
 
+
 ## 📅 프로젝트 개요
 
 🌼 **개발 기간** : 2023.10.12 ~ 2023.11.17 (총 6주)
@@ -24,6 +25,7 @@
 
 --- ppt 내용 참고해서 작성할게여 ---
 
+
 ## 🌻 서비스 소개
 
 ### <img src="https://groogroo.s3.ap-northeast-2.amazonaws.com/logos/logo_background.jpg" height="15px" width="20px" style="align:center;"> _그루그루: 우리가 만드는 정원_
@@ -32,6 +34,7 @@
 
 **우리 같이 정원을 가꿔볼래?** \
 **정원을 가꾸며 나누는 우리의 이야기 <img src="https://groogroo.s3.ap-northeast-2.amazonaws.com/logos/logo_background.jpg" height="12px" width="20px" style="align:center;"> 그루그루🌳**
+
 
 ## ⚙️ 기술 스택
 
@@ -70,19 +73,16 @@
 <img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
 </div>
 
-## 😊 서비스 화면
-
-**[나무]**
-
-**[정원]**
 
 ## 🎨 와이어프레임
 
 ![figma](https://github.com/Manna-na/algorithm-study/assets/123603435/9d0e4c82-89da-4580-9046-4a82cd2a1e01)
 
+
 ## 🗂️ ERD
 
 ![ERD](https://github.com/Manna-na/algorithm-study/assets/123603435/3ff5fe6b-aff2-4c2e-8c2b-3dcdbc6663f0)
+
 
 ## 🗒️ 명세서
 
@@ -94,11 +94,36 @@
 
 ![그루그루 기능명세](https://github.com/Manna-na/algorithm-study/assets/123603435/6568cc38-4ad5-40f6-b836-8557d5105bdc)
 
+
 ## 📂 아키텍쳐
 
 ![그루그루 아키텍쳐](https://github.com/Manna-na/algorithm-study/assets/123603435/94280ac3-856a-46f0-bc8c-507717fe8c86)
 
-## 시연 영상  
+
+## 😊 서비스 화면
+
+### [회원 가입]
+
+
+### [나무 생성]
+
+
+### [정원 목록 확인]
+
+
+### [정원 조회]
+
+
+### [나무/꽃 심기]
+
+
+### [열매 달기, 꽃 작성]
+
+
+### [관리자 화면]
+
+
+
 
 <br/><br/>  
 
