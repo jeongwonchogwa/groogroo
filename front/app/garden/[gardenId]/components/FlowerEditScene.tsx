@@ -38,7 +38,6 @@ export default class FlowerEditScene extends Scene {
   }
 
   updateGarden(garden: Garden) {
-    console.log("플라워에딧씬 가든 업데이트 메서드");
     this.garden = garden;
     //@ts-ignore
     this.game.scene.getScene("treeEditScene").garden = garden;
@@ -71,18 +70,12 @@ export default class FlowerEditScene extends Scene {
   }
 
   create(data: { modifyFlower: Flower }) {
-    console.log(this.game);
-    console.log(this.sound);
-    this.sound.stopAll();
-    // this.modifyFlowerId = data.modifyFlowerId;
-    // cancelButton.style.display = "flex"
-    // cancelButton.style.width = "100%"
+    // this.sound.stopAll();
     //맵 생성. 레이어별로 foreach 돌면서.///////////////////////////////////////////////
     const map = this.make.tilemap({ key: "mainMap" });
     map.addTilesetImage("tileset", "tileset");
     map.addTilesetImage("tileset_basic_terrain", "tileset_basic_terrain");
     map.layers.forEach((layer, index) => {
-      console.log(layer);
       map.createLayer(index, ["tileset", "tileset_basic_terrain"], 0, 0);
     });
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
@@ -157,9 +150,6 @@ export default class FlowerEditScene extends Scene {
       this.selectedFlowerHandle = flowers.find(
         (flower) => flower.id === "flower" + data.modifyFlower.id
       )!.id;
-
-      console.log(this.assetSprite);
-      console.log(this.selectedFlowerHandle);
     }
 
     this.cameras.main.setBackgroundColor("#1E7CB8");
@@ -168,14 +158,10 @@ export default class FlowerEditScene extends Scene {
 
     //맵 screen 사이즈에 맞춰서 zoom수치 설정. 너비/높이 중 더 큰 사이즈에 맞춰서.
     if (window.innerHeight > window.innerWidth) {
-      console.log("높이가 너비보다 더큼" + window.innerHeight / 320 + "배");
       this.cameras.main.setZoom(window.innerHeight / 320);
     } else {
-      console.log("너비가 높이보다 더 큼" + window.innerWidth / 480 + "배");
       this.cameras.main.setZoom(window.innerWidth / 480);
     }
-    // this.cameras.main.setZoom(2);
-    console.log(this.cameras.main.width);
     this.cameras.main.setPosition(0, 0);
     this.cameras.main.startFollow(this.assetSprite, true);
     this.cameras.main.setFollowOffset(0);
@@ -207,7 +193,6 @@ export default class FlowerEditScene extends Scene {
 
     const onRegistButtonClick = async () => {
       if (this.defaultSpriteBox.visible) {
-        console.log("돼요");
         this.onFlowerPlantButtonClick({
           imageUrl: `/assets/flowers/flower[${this.selectedFlower}].svg`,
           x: this.gridEngine.getPosition(this.selectedFlowerHandle).x,
@@ -215,7 +200,6 @@ export default class FlowerEditScene extends Scene {
         });
         this.selectedFlower = undefined;
       } else {
-        console.log("안돼요");
       }
     };
 
@@ -243,7 +227,6 @@ export default class FlowerEditScene extends Scene {
             }
           );
           const Data = await res.json();
-          console.log(Data);
 
           try {
             const res = await fetch(
@@ -268,14 +251,13 @@ export default class FlowerEditScene extends Scene {
               gardenData.gardenInfo;
             this.scene.stop("flowerEditScene");
             this.scene.start("preloader");
-          } catch (error) {
-            console.log(error);
+          } catch (err) {
+            console.log(err);
           }
         } catch (err) {
           console.log(err);
         }
       } else {
-        console.log("안돼요");
       }
     };
 
@@ -325,13 +307,11 @@ export default class FlowerEditScene extends Scene {
         window.innerWidth / 2 - window.innerWidth / this.cameras.main.zoom / 2,
         window.innerHeight / 2 - 160 + 80 / this.cameras.main.zoom
       );
-      console.log(this.registButtonBox.x + " " + this.registButtonBox.y);
     } else {
       this.registButtonBox.setPosition(
         window.innerWidth / 2 - window.innerWidth / this.cameras.main.zoom / 2,
         window.innerHeight / 2 - 160 + 80 / this.cameras.main.zoom
       );
-      console.log(this.registButtonBox.x + " " + this.registButtonBox.y);
     }
 
     const leftButtonImage = document.createElement("img");

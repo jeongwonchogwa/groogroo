@@ -8,7 +8,6 @@ export default function ListLayout({
   children: React.ReactNode;
 }) {
   useEffect(() => {
-    console.log(window);
     const loadKakaoScript = () => {
       if (window.Kakao) {
         if (!window.Kakao.isInitialized()) {

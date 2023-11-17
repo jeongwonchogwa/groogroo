@@ -67,7 +67,6 @@ export default class GardenScene extends Scene {
   }
 
   create() {
-    console.log("가든씬 만들거임", this.garden);
 
     let bgmCheck = false;
     //@ts-ignore
@@ -82,7 +81,6 @@ export default class GardenScene extends Scene {
       }
 
     window.addEventListener("popstate", () => {
-      console.log("뒤로가기");
       this.bgm.stop();
     });
 
@@ -102,10 +100,9 @@ export default class GardenScene extends Scene {
           }
         );
         const data = await res.json();
-        // console.log(data);
         return data;
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.log(err);
       }
     };
 
@@ -140,17 +137,14 @@ export default class GardenScene extends Scene {
           }
         );
         const data = await res.json();
-        console.log(data);
         return data;
-      } catch (error) {
-        console.log("좋아요 정보 가져오기 실패");
-        console.log(error);
+      } catch (err) {
+        console.log(err);
       }
     };
 
     const getLikeInfo = async () => {
       const data = await fetchLikeInfo();
-      // console.log(data);
       if (data.result) {
         this.likeCheck = true;
         // this.heartButton = document.createElement("img");
@@ -179,7 +173,6 @@ export default class GardenScene extends Scene {
             }
           );
           const data = await res.json();
-          console.log(data);
           if (data.httpStatus === "success") {
             this.heartButton.src = "/assets/images/heart_empty.svg";
             this.likeCheck = false;
@@ -188,8 +181,8 @@ export default class GardenScene extends Scene {
             ).toString();
           }
           return data;
-        } catch (error) {
-          console.log(error);
+        } catch (err) {
+          console.log(err);
         }
       } else {
         //좋아요 누르기
@@ -205,7 +198,6 @@ export default class GardenScene extends Scene {
             }
           );
           const data = await res.json();
-          console.log(data);
           if (data.httpStatus === "success") {
             this.heartButton.src = "/assets/images/heart_fill.svg";
             this.likeCheck = true;
@@ -214,8 +206,8 @@ export default class GardenScene extends Scene {
             ).toString();
           }
           return data;
-        } catch (error) {
-          console.log(error);
+        } catch (err) {
+          console.log(err);
         }
       }
     };
@@ -225,7 +217,6 @@ export default class GardenScene extends Scene {
     map.addTilesetImage("tileset", "tileset");
     map.addTilesetImage("tileset_basic_terrain", "tileset_basic_terrain");
     map.layers.forEach((layer, index) => {
-      console.log(layer);
       map.createLayer(index, ["tileset", "tileset_basic_terrain"], 0, 0);
     });
 
@@ -325,12 +316,9 @@ export default class GardenScene extends Scene {
 
     // 맵 screen 사이즈에 맞춰서 zoom수치 설정. 너비/높이 중 더 큰 사이즈에 맞춰서.
     if (window.innerHeight >= window.innerWidth) {
-      // console.log(
-      //   "높이가 너비보다 같거나 더큼" + window.innerHeight / 320 + "배"
-      // );
+      
       this.cameras.main.setZoom(window.innerHeight / 320);
     } else {
-      // console.log("너비가 높이보다 더 큼" + window.innerWidth / 480 + "배");
       this.cameras.main.setZoom(window.innerWidth / 480);
     }
     this.cameras.main.setPosition(0, 0);
@@ -373,9 +361,6 @@ export default class GardenScene extends Scene {
         // 다음 스크롤를 위해 시작 위치 업데이트
         this.startX = pointer.x;
         this.startY = pointer.y;
-        // console.log(
-        //   this.cameras.main.scrollX + " " + this.cameras.main.scrollY
-        // );
       }
     });
 
@@ -485,6 +470,8 @@ export default class GardenScene extends Scene {
           "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
         tmpTextBox.appendChild(document.createTextNode(tree.id));
         tmpTextBox.addEventListener("click", () => {
+          this.modalCheck = false
+          treeModalBox.style.display = "none";
           if (
             (window.innerWidth / 2 >
               (20 - tree.startPosition.x + 0.5) * 16 * this.cameras.main.zoom &&
@@ -525,9 +512,7 @@ export default class GardenScene extends Scene {
           const nameText = document.createTextNode(tree.id);
           nameTextBox.appendChild(nameText);
           nameTagBox.node.appendChild(nameTextBox);
-          // console.log(
-          //   this.cameras.main.scrollX + " " + this.cameras.main.scrollY
-          // );
+          
 
           this.time.addEvent({
             delay: 4000,
@@ -575,7 +560,6 @@ export default class GardenScene extends Scene {
       );
     }
 
-    // console.log(this.footer.x + " " + this.footer.y);
     this.footer.setClassName("!flex justify-between px-5");
     const registMenuSet = document.createElement("div");
     registMenuSet.className =
@@ -616,8 +600,10 @@ export default class GardenScene extends Scene {
 
     const onTreeButtonClick = () => {
       if (treeModalBox.style.display === "flex") {
+        this.modalCheck = false;
         treeModalBox.style.display = "none";
       } else {
+        this.modalCheck = true;
         treeModalBox.style.display = "flex";
         registModalBox.style.display = "none";
       }
@@ -641,7 +627,6 @@ export default class GardenScene extends Scene {
     this.footer.node.appendChild(rightsideMenu);
 
     this.treeButton.addEventListener("click", onTreeButtonClick);
-    // this.flowerButton.addEventListener("click", onFlowerButtonClick);
 
     if (this.garden.state !== "ACCEPT") {
       this.plusButton.style.display = "none";

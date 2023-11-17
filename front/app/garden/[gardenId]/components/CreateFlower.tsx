@@ -33,7 +33,6 @@ const CreateFlower = (props: Props) => {
     };
 
     try {
-      console.log(newFlower);
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/flower`,
         {
@@ -46,7 +45,6 @@ const CreateFlower = (props: Props) => {
         }
       );
       const data = await res.json();
-      console.log(data);
       props.onFormCloseButtonClick();
 
       try {
@@ -62,7 +60,6 @@ const CreateFlower = (props: Props) => {
           router
         );
         const gardenData = await res.json();
-        console.log(gardenData);
         //@ts-ignore
         props.game!.scene.getScene("preloader").garden = gardenData.gardenInfo;
         //@ts-ignore
@@ -74,8 +71,8 @@ const CreateFlower = (props: Props) => {
         props.game?.sound.stopAll();
         props.game?.scene.stop("flowerEditScene");
         props.game?.scene.start("preloader");
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.log(err);
       }
     } catch (err) {
       console.log(err);

@@ -61,11 +61,9 @@ const TreeSelect = (props: Props) => {
       );
 
       const data = await res.json();
-      console.log(data);
-      // setTreeList(data.presets);
       return data;
-    } catch (error) {
-      console.error("에러 발생: ", error);
+    } catch (err) {
+      console.log(err);
     }
   };
 

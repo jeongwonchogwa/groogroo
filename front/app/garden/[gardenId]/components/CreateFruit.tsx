@@ -23,7 +23,6 @@ const CreateFruit = (props: Props) => {
   const [content, setContent] = useState("");
 
   const handleFruitSubmit = async () => {
-    console.log(props.currentTree.treeId, writer, content);
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/fruit`,
@@ -41,7 +40,6 @@ const CreateFruit = (props: Props) => {
         }
       );
       const data = await res.json();
-      console.log(data);
       try {
         const res = await fetchWithTokenCheck(
           `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${props.gardenId}`,
@@ -55,7 +53,6 @@ const CreateFruit = (props: Props) => {
           router
         );
         const gardenData = await res.json();
-        console.log(gardenData);
         //@ts-ignore
         props.game!.scene.getScene("preloader").garden = gardenData.gardenInfo;
         //@ts-ignore
@@ -64,13 +61,12 @@ const CreateFruit = (props: Props) => {
         //@ts-ignore
         props.game!.scene.getScene("treeEditScene").garden =
           gardenData.gardenInfo;
-        console.log();
         props.onFormCloseButtonClick();
         props.game.sound.stopAll();
         props.game?.scene.stop("gardenScene");
         props.game?.scene.start("preloader");
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.log(err);
       }
     } catch (err) {
       console.log(err);

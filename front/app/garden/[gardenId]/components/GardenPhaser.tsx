@@ -84,7 +84,6 @@ const GardenPhaser = (props: Props) => {
         router
       );
       const data = await res.json();
-      console.log(data);
       setCurrentFlower(data.flower);
       setShowFlowerMessage(true);
       return data;
@@ -123,10 +122,9 @@ const GardenPhaser = (props: Props) => {
         router
       );
       const data = await res.json();
-      // console.log(data);
       return data;
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
   };
 

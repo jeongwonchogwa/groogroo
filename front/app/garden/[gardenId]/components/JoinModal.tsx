@@ -31,7 +31,6 @@ const JoinModal = (props: Props) => {
       router
     ).then((res) => {
       if (res.status === 200) {
-        console.log("요청 성공");
       } else {
         console.log("삭제 실패");
       }

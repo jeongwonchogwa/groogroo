@@ -49,7 +49,6 @@ const FlowerMessage = (props: Props) => {
   // 신고하기 모달 오픈
   const handleReportModal = () => {
     setOpenReport((prev) => !prev);
-    console.log("신고삐용삐용");
     // fetch로 현재 선택된 데이터 넘기기 위한 것
   };
   const onModifyButtonClick = async () => {
@@ -74,7 +73,6 @@ const FlowerMessage = (props: Props) => {
         router
       );
       const data = await res.json();
-      console.log(data);
 
       try {
         const res = await fetch(
@@ -88,23 +86,20 @@ const FlowerMessage = (props: Props) => {
           }
         );
         const gardenData = await res.json();
-        console.log(gardenData);
         //@ts-ignore
         props.game!.scene.getScene("preloader").garden = gardenData.gardenInfo;
 
-        console.log();
         props.game?.scene.stop("gardenScene");
         props.game?.scene.start("preloader");
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.log(err);
       }
       props.onFormCloseButtonClick();
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
   };
 
-  console.log("꽃 메세지입니다.");
   return (
     <div
       onClick={(e) => e.stopPropagation()}

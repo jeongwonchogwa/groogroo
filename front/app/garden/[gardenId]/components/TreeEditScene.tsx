@@ -40,7 +40,6 @@ export default class TreeEditScene extends Scene {
   }
 
   updateGarden(garden: Garden) {
-    console.log("트리에딧씬 가든 업데이트 메서드");
     this.garden = garden;
     //@ts-ignore
     this.game.scene.getScene("flowerEditScene").garden = garden;
@@ -63,10 +62,9 @@ export default class TreeEditScene extends Scene {
       "animatedTiles",
       "animatedTiles"
     );
-    console.log(this.textures.list);
+
     this.currentTime = " " + new Date().getTime();
 
-    console.log("없음");
     this.load.spritesheet(
       "selectedTree" + this.currentTime,
       this.selectedTreeUrl + "?timestamp=" + new Date().getTime(),
@@ -78,24 +76,13 @@ export default class TreeEditScene extends Scene {
   }
 
   create() {
-    console.log(this.game);
-    console.log(this.sound);
-    this.sound.stopAll();
-    // const cancelButton = document.createElement("div")
-    console.log("텍스쳐리스트", this.textures.list);
-    console.log(
-      "목록에서 selectedTree 가져오기",
-      this.textures.get("selectedTree" + this.currentTime)
-    );
-    // cancelButton.style.display = "flex"
-    // cancelButton.style.width = "100%"
+    // this.sound.stopAll();
 
     //맵 생성. 레이어별로 foreach 돌면서.///////////////////////////////////////////////
     const map = this.make.tilemap({ key: "mainMap" });
     map.addTilesetImage("tileset", "tileset");
     map.addTilesetImage("tileset_basic_terrain", "tileset_basic_terrain");
     map.layers.forEach((layer, index) => {
-      console.log(layer);
       map.createLayer(index, ["tileset", "tileset_basic_terrain"], 0, 0);
     });
 
@@ -138,12 +125,11 @@ export default class TreeEditScene extends Scene {
     //배치할 에셋 sprite 생성 (새 나무)
 
     if (this.selectedTreeUrl) {
-      (this.assetSprite = this.physics.add
+      this.assetSprite = this.physics.add
         .sprite(0, 0, "selectedTree" + this.currentTime)
         .setScale(0.25)
         .setDepth(3)
-        .setOrigin(0, 0));
-        console.log(this.assetSprite);
+        .setOrigin(0, 0);
       trees.push({
         id: "selectedTree",
         sprite: this.assetSprite,
@@ -153,7 +139,6 @@ export default class TreeEditScene extends Scene {
         offsetX: 8,
         offsetY: 16,
       });
-      console.log("나무목록", trees);
       this.selectedTreeHandle = "selectedTree";
 
       //기존 나무 이동시 핸들 지정
@@ -169,16 +154,12 @@ export default class TreeEditScene extends Scene {
           tree.tileHeight = 0;
           tree.tileWidth = 0;
           tree.sprite.on("pointerup", () => {
-            console.log("누름")
             this.onTreeSelectOpenButtonClick("modify");
           });
           this.assetSprite = tree.sprite;
           this.selectedTreeHandle = tree.id;
         }
       });
-
-      console.log(this.assetSprite);
-      console.log(this.selectedTreeHandle);
     }
 
     this.cameras.main.setBackgroundColor("#1E7CB8");
@@ -204,20 +185,14 @@ export default class TreeEditScene extends Scene {
 
     //맵 screen 사이즈에 맞춰서 zoom수치 설정. 너비/높이 중 더 큰 사이즈에 맞춰서.
     if (window.innerHeight > window.innerWidth) {
-      console.log("높이가 너비보다 더큼" + window.innerHeight / 320 + "배");
       this.cameras.main.setZoom(window.innerHeight / 320);
     } else {
-      console.log("너비가 높이보다 더 큼" + window.innerWidth / 480 + "배");
       this.cameras.main.setZoom(window.innerWidth / 480);
     }
-    // this.cameras.main.setZoom(2);
-    console.log(this.cameras.main.width);
     this.cameras.main.setPosition(0, 0);
     this.cameras.main.startFollow(this.assetSprite, true);
     this.cameras.main.setFollowOffset(0);
     this.cameras.main.setRoundPixels(true);
-
-    // this.assetSprite.setInteractive();
 
     //등록버튼 박스 스타일
     const registBottonBoxStyle = {
@@ -239,7 +214,6 @@ export default class TreeEditScene extends Scene {
     };
 
     //나무 등록 API요청////////////////////////////////////////////////////
-    // const userToken = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
     const userToken = JSON.parse(sessionStorage.getItem("userInfo")!).state
       .userToken;
     const onRegistButtonClick = async () => {
@@ -264,7 +238,6 @@ export default class TreeEditScene extends Scene {
             }
           );
           const Data = await res.json();
-          console.log(Data);
 
           try {
             const res = await fetch(
@@ -278,7 +251,6 @@ export default class TreeEditScene extends Scene {
               }
             );
             const gardenData = await res.json();
-            console.log(gardenData);
             //@ts-ignore
             this.game.scene.getScene("preloader").garden =
               gardenData.gardenInfo;
@@ -291,14 +263,13 @@ export default class TreeEditScene extends Scene {
 
             this.scene.stop("treeEditScene");
             this.scene.start("preloader");
-          } catch (error) {
-            console.log(error);
+          } catch (err) {
+            console.log(err);
           }
         } catch (err) {
           console.log(err);
         }
       } else {
-        console.log("안돼요");
       }
     };
 
@@ -326,7 +297,6 @@ export default class TreeEditScene extends Scene {
             }
           );
           const Data = await res.json();
-          console.log(Data);
 
           try {
             const res = await fetch(
@@ -351,14 +321,13 @@ export default class TreeEditScene extends Scene {
               gardenData.gardenInfo;
             this.scene.stop("treeEditScene");
             this.scene.start("preloader");
-          } catch (error) {
-            console.log(error);
+          } catch (err) {
+            console.log(err);
           }
         } catch (err) {
           console.log(err);
         }
       } else {
-        console.log("안돼요");
       }
     };
 
@@ -404,13 +373,11 @@ export default class TreeEditScene extends Scene {
         window.innerWidth / 2 - window.innerWidth / this.cameras.main.zoom / 2,
         window.innerHeight / 2 - 160 + 80 / this.cameras.main.zoom
       );
-      console.log(this.registButtonBox.x + " " + this.registButtonBox.y);
     } else {
       this.registButtonBox.setPosition(
         window.innerWidth / 2 - window.innerWidth / this.cameras.main.zoom / 2,
         window.innerHeight / 2 - 160 + 80 / this.cameras.main.zoom
       );
-      console.log(this.registButtonBox.x + " " + this.registButtonBox.y);
     }
 
     //상하좌우 이동 버튼 추가/////////////////////////////////////////////

@@ -106,10 +106,9 @@ const ManagerModal = (props: Props) => {
         router
       );
       const data = await res.json();
-      console.log(data);
       return data;
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -133,12 +132,11 @@ const ManagerModal = (props: Props) => {
         router
       );
       const data = await res.json();
-      console.log(data);
       if (data.httpStatus === "success") {
         queryClient.invalidateQueries({ queryKey: ["getMemberListInfo"] });
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -162,12 +160,11 @@ const ManagerModal = (props: Props) => {
         router
       );
       const data = await res.json();
-      console.log(data);
       if (data.httpStatus === "success") {
         queryClient.invalidateQueries({ queryKey: ["getMemberListInfo"] });
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
   };
 

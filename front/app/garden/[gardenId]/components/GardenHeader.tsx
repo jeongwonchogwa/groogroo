@@ -36,7 +36,6 @@ const GardenHeader = (props: Props) => {
   };
 
   const onJoinButtonClick = () => {
-    console.log("참여 모달 오픈");
     if (props.game) {
       //@ts-ignore
       props.game.scene.getScene("gardenScene").modalChec = true;
@@ -46,7 +45,6 @@ const GardenHeader = (props: Props) => {
 
   const onManagerButtonClick = () => {
     setOpenMenu(false);
-    console.log(props.game);
     if (props.game) {
       //@ts-ignore
       props.game.scene.getScene("gardenScene").modalCheck = true;
@@ -132,7 +130,6 @@ const GardenHeader = (props: Props) => {
           },
         ]);
       } else {
-        console.log(props.garden.gardenRole)
         setMenuList([
           {
             name: "초대 전송",
@@ -156,12 +153,10 @@ const GardenHeader = (props: Props) => {
         
       }
     } else if (props.garden.state === "WAIT") {
-      console.log("요청 진행중");
       setMenuList([
         { name: "회원가입 신청을 확인중입니다.", clickEvent: () => {} },
       ]);
     } else if (props.state === "KICK") {
-      console.log("추방");
       setMenuList([{ name: "추방당하셨습니다.", clickEvent: () => {} }]);
     } else if(props.garden.capacity > props.garden.memberCnt!){
       setMenuList([
@@ -196,7 +191,6 @@ const GardenHeader = (props: Props) => {
             queryClient.removeQueries({ queryKey: ["getGardenInfo"] });
             
             router.push("../gardens");
-            console.log("홈");
           }}
         />
       </div>

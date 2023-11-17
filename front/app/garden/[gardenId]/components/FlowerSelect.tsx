@@ -42,7 +42,6 @@ const FlowerSelect = (props: Props) => {
   };
 
   const onFlowerSelectButtonClick = (index: number) => {
-    console.log("꽃 선택 완료!" + (index + 1));
     props.onFormCloseButtonClick();
     props.game!.scene.stop("gardenScene");
     props.game!.scene.start("flowerEditScene", {

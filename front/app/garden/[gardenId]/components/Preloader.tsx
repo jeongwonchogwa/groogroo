@@ -47,7 +47,6 @@ export default class Preloader extends Scene {
 
     //정원에 심어져있는 나무들 스프라이트 생성.
     this.garden.treePos?.forEach((tree, index) => {
-      console.log(tree);
       if (tree.name === "" || null) {
         this.load.spritesheet("이름없는 나무" + index, tree.imageUrl, {
           frameWidth: 128,
