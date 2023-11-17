@@ -258,15 +258,14 @@ export default class FlowerEditScene extends Scene {
             );
             const gardenData = await res.json();
             //@ts-ignore
-            props.game!.scene.getScene("preloader").garden =
+            this.game.scene.getScene("preloader").garden =
               gardenData.gardenInfo;
             //@ts-ignore
-            props.game!.scene.getScene("flowerEditScene").garden =
+            this.game.scene.getScene("flowerEditScene").garden =
               gardenData.gardenInfo;
             //@ts-ignore
-            props.game!.scene.getScene("treeEditScene").garden =
+            this.game.scene.getScene("treeEditScene").garden =
               gardenData.gardenInfo;
-
             this.scene.stop("flowerEditScene");
             this.scene.start("preloader");
           } catch (error) {

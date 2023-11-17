@@ -280,17 +280,15 @@ export default class TreeEditScene extends Scene {
             const gardenData = await res.json();
             console.log(gardenData);
             //@ts-ignore
-            props.game!.scene.getScene("preloader").garden =
+            this.game.scene.getScene("preloader").garden =
               gardenData.gardenInfo;
             //@ts-ignore
-            props.game!.scene.getScene("flowerEditScene").garden =
+            this.game.scene.getScene("flowerEditScene").garden =
               gardenData.gardenInfo;
             //@ts-ignore
-            props.game!.scene.getScene("treeEditScene").garden =
+            this.game.scene.getScene("treeEditScene").garden =
               gardenData.gardenInfo;
 
-            console.log();
-            // this.updateGarden(gardenData.gardenInfo);
             this.scene.stop("treeEditScene");
             this.scene.start("preloader");
           } catch (error) {
@@ -344,6 +342,12 @@ export default class TreeEditScene extends Scene {
             const gardenData = await res.json();
             //@ts-ignore
             this.game.scene.getScene("preloader").garden =
+              gardenData.gardenInfo;
+            //@ts-ignore
+            this.game.scene.getScene("flowerEditScene").garden =
+              gardenData.gardenInfo;
+            //@ts-ignore
+            this.game.scene.getScene("treeEditScene").garden =
               gardenData.gardenInfo;
             this.scene.stop("treeEditScene");
             this.scene.start("preloader");
