@@ -1,4 +1,4 @@
-# 🌳그루그루: 우리가 만드는 정원🌳
+# 🌳그루그루: 우리가 만들어 가는 정원🌳
 
 <div style="text-align:center">
   <img src="https://groogroo.s3.ap-northeast-2.amazonaws.com/logos/logo_background.jpg" height="200">
@@ -6,17 +6,19 @@
 
 ## 📅 프로젝트 개요
 
-🌼 **개발 기간** : 2023.10.09 ~ 2023.11.17 (총 7주)
+🌼 **개발 기간** : 2023.10.12 ~ 2023.11.17 (총 6주)
 
 🌼 **팀원 소개**
 | ![문요한](https://github.com/Manna-na/algorithm-study/assets/123603435/688f8ccd-98cc-434f-a4b6-da70a8a55080) | ![정재웅](https://github.com/Manna-na/CI_CD_TEST/assets/123603435/77674fe9-5c8e-4a73-9fe5-f11f4642b79c) | ![김한나](https://github.com/Manna-na/CI_CD_TEST/assets/123603435/05a1c745-d6a0-460c-add7-d1d37711b4bd) |![최규헌](https://github.com/Manna-na/algorithm-study/assets/123603435/14180efa-f46e-4841-87a2-f8c6949010e7)| ![김지원](https://github.com/Manna-na/CI_CD_TEST/assets/123603435/3a8de9c8-2052-48fb-84f0-2cb34bde0e53) | ![김민재](https://github.com/Manna-na/algorithm-study/assets/123603435/322815ce-9a58-4368-b1bc-b42a17537214) |
 | :----------------------------------------: | :----------------------------------------: | :-----------------------------------------: | :----------------------------------------: | :----------------------------------------: | :----------------------------------------: |
 | [👑 문요한](https://github.com/ansdy9600) | [정재웅](https://github.com/chachapapa) | [김한나](https://github.com/Manna-na) | [최규헌](https://github.com/KUMA93) | [김지원](https://github.com/iamjione) | [김민재](https://github.com/GGamangCoder) |
-| 프론트(팀장) | 프론트 | 프론트 | 백엔드 | 백엔드 | AI, CI/CD |
+| FE(팀장) | FE | FE, BE | BE | BE | AI, CI/CD |
 
 🌼 **기획 배경**
 
---- ppt 내용 참고해서 작성할게여 ---
+자율 프로젝트는 3번의 프로젝트 중 마지막이면서, 2학기뿐만 아니라 싸피(SSAFY) 1년 과정의 마지막이기도 합니다. 스스로를 돌아보고, 함께 했던 동료들에게도 인사말과 함께 서로를 추억했으면 좋겠다는 생각을 했습니다. 일반적인 서비스처럼 특정 개인에게만 메시지를 남기는 것이 아니라 그룹을 만들어 소속감을 이어 나갈 수 있게 했습니다. 그리고 각각의 메시지는 하나의 컨텐츠(이미지 – 꽃, 열매)가 되고 함께 만들어 나가는, 또 꾸며가는 또 하나의 컨텐츠(정원)가 됩니다.  
+기획 의도와 함께 서버 단위 렌더링과 ERD 등 그간 배웠던 기술들을 망라할 수 있도록 개발 사이즈(기술 스택)를 정하기도 했습니다.  
+
 
 🌼 **핵심 기능**
 
@@ -26,7 +28,7 @@
 
 ### <img src="https://groogroo.s3.ap-northeast-2.amazonaws.com/logos/logo_background.jpg" height="15px" width="20px" style="align:center;"> _그루그루: 우리가 만드는 정원_
 
-> 💝 따스한 손길로 정원을 가꾸며 마음을 나누는 온라인 롤링페이퍼 서비스
+> 💝 센스 있는 손으로 정원을 가꾸며 따뜻한 마음을 나누는 온라인 롤링페이퍼 그룹 서비스
 
 **우리 같이 정원을 가꿔볼래?** \
 **정원을 가꾸며 나누는 우리의 이야기 <img src="https://groogroo.s3.ap-northeast-2.amazonaws.com/logos/logo_background.jpg" height="12px" width="20px" style="align:center;"> 그루그루🌳**
@@ -96,15 +98,15 @@
 
 ![그루그루 아키텍쳐](https://github.com/Manna-na/algorithm-study/assets/123603435/94280ac3-856a-46f0-bc8c-507717fe8c86)
 
-## 시연
+## 시연 영상  
 
-# 그루그루(Groogroo)
+<br/><br/>  
 
-## 프로젝트 개요
 
-: 개인에게 익명의 메시지(열매)를 남길 수 있고, 혹은 그룹(정원) 내에 익명의 메시지(꽃)을 남길 수 있다.
+## 프로젝트 버전 관리
 
-- ver0.1.0
-  - 최초 front / back merge
-  - \[Front\] 프로젝트 시작, 컴포넌트 구성 및 파일 구조 정립
-  - \[Back\] 프로젝트 시작, DB 작업, API 구현, 구조 정립
+- ver1.0.0
+  - 최초 배포
+  - 이미지 생성 및 저장 가능
+  - 정원 생성 및 가입, 초대(공유)
+  - 실시간 알림 서비스
