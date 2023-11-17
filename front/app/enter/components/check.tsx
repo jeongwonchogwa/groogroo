@@ -11,6 +11,8 @@ import { userInfoStore } from '../../../stores/userInfoStore';
 
 const Check = () => {
 
+	const {approachUrl} = userInfoStore()
+
 	const getUserToken = () => {
 		const { userToken } = userInfoStore.getState();
 		return userToken;
@@ -91,6 +93,9 @@ const Check = () => {
 				const data = await res.json();
 				console.log("가자로그인")
 				console.log(data)
+				if(approachUrl !== ""){
+					router.push(`/garden/${approachUrl}`)
+				}
 				router.push('/home');
 			} catch (err) {
 				console.log(err);
