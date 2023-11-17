@@ -33,6 +33,11 @@ const SearchPage = () => {
 
   const [treeSearchInput, setTreeSearchInput] = useState<string>("");
 
+  const handleKeyUp = (e: any) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
   const handleInput = (e: any) => {
     const { value } = e.target;
     setClickSearch(false);
@@ -96,6 +101,7 @@ const SearchPage = () => {
             value={treeSearchInput}
             handleInput={handleInput}
             handleSearch={handleSearch}
+            onKeyUp={handleKeyUp}
           />
           <div className="mt-7 w-full h-[calc(100%-120px)]">
             {clickSearch ? (

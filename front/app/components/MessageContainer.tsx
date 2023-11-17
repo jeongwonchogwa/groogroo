@@ -22,6 +22,7 @@ const MessageContainer = ({
   isSearch,
 }: MessageContainerProps) => {
   const [openDelete, setOpenDelete] = useState(false);
+  console.log(data);
 
   const handleDeleteModal = () => {
     setOpenDelete((prev: any) => !prev);
@@ -63,7 +64,12 @@ const MessageContainer = ({
           </p>
         </div>
         <div className="w-full mt-3 overflow-auto">
-          <span className="font-nexonGothic text-xl">{data.content}</span>
+          <span
+            className="font-nexonGothic text-xl"
+            style={{ whiteSpace: "pre-line" }}
+          >
+            {data.content}
+          </span>
         </div>
       </div>
       {/* 삭제하기 눌렀을때 나오는 모달 */}

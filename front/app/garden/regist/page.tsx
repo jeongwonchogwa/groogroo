@@ -71,7 +71,12 @@ const RegistPage = () => {
   const fetchCreate = async (data: object) => {
     console.log("currentIndex가 뭐야?", currentIndex);
     console.log(data);
-    if (name === "" || capacity === "" || capacity === "0") {
+    if (
+      name.length > 10 ||
+      name === "" ||
+      capacity === "" ||
+      capacity === "0"
+    ) {
       setCapacityValidFail(true);
       return;
     }
@@ -169,7 +174,7 @@ const RegistPage = () => {
           isOpenModal={capacityValidFail}
           title="정원 생성 실패"
           state="error"
-          content="정원 입력 폼을 확인해주세요"
+          content="정원 생성 형식을 확인해주세요"
           handleModal={handleModal}
         />
       )}

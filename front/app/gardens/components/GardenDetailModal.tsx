@@ -92,7 +92,10 @@ const GardenDetailModal = ({
 
               {/* 내용이 길어지면 스크롤을 하게해..? 일단 overflow-auto 넣어야지.. */}
               <div className="px-4 mt-3 h-[90px] overflow-auto">
-                <p className=" font-nexonGothic text-lg">
+                <p
+                  className=" font-nexonGothic text-lg"
+                  style={{ whiteSpace: "pre-line" }}
+                >
                   {gardenData?.description}
                 </p>
               </div>
