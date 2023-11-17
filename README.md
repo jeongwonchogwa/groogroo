@@ -10,9 +10,9 @@
 🌼 **개발 기간** : 2023.10.12 ~ 2023.11.17 (총 6주)
 
 🌼 **팀원 소개**
-| ![문요한](https://github.com/Manna-na/algorithm-study/assets/123603435/688f8ccd-98cc-434f-a4b6-da70a8a55080) | ![정재웅](https://github.com/Manna-na/CI_CD_TEST/assets/123603435/77674fe9-5c8e-4a73-9fe5-f11f4642b79c) | ![김한나](https://github.com/Manna-na/CI_CD_TEST/assets/123603435/05a1c745-d6a0-460c-add7-d1d37711b4bd) |![최규헌](https://github.com/Manna-na/algorithm-study/assets/123603435/14180efa-f46e-4841-87a2-f8c6949010e7)| ![김지원](https://github.com/Manna-na/CI_CD_TEST/assets/123603435/3a8de9c8-2052-48fb-84f0-2cb34bde0e53) | ![김민재](https://github.com/Manna-na/algorithm-study/assets/123603435/322815ce-9a58-4368-b1bc-b42a17537214) |
+| ![문요환](https://github.com/Manna-na/algorithm-study/assets/123603435/688f8ccd-98cc-434f-a4b6-da70a8a55080) | ![정재웅](https://github.com/Manna-na/CI_CD_TEST/assets/123603435/77674fe9-5c8e-4a73-9fe5-f11f4642b79c) | ![김한나](https://github.com/Manna-na/CI_CD_TEST/assets/123603435/05a1c745-d6a0-460c-add7-d1d37711b4bd) |![최규헌](https://github.com/Manna-na/algorithm-study/assets/123603435/14180efa-f46e-4841-87a2-f8c6949010e7)| ![김지원](https://github.com/Manna-na/CI_CD_TEST/assets/123603435/3a8de9c8-2052-48fb-84f0-2cb34bde0e53) | ![김민재](https://github.com/Manna-na/algorithm-study/assets/123603435/322815ce-9a58-4368-b1bc-b42a17537214) |
 | :----------------------------------------: | :----------------------------------------: | :-----------------------------------------: | :----------------------------------------: | :----------------------------------------: | :----------------------------------------: |
-| [👑 문요한](https://github.com/ansdy9600) | [정재웅](https://github.com/chachapapa) | [김한나](https://github.com/Manna-na) | [최규헌](https://github.com/KUMA93) | [김지원](https://github.com/iamjione) | [김민재](https://github.com/GGamangCoder) |
+| [👑 문요환](https://github.com/ansdy9600) | [정재웅](https://github.com/chachapapa) | [김한나](https://github.com/Manna-na) | [최규헌](https://github.com/KUMA93) | [김지원](https://github.com/iamjione) | [김민재](https://github.com/GGamangCoder) |
 | FE(팀장) | FE | FE, BE | BE | BE | AI, CI/CD |
 
 🌼 **기획 배경**
@@ -121,7 +121,6 @@
 
 
 ### [관리자 화면]
-
 
 
 
