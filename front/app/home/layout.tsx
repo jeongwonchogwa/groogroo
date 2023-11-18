@@ -28,10 +28,7 @@ const HomeLayout = ({ children }: any) => {
 
   // console.log(document.documentElement.style.getPropertyValue("--vh"));
   return (
-    <div
-      className="min-w-[350px] max-w-[450px] bg-background-pixel bg-cover"
-      id="custom-full-height"
-    >
+    <div className="min-w-[350px] max-w-[450px] bg-background-pixel bg-cover h-screen mx-auto">
       <HomeHeader handlemenu={() => handlemenu()} menuOpen={menuOpen} />
       {children}
     </div>

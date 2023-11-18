@@ -109,7 +109,7 @@ const GardensPage = () => {
         console.log(error);
       }
     },
-    [userToken]
+    [userToken, sort]
   );
 
   const [firstLoading, setFirstLoading] = useState<boolean>(false);
@@ -121,6 +121,7 @@ const GardensPage = () => {
         setNowLoading(true);
       }
       try {
+        console.log("fetchGardenRankingList 들어옴?");
         const response = await fetchWithTokenCheck(
           `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/ranking/${pageNumber}`,
           {
@@ -152,31 +153,42 @@ const GardensPage = () => {
         console.log(error);
       }
     },
-    [userToken]
+    [userToken, sort]
   );
 
+  // 인피니티 스크롤 작동
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      if (sort === "내 정원") {
-        if (
-          entries[0].isIntersecting &&
-          hasMyGardenNext &&
-          !Nowloading &&
-          !firstLoading
-        ) {
-          setMyGardenPageNumber((prevPage) => prevPage + 1);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (sort === "내 정원") {
+          if (
+            entries[0].intersectionRect &&
+            hasMyGardenNext &&
+            !Nowloading &&
+            !firstLoading
+          ) {
+            console.log("entries가 뭐야? ", entries[0]);
+            setMyGardenPageNumber((prevPage) => prevPage + 1);
+          }
+        } else {
+          console.log("여긴 왔니?");
+          if (
+            entries[0].isIntersecting &&
+            hasRankingGardenNext &&
+            !Nowloading &&
+            !firstLoading
+          ) {
+            console.log(entries[0]);
+            setRankingGardenPageNumber((prevPage) => prevPage + 1);
+          }
         }
-      } else {
-        if (
-          entries[0].isIntersecting &&
-          hasRankingGardenNext &&
-          !Nowloading &&
-          !firstLoading
-        ) {
-          setRankingGardenPageNumber((prevPage) => prevPage + 1);
-        }
+      },
+      {
+        root: null, // 뷰포트를 관찰 대상 영역으로 설정
+        rootMargin: "0px 0px 30px 0px", // 하단에서 50px 위에 도달했을 때 이벤트 발생
+        threshold: 0.01, // 1%의 요소가 보일 때 콜백 함수 실행
       }
-    });
+    );
 
     if (loader.current) {
       observer.observe(loader.current);
@@ -195,13 +207,8 @@ const GardensPage = () => {
     sort,
     firstLoading,
   ]);
-  useEffect(() => {
-    if (userToken) {
-      fetchGardenList(myGardenPageNumber);
-      fetchGardenRankingList(rankingGardenPageNumber);
-    }
-  }, [userToken, fetchGardenList, fetchGardenRankingList]);
 
+  // 처음에 실행할 함수
   useEffect(() => {
     if (userToken) {
       if (sort === "내 정원") {
@@ -255,21 +262,19 @@ const GardensPage = () => {
             <div ref={loader} />
           </div>
         ) : sort === "정원 랭킹" && rankingGardenList.length > 0 ? (
-          <div className="h-[650px] overflow-scroll mt-3" ref={gardenCardRef}>
-            <div className="flex w-full flex-col">
-              <GardenCard sort={sort} gardenList={rankingGardenList} />
-              {Nowloading && (
-                <div className="mt-3 w-full flex justify-center">
-                  <Image
-                    alt="로딩중"
-                    src="/assets/gif/loading.gif"
-                    width={100}
-                    height={60}
-                  />
-                </div>
-              )}
-              <div ref={loader} />
-            </div>
+          <div className="flex w-full flex-col">
+            <GardenCard sort={sort} gardenList={rankingGardenList} />
+            {Nowloading && (
+              <div className="mt-3 w-full flex justify-center">
+                <Image
+                  alt="로딩중"
+                  src="/assets/gif/loading.gif"
+                  width={100}
+                  height={60}
+                />
+              </div>
+            )}
+            <div ref={loader} />
           </div>
         ) : firstLoading ? (
           <div className="h-full w-full flex flex-col justify-center">
