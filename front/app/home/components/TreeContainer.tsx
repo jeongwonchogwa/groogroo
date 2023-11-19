@@ -12,12 +12,12 @@ interface Props {
 const TreeContainer = ({ data }: Props) => {
   const router = useRouter();
 
-  // `RandomFruitImages`에 전달할 props 설정
-  const randomFruitProps = {
-    fruitsCount: data.fruitsCount as number,
-    imageUrl: data.imageUrl,
-    width: 300, // 이미지의 너비
-  };
+  // `RandomFruitImages`에 전달할 props 설정 -> CSR이어서 안됨
+  // const randomFruitProps = {
+  //   fruitsCount: data.fruitsCount as number,
+  //   imageUrl: data.imageUrl,
+  //   width: 300, // 이미지의 너비
+  // };
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -30,7 +30,7 @@ const TreeContainer = ({ data }: Props) => {
           <div className="w-[calc(100%-60px)] h-[calc(100%-60px)] mx-auto">
             <div className=" w-full h-full flex justify-center relative">
               <Image
-                className="w-full h-full object-contain"
+                className="w-full h-full flex justify-center object-contain"
                 src="/assets/images/speech_bubble.svg"
                 alt="말풍선"
                 width={310}
@@ -47,7 +47,7 @@ const TreeContainer = ({ data }: Props) => {
           </div>
           <div className="h-full w-[calc(100%-50px)] mx-auto">
             <div className="h-[300px] flex justify-center ">
-              <div className="w-full h-full relative">
+              <div className="w-full h-full relative flex justify-center">
                 <Image
                   onClick={() => {
                     router.push(`/home/${data.id}`);
