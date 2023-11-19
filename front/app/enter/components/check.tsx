@@ -7,13 +7,12 @@ import React, { useState, ChangeEvent } from 'react';
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from 'next/image';
 
-import { userInfoStore } from '../../../stores/userInfoStore';
-import useUserToken from "@/app/hooks/useUserToken";
+import { userInfoStore } from "@/stores/userInfoStore";
 
 const Check = () => {
 
 	const {approachUrl} = userInfoStore()
-	const userToken = useUserToken();
+	const { userToken } = userInfoStore();
 
 	const router = useRouter();
 
@@ -46,7 +45,7 @@ const Check = () => {
 				const res = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/check/${nickname}`,{
 					method: "GET",
 					headers: {
-						"Content-Type": "application/json",
+						"Content-Type": "application/json; charset=utf-8",
 					},
 				});
 				const data = await res.json();
@@ -75,7 +74,7 @@ const Check = () => {
 				const res = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`, {
 					method: "POST",
 					headers: {
-						"Content-Type": "application/json",
+						"Content-Type": "application/json; charset=utf-8",
 						Authorization: `Bearer ${userToken}`,
 					},
 					body: JSON.stringify({

@@ -35,7 +35,7 @@ const Preset = () => {
 				const res = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/preset`, {
 					method: "GET",
 					headers: {
-						"Content-Type": "application/json",
+						"Content-Type": "application/json; charset=utf-8",
 						Authorization: `Bearer ${userToken}`
 					},
 				});

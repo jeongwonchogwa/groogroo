@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 // import Button from "./Button";
 import PixelCard from "./PixelCard";
-import { userInfoStore } from "../../stores/userInfoStore";
+import { userInfoStore } from "@/stores/userInfoStore";
+import { isErrored } from "stream";
 
 interface AlarmInfo {
   id: number;
@@ -21,12 +22,7 @@ const AlarmList = (game? : Phaser.Game) => {
   const [alarmData, setAlarmData] = useState<any[]>([]);
   const [wWidth, setWwidth] = useState(window.innerWidth);
 
-  const getUserToken = () => {
-    const { userToken } = userInfoStore.getState();
-    return userToken;
-  };
-  const AccessToken = getUserToken();
-  // const AccessToken = localStorage.getItem("access_token");
+  const { userToken } = userInfoStore();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,16 +32,16 @@ const AlarmList = (game? : Phaser.Game) => {
           {
             method: "GET",
             headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${AccessToken}`,
+              "Content-Type": "application/json; charset=utf-8",
+              Authorization: `Bearer ${userToken}`,
             },
           }
         );
         const data = await res.json();
+        
         const sortedAlarmData = data.gardenInfo.sort(
           (a: AlarmInfo, b: AlarmInfo) => b.id - a.id
         );
-        console.log(data.gardenInfo);
         setAlarmData(sortedAlarmData);
       } catch (err) {
         console.log(err);
@@ -79,8 +75,8 @@ const AlarmList = (game? : Phaser.Game) => {
                 {
                   method: "PATCH",
                   headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${AccessToken}`,
+                    "Content-Type": "application/json; charset=utf-8",
+                    Authorization: `Bearer ${userToken}`,
                   },
                 }
               );
@@ -88,8 +84,8 @@ const AlarmList = (game? : Phaser.Game) => {
                 game.sound.stopAll();
               }
               router.push(`/home/${alarm.contentId}`);
-            } catch (error) {
-              console.error("Error while updating notification:", error);
+            } catch (err) {
+              console.log(err);
             }
           };
 
@@ -100,19 +96,19 @@ const AlarmList = (game? : Phaser.Game) => {
                 {
                   method: "PATCH",
                   headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${AccessToken}`,
+                    "Content-Type": "application/json; charset=utf-8",
+                    Authorization: `Bearer ${userToken}`,
                   },
                 }
               );
 
               const getResponse = await fetch(
-                `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/invite/${alarm.contentId}`,
+                `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/invite/${alarm.gardenId}`,
                 {
                   method: "GET",
                   headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${AccessToken}`,
+                    "Content-Type": "application/json; charset=utf-8",
+                    Authorization: `Bearer ${userToken}`,
                   },
                 }
               );
@@ -123,12 +119,11 @@ const AlarmList = (game? : Phaser.Game) => {
                 if (game) {
                   game.sound.stopAll();
                 }
-                router.push(`/garden/${url}${alarm.contentId}`);
+                router.push(`/garden/${url}${alarm.gardenId}`);
               } else {
-                console.error("비상!!!!!!!!");
               }
-            } catch (error) {
-              console.error("Error while updating notification:", error);
+            } catch (err) {
+              console.log(err);
             }
           };
 
@@ -139,13 +134,13 @@ const AlarmList = (game? : Phaser.Game) => {
                 {
                   method: "PATCH",
                   headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${AccessToken}`,
+                    "Content-Type": "application/json; charset=utf-8",
+                    Authorization: `Bearer ${userToken}`,
                   },
                 }
               );
-            } catch (error) {
-              console.error("Error while updating notification:", error);
+            } catch (err) {
+              console.log(err);
             }
           };
 
