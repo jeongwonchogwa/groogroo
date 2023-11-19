@@ -77,7 +77,6 @@ export default class TreeEditScene extends Scene {
   }
 
   create() {
-    // this.sound.stopAll();
     this.changeCheck = false;
     //맵 생성. 레이어별로 foreach 돌면서.///////////////////////////////////////////////
     const map = this.make.tilemap({ key: "mainMap" });
@@ -171,7 +170,15 @@ export default class TreeEditScene extends Scene {
     this.moveCheck = false;
 
     this.changeTree = (modifyTreeUrl: string) => {
-      this.load.image("modifyImage", modifyTreeUrl);
+      const imageStyle = {
+        width :"128px",
+        height : "128px"
+      }
+      const image = document.createElement("img")
+      image.style.width = "128px"
+      image.style.height = "128px"
+      image.src = modifyTreeUrl
+      this.textures.addImage("modifyImage", image);
       this.changeCheck = false;
     };
 
@@ -477,22 +484,20 @@ export default class TreeEditScene extends Scene {
   }
 
   update() {
-    if (this.textures.get("modifyImage").key !== "__MISSING" && !this.changeCheck) {
-      console.log(this.textures)
-      console.log(this.textures.get("modifyImage"))
-      console.log("modifyImage 존재 & changeCheck false ")
+
+    if (this.textures.get("modifyImage").key === "modifyImage" && !this.changeCheck) {
       if (this.selectedTreeUrl) {
         this.assetSprite.setTexture("modifyImage");
         this.changeCheck = true;
       } else {
         this.trees.forEach((tree) => {
           if (tree.id === this.modifyTreeId) {
-            console.log("찾았다.")
             tree.sprite.setTexture("modifyImage");
             this.changeCheck = true;
           }
         })
       }
+    }else{
     }
 
     //에셋 배치시 나무, 꽃 테두리 보여주기.////////////////////////////////
