@@ -179,14 +179,20 @@ export default class TreeEditScene extends Scene {
       } else {
         console.log("나무바꾸기 실행 - 이동시", modifyTreeUrl)
         this.load.image("modifyImage", modifyTreeUrl);
-        this.load.on("filecomplete-modifyImage", () => {
           trees.forEach((tree) => {
             if (tree.id === this.modifyTreeId) {
               console.log("이동할 나무 잡았음. 텍스쳐 교체하러 왔ㅇ므.")
               tree.sprite.setTexture("modifyImage");
             }
           });
-        });
+        // this.load.on("filecomplete-modifyImage", () => {
+        //   trees.forEach((tree) => {
+        //     if (tree.id === this.modifyTreeId) {
+        //       console.log("이동할 나무 잡았음. 텍스쳐 교체하러 왔ㅇ므.")
+        //       tree.sprite.setTexture("modifyImage");
+        //     }
+        //   });
+        // });
       }
     };
 
