@@ -8,18 +8,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from 'next/image';
 
 import { userInfoStore } from '../../../stores/userInfoStore';
+import useUserToken from "@/app/hooks/useUserToken";
 
 const Check = () => {
 
 	const {approachUrl} = userInfoStore()
-
-	const getUserToken = () => {
-		const { userToken } = userInfoStore.getState();
-		return userToken;
-	}
-	const AccessToken = getUserToken();
-
-	// const AccessToken = localStorage.getItem("access_token");
+	const userToken = useUserToken();
 
 	const router = useRouter();
 
@@ -56,7 +50,6 @@ const Check = () => {
 					},
 				});
 				const data = await res.json();
-				console.log(data)
 
 				if (data.result) {
 					setMessage('중복된 닉네임입니다');
@@ -83,7 +76,7 @@ const Check = () => {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${AccessToken}`,
+						Authorization: `Bearer ${userToken}`,
 					},
 					body: JSON.stringify({
 						imageUrl: selectedImageUrl,
@@ -91,7 +84,6 @@ const Check = () => {
 					}),
 				});
 				const data = await res.json();
-				console.log("가자로그인")
 				console.log(data)
 				if(approachUrl !== ""){
 					router.push(`/garden/${approachUrl}`)

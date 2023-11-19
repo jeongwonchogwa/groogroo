@@ -4,18 +4,13 @@ import React, { useState, useEffect } from 'react';
 import Button from "../../components/Button";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
-import { userInfoStore } from '../../../stores/userInfoStore';
+import useUserToken from "@/app/hooks/useUserToken";
 
 
 const Preset = () => {
 
-  const getUserToken = () => {
-		const { userToken } = userInfoStore.getState();
-		return userToken;
-	}
-	const AccessToken = getUserToken();
+	const userToken = useUserToken();
 
-	// const AccessToken = localStorage.getItem("access_token");
 	const [imageCount, setImageCount] = useState(8);
 	const [currentImage, setCurrentImage] = useState(0);
 	const [treePresets, setTreePresets] = useState<{ treeUserPresetId: number; imageUrl: string }[]>([]);
@@ -41,16 +36,14 @@ const Preset = () => {
 					method: "GET",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${AccessToken}`
+						Authorization: `Bearer ${userToken}`
 					},
 				});
 				const data = await res.json();
 				setTreePresets(data.presets);
 				setImageCount(data.presets.length);
-				console.log(AccessToken)
-				console.log(data.presets)
-			} catch (error) {
-				console.error('프리셋 조회 중 오류 발생:', error)
+			} catch (err) {
+				console.log(err)
 			}
 		};
 
