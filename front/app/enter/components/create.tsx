@@ -52,9 +52,7 @@ const Create = () => {
   };
 
   const handleCreateButtonClick = () => {
-    console.log("버튼 클릭");
     if (selectedComponent === "canvas") {
-      console.log("캔버스");
       getImageDataFromCanvas();
       // router.push('/enter/pick');
     } else if (selectedComponent === "text") {
@@ -696,13 +694,11 @@ const Create = () => {
 
   const handleSelectTool = (tool: string) => {
     setSelectedTool(tool); // 선택한 도구를 업데이트
-    console.log("도구 변경: ", tool);
   };
 
   const handleColorChange = (color: string) => {
     setSelectedColor(color); // 선택한 색상을 업데이트
     setSelectedTool("pen"); // 색 변경하면 도구도 펜으로 변경
-    console.log("색 변경: ", color);
   };
 
   const getImageDataFromCanvas = () => {
@@ -725,7 +721,6 @@ const Create = () => {
   const fetchImageToFlask = async (formData: FormData) => {
     setIsLoading(true);
     if (formData) {
-      console.log("flask에 요청 보낸다!");
       try {
         const response = await fetchWithTokenCheck(
           `${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/remove_bg`,
@@ -743,9 +738,6 @@ const Create = () => {
           setImageData(data.image_data); // 이미지 데이터를 상태 변수에 저장
           setImageName(data.image_name); // 이미지 url을 변수에 저장
           setIsGenerated(true);
-          console.log("flask 요청 성공");
-          console.log("받은 데이터: ", data);
-          // router.push(`/enter/pick/${responseData.image_url}`)
         } else {
           console.log("Server Response Error:", response?.status);
         }
@@ -760,8 +752,6 @@ const Create = () => {
   const fetchTextToFlask = async (inputData: string) => {
     setIsLoading(true);
     try {
-      console.log(userId);
-
       const response = await fetchWithTokenCheck(
         `${process.env.NEXT_PUBLIC_GROOGROO_FLASK_API_URL}/make_image`,
         {
@@ -815,7 +805,6 @@ const Create = () => {
 
       if (response.status === 200) {
         // 처리 성공
-        console.log("이미지 업로드 성공", response);
         const responseData = await response.json();
         const imageUrl = responseData.imageUrl; // imageUrl 추출
 
@@ -837,7 +826,6 @@ const Create = () => {
 
           if (updatePreset.status === 200) {
             // 프리셋 업데이트 성공
-            console.log("프리셋 저장 성공", updatePreset);
           } else {
             // 프리셋 업데이트 실패
             alert("생성한 이미지를 프리셋으로 저장하는 데 실패했습니다.");
@@ -920,37 +908,39 @@ const Create = () => {
             </>
           )
         ) : null}
-        {selectedComponent === "text" && isGenerated && imageData ? (
-          // <img src={`data:image/png;base64,${imageData}`} alt='생성된 이미지' />
-          <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
-            <Image
-              className="mt-5"
-              src={`data:image/png;base64,${imageData}`}
-              alt="생성된 이미지"
-              width={128}
-              height={128}
-              priority
-            />
-          </div>
-        ) : isLoading ? (
-          <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
-            <Image
-              alt="loading"
-              src={"/assets/gif/loading.gif"}
-              width={100}
-              height={30}
-            ></Image>
-          </div>
-        ) : (
-          <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
-            <Image
-              alt="none"
-              src={"/assets/images/question.gif"}
-              width={73}
-              height={99}
-            ></Image>
-          </div>
-        )}
+        {selectedComponent === "text" ? (
+          isGenerated && imageData ? (
+            // <img src={`data:image/png;base64,${imageData}`} alt='생성된 이미지' />
+            <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
+              <Image
+                className="mt-5"
+                src={`data:image/png;base64,${imageData}`}
+                alt="생성된 이미지"
+                width={128}
+                height={128}
+                priority
+              />
+            </div>
+          ) : isLoading ? (
+            <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
+              <Image
+                alt="loading"
+                src={"/assets/gif/loading.gif"}
+                width={100}
+                height={30}
+              ></Image>
+            </div>
+          ) : (
+            <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
+              <Image
+                alt="none"
+                src={"/assets/images/question.svg"}
+                width={73}
+                height={99}
+              ></Image>
+            </div>
+          )
+        ) : null}
         {selectedComponent === "text" && (
           <NameInput
             placeholder="뿡뿡이나무"
