@@ -15,6 +15,16 @@
 #### 설치된 라이브러리 관리
 `pip freeze > requirements.txt`
 
+### `.env` 파일 추가
+```
+# OpenAI_API_KEY
+OPENAI_API_KEY=[API_KEY]
+
+# Naver search & Papago API
+NAVER_API_CLIENT_ID=[ID]
+NAVER_API_CLIENT_SECRET=[SECRET_KEY]
+```
+
 ### 서버 실행
 `python app.py` or `flask run`
 
