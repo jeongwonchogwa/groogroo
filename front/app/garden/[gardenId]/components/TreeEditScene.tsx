@@ -31,6 +31,7 @@ export default class TreeEditScene extends Scene {
   private currentTime!: string;
   private onTreeSelectOpenButtonClick: (type?: string) => void;
   private changeCheck!: boolean;
+  private trees!: Character[];
   public changeTree!: (modifyTreeUrl: string) => void;
 
   constructor(props: Props) {
@@ -77,7 +78,7 @@ export default class TreeEditScene extends Scene {
 
   create() {
     // this.sound.stopAll();
-
+    this.changeCheck = false;
     //맵 생성. 레이어별로 foreach 돌면서.///////////////////////////////////////////////
     const map = this.make.tilemap({ key: "mainMap" });
     map.addTilesetImage("tileset", "tileset");
@@ -87,9 +88,8 @@ export default class TreeEditScene extends Scene {
     });
 
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
-    const trees: Character[] = [];
     this.garden.treePos?.forEach((tree) => {
-      trees.push({
+      this.trees.push({
         id: tree.name,
         sprite: this.physics.add
           .sprite(0, 0, tree.name)
@@ -103,7 +103,6 @@ export default class TreeEditScene extends Scene {
         offsetY: 16,
       });
     });
-
     //꽃sprite 목록 생성.///////////////////////////////////////////////////////////
     const flowers: Character[] = [];
     this.garden.flowerPos?.forEach((flower) => {
@@ -134,7 +133,7 @@ export default class TreeEditScene extends Scene {
         .on("pointerup", () => {
           this.onTreeSelectOpenButtonClick("modify");
         });
-      trees.push({
+      this.trees.push({
         id: "selectedTree",
         sprite: this.assetSprite,
         startPosition: { x: 15, y: 10 },
@@ -153,7 +152,7 @@ export default class TreeEditScene extends Scene {
 
       this.modifyTreeId = this.modifyTreeId;
 
-      trees.forEach((tree) => {
+      this.trees.forEach((tree) => {
         if (tree.id === this.modifyTreeId) {
           tree.tileHeight = 0;
           tree.tileWidth = 0;
@@ -171,29 +170,8 @@ export default class TreeEditScene extends Scene {
     this.moveCheck = false;
 
     this.changeTree = (modifyTreeUrl: string) => {
-      if (this.selectedTreeUrl) {
-        this.load.image("modifyImage", modifyTreeUrl);
-        this.load.on("filecomplete-modifyImage", () => {
-          this.assetSprite.setTexture("modifyImage");
-        });
-      } else {
-        console.log("나무바꾸기 실행 - 이동시", modifyTreeUrl)
-        this.load.image("modifyImage", modifyTreeUrl);
-          trees.forEach((tree) => {
-            if (tree.id === this.modifyTreeId) {
-              console.log("이동할 나무 잡았음. 텍스쳐 교체하러 왔ㅇ므.")
-              tree.sprite.setTexture("modifyImage");
-            }
-          });
-        // this.load.on("filecomplete-modifyImage", () => {
-        //   trees.forEach((tree) => {
-        //     if (tree.id === this.modifyTreeId) {
-        //       console.log("이동할 나무 잡았음. 텍스쳐 교체하러 왔ㅇ므.")
-        //       tree.sprite.setTexture("modifyImage");
-        //     }
-        //   });
-        // });
-      }
+      this.load.image("modifyImage", modifyTreeUrl);
+      this.changeCheck = false;
     };
 
     //맵 screen 사이즈에 맞춰서 zoom수치 설정. 너비/높이 중 더 큰 사이즈에 맞춰서.
@@ -461,7 +439,7 @@ export default class TreeEditScene extends Scene {
 
     const gridEngineConfig = {
       snapToCell: true,
-      characters: trees.concat(flowers),
+      characters: this.trees.concat(flowers),
     };
 
     // @ts-ignore
@@ -498,6 +476,20 @@ export default class TreeEditScene extends Scene {
   }
 
   update() {
+    if (this.textures.exists("modifyImage") && !this.changeCheck) {
+      if (this.selectedTreeUrl) {
+        this.assetSprite.setTexture("modifyImage");
+        this.changeCheck = true;
+      } else {
+        this.trees.forEach((tree) => {
+          if (tree.id === this.modifyTreeId && !this.changeCheck) {
+            tree.sprite.setTexture("modifyImage");
+            this.changeCheck = true;
+          }
+        });
+      }
+    }
+
     //에셋 배치시 나무, 꽃 테두리 보여주기.////////////////////////////////
     // this.spriteBox.setX(this.assetSprite.x);
     // this.spriteBox.setY(this.assetSprite.y);
