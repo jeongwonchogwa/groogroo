@@ -18,7 +18,6 @@ const GardenCard = ({ sort, garden, index }: GardenCardProps) => {
 
   const handleToggle = (gardenId: number) => {
     setOpen((prevOpen) => !prevOpen);
-    // 이거는 모달떄문에 필요한건가?
     setSelectedGardenId(gardenId);
   };
 
@@ -41,7 +40,6 @@ const GardenCard = ({ sort, garden, index }: GardenCardProps) => {
                     className="z-20 absolute top-[10px] left-[10px]"
                   />
                 )}
-                {/* mapType은 1부터 시작이에요 */}
                 <div className="h-[100px]">
                   <Image
                     src={`/assets/maps/map[${garden.mapType}].jpg`}

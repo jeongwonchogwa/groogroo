@@ -6,8 +6,6 @@ import TextModal from "@/app/components/TextModal";
 import useSearchTree from "@/app/hooks/useSearchTree";
 import useUserToken from "@/app/hooks/useUserToken";
 import { Tree } from "@/app/types";
-import { userInfoStore } from "@/stores/userInfoStore";
-import { userTreeStore } from "@/stores/userTreeStore";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 interface Props {
@@ -28,14 +26,12 @@ const UpdateNameButton = ({ checkTree, newName, userTree }: Props) => {
 
   const [checkIsValid, setCheckIsValid] = useState<boolean>(false);
 
-  // timeout 이벤트 걸어줌
   useEffect(() => {
     if (checkIsValid) {
       const timeoutId = setTimeout(() => {
         setCheckIsValid(false);
       }, 2000);
 
-      // 컴포넌트가 언마운트되면 타이머를 정리, 뭐든 왜 정리를 해줘야 하니..
       return () => {
         clearTimeout(timeoutId);
       };
@@ -46,7 +42,6 @@ const UpdateNameButton = ({ checkTree, newName, userTree }: Props) => {
     imageUrl: string;
     name: string;
   } = {
-    // 현재 나무 가져가야지?
     imageUrl: userTree.imageUrl,
     name: newName,
   };
@@ -73,7 +68,6 @@ const UpdateNameButton = ({ checkTree, newName, userTree }: Props) => {
         router
       );
       if (response.status === 200) {
-        // 사실 모달을 띄워야 할 것 같긴한데..ㅎ
         const responseData = await response.json();
         router.push("/home");
       }

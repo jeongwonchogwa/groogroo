@@ -28,7 +28,6 @@ const SearchTreeFruitsPage = ({
 
   const router = useRouter();
 
-  // 검색 결과 가져오기
   const fetchSearch = async () => {
     try {
       const response = await fetchWithTokenCheck(

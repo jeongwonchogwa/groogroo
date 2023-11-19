@@ -44,12 +44,6 @@ const SearchPage = () => {
     setTreeSearchInput(value);
   };
 
-  // useEffect(() => {
-  //   if (clickSearch) {
-  //     fetchSearch(treeSearchInput);
-  //   }
-  // }, [clickSearch, treeSearchInput]);
-
   const [searchData, setSearchData] = useState<Tree[]>([]);
 
   const router = useRouter();

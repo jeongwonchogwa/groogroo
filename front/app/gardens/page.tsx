@@ -18,7 +18,6 @@ const fetchGardenList = async (
   router: AppRouterInstance
 ) => {
   try {
-    console.log("fetchGardenList 들어왔니?", pageNumber);
     const response = await fetchWithTokenCheck(
       `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/list/${pageNumber}`,
       {
@@ -46,7 +45,6 @@ const fetchGardenRankingList = async (
   router: AppRouterInstance
 ) => {
   try {
-    console.log("fetchGardenRankingList 들어왔니?", pageNumber);
     const response = await fetchWithTokenCheck(
       `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/ranking/${pageNumber}`,
       {
@@ -89,12 +87,7 @@ const GardenComponent = () => {
   const [gardenRankingPageNumber, setGardenRankingPageNumber] =
     useState<number>(0);
 
-  // sort 변경 시 실행되는 useEffect
   useEffect(() => {
-    cancelRequestRef.current = true; // 이전 요청 취소
-
-    // 나머지 로직 유지
-    console.log("Sort 변경: ", sort);
     if (sort === "내 정원") {
       setGardenListPageNumber(0);
       setNoMoreData(false);
@@ -107,18 +100,11 @@ const GardenComponent = () => {
       gardenCardRef.current.scrollTop = 0;
     }
 
-    // 새 요청 시작 전에 취소 플래그를 false로 재설정
     setTimeout(() => {
-      cancelRequestRef.current = false;
       loadGardens(); // 첫 페이지 데이터 로드
     }, 0);
-
-    return () => {
-      cancelRequestRef.current = true; // 컴포넌트 언마운트 시 이전 요청 취소
-    };
   }, [sort]);
 
-  // pageNumber 변경 시 실행되는 useEffect
   useEffect(() => {
     if (sort === "내 정원" && gardenListPageNumber > 0) {
       loadGardens();
@@ -154,14 +140,6 @@ const GardenComponent = () => {
   const loadGardens = async () => {
     const currentPageNumber =
       sort === "내 정원" ? gardenListPageNumber : gardenRankingPageNumber;
-    console.log(`loadGardens의 pageNumber => ${sort}일때, `, currentPageNumber);
-    // 요청 시작 전에 cancelRequestRef가 true인지 확인
-    // if (cancelRequestRef.current) return;
-    // 현재 페이지 로딩 중인지 확인
-    // 여기서 같은 페이지 로딩 중이면 returne을 해버렷네
-    // if (loadingPageNumber === currentPageNumber) {
-    //   return;
-    // }
     setLoadingPageNumber(currentPageNumber);
 
     if (currentPageNumber === 0) {
@@ -184,7 +162,6 @@ const GardenComponent = () => {
           userToken,
           router
         );
-        // if (cancelRequestRef.current) return;
         setGardenList((current) =>
           currentPageNumber === 0 ? newGardens : [...current, ...newGardens]
         );
@@ -195,7 +172,6 @@ const GardenComponent = () => {
           userToken,
           router
         );
-        // if (cancelRequestRef.current) return;
         setGardenRanking((current) =>
           currentPageNumber === 0 ? newGardens : [...current, ...newGardens]
         );
@@ -213,7 +189,6 @@ const GardenComponent = () => {
     }
   };
 
-  // GardenCard의 스크롤을 조작하기 위한 ref
   const gardenCardRef = useRef<HTMLDivElement | null>(null);
 
   const clickText = (e: any) => {

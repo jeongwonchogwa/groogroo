@@ -5,6 +5,7 @@ import { Preset, Tree } from "@/app/types";
 import { useSearchParams } from "next/navigation";
 import UpdateName from "./updateName";
 import UpdatePreset from "./updatePreset";
+import { useQuery } from "@tanstack/react-query";
 
 interface UpdateContainerProps {
   userTree: Tree;
@@ -22,10 +23,10 @@ const UpdateContainer = ({ userTree, data, width }: UpdateContainerProps) => {
         content={
           <div className="bg-white" style={{ width: width - 30 }}>
             {/* 프리셋 */}
-            {type === "preset" ? (
+            {type === "preset" && userTree ? (
               <UpdatePreset userTree={userTree} data={data} />
             ) : (
-              <UpdateName userTree={userTree} />
+              userTree && <UpdateName userTree={userTree} />
             )}
           </div>
         }

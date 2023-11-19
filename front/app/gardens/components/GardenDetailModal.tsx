@@ -28,7 +28,6 @@ const GardenDetailModal = ({
           className="absolute w-full h-full bg-gray-900 opacity-50"
           onClick={handleToggle}
         ></div>
-        {/* h를 박는게 맞는지 모르겠네요 */}
         <div className="bg-modal-img h-[598px] w-[350px] mx-auto rounded z-50 overflow-y-auto  scrollbar-hide">
           <div className="flex flex-col p-1 h-full">
             <div className="mt-5 mx-7">
@@ -38,9 +37,7 @@ const GardenDetailModal = ({
                 active={false}
               />
             </div>
-            {/* 이렇게 박아 넣는게 맞아..? */}
             <div className="mt-5 ml-[2px] mr-[7px] h-[250px] relative">
-              {/* Image의 width가 더 넓은건 상관이 없는데 좁으면 상관이 있는건가..내가 뭔가 잘못쓰고 있는 것 같은데... */}
               <div className="absolute z-10 h-full">
                 <Image
                   className="h-full object-fill"
@@ -90,7 +87,6 @@ const GardenDetailModal = ({
                 </div>
               </div>
 
-              {/* 내용이 길어지면 스크롤을 하게해..? 일단 overflow-auto 넣어야지.. */}
               <div className="px-4 mt-3 h-[90px] overflow-auto">
                 <p
                   className=" font-nexonGothic text-lg"

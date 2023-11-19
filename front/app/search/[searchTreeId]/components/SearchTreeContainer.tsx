@@ -11,7 +11,6 @@ interface Props {
 }
 
 const SearchTreeContainer = ({ searchData }: Props) => {
-  console.log(searchData);
   return (
     <>
       {searchData && (
@@ -21,7 +20,6 @@ const SearchTreeContainer = ({ searchData }: Props) => {
           </div>
           <div className="w-full h-full flex justify-center">
             <div className="flex flex-col  w-full">
-              {/* w를 박아 넣는게 맞는지 모르겠어요ㅠㅠ */}
               <div className="w-[calc(100%-60px)] h-[calc(100%-60px)] mx-auto">
                 <div className="relative w-full h-full flex justify-center">
                   <Image
@@ -32,8 +30,6 @@ const SearchTreeContainer = ({ searchData }: Props) => {
                     height={60}
                     priority
                   />
-                  {/* todo 애니메이션 그지같이 넣었네요 더 찾아보세요. */}
-                  {/* 진심으로. 폴드가 그렇게 너비가 좁다고? */}
                   <p className="absolute h-full py-8 bottom-0 inset-x-0 pl-5 animate-typing overflow-hidden whitespace-nowrap font-neoDunggeunmo_Pro  text-sm">
                     나무를 클릭해 열매를 확인해보세요!!
                   </p>
@@ -46,7 +42,7 @@ const SearchTreeContainer = ({ searchData }: Props) => {
                   }}
                 >
                   <div className="h-[300px] flex justify-center">
-                    <div className="w-full h-full relative">
+                    <div className="w-full h-full relative flex justify-center">
                       <Image
                         src={searchData.imageUrl}
                         alt="검색결과 나무"

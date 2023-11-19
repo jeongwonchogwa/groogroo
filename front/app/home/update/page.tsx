@@ -4,15 +4,15 @@ import Button from "@/app/components/Button";
 import UpdateContainer from "./components/updateContainer";
 import UpdateTreeSection from "./components/updateTreeSection";
 import { useEffect, useState } from "react";
-import { userInfoStore } from "@/stores/userInfoStore";
 import { redirect, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/app/components/Loading";
 import useSearchTree from "@/app/hooks/useSearchTree";
 import useUserToken from "@/app/hooks/useUserToken";
 import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
+import { Tree } from "@/app/types";
+import { fetchTreeData } from "@/app/services/fetchTreeData";
 
-// 이거 참고해서 Gardens 수정하도록
 const UpdatePage = () => {
   const userToken = useUserToken();
   const { treeId, loading, error } = useSearchTree(userToken);
@@ -46,34 +46,10 @@ const UpdatePage = () => {
         router
       );
       const data = await response.json();
-      // 'now' 속성이 true인 요소들만 필터링
       const filteredData = data.presets.filter(
         (preset: { now: boolean }) => preset.now === true
       );
-      console.log(filteredData);
-
       return filteredData;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const fetchTreeData = async () => {
-    try {
-      const response = await fetchWithTokenCheck(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        },
-        router
-      );
-      const data = await response.json();
-      // data에서 isnow가 true인것 빼고 저장해야함
-      console.log(data);
-      return data.tree;
     } catch (error) {
       console.log(error);
     }
@@ -83,13 +59,18 @@ const UpdatePage = () => {
     data: treeData,
     isLoading: treeIsLoading,
     isError: treeIsError,
-  } = useQuery(["userTree"], fetchTreeData);
+  } = useQuery<Tree>(["userTree"], () => fetchTreeData(userToken, router), {
+    enabled: !!userToken, // userToken이 존재할 때만 쿼리 활성화
+    staleTime: 10000, // 10초 이내에는 캐시된 결과를 사용
+  });
 
   const {
     data: presetData,
     isLoading: presetIsLoading,
     isError: presetIsError,
-  } = useQuery(["treePreset"], fetchPreset);
+  } = useQuery(["treePreset"], fetchPreset, {
+    staleTime: 10000, // 10초 이내에는 캐시된 결과를 사용
+  });
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -114,21 +95,24 @@ const UpdatePage = () => {
           <Button color="white" label="나무 바꾸기" active={false} />
         </div>
         <div className="mt-3 h-[300px]">
-          <UpdateTreeSection
-            userTree={treeData}
-            currentIndex={currentIndex}
-            nextSlide={nextSlide}
-            prevSlide={prevSlide}
-            //이때 presetData에서 now가 true가 아닌 애만 보내야해
-            data={presetData}
-          />
+          {treeData && (
+            <UpdateTreeSection
+              currentIndex={currentIndex}
+              nextSlide={nextSlide}
+              prevSlide={prevSlide}
+              data={presetData}
+              userTree={treeData}
+            />
+          )}
         </div>
         <div className="w-full h-[60px]">
-          <UpdateContainer
-            userTree={treeData}
-            data={presetData[currentIndex]}
-            width={width}
-          />
+          {treeData && (
+            <UpdateContainer
+              userTree={treeData}
+              data={presetData[currentIndex]}
+              width={width}
+            />
+          )}
         </div>
       </div>
     </div>

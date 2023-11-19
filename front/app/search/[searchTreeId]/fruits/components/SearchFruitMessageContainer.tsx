@@ -41,7 +41,6 @@ const SearchFruitMessageContainer = ({ data }: Props) => {
         currentMinutes -
         (Number(createTimeHours) * 60 + Number(createTimeMinutes));
 
-      console.log(timeDifference);
       if (timeDifference < 6) {
         setAvailableDelete(true);
       } else {

@@ -62,7 +62,6 @@ const UpdateName = ({ userTree }: Props) => {
       <div className=" text-center  font-neoDunggeunmo_Pro text-2xl">
         나무의 새 이름을 정해주세요
       </div>
-      {/* 위치 조정을 이렇게..? 뭔가 이상한데.. */}
       <div className="px-2 w-full flex flex-col ml-[15px]">
         <NameInput
           value={newName}
