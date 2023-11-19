@@ -11,7 +11,6 @@ import { userInfoStore } from "@/stores/userInfoStore";
 import useUserToken from "@/app/hooks/useUserToken";
 import useSearchTree from "@/app/hooks/useSearchTree";
 
-// Todo. HomeHeader와 GardensHeader는 완벽하게 같아요 왜 너는 안 합치고 있나요? 머리가 안돌아가세여?
 interface GardenHeaderProp {
   clickText: (e: React.MouseEvent<HTMLButtonElement>) => void;
   handlemenu: () => void;
@@ -63,7 +62,6 @@ const GardensHeader = ({
     }
   };
   const menuList: MenuButton[] = [
-    // link가 아니라 router로 해버렸다..
     { name: "로그아웃", clickEvent: () => fetchLogout() },
     {
       name: "문의하기",
@@ -100,12 +98,6 @@ const GardensHeader = ({
               />
             </div>
           </div>
-        </div>
-      </div>
-      <div className="mt-[30px] mx-5">
-        <div className="grid grid-flow-col gap-2">
-          <Button color="primary" label="내 정원" onClickText={clickText} />
-          <Button color="white" label="정원 랭킹" onClickText={clickText} />
         </div>
       </div>
       {menuOpen ? <GardensMenu menuList={menuList}></GardensMenu> : null}

@@ -16,8 +16,6 @@ const SearchContainer = ({ searchData }: SearchContainerProp) => {
     <>
       {searchData.length > 0 ? (
         <div className="w-full h-fit">
-          {/* 여기부터 frame에 들어갈거야 */}
-          {/* height 값을 어떻게 처리해야하는지를 모르겠네... */}
           <Frame
             height={500}
             content={

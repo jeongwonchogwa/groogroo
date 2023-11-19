@@ -69,8 +69,6 @@ const RegistPage = () => {
   };
 
   const fetchCreate = async (data: object) => {
-    console.log("currentIndex가 뭐야?", currentIndex);
-    console.log(data);
     if (
       name.length > 10 ||
       name === "" ||
@@ -98,7 +96,6 @@ const RegistPage = () => {
         const responseData = await response.json();
         const gardenUrl =
           responseData.gardenInfo.url + responseData.gardenInfo.gardenId;
-        console.log(responseData);
         router.push(`/garden/${gardenUrl}`);
       }
     } catch (error) {

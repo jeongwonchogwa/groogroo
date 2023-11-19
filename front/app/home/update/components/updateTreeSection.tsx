@@ -1,5 +1,4 @@
 "use client";
-// 분리 필요
 import IconButton from "@/app/components/IconButton";
 import { Preset, Tree } from "@/app/types";
 import Image from "next/image";
@@ -21,7 +20,6 @@ const UpdateTreeSection = ({
 }: UpdateTreeSectionProps) => {
   const params = useSearchParams();
   const type = params.get("type");
-
   return (
     <div className="w-full flex flex-col h-full">
       <div className="flex align-middle h-full">
@@ -32,7 +30,7 @@ const UpdateTreeSection = ({
             )}
           </div>
           <div className="h-[200px] my-auto">
-            {type === "name" ? (
+            {type === "name" && userTree ? (
               <Image
                 className="h-full"
                 height={200}

@@ -5,7 +5,6 @@ import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 import useSearchTree from "@/app/hooks/useSearchTree";
 import useUserToken from "@/app/hooks/useUserToken";
 import { Preset, Tree } from "@/app/types";
-import { userInfoStore } from "@/stores/userInfoStore";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -48,8 +47,6 @@ const UpdatePreset = ({ data, userTree }: Props) => {
         router
       );
       if (response.status === 200) {
-        console.log(newData);
-        // 사실 모달을 띄워야 할 것 같긴한데..ㅎ
         const responseData = await response.json();
         router.push("/home");
       }

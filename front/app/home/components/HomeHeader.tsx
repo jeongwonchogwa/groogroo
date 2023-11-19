@@ -11,9 +11,7 @@ import { usePathname } from "next/navigation";
 import Alarm from "@/app/components/Alarm";
 import ButtonModal from "@/app/components/ButtonModal";
 import Button from "@/app/components/Button";
-import { searchTreeStore } from "@/stores/searchTreeInfo";
 import Link from "next/link";
-import { userInfoStore } from "@/stores/userInfoStore";
 import useUserToken from "@/app/hooks/useUserToken";
 import useSearchTree from "@/app/hooks/useSearchTree";
 

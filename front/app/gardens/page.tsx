@@ -1,58 +1,195 @@
 "use client";
 
+import { useState, useEffect, useRef, useCallback } from "react";
+import { fetchWithTokenCheck } from "../components/FetchWithTokenCheck";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { Garden } from "../types";
+import useUserToken from "../hooks/useUserToken";
+import { useRouter } from "next/navigation";
 import GardensHeader from "./components/GardensHeader";
 import GardenCard from "./components/GardenCard";
-
-import { Garden } from "../types";
-import { useState, useEffect, useCallback, useRef } from "react";
-import { redirect, useRouter } from "next/navigation";
-import useUserToken from "../hooks/useUserToken";
-import useSearchTree from "../hooks/useSearchTree";
-import { fetchWithTokenCheck } from "../components/FetchWithTokenCheck";
 import Image from "next/image";
-import { useQueryClient } from "@tanstack/react-query";
-import Loading from "../components/Loading";
+import LoadingGif from "/public/assets/gif/loading.gif";
+import Button from "../components/Button";
 
-// 리팩토링 필요
-
-const GardensPage = () => {
-  const userToken = useUserToken();
-  const queryClient = useQueryClient();
-  const { treeId, loading, error } = useSearchTree(userToken);
-
-  useEffect(() => {
-    if (!loading && !error && treeId === null) {
-      redirect("/enter/terms");
+const fetchGardenList = async (
+  pageNumber: number,
+  userToken: string,
+  router: AppRouterInstance
+) => {
+  try {
+    const response = await fetchWithTokenCheck(
+      `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/list/${pageNumber}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      },
+      router
+    );
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
     }
-  }, [loading, error, treeId]);
+    const responseData = await response.json();
+    return responseData.gardenInfo.content;
+  } catch (error) {
+    console.error("Error fetching garden list:", error);
+    return [];
+  }
+};
 
-  useEffect(() => {
-    queryClient.removeQueries({ queryKey: ["getGardenInfo"] });
-  }, []);
+const fetchGardenRankingList = async (
+  pageNumber: number,
+  userToken: string,
+  router: AppRouterInstance
+) => {
+  try {
+    const response = await fetchWithTokenCheck(
+      `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/ranking/${pageNumber}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      },
+      router
+    );
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const responseData = await response.json();
+    return responseData.ranking.content;
+  } catch (error) {
+    console.error("Error fetching garden list:", error);
+    return [];
+  }
+};
 
-  const [myGardenList, setMyGardenList] = useState<Garden[]>([]);
-  const [rankingGardenList, setRankingGardenList] = useState<Garden[]>([]);
+const GardenComponent = () => {
+  const userToken = useUserToken();
+  const router = useRouter();
+  const [sort, setSort] = useState("내 정원");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [noMoreData, setNoMoreData] = useState<boolean>(false);
+  const observer = useRef<IntersectionObserver>();
+  const [loadingPageNumber, setLoadingPageNumber] = useState<number | null>(
+    null
+  );
+  const [firstLoading, setFirstLoading] = useState<boolean>(false);
 
-  const [myGardenPageNumber, setMyGardenPageNumber] = useState<number>(0);
-  const [rankingGardenPageNumber, setRankingGardenPageNumber] =
+  const [gardenList, setGardenList] = useState<Garden[]>([]);
+  const [gardenRanking, setGardenRanking] = useState<Garden[]>([]);
+
+  const cancelRequestRef = useRef<boolean>(false);
+
+  const [gardenListPageNumber, setGardenListPageNumber] = useState<number>(0);
+  const [gardenRankingPageNumber, setGardenRankingPageNumber] =
     useState<number>(0);
-  const [Nowloading, setNowLoading] = useState<boolean>(false);
-  const [hasMyGardenNext, setHasMyGardenNext] = useState<boolean>(true);
-  const [hasRankingGardenNext, setHasRankingGardenNext] =
-    useState<boolean>(true);
-  const loader = useRef<HTMLDivElement>(null);
 
-  const [sort, setSort] = useState<string>("내 정원");
-
-  // GardenCard의 스크롤을 조작하기 위한 ref
-  const gardenCardRef = useRef<HTMLDivElement | null>(null);
-
-  // sort가 변경될 때마다 GardenCard의 스크롤을 맨 위로 이동
   useEffect(() => {
+    if (sort === "내 정원") {
+      setGardenListPageNumber(0);
+      setNoMoreData(false);
+    } else if (sort === "정원 랭킹") {
+      setGardenRankingPageNumber(0);
+      setNoMoreData(false);
+    }
+
     if (gardenCardRef.current) {
       gardenCardRef.current.scrollTop = 0;
     }
+
+    setTimeout(() => {
+      loadGardens(); // 첫 페이지 데이터 로드
+    }, 0);
   }, [sort]);
+
+  useEffect(() => {
+    if (sort === "내 정원" && gardenListPageNumber > 0) {
+      loadGardens();
+    } else if (sort === "정원 랭킹" && gardenRankingPageNumber > 0) {
+      loadGardens();
+    }
+  }, [gardenListPageNumber, gardenRankingPageNumber]);
+
+  const lastGardenElementRef = useCallback(
+    (node: Element | null) => {
+      const currentPageNumber =
+        sort === "내 정원" ? gardenListPageNumber : gardenRankingPageNumber;
+      if (loading || noMoreData || firstLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (
+          entries[0].isIntersecting &&
+          !loading &&
+          loadingPageNumber !== currentPageNumber
+        ) {
+          if (sort === "내 정원") {
+            setGardenListPageNumber((prevPageNumber) => prevPageNumber + 1);
+          } else if (sort === "정원 랭킹") {
+            setGardenRankingPageNumber((prevPageNumber) => prevPageNumber + 1);
+          }
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, noMoreData, firstLoading, sort]
+  );
+
+  const loadGardens = async () => {
+    const currentPageNumber =
+      sort === "내 정원" ? gardenListPageNumber : gardenRankingPageNumber;
+    setLoadingPageNumber(currentPageNumber);
+
+    if (currentPageNumber === 0) {
+      setFirstLoading(true);
+      setLoading(false); // 첫 페이지 로딩 시 loading 상태를 false로 설정
+      if (sort === "내 정원") {
+        setGardenList([]);
+      } else if (sort === "정원 랭킹") {
+        setGardenRanking([]);
+      }
+    } else {
+      setFirstLoading(false);
+      setLoading(true); // 추가 페이지 로딩 시 firstLoading 상태를 false로 설정
+    }
+
+    try {
+      if (sort === "내 정원") {
+        const newGardens = await fetchGardenList(
+          currentPageNumber,
+          userToken,
+          router
+        );
+        setGardenList((current) =>
+          currentPageNumber === 0 ? newGardens : [...current, ...newGardens]
+        );
+        setNoMoreData(newGardens.length === 0);
+      } else if (sort === "정원 랭킹") {
+        const newGardens = await fetchGardenRankingList(
+          currentPageNumber,
+          userToken,
+          router
+        );
+        setGardenRanking((current) =>
+          currentPageNumber === 0 ? newGardens : [...current, ...newGardens]
+        );
+        setNoMoreData(newGardens.length === 0);
+      }
+    } catch (error) {
+      console.error("Error in loadGardens:", error);
+      setNoMoreData(true);
+    } finally {
+      if (!cancelRequestRef.current) {
+        setFirstLoading(false);
+        setLoading(false);
+      }
+      setLoadingPageNumber(null);
+    }
+  };
+
+  const gardenCardRef = useRef<HTMLDivElement | null>(null);
 
   const clickText = (e: any) => {
     const newSort = e.target.innerText;
@@ -65,250 +202,112 @@ const GardensPage = () => {
     setMenuOpen((prev) => !prev);
   };
 
-  // 내 정원 GardenList 불러오기
-  const router = useRouter();
-  const fetchGardenList = useCallback(
-    async (pageNumber: number) => {
-      if (pageNumber === 0) {
-        setFirstLoading(true);
-      } else {
-        setNowLoading(true);
-      }
-      console.log("이건 fetchGardenList", pageNumber);
-      try {
-        const response = await fetchWithTokenCheck(
-          `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/list/${pageNumber}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${userToken}`,
-            },
-          },
-          router
-        );
-        if (response.status === 200) {
-          const responseData = await response.json();
-          if (pageNumber === 0) {
-            setMyGardenList(responseData.gardenInfo.content);
-            setFirstLoading(false);
-          } else {
-            setMyGardenList((prev: any) => [
-              ...prev,
-              ...responseData.gardenInfo.content,
-            ]);
-          }
-          setHasRankingGardenNext(
-            pageNumber < responseData.gardenInfo.totalPages
-          );
-        } else if (response.status === 500) {
-          setHasMyGardenNext(false);
-        }
-
-        setNowLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    [userToken, sort]
-  );
-
-  const [firstLoading, setFirstLoading] = useState<boolean>(false);
-  const fetchGardenRankingList = useCallback(
-    async (pageNumber: number) => {
-      if (pageNumber === 0) {
-        setFirstLoading(true);
-      } else {
-        setNowLoading(true);
-      }
-      try {
-        console.log("fetchGardenRankingList 들어옴?");
-        const response = await fetchWithTokenCheck(
-          `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/like/ranking/${pageNumber}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${userToken}`,
-            },
-          },
-          router
-        );
-        if (response.status === 200) {
-          const responseData = await response.json();
-          if (pageNumber === 0) {
-            setRankingGardenList(responseData.ranking.content);
-            setFirstLoading(false);
-          } else {
-            setRankingGardenList((prev: any) => [
-              ...prev,
-              ...responseData.ranking.content,
-            ]);
-          }
-          setHasRankingGardenNext(pageNumber < responseData.ranking.totalPages);
-        } else if (response.status === 500) {
-          setHasRankingGardenNext(false);
-        }
-
-        setNowLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    [userToken, sort]
-  );
-
-  // 인피니티 스크롤 작동
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (sort === "내 정원") {
-          if (
-            entries[0].intersectionRect &&
-            hasMyGardenNext &&
-            !Nowloading &&
-            !firstLoading
-          ) {
-            console.log("entries가 뭐야? ", entries[0]);
-            setMyGardenPageNumber((prevPage) => prevPage + 1);
-          }
-        } else {
-          console.log("여긴 왔니?");
-          if (
-            entries[0].isIntersecting &&
-            hasRankingGardenNext &&
-            !Nowloading &&
-            !firstLoading
-          ) {
-            console.log(entries[0]);
-            setRankingGardenPageNumber((prevPage) => prevPage + 1);
-          }
-        }
-      },
-      {
-        root: null, // 뷰포트를 관찰 대상 영역으로 설정
-        rootMargin: "0px 0px 30px 0px", // 하단에서 50px 위에 도달했을 때 이벤트 발생
-        threshold: 0.01, // 1%의 요소가 보일 때 콜백 함수 실행
-      }
-    );
-
-    if (loader.current) {
-      observer.observe(loader.current);
-    }
-
-    return () => {
-      if (loader.current) {
-        observer.unobserve(loader.current);
-      }
-    };
-  }, [
-    loader,
-    hasMyGardenNext,
-    hasRankingGardenNext,
-    Nowloading,
-    sort,
-    firstLoading,
-  ]);
-
-  // 처음에 실행할 함수
-  useEffect(() => {
-    if (userToken) {
-      if (sort === "내 정원") {
-        if (!Nowloading && hasMyGardenNext) {
-          console.log(myGardenPageNumber);
-          fetchGardenList(myGardenPageNumber);
-        }
-      } else {
-        if (!Nowloading && hasRankingGardenNext) {
-          console.log(rankingGardenPageNumber);
-          fetchGardenRankingList(rankingGardenPageNumber);
-        }
-      }
-    }
-  }, [
-    fetchGardenList,
-    fetchGardenRankingList,
-    sort,
-    myGardenPageNumber,
-    rankingGardenPageNumber,
-    hasMyGardenNext,
-    hasRankingGardenNext,
-    userToken,
-  ]);
   return (
-    <div className="w-screen h-screen bg-background-pixel bg-blend-overlay bg-slate-300 bg-opacity-25 bg-cover">
+    <div className="min-w-[350px] max-w-[450px] mx-auto h-screen bg-background-pixel bg-blend-overlay bg-slate-300 bg-opacity-25 bg-cover">
       <GardensHeader
         clickText={clickText}
         handlemenu={() => handlemenu()}
         menuOpen={menuOpen}
       />
-
-      <div className="h-[650px] overflow-scroll mt-3" ref={gardenCardRef}>
-        {sort === "내 정원" && myGardenList.length > 0 ? (
-          <div className="flex w-full flex-col">
-            <GardenCard
-              sort={sort}
-              // gardenList={sort === "내 정원" ? myGardenList : rankingGardenList}
-              gardenList={myGardenList}
-            />
-            {Nowloading && (
-              <div className="mt-3 w-full flex justify-center">
-                <Image
-                  alt="로딩중"
-                  src="/assets/gif/loading.gif"
-                  width={100}
-                  height={60}
-                />
-              </div>
-            )}
-            <div ref={loader} />
-          </div>
-        ) : sort === "정원 랭킹" && rankingGardenList.length > 0 ? (
-          <div className="flex w-full flex-col">
-            <GardenCard sort={sort} gardenList={rankingGardenList} />
-            {Nowloading && (
-              <div className="mt-3 w-full flex justify-center">
-                <Image
-                  alt="로딩중"
-                  src="/assets/gif/loading.gif"
-                  width={100}
-                  height={60}
-                />
-              </div>
-            )}
-            <div ref={loader} />
-          </div>
-        ) : firstLoading ? (
+      <div className="mt-[30px] mx-5">
+        <div className="grid grid-flow-col gap-2">
+          <Button
+            color={sort === "내 정원" ? "primary" : "default"}
+            label="내 정원"
+            onClickText={clickText}
+          />
+          <Button
+            color={sort === "정원 랭킹" ? "primary" : "default"}
+            label="정원 랭킹"
+            onClickText={clickText}
+          />
+        </div>
+      </div>
+      <div
+        className="h-[calc(100%-180px)] overflow-scroll mt-3"
+        ref={gardenCardRef}
+      >
+        {firstLoading && (
           <div className="h-full w-full flex flex-col justify-center">
             <div className="flex justify-center">
-              <Image
-                alt="로딩중"
-                src="/assets/gif/loading.gif"
-                width={100}
-                height={60}
-              />
+              <Image alt="로딩중" src={LoadingGif} width={100} height={60} />
             </div>
             <p className="text-center font-bitBit text-2xl mt-3 text-white">
-              정원 목록을 가져오는 중입니다
+              {sort}을 가져오는 중입니다
               <br /> 잠시만 기다려주세요
             </p>
           </div>
-        ) : (
-          <div className="h-full w-full flex flex-col justify-center">
-            <div className="flex justify-center">
-              <Image
-                alt="no_data"
-                src="/assets/images/no_data.svg"
-                width={150}
-                height={350}
-              />
-            </div>
-            <p className="w-full flex justify-center mt-3 font-neoDunggeunmo_Pro text-2xl text-white">
-              정원 정보가 없습니다!
-            </p>
-          </div>
         )}
+        <div className="flex w-full flex-col">
+          {sort === "내 정원"
+            ? gardenList.map((garden, index) => {
+                if (gardenList.length === index + 1) {
+                  return (
+                    <div
+                      className="mt-5 w-full flex justify-center"
+                      ref={lastGardenElementRef}
+                      key={index}
+                    >
+                      <GardenCard garden={garden} sort={sort} index={index} />
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      className="mt-5 w-full flex justify-center"
+                      key={index}
+                    >
+                      <GardenCard garden={garden} sort={sort} index={index} />
+                    </div>
+                  );
+                }
+              })
+            : gardenRanking.map((garden, index) => {
+                if (gardenRanking.length === index + 1) {
+                  return (
+                    <div
+                      className="mt-5 w-full flex justify-center"
+                      ref={lastGardenElementRef}
+                      key={index}
+                    >
+                      <GardenCard garden={garden} sort={sort} index={index} />
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      className="mt-5 w-full flex justify-center"
+                      key={index}
+                    >
+                      <GardenCard garden={garden} sort={sort} index={index} />
+                    </div>
+                  );
+                }
+              })}
+          {loading && (
+            <div className="my-4 w-full flex justify-center">
+              <Image alt="로딩중" src={LoadingGif} width={100} height={60} />
+            </div>
+          )}
+          {!loading && noMoreData && gardenList.length === 0 && (
+            <div className="h-full w-full flex flex-col justify-center">
+              <div className="flex justify-center">
+                <Image
+                  alt="no_data"
+                  src="/assets/images/no_data.svg"
+                  width={150}
+                  height={350}
+                />
+              </div>
+              <p className="w-full flex justify-center mt-3 font-neoDunggeunmo_Pro text-2xl text-white">
+                정원 정보가 없습니다!
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
-export default GardensPage;
+export default GardenComponent;
