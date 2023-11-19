@@ -218,6 +218,12 @@ public class GardenService {
 
         // 페이지네이션 적용
         int start = (int) pageable.getOffset();
+
+        // 데이터 없는 페이지 조회 시 빈 리스트 반환
+        if (start >= returnData.size()) {
+            return Page.empty(pageable);
+        }
+
         int end = Math.min((start + pageable.getPageSize()), returnData.size());
 
         log.info(Integer.toString(start));

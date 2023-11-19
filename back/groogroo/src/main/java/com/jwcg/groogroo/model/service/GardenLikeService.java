@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -215,18 +216,22 @@ public class GardenLikeService {
             returnData.add(responseGardenRankingDto);
         }
 
-        // gardens 리스트에서 페이지네이션 적용
         int start = (int) pageable.getOffset();
+        // 데이터 없는 페이지 조회 시 빈 리스트 반환
+        if (start >= returnData.size()) {
+            return Page.empty(pageable);
+        }
+
         int end = Math.min((start + pageable.getPageSize()), returnData.size());
+
+        log.info("start: {}", start);
+        log.info("end: {}", end);
 
         List<ResponseGardenRankingDto> gardensOnPage = returnData.subList(start, end);
 
-        Collections.sort(gardensOnPage, (o1, o2) -> {
-            return (int)o2.getLikes() - (int)o1.getLikes();
-        });
+        Collections.sort(gardensOnPage, Comparator.comparingLong(ResponseGardenRankingDto::getLikes).reversed());
 
         return new PageImpl<>(gardensOnPage, pageable, returnData.size());
-//        return gardensOnPage;
     }
 
 }
