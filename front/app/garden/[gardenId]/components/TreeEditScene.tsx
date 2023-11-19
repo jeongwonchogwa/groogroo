@@ -477,7 +477,7 @@ export default class TreeEditScene extends Scene {
   }
 
   update() {
-    if (this.textures.get("modifyImage") && !this.changeCheck) {
+    if (this.textures.get("modifyImage").key !== "__MISSING" && !this.changeCheck) {
       console.log(this.textures)
       console.log(this.textures.get("modifyImage"))
       console.log("modifyImage 존재 & changeCheck false ")
