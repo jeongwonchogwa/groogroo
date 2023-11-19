@@ -88,6 +88,7 @@ export default class TreeEditScene extends Scene {
     });
 
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
+    this.trees = [];
     this.garden.treePos?.forEach((tree) => {
       this.trees.push({
         id: tree.name,
@@ -486,7 +487,7 @@ export default class TreeEditScene extends Scene {
             tree.sprite.setTexture("modifyImage");
             this.changeCheck = true;
           }
-        });
+        })
       }
     }
 
