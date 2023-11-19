@@ -89,18 +89,22 @@ const GardensHeader = ({
               <IconButton iconSrc="bell" onClick={onAlarmButtonClick} />
               {openAlarm ? <Alarm /> : null}
             </div>
-            <div className="w-10 h-10">
-              <IconButton
-                iconSrc="menu"
-                onClick={() => {
-                  handlemenu();
-                }}
-              />
+            <div className="flex flex-col items-end gap-2">
+              <div className="w-10 h-10">
+                <IconButton
+                  iconSrc="menu"
+                  onClick={() => {
+                    handlemenu();
+                  }}
+                />
+              </div>
+              {menuOpen ? (
+                <GardensMenu menuList={menuList}></GardensMenu>
+              ) : null}
             </div>
           </div>
         </div>
       </div>
-      {menuOpen ? <GardensMenu menuList={menuList}></GardensMenu> : null}
     </>
   );
 };

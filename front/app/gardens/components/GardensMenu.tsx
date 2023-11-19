@@ -6,7 +6,7 @@ interface Props {
 }
 const GardensMenu = (props: Props) => {
   return (
-    <div className="fixed top-16 right-3">
+    <div>
       {props.menuList && <PixelCard menuList={props.menuList} isModal={true} />}
     </div>
   );
