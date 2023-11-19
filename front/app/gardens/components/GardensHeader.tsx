@@ -102,12 +102,6 @@ const GardensHeader = ({
           </div>
         </div>
       </div>
-      <div className="mt-[30px] mx-5">
-        <div className="grid grid-flow-col gap-2">
-          <Button color="primary" label="내 정원" onClickText={clickText} />
-          <Button color="white" label="정원 랭킹" onClickText={clickText} />
-        </div>
-      </div>
       {menuOpen ? <GardensMenu menuList={menuList}></GardensMenu> : null}
     </>
   );
