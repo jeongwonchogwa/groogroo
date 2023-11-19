@@ -89,7 +89,7 @@ const GardensHeader = ({
               <IconButton iconSrc="bell" onClick={onAlarmButtonClick} />
               {openAlarm ? <Alarm /> : null}
             </div>
-            <div className="flex flex-col items-end gap-2">
+            <div className="relative flex flex-col items-end gap-2">
               <div className="w-10 h-10">
                 <IconButton
                   iconSrc="menu"

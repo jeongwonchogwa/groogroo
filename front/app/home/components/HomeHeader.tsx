@@ -110,23 +110,23 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
               <IconButton iconSrc="bell" onClick={onAlarmButtonClick} />
               {openAlarm ? <Alarm /> : null}
             </div>
-            <div className="flex flex-col items-end gap-2">
-            <div className="w-10 h-10">
-              <IconButton
-                iconSrc="menu"
-                onClick={() => {
-                  handlemenu();
-                }}
-              />
+            <div className="relative flex flex-col items-end gap-2">
+              <div className="w-10 h-10">
+                <IconButton
+                  iconSrc="menu"
+                  onClick={() => {
+                    handlemenu();
+                  }}
+                />
+              </div>
+              {menuOpen && !openAlarm ? (
+                <HomeMenu menuList={menuList}></HomeMenu>
+              ) : null}
             </div>
-            {menuOpen && !openAlarm ? (
-        <HomeMenu menuList={menuList}></HomeMenu>
-      ) : null}
-      </div>
           </div>
         </div>
       </div>
-      
+
       {openUpdate && (
         <ButtonModal
           handleModal={onUpdateButtonClick}
