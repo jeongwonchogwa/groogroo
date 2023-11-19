@@ -477,13 +477,17 @@ export default class TreeEditScene extends Scene {
   }
 
   update() {
-    if (this.textures.exists("modifyImage") && !this.changeCheck) {
+    if (this.textures.get("modifyImage") && !this.changeCheck) {
+      console.log(this.textures)
+      console.log(this.textures.get("modifyImage"))
+      console.log("modifyImage 존재 & changeCheck false ")
       if (this.selectedTreeUrl) {
         this.assetSprite.setTexture("modifyImage");
         this.changeCheck = true;
       } else {
         this.trees.forEach((tree) => {
-          if (tree.id === this.modifyTreeId && !this.changeCheck) {
+          if (tree.id === this.modifyTreeId) {
+            console.log("찾았다.")
             tree.sprite.setTexture("modifyImage");
             this.changeCheck = true;
           }
