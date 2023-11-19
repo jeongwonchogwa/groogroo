@@ -130,6 +130,7 @@ export default class TreeEditScene extends Scene {
         .setScale(0.25)
         .setDepth(3)
         .setOrigin(0, 0)
+        .setInteractive()
         .on("pointerup", () => {
           this.onTreeSelectOpenButtonClick("modify");
         });
@@ -156,6 +157,7 @@ export default class TreeEditScene extends Scene {
         if (tree.id === this.modifyTreeId) {
           tree.tileHeight = 0;
           tree.tileWidth = 0;
+          tree.sprite.setInteractive();
           tree.sprite.on("pointerup", () => {
             this.onTreeSelectOpenButtonClick("modify");
           });
