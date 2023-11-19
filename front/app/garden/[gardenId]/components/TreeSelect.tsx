@@ -38,8 +38,9 @@ const TreeSelect = (props: Props) => {
   const onTreeSelectButtonClick = (selectedTreeUrl: string) => {
     props.onFormCloseButtonClick;
     if (props.modify && props.game) {
+      console.log(props.game.scene.getScene("treeEditScene"));
       //@ts-ignore
-      props.game.scene.getScene("treeEditScene")!.changeTree("selectedTree")
+      props.game.scene.getScene("treeEditScene")!.changeTree(selectedTreeUrl)
     } else {
       props.game?.scene.stop("gardenScene");
       props.game?.scene.start("treeEditScene", {
