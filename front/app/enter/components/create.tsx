@@ -25,6 +25,7 @@ const Create = () => {
   const [isBlank, setIsBlank] = useState<boolean>(true);
   const [userId, setUserId] = useState("");
   const [userToken, setUserToken] = useState("");
+  const [credit, setCredit] = useState<number>(0);
 
   useEffect(() => {
     const userInfoString = sessionStorage.getItem("userInfo");
@@ -41,6 +42,8 @@ const Create = () => {
     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     const payload = JSON.parse(atob(base64));
     setUserId(payload.id);
+
+    
   }, []);
 
   const redirectHome = () => {
@@ -854,16 +857,20 @@ const Create = () => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-center items-center ">
+    <div className="w-full flex flex-col">
       <div className="w-full flex flex-col items-center mt-20">
         <p className="font-bitBit text-[48px]" style={{ marginBottom: 0 }}>
           내 나무 만들기
         </p>
         <p className="font-nexonGothic text-[18px]" style={{ marginBottom: 0 }}>
-          AI 처리를 통해 나만의 나무를 만들 수 있답니다!
+          나만의 나무를 만들어보세요!
         </p>
       </div>
-      <div className="w-full flex flex-col items-center">
+      <div className="flex flex-row justify-end items-center">
+      <Image className="flex" src="/assets/images/coin.png" alt="코인 이미지" width={40} height={40} priority/>
+          <span className="my-auto flex font-nexonGothic">{credit}</span>
+      </div>
+      <div className="w-full flex flex-col justify-center items-center ">
         <div className="w-full flex space-x-8 mt-5 mb-3">
           <SmallButton
             color={selectedComponent === "canvas" ? "default" : "white"}
