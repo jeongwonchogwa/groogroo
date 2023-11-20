@@ -54,7 +54,6 @@ const GardensHeader = ({
       );
       if (response.status === 200) {
         const responseData = await response.json();
-        console.log(responseData);
         router.push("/enter");
       }
     } catch (error) {
