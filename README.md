@@ -1,7 +1,7 @@
 # 🌳그루그루: 우리가 만들어 가는 정원🌳
 
 <div style="text-align:center">
-  <img src="./exec/images/main_logo.jpg" height="200">
+  <img src="./exec/images/logo.jpg" height="200">
 </div>
 
 ## 📅 프로젝트 개요
@@ -91,11 +91,11 @@
 
 ## 🗒️ 명세서
 
-**API 명세**
+**[API 명세서](https://separate-bandicoot-57f.notion.site/API-b66646f8703c4030b0e8c2e337862bf8?pvs=4)**
 
 ![그루그루 api 명세](./exec/images/api명세서.png)
 
-**기능 명세**
+**[기능 명세서](https://separate-bandicoot-57f.notion.site/c9390d228dc94899b378edec4a123ae3?v=8ceaf6054f0c444f8105833346d55eb0&pvs=4)**
 
 ![그루그루 기능명세](./exec/images/기능명세서.png)
 
