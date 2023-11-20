@@ -948,6 +948,18 @@ const CreatePreset = () => {
                 selectedColor={selectedColor}
                 checkIsBlank={checkIsBlank}
               />
+              { isGenerated && imageData ? 
+              <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
+                <Image
+                  className="mt-5"
+                  src={`data:image/png;base64,${imageData}`}
+                  alt="생성된 이미지"
+                  width={128}
+                  height={128}
+                  priority
+                />
+              </div> : null
+              }
             </>
           )
         ) : null}
