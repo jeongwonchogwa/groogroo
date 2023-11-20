@@ -73,6 +73,9 @@ const Create = () => {
     }
   }
 
+  const handleReCreate = () => {
+    setIsGenerated(false);
+  }
 
   const handleCreateButtonClick = () => {
     if (selectedComponent === "canvas") {
@@ -1019,11 +1022,11 @@ const Create = () => {
         <div className="w-[80%] mt-[30px] ">
           {isGenerated ? (
             <>
-              <div className="grid grid-flow-col gap-4">
+              <div className="grid grid-flow-col gap-4">(
                 <Button
                   color="primary"
                   label={credit > 0 ? "다시 생성" : "크레딧부족"}
-                  onClick={handleCreateButtonClick}
+                  onClick={() => selectedComponent === "canvas" ? handleReCreate : handleCreateButtonClick}
                   disabled={credit <= 0}
                 />
                 <Button

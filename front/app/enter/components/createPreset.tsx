@@ -49,6 +49,10 @@ const CreatePreset = () => {
     router.push("/home");
   };
 
+  const handleReCreate = () => {
+    setIsGenerated(false);
+  }
+
   // 크레딧 가져오기
   const getCredit = async () => {
     const getCredit = await fetchWithTokenCheck(
@@ -1011,7 +1015,7 @@ const CreatePreset = () => {
                 <Button
                   color="primary"
                   label={credit > 0 ? "다시 생성" : "크레딧부족"}
-                  onClick={handleCreateButtonClick}
+                  onClick={() => selectedComponent === "canvas" ? handleReCreate : handleCreateButtonClick}
                   disabled={credit <= 0}
                 />
                 <Button
