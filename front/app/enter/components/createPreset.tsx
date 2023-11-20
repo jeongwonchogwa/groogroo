@@ -24,6 +24,7 @@ const CreatePreset = () => {
   const [isBlank, setIsBlank] = useState<boolean>(true);
   const [userId, setUserId] = useState("");
   const [userToken, setUserToken] = useState("");
+  const [credit, setCredit] = useState<number>(0);
 
   useEffect(() => {
     const userInfoString = sessionStorage.getItem("userInfo");
@@ -45,6 +46,24 @@ const CreatePreset = () => {
   const redirectHome = () => {
     router.push("/home");
   };
+
+  // 크레딧 가져오기
+  const getCredit = async () => {
+    const getCredit = await fetchWithTokenCheck(
+      `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }, router
+    );
+    
+    if (getCredit.status === 200) {
+      const responseData = await getCredit.json();
+      setCredit(responseData.credit);
+    }
+  }
 
   const redirectCheck = (imageUrl: String) => {
     router.push(`/enter/check?selectedImageUrl=${imageUrl}`);
@@ -737,6 +756,23 @@ const CreatePreset = () => {
           setImageData(data.image_data); // 이미지 데이터를 상태 변수에 저장
           setImageName(data.image_name); // 이미지 url을 변수에 저장
           setIsGenerated(true);
+
+          // 크레딧 차감
+          const useCredit = await fetchWithTokenCheck(
+            `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user/credit`,
+            {
+              method: "PATCH",
+              headers: {
+                Authorization: `Bearer ${userToken}`,
+              },
+            }, router
+          );
+
+          if (useCredit?.status === 200) {
+            console.log('크레딧 차감 성공');
+            getCredit();
+          }
+
         } else {
           console.log("Server Response Error:", response?.status);
         }
@@ -953,8 +989,9 @@ const CreatePreset = () => {
               <div className="grid grid-flow-col gap-4">
                 <Button
                   color="primary"
-                  label="다시 생성"
+                  label={credit > 0 ? "다시 생성" : "크레딧부족"}
                   onClick={handleCreateButtonClick}
+                  disabled={credit <= 0}
                 />
                 <Button
                   color="primary"
@@ -973,9 +1010,9 @@ const CreatePreset = () => {
           ) : (
             <Button
               color={inputValue == "" ? "default" : "primary"}
-              label="생성하기"
+              label={credit > 0 ? "생성하기" : "크레딧부족"}
               onClick={handleCreateButtonClick}
-              disabled={inputValue == ""}
+              disabled={inputValue == "" || credit <= 0}
             />
           )}
         </div>
