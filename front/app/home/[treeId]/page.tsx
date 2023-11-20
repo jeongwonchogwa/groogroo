@@ -48,15 +48,11 @@ const TreePage = ({ params }: { params: { treeId: string } }) => {
   }
 
   return (
-    <div className="w-full">
-      <div className="mx-5 my-8">
-        <TreeSection
-          name={data.name}
-          fruitsCount={data.fruitsCount}
-          treeImg={data.imageUrl}
-        />
+    <div className="w-full h-[calc(100%-60px)] flex flex-col justify-center">
+      <div className="mt-2 mx-5 mb-8">
+        <TreeSection name={data.name} fruitsCount={data.fruitsCount} treeImg={data.imageUrl} />
       </div>
-      <div className="mx-4">
+      <div className="mx-4 mt-5">
         <FruitMessageContainer fruits={data.fruits} />
       </div>
     </div>

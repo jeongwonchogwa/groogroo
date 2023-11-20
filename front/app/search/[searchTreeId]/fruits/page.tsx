@@ -12,11 +12,7 @@ import useUserToken from "@/app/hooks/useUserToken";
 import useSearchTree from "@/app/hooks/useSearchTree";
 import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
-const SearchTreeFruitsPage = ({
-  params,
-}: {
-  params: { searchTreeId: number };
-}) => {
+const SearchTreeFruitsPage = ({ params }: { params: { searchTreeId: number } }) => {
   const userToken = useUserToken();
   const { treeId, loading, error } = useSearchTree(userToken);
 
@@ -47,24 +43,22 @@ const SearchTreeFruitsPage = ({
       console.log(error);
     }
   };
-  const { data, isLoading, isError } = useQuery(
-    ["searchResultData"],
-    fetchSearch
-  );
+  const { data, isLoading, isError } = useQuery(["searchResultData"], fetchSearch);
   if (isLoading) {
     return <Loading />;
   }
 
   return (
-    <div className="w-full h-[100%-60px]">
-      <div className="mx-5 my-8">
+    <div className="w-full h-[calc(100%-60px)] flex flex-col justify-center">
+      {/* <div className="w-full h-[calc(100%-60px)] flex flex-col justify-center"> */}
+      <div className="mx-5 mb-8">
         <SearchTreeSection
           name={data.name as string}
           imageUrl={data.imageUrl as string}
           fruitsCount={data.fruitsCount as number}
         />
       </div>
-      <div className="mx-4 my-4 h-full">
+      <div className="mx-4 my-4">
         <SearchFruitMessageContainer data={data.fruits} />
       </div>
     </div>

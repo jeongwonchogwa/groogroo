@@ -31,7 +31,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="w-full h-[calc(100%-60px)] flex flex-col justify-center">
+    <div className="w-full h-[calc(100%-60px)] flex flex-col justify-evenly">
       <div className="mx-5 mb-8">
         <TreeContainer data={data} />
       </div>

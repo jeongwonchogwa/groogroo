@@ -46,9 +46,7 @@ const UpdatePage = () => {
         router
       );
       const data = await response.json();
-      const filteredData = data.presets.filter(
-        (preset: { now: boolean }) => preset.now === true
-      );
+      const filteredData = data.presets.filter((preset: { now: boolean }) => preset.now === true);
       return filteredData;
     } catch (error) {
       console.log(error);
@@ -79,9 +77,7 @@ const UpdatePage = () => {
   };
 
   const prevSlide = () => {
-    setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + presetData.length) % presetData.length
-    );
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + presetData.length) % presetData.length);
   };
 
   if (treeIsLoading || presetIsLoading) {
@@ -106,13 +102,7 @@ const UpdatePage = () => {
           )}
         </div>
         <div className="w-full h-[60px]">
-          {treeData && (
-            <UpdateContainer
-              userTree={treeData}
-              data={presetData[currentIndex]}
-              width={width}
-            />
-          )}
+          {treeData && <UpdateContainer userTree={treeData} data={presetData[currentIndex]} width={width} />}
         </div>
       </div>
     </div>

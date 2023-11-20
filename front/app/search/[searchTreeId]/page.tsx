@@ -52,10 +52,7 @@ const SearchTreePage = ({ params }: { params: { searchTreeId: number } }) => {
     }
   };
 
-  const { data, isLoading, isError } = useQuery(
-    ["searchResultData"],
-    fetchSearch
-  );
+  const { data, isLoading, isError } = useQuery(["searchResultData"], fetchSearch);
 
   if (isLoading) {
     return <Loading />;
@@ -63,16 +60,12 @@ const SearchTreePage = ({ params }: { params: { searchTreeId: number } }) => {
 
   return (
     <>
-      <div className="w-full h-[calc(100%-60px)]">
+      <div className="w-full h-[calc(100%-60px)] flex flex-col justify-center">
         <div className="mx-5 mb-8">
           <SearchTreeContainer searchData={data} />
         </div>
-        <div className="mx-9">
-          <Button
-            color="secondary"
-            label="열매 달기"
-            onClick={onFormCloseButtonClick}
-          />
+        <div className=" mx-10">
+          <Button color="secondary" label="열매 달기" onClick={onFormCloseButtonClick} />
         </div>
       </div>
       {/* 열매 달기 모달 */}
@@ -85,25 +78,10 @@ const SearchTreePage = ({ params }: { params: { searchTreeId: number } }) => {
           }}
         >
           <div className="flex flex-col items-center justify-center gap-2 pt-10">
-            <PixelCard
-              content={
-                <div className="bg-white font-bitBit py-2 px-3 text-xl">
-                  {data.name}
-                </div>
-              }
-            ></PixelCard>
-            <Image
-              alt="currentTree"
-              src={data.imageUrl}
-              width={250}
-              height={200}
-            />
-
+            <PixelCard content={<div className="bg-white font-bitBit py-2 px-3 text-xl">{data.name}</div>}></PixelCard>
+            <Image alt="currentTree" src={data.imageUrl} width={250} height={200} />
             <div className="px-3">
-              <SearchCreateFruits
-                onFormCloseButtonClick={onFormCloseButtonClick}
-                currentTree={data}
-              />
+              <SearchCreateFruits onFormCloseButtonClick={onFormCloseButtonClick} currentTree={data} />
             </div>
           </div>
         </div>
