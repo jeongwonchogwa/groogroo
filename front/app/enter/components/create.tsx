@@ -904,7 +904,7 @@ const Create = () => {
         </p>
       </div>
       <div className="flex flex-row justify-end items-center">
-      <Image className="flex" src="/assets/images/coin.png" alt="코인 이미지" width={40} height={40} priority/>
+        <Image className="flex" src="/assets/images/coin.png" alt="코인 이미지" width={40} height={40} priority/>
           <span className="my-auto flex font-nexonGothic">{credit}</span>
       </div>
       <div className="w-full flex flex-col justify-center items-center ">
