@@ -44,7 +44,7 @@ const Create = () => {
     setUserId(payload.id);
 
     getCredit();
-             
+
   }, []);
 
   const redirectHome = () => {
@@ -66,13 +66,13 @@ const Create = () => {
         },
       }, router
     );
-    
+
     if (getCredit.status === 200) {
       const responseData = await getCredit.json();
       setCredit(responseData.credit);
     }
   }
-  
+
 
   const handleCreateButtonClick = () => {
     if (selectedComponent === "canvas") {
@@ -103,6 +103,7 @@ const Create = () => {
           err = true;
         } else {
           fetchTextToFlask(inputValue);
+          deductCredit();
         }
       }
 
@@ -761,23 +762,6 @@ const Create = () => {
           setImageData(data.image_data); // 이미지 데이터를 상태 변수에 저장
           setImageName(data.image_name); // 이미지 url을 변수에 저장
           setIsGenerated(true);
-
-          // 크레딧 차감
-          const useCredit = await fetchWithTokenCheck(
-            `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user/credit`,
-            {
-              method: "PATCH",
-              headers: {
-                Authorization: `Bearer ${userToken}`,
-              },
-            }, router
-          );
-
-          if (useCredit?.status === 200) {
-            console.log('크레딧 차감 성공');
-            getCredit();
-          }
-
         } else {
           console.log("Server Response Error:", response?.status);
         }
@@ -788,6 +772,25 @@ const Create = () => {
       console.log("이미지 데이터가 없습니다.");
     }
   };
+
+  // 크레딧 차감
+  const deductCredit = async () => {
+    console.log("크레딧 차감");
+    const response = await fetchWithTokenCheck(
+      `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user/credit`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }, router
+    );
+
+    if (response?.status === 200) {
+      console.log('크레딧 차감 성공');
+      getCredit();
+    }
+  }
 
   const fetchTextToFlask = async (inputData: string) => {
     setIsLoading(true);
@@ -904,8 +907,8 @@ const Create = () => {
         </p>
       </div>
       <div className="flex flex-row justify-end items-center">
-        <Image className="flex" src="/assets/images/coin.png" alt="코인 이미지" width={40} height={40} priority/>
-          <span className="my-auto flex font-nexonGothic">{credit}</span>
+        <Image className="flex" src="/assets/images/coin.png" alt="코인 이미지" width={40} height={40} priority />
+        <span className="my-auto flex font-nexonGothic">{credit}</span>
       </div>
       <div className="w-full flex flex-col justify-center items-center ">
         <div className="w-full flex space-x-8 mt-5 mb-3">

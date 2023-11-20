@@ -67,6 +67,25 @@ const CreatePreset = () => {
     }
   }
 
+  // 크레딧 차감
+  const deductCredit = async () =>{
+    console.log("크레딧 차감");
+    const response = await fetchWithTokenCheck(
+    `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user/credit`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    }, router
+  );
+
+  if (response?.status === 200) {
+    console.log('크레딧 차감 성공');
+    getCredit();
+  }
+}
+
   const redirectCheck = (imageUrl: String) => {
     router.push(`/enter/check?selectedImageUrl=${imageUrl}`);
   };
@@ -100,6 +119,7 @@ const CreatePreset = () => {
           err = true;
         } else {
           fetchTextToFlask(inputValue);
+          deductCredit();
         }
       }
 
@@ -758,23 +778,6 @@ const CreatePreset = () => {
           setImageData(data.image_data); // 이미지 데이터를 상태 변수에 저장
           setImageName(data.image_name); // 이미지 url을 변수에 저장
           setIsGenerated(true);
-
-          // 크레딧 차감
-          const useCredit = await fetchWithTokenCheck(
-            `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user/credit`,
-            {
-              method: "PATCH",
-              headers: {
-                Authorization: `Bearer ${userToken}`,
-              },
-            }, router
-          );
-
-          if (useCredit?.status === 200) {
-            console.log('크레딧 차감 성공');
-            getCredit();
-          }
-
         } else {
           console.log("Server Response Error:", response?.status);
         }

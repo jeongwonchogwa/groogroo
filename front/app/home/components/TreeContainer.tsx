@@ -14,7 +14,7 @@ const TreeContainer = ({ data }: Props) => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="mt-12 mb-7 mx-7">
+      <div className="mt-1 mb-7 mx-7">
         <Button color="primary" label={data.name} active={false} />
       </div>
       <div className="w-full h-full flex justify-center">
@@ -48,10 +48,7 @@ const TreeContainer = ({ data }: Props) => {
                   height={250}
                   className="z-10 absolute"
                 />
-                <RandomFruitImages
-                  fruitsCount={data.fruitsCount as number}
-                  width={300}
-                />
+                <RandomFruitImages fruitsCount={data.fruitsCount as number} width={300} />
               </div>
             </div>
           </div>
