@@ -27,6 +27,8 @@
 - 메시지 요소(꽃, 나무)를 이용한 정원 직접 꾸미기 가능
 - 정원별 좋아요 갯수로 랭킹 조회
 
+<br/>
+
 ## 🌻 서비스 소개
 
 ### <img src="./exec/images/main_logo.jpg" height="15px" width="20px" style="align:center;"> _그루그루: 우리가 만드는 정원_
@@ -35,6 +37,8 @@
 
 **우리 같이 정원을 가꿔볼래?** \
 **정원을 가꾸며 나누는 우리의 이야기 <img src="./exec/images/main_logo.jpg" height="12px" width="20px" style="align:center;"> 그루그루🌳**
+
+<br/>
 
 ## ⚙️ 기술 스택
 
@@ -49,6 +53,7 @@
 <img src="https://img.shields.io/badge/tailwindcss-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white">
 </div>
 
+<br/>
 
 <div align=center>
 <h4>💻 BACKEND</h4>
@@ -59,6 +64,8 @@
 <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JWT&logoColor=white">
 </div>
 
+<br/>
+
 <div align=center>
 <h4>🌐 CI/CD</h4>
 <img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white">
@@ -66,26 +73,38 @@
 <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
 </div>
 
+<br/>
+
 <div align=center>
 <h4>🗄 DB</h4>
 <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
 <img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
 </div>
 
+<br/>
+
 ## 📝 포팅 메뉴얼
 ### [바로가기](./exec/포팅메뉴얼.md)
+
+<br/>
 
 ## ⚙️ 개발 과정
 
 - git flow 를 전적으로 따랐으며 rebase를 적극 활용하는 시도를 했다. (~~물론 개발이 촉박해져서는 대부분 merge-request로 했지만~~)
 
+<br/>
+
 ## 🎨 와이어프레임
 
 ![figma](./exec/images/와이어프레임.png)
 
+<br/>
+
 ## 🗂️ ERD
 
 ![ERD](./exec/images/ERD.png)
+
+<br/>
 
 ## 🗒️ 명세서
 
@@ -97,9 +116,13 @@
 
 ![그루그루 기능명세](./exec/images/기능명세서.png)
 
+<br/>
+
 ## 📂 아키텍쳐
 
 ![그루그루 아키텍쳐](./exec/images/Architecture_diagram.png)
+
+<br/>
 
 ## 😊 서비스 화면
 
