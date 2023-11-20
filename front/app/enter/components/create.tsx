@@ -1028,7 +1028,7 @@ const Create = () => {
           ) : (
             <Button
               color={inputValue == "" ? "default" : "primary"}
-              label="생성하기"
+              label={credit > 0 ? "생성하기" : "크레딧부족"}
               onClick={handleCreateButtonClick}
               disabled={inputValue == "" || credit <= 0}
             />
