@@ -35,9 +35,7 @@ const RegistPage = () => {
 
   const prevMap = () => {
     if (mapdata) {
-      setCurrentIndex(
-        (prevIndex) => (prevIndex - 1 + mapdata.length) % mapdata.length
-      );
+      setCurrentIndex((prevIndex) => (prevIndex - 1 + mapdata.length) % mapdata.length);
     }
   };
 
@@ -69,12 +67,7 @@ const RegistPage = () => {
   };
 
   const fetchCreate = async (data: object) => {
-    if (
-      name.length > 10 ||
-      name === "" ||
-      capacity === "" ||
-      capacity === "0"
-    ) {
+    if (name.length > 10 || name === "" || capacity === "" || capacity === "0") {
       setCapacityValidFail(true);
       return;
     }
@@ -94,8 +87,7 @@ const RegistPage = () => {
 
       if (response.status === 200) {
         const responseData = await response.json();
-        const gardenUrl =
-          responseData.gardenInfo.url + responseData.gardenInfo.gardenId;
+        const gardenUrl = responseData.gardenInfo.url + responseData.gardenInfo.gardenId;
         router.push(`/garden/${gardenUrl}`);
       }
     } catch (error) {
@@ -112,35 +104,22 @@ const RegistPage = () => {
   };
 
   return (
-    <div className="w-screen h-screen bg-background-pixel bg-blend-overlay bg-slate-200 bg-opacity-30 bg-cover">
+    <div className="min-w-[350px] max-w-[450px] mx-auto h-screen bg-background-pixel bg-blend-overlay bg-slate-200 bg-opacity-30 bg-cover">
       <div className="flex w-full h-full">
         <div className="w-full flex items-center m-3">
           <div className="nes-container w-full bg-white mx-auto is-rounded !px-4">
             <p
               className="flex justify-center text-white font-bitBit text-3xl"
               style={{
-                textShadow:
-                  "-3px 0px black, 0px 3px  black, 3px 0px  black, 0px -3px black",
+                textShadow: "-3px 0px black, 0px 3px  black, 3px 0px  black, 0px -3px black",
               }}
             >
               정원 만들기
             </p>
             <div className="flex flex-col">
-              <RegistNameSection
-                name="name"
-                onChange={handleInput}
-                value={name}
-              />
-              <RegistDescriptionSection
-                name="description"
-                onChange={handleInput}
-                value={description}
-              />
-              <RegistCapacitySection
-                name="capacity"
-                onChange={handleInput}
-                value={capacity}
-              />
+              <RegistNameSection name="name" onChange={handleInput} value={name} />
+              <RegistDescriptionSection name="description" onChange={handleInput} value={description} />
+              <RegistCapacitySection name="capacity" onChange={handleInput} value={capacity} />
               <RegistTemplateSection
                 currentIndex={currentIndex}
                 mapdata={mapdata}
@@ -150,17 +129,9 @@ const RegistPage = () => {
             </div>
             <div className="mt-7">
               <div className="grid grid-flow-col gap-2">
-                <Button
-                  color="default"
-                  label="취소하기"
-                  onClick={() => router.back()}
-                />
+                <Button color="default" label="취소하기" onClick={() => router.back()} />
 
-                <Button
-                  color="primary"
-                  label="생성하기"
-                  onClick={clickCreate}
-                />
+                <Button color="primary" label="생성하기" onClick={clickCreate} />
               </div>
             </div>
           </div>
