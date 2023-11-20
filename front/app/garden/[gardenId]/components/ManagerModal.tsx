@@ -115,7 +115,7 @@ const ManagerModal = (props: Props) => {
   const fetchAdmin = async (userId: number) => {
     try {
       const res = await fetchWithTokenCheck(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/mater`,
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/master`,
 
         {
           method: "PATCH",
