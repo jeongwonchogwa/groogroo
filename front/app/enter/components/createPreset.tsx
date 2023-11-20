@@ -41,6 +41,8 @@ const CreatePreset = () => {
     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     const payload = JSON.parse(atob(base64));
     setUserId(payload.id);
+
+    getCredit();
   }, []);
 
   const redirectHome = () => {
