@@ -22,21 +22,16 @@ const HomePage = () => {
 
   const router = useRouter();
 
-  const { data, isLoading, isError } = useQuery(
-    ["userTree"],
-    () => fetchTreeData(userToken, router),
-    {
-      enabled: !!userToken, // userToken이 존재할 때만 쿼리 활성화
-      staleTime: 10000, // 10초 이내에는 캐시된 결과를 사용
-    }
-  );
+  const { data, isLoading, isError } = useQuery(["userTree"], () => fetchTreeData(userToken, router), {
+    enabled: !!userToken, // userToken이 존재할 때만 쿼리 활성화
+  });
 
   if (isLoading) {
     return <Loading />;
   }
 
   return (
-    <div className="w-full h-[calc(100%-60px)]">
+    <div className="w-full h-[calc(100%-60px)] flex flex-col justify-center">
       <div className="mx-5 mb-8">
         <TreeContainer data={data} />
       </div>
