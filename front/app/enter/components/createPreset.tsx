@@ -68,7 +68,7 @@ const CreatePreset = () => {
   }
 
   // 크레딧 차감
-  const useCredit = async () =>{
+  const deductCredit = async () =>{
     console.log("크레딧 차감");
     const response = await fetchWithTokenCheck(
     `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user/credit`,
@@ -119,7 +119,7 @@ const CreatePreset = () => {
           err = true;
         } else {
           fetchTextToFlask(inputValue);
-          useCredit();
+          deductCredit();
         }
       }
 
