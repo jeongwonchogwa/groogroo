@@ -38,9 +38,8 @@
 
 ## ⚙️ 기술 스택
 
-**💻 FRONTEND**
-
 <div align=center>
+<h4>💻 FRONTEND</h4>
 <img src="https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white">
 <img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white">
 <img src="https://img.shields.io/badge/react query-FF4154?style=for-the-badge&logo=reactquery&logoColor=white">
@@ -50,9 +49,9 @@
 <img src="https://img.shields.io/badge/tailwindcss-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white">
 </div>
 
-**💻 BACKEND**
 
 <div align=center>
+<h4>💻 BACKEND</h4>
 <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
 <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">
 <img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
@@ -60,22 +59,21 @@
 <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JWT&logoColor=white">
 </div>
 
-**🌐 CI/CD**
-
 <div align=center>
+<h4>🌐 CI/CD</h4>
 <img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white">
 <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
 <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
 </div>
 
-**🗄 DB**
-
 <div align=center>
+<h4>🗄 DB</h4>
 <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
 <img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
 </div>
 
-### [자세히 보러가기](./exec/포팅메뉴얼.md)
+## 📝 포팅 메뉴얼
+### [바로가기](./exec/포팅메뉴얼.md)
 
 ## ⚙️ 개발 과정
 
