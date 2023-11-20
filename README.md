@@ -1,8 +1,8 @@
 # 🌳그루그루: 우리가 만들어 가는 정원🌳
 
-<div style="text-align:center">
-  <img src="./exec/images/logo.jpg" height="200">
-</div>
+<p align="center">
+    <img src="./exec/images/logo.jpg">
+</p>
 
 ## 📅 프로젝트 개요
 
