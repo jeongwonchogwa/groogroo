@@ -44,7 +44,6 @@ const Create = () => {
     setUserId(payload.id);
 
     getCredit();
-
   }, []);
 
   const redirectHome = () => {
@@ -64,18 +63,19 @@ const Create = () => {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }, router
+      },
+      router
     );
 
     if (getCredit.status === 200) {
       const responseData = await getCredit.json();
       setCredit(responseData.credit);
     }
-  }
+  };
 
   const handleReCreate = () => {
     setIsGenerated(false);
-  }
+  };
 
   const handleCreateButtonClick = () => {
     if (selectedComponent === "canvas") {
@@ -786,14 +786,15 @@ const Create = () => {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
-      }, router
+      },
+      router
     );
 
     if (response?.status === 200) {
-      console.log('크레딧 차감 성공');
+      console.log("크레딧 차감 성공");
       getCredit();
     }
-  }
+  };
 
   const fetchTextToFlask = async (inputData: string) => {
     setIsLoading(true);
@@ -841,13 +842,10 @@ const Create = () => {
 
     // 서버에 S3 POST 요청 보내기
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/image`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/image`, {
+        method: "POST",
+        body: formData,
+      });
 
       if (response.status === 200) {
         // 처리 성공
@@ -856,19 +854,16 @@ const Create = () => {
 
         // 프리셋 저장
         try {
-          const updatePreset = await fetch(
-            `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/preset`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${userToken}`,
-              },
-              body: JSON.stringify({
-                imageUrl: imageUrl,
-              }),
-            }
-          );
+          const updatePreset = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/tree/preset`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${userToken}`,
+            },
+            body: JSON.stringify({
+              imageUrl: imageUrl,
+            }),
+          });
 
           if (updatePreset.status === 200) {
             // 프리셋 업데이트 성공
@@ -935,26 +930,11 @@ const Create = () => {
         {selectedComponent === "canvas" ? (
           isLoading ? (
             <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
-              <Image
-                alt="loading"
-                src={"/assets/gif/loading.gif"}
-                width={100}
-                height={30}
-              ></Image>
+              <Image alt="loading" src={"/assets/gif/loading.gif"} width={100} height={30}></Image>
             </div>
-          ) : (
+          ) : isGenerated ? (
             <>
-              <DrawingTools
-                onSelectTool={(tool) => handleSelectTool(tool)}
-                onColorChange={(color) => handleColorChange(color)}
-              />
-
-              <PixelCanvas
-                selectedTool={selectedTool}
-                selectedColor={selectedColor}
-                checkIsBlank={checkIsBlank}
-              />
-              { isGenerated && imageData ? 
+              <p className="mt-2 font-bitBit text-center text-lg">생성된 이미지 입니다.</p>
               <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
                 <Image
                   className="mt-5"
@@ -964,8 +944,28 @@ const Create = () => {
                   height={128}
                   priority
                 />
-              </div> : null
-              }
+              </div>
+            </>
+          ) : (
+            <>
+              <DrawingTools
+                onSelectTool={(tool) => handleSelectTool(tool)}
+                onColorChange={(color) => handleColorChange(color)}
+              />
+
+              <PixelCanvas selectedTool={selectedTool} selectedColor={selectedColor} checkIsBlank={checkIsBlank} />
+              {isGenerated && imageData ? (
+                <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
+                  <Image
+                    className="mt-5"
+                    src={`data:image/png;base64,${imageData}`}
+                    alt="생성된 이미지"
+                    width={128}
+                    height={128}
+                    priority
+                  />
+                </div>
+              ) : null}
               {/* <Canvas selectedTool={selectedTool} selectedColor={selectedColor} /> */}
             </>
           )
@@ -985,30 +985,16 @@ const Create = () => {
             </div>
           ) : isLoading ? (
             <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
-              <Image
-                alt="loading"
-                src={"/assets/gif/loading.gif"}
-                width={100}
-                height={30}
-              ></Image>
+              <Image alt="loading" src={"/assets/gif/loading.gif"} width={100} height={30}></Image>
             </div>
           ) : (
             <div className="bg-white w-[256px] h-[256px] flex items-center justify-center">
-              <Image
-                alt="none"
-                src={"/assets/images/question.svg"}
-                width={73}
-                height={99}
-              ></Image>
+              <Image alt="none" src={"/assets/images/question.svg"} width={73} height={99}></Image>
             </div>
           )
         ) : null}
         {selectedComponent === "text" && (
-          <NameInput
-            placeholder="뿡뿡이나무"
-            value={inputValue}
-            onChange={handleInputChange}
-          />
+          <NameInput placeholder="뿡뿡이나무" value={inputValue} onChange={handleInputChange} />
         )}{" "}
         {/* NameInput 컴포넌트를 렌더링 */}
         <div className="w-full h-[20px] flex justify-end mr-20">
@@ -1022,18 +1008,14 @@ const Create = () => {
         <div className="w-[80%] mt-[30px] ">
           {isGenerated ? (
             <>
-              <div className="grid grid-flow-col gap-4">(
+              <div className="grid grid-flow-col gap-4">
                 <Button
                   color="primary"
                   label={credit > 0 ? "다시 생성" : "크레딧부족"}
-                  onClick={() => selectedComponent === "canvas" ? handleReCreate : handleCreateButtonClick}
+                  onClick={() => (selectedComponent === "canvas" ? handleReCreate() : handleCreateButtonClick())}
                   disabled={credit <= 0}
                 />
-                <Button
-                  color="primary"
-                  label="결정하기"
-                  onClick={handleSelectButtonClick}
-                />
+                <Button color="primary" label="결정하기" onClick={handleSelectButtonClick} />
               </div>
             </>
           ) : selectedComponent === "canvas" ? (
