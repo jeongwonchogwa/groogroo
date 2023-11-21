@@ -297,8 +297,8 @@ const ManagerModal = (props: Props) => {
                               <Image
                                 src="/assets/images/down.svg"
                                 alt="강등"
-                                width={20}
-                                height={20}
+                                width={25}
+                                height={25}
                                 onClick={() =>
                                   onMemberButtonClick(
                                     member.userId,
@@ -309,8 +309,8 @@ const ManagerModal = (props: Props) => {
                               <Image
                                 src="/assets/images/kick.svg"
                                 alt="추방"
-                                width={20}
-                                height={20}
+                                width={25}
+                                height={25}
                                 onClick={() =>
                                   onStateChangeButtonClick(
                                     member.userId,
@@ -326,8 +326,8 @@ const ManagerModal = (props: Props) => {
                               <Image
                                 src="/assets/images/up.svg"
                                 alt="승급"
-                                width={20}
-                                height={20}
+                                width={25}
+                                height={25}
                                 onClick={() =>
                                   onAdminButtonClick(
                                     member.userId,
@@ -338,8 +338,8 @@ const ManagerModal = (props: Props) => {
                               <Image
                                 src="/assets/images/kick.svg"
                                 alt="추방"
-                                width={20}
-                                height={20}
+                                width={25}
+                                height={25}
                                 onClick={() =>
                                   onStateChangeButtonClick(
                                     member.userId,

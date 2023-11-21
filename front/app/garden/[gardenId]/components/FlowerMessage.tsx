@@ -7,11 +7,13 @@ import { Flower } from "@/app/types";
 import { userInfoStore } from "@/stores/userInfoStore";
 import { useRouter } from "next/navigation";
 import Router from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface Props {
   game: Phaser.Game;
   gardenId: number;
+  flowerPos: Flower[];
+  onFlowerClick: (flower: Flower) => void;
   currentFlower: Flower;
   onFormCloseButtonClick: () => void;
 }
@@ -22,7 +24,7 @@ const FlowerMessage = (props: Props) => {
   const [openReport, setOpenReport] = useState<boolean>(false);
   const [clickReport, setClickReport] = useState<boolean>(false);
   const [isDeleteable, setIsDeleteable] = useState<boolean>(true);
-
+  const [content, setContent] = useState<string>("")
   useEffect(() => {
     const createTime = props.currentFlower.createTime;
     if (createTime?.includes(":")) {
@@ -57,6 +59,30 @@ const FlowerMessage = (props: Props) => {
     props.game.scene.start("flowerEditScene", {
       modifyFlower: props.currentFlower,
     });
+  };
+
+  const onNextFlowerButtonClick = () => {
+    for (let i = 0; i < props.flowerPos.length; i++) {
+      if (props.flowerPos[i].id === props.currentFlower.id) {
+        if (i < props.flowerPos.length - 1) {
+          props.onFlowerClick(props.flowerPos[i + 1]);
+        } else {
+          props.onFlowerClick(props.flowerPos[0]);
+        }
+      }
+    }
+  };
+
+  const onPrevFlowerButtonClick = () => {
+    for (let i = 0; i < props.flowerPos.length; i++) {
+      if (props.flowerPos[i].id === props.currentFlower.id) {
+        if (i > 0) {
+          props.onFlowerClick(props.flowerPos[i - 1]);
+        } else {
+          props.onFlowerClick(props.flowerPos[props.flowerPos.length-1]);
+        }
+      }
+    }
   };
 
   const onTrashButtonClick = async () => {
@@ -100,6 +126,13 @@ const FlowerMessage = (props: Props) => {
     }
   };
 
+  const formattedContent = props.currentFlower.content?.split('\n').map((line, index) => (
+    <React.Fragment key={index}>
+        {line}
+        {index < props.currentFlower.content!.split('\n').length - 1 && <br />}
+    </React.Fragment>
+));
+
   return (
     <div
       onClick={(e) => e.stopPropagation()}
@@ -115,48 +148,64 @@ const FlowerMessage = (props: Props) => {
         />
       ) : (
         <div className="flex flex-col gap-5">
-          <div className="pl-1 pr-3">
-            <div className="nes-container is-rounded bg-white w-full h-full flex flex-col !p-4">
-              <div className="w-full flex justify-between">
-                <p className="font-nexonGothic text-lg text-text-sub">
-                  {props.currentFlower.createTime}
-                </p>
-                <div className="flex flex-row">
-                  <div className="w-9 h-9 mr-2">
-                    <IconButton iconSrc="move" onClick={onModifyButtonClick} />
-                  </div>
-                  {isDeleteable ? (
+          <div className="flex items-center justify-between gap-2">
+            <div className="w-fit h-fit">
+              <IconButton iconSrc="arrow" onClick={onPrevFlowerButtonClick} />
+            </div>
+            <div className="pl-1 pr-3 w-full">
+              <div className="nes-container is-rounded bg-white w-full h-full flex flex-col !p-4">
+                <div className="w-full flex justify-between">
+                  <p className="font-nexonGothic text-lg text-text-sub">
+                    {props.currentFlower.createTime}
+                  </p>
+                  <div className="flex flex-row">
                     <div className="w-9 h-9 mr-2">
                       <IconButton
-                        iconSrc="trash"
-                        onClick={onTrashButtonClick}
+                        iconSrc="move"
+                        onClick={onModifyButtonClick}
                       />
                     </div>
-                  ) : null}
-                  <div className=" w-9 h-9">
-                    <IconButton
-                      iconSrc="siren"
-                      onClick={() => {
-                        handleReportModal();
-                      }}
-                    />
+                    {isDeleteable ? (
+                      <div className="w-9 h-9 mr-2">
+                        <IconButton
+                          iconSrc="trash"
+                          onClick={onTrashButtonClick}
+                        />
+                      </div>
+                    ) : null}
+                    <div className=" w-9 h-9">
+                      <IconButton
+                        iconSrc="siren"
+                        onClick={() => {
+                          handleReportModal();
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="w-full mt-2">
-                <span className="font-bitBit text-2xl">From. </span>
-                <span className="font-bitBit text-2xl">
-                  {props.currentFlower.writerNickName}
-                </span>
-              </div>
-              <div className="w-full mt-5 overflow-auto">
-                <span className="font-nexonGothic text-xl">
-                  {props.currentFlower.content}
-                </span>
+                <div className="w-full mt-2">
+                  <span className="font-bitBit text-2xl">From. </span>
+                  <span className="font-bitBit text-2xl">
+                    {props.currentFlower.writerNickName}
+                  </span>
+                </div>
+                <div className="w-full mt-5 overflow-auto">
+                  <span className="font-nexonGothic text-xl">
+                    {formattedContent}
+                  </span>
+                </div>
               </div>
             </div>
+
+            <div className="w-fit">
+              <IconButton
+                iconSrc="arrow"
+                rotate
+                onClick={onNextFlowerButtonClick}
+              />
+            </div>
           </div>
-          <div className="px-2">
+          <div className="pl-5 absolute bottom-10 w-[calc(100%-60px)]">
             <Button
               color="default"
               label="닫기"

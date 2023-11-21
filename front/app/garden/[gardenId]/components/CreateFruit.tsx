@@ -75,11 +75,11 @@ const CreateFruit = (props: Props) => {
 
   return (
     <div
-      className="absolute bottom-20 left-0 w-full flex flex-col"
+      className="w-full flex flex-col"
       onClick={(e) => e.stopPropagation()}
     >
       <div className="w-full flex flex-row">
-        <div className="w-full h-72 ml-3 mr-5">
+        <div className="w-full ml-3 mr-5">
           <MessageCreator
             onWriterChange={setWriter}
             onContentChange={setContent}

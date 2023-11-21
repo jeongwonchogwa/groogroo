@@ -309,8 +309,8 @@ export default class FlowerEditScene extends Scene {
       );
     } else {
       this.registButtonBox.setPosition(
-        window.innerWidth / 2 - window.innerWidth / this.cameras.main.zoom / 2,
-        window.innerHeight / 2 - 160 + 80 / this.cameras.main.zoom
+        window.innerWidth / 2 - 240,
+        window.innerHeight / 2 - window.innerHeight / this.cameras.main.zoom / 2 + 80 / this.cameras.main.zoom,
       );
     }
 

@@ -27,7 +27,7 @@ export default class GardenScene extends Scene {
   private myTree!: Tree;
   private likeCheck!: boolean;
   private likeCount!: HTMLDivElement;
-  private swipeCheck!: boolean;
+  private clickTime!: number;
   public modalCheck!: boolean;
   public bgm!:
     | Phaser.Sound.NoAudioSound
@@ -68,8 +68,8 @@ export default class GardenScene extends Scene {
   }
 
   create() {
+    console.log(this.garden);
     let bgmCheck = false;
-    this.swipeCheck = false;
     if (
       //@ts-ignore
       this.sound.sounds.map((sound) => {
@@ -233,20 +233,20 @@ export default class GardenScene extends Scene {
         .setInteractive()
         //열매 작성 폼 띄워줄거임.
         .on("pointerdown", () => {
-          this.swipeCheck = false;
+          this.clickTime = this.time.now;
         })
         .on("pointerup", () => {
           if (
             !this.modalCheck &&
             this.garden.state === "ACCEPT" &&
-            !this.swipeCheck
+            this.time.now - this.clickTime < 150
           ) {
             this.onTreeClick(tree);
             this.modalCheck = true;
           }
         });
 
-      //열매 달아주기////////////////////////////////////
+      //열매 달아주기
       const fruitArr = ["apple", "cherry", "grape", "lemon", "orange", "peach"];
       const selectedFruit = [];
 
@@ -275,7 +275,7 @@ export default class GardenScene extends Scene {
               .setDepth(7);
           } else if (i === 15) {
             this.add
-              .image(tree.x! * 16 + 10, tree.y! * 16 + 11, tmpFruit)
+              .image(tree.x! * 16 + 13, tree.y! * 16 + 11, tmpFruit)
               .setScale(0.15)
               .setOrigin(0, 0)
               .setDepth(7);
@@ -313,13 +313,13 @@ export default class GardenScene extends Scene {
           .setInteractive()
           //메세지 띄워주자
           .on("pointerdown", () => {
-            this.swipeCheck = false;
+            this.clickTime = this.time.now;
           })
           .on("pointerup", () => {
             if (
               !this.modalCheck &&
               this.garden.state === "ACCEPT" &&
-              !this.swipeCheck
+              this.time.now - this.clickTime < 150
             ) {
               this.onFlowerClick(flower);
               this.modalCheck = true;
@@ -359,7 +359,6 @@ export default class GardenScene extends Scene {
     });
     // 마우스 드래그 또는 터치 스와이프 시 스크롤 위치 조정
     this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
-      this.swipeCheck = true;
       if (pointer.isDown) {
         const dx = (this.startX - pointer.x) / this.cameras.main.zoom;
         const dy = (this.startY - pointer.y) / this.cameras.main.zoom;
@@ -400,11 +399,14 @@ export default class GardenScene extends Scene {
     titleBox.style.width = "fit-content";
     titleBox.style.height = "fit-content";
     titleBox.className =
-      "text-black font-bitBit flex-col justify-center items-center border-[15px]";
-
+      "text-black font-bitBit flex-col justify-center items-center border-[15px] ";
+    titleBox.addEventListener("click", () => {
+      console.log("타이틀클릭");
+      this.scene.restart();
+    });
     let titleText = document.createElement("div");
     titleText.className =
-      "flex flex-col bg-white w-full font-bitBit text-[18px] text-center px-3";
+      "flex flex-col bg-white w-full font-bitBit text-[16px] text-center pr-1";
     titleText.appendChild(document.createTextNode(this.garden.name));
 
     titleBox.appendChild(titleText);

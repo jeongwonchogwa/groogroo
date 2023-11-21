@@ -65,7 +65,7 @@ const GardenPhaser = (props: Props) => {
     setShowFlowerMessage(false);
     setStopBubbling(false);
     //@ts-ignore
-    game!.scene.getScene("gardenScene").modalCheck = false;
+    game.scene.getScene("gardenScene").modalCheck = false;
   };
 
   const onTreeClick = (tree: Tree) => {
@@ -223,17 +223,19 @@ const GardenPhaser = (props: Props) => {
 
           {showFlowerMessage ? (
             <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]">
-              <div className="flex flex-col items-center justify-center gap-10 pt-40">
+              <div className="flex flex-col items-center justify-center gap-10 w-full h-full">
                 <Image
                   alt="currentFlower"
                   src={currentFlower.imageUrl}
-                  width={250}
-                  height={250}
+                  height={window.innerHeight / 4}
+                  width={window.innerHeight / 4}
                 ></Image>
                 <FlowerMessage
                   game={game!}
                   gardenId={garden.gardenInfo.gardenId}
+                  flowerPos={garden.gardenInfo.flowerPos}
                   currentFlower={currentFlower}
+                  onFlowerClick={onFlowerClick}
                   onFormCloseButtonClick={onFormCloseButtonClick}
                 />
               </div>
@@ -270,12 +272,12 @@ const GardenPhaser = (props: Props) => {
 
           {flowerMessageEdit ? (
             <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]">
-              <div className="flex flex-col items-center justify-center gap-10 pt-40">
+              <div className="w-full h-full flex flex-col items-center justify-center gap-5">
                 <Image
                   alt="currentFlower"
                   src={currentFlower.imageUrl}
-                  width={250}
-                  height={250}
+                  width={window.innerHeight / 4}
+                  height={window.innerHeight / 4}
                 ></Image>
                 <CreateFlower
                   // updateGarden={updateGarden}
@@ -288,29 +290,31 @@ const GardenPhaser = (props: Props) => {
             </div>
           ) : null}
           {fruitMessageEdit ? (
-            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[50]">
-              <div className="flex flex-col items-center justify-center gap-2 pt-20">
-                <PixelCard
-                  content={
-                    <div className="bg-white font-bitBit py-2 px-3 text-xl">
-                      {currnetTree.name}
-                    </div>
-                  }
-                ></PixelCard>
-                <Image
-                  alt="currentTree"
-                  src={currnetTree.imageUrl}
-                  width={250}
-                  height={250}
-                ></Image>
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]">
+              <div className="w-full h-full flex flex-col items-center justify-center gap-5">
+                <div className="flex flex-col items-center justify-center gap-2">
+                  <PixelCard
+                    content={
+                      <div className="bg-white font-bitBit py-1 px-3 text-xl">
+                        {currnetTree.name}
+                      </div>
+                    }
+                  ></PixelCard>
+                  <Image
+                    alt="currentTree"
+                    src={currnetTree.imageUrl}
+                    width={window.innerHeight / 4}
+                    height={window.innerHeight / 4}
+                  ></Image>
+                </div>
+                <CreateFruit
+                  onFormCloseButtonClick={onFormCloseButtonClick}
+                  // updateGarden={updateGarden}
+                  currentTree={currnetTree}
+                  gardenId={garden.gardenInfo.gardenId}
+                  game={game!}
+                />
               </div>
-              <CreateFruit
-                onFormCloseButtonClick={onFormCloseButtonClick}
-                // updateGarden={updateGarden}
-                currentTree={currnetTree}
-                gardenId={garden.gardenInfo.gardenId}
-                game={game!}
-              />
             </div>
           ) : null}
         </div>

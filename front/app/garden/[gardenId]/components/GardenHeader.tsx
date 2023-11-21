@@ -196,19 +196,33 @@ const GardenHeader = (props: Props) => {
       className="absolute top-5 px-5 flex gap-5 font-bitBit justify-between"
       style={{ width: `${uiWidth}` }}
     >
-      <div className="h-10 w-10 z-20">
-        <IconButton
-          iconSrc="close"
-          onClick={() => {
-            props.game?.destroy(true, false);
-            queryClient.removeQueries({ queryKey: ["getGardenInfo"] });
+      <div className="flex gap-3">
+        <div className="h-10 w-10 z-20">
+          <IconButton
+            iconSrc="close"
+            onClick={() => {
+              props.game?.destroy(true, false);
+              queryClient.removeQueries({ queryKey: ["getGardenInfo"] });
 
-            router.push("../gardens");
-          }}
-        />
+              router.push("../gardens");
+            }}
+          />
+        </div>
+        <div className="h-10 w-10 z-20">
+          <IconButton
+            iconSrc="flower"
+            onClick={() => {
+              if(props.game?.sound.mute){
+              props.game!.sound.mute = false;
+            }else{
+              props.game!.sound.mute = true;
+            }
+
+            }}
+          />
+        </div>
       </div>
-
-      <div className="flex gap-5">
+      <div className="flex gap-3">
         <div className="flex flex-col gap-2 h-10 w-10">
           <IconButton iconSrc="bell" onClick={onAlarmButtonClick} />
           {openAlarm && props.game ? <Alarm game={props.game} /> : null}

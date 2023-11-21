@@ -207,7 +207,8 @@ export default class TreeEditScene extends Scene {
 
     //버튼 임포트해와서 DOM 요소로 렌더링하기.
 
-    const onCancelButtonClick = () => {
+    const oncancleButtonClick = () => {
+      this.selectedTreeUrl = undefined;
       this.scene.stop("treeEditScene");
       this.scene.start("gardenScene");
     };
@@ -335,10 +336,10 @@ export default class TreeEditScene extends Scene {
     };
 
     //수정, 등록 버튼 추가///////////////////////////////////////////////
-    let cancelButton = Button({
+    let cancleButton = Button({
       color: "default",
       label: "취소하기",
-      onClick: onCancelButtonClick,
+      onClick: oncancleButtonClick,
     });
     let registButton = Button({
       color: "secondary",
@@ -351,23 +352,23 @@ export default class TreeEditScene extends Scene {
       label: "수정하기",
       onClick: onModifyButtonClick,
     });
-    const DOMCancelButton = document.createElement("div");
+    const DOMcancleButton = document.createElement("div");
     const DOMRegistButton = document.createElement("div");
 
-    ReactDOM.createRoot(DOMCancelButton).render(cancelButton);
+    ReactDOM.createRoot(DOMcancleButton).render(cancleButton);
     if (this.selectedTreeUrl) {
       ReactDOM.createRoot(DOMRegistButton).render(registButton);
     } else {
       ReactDOM.createRoot(DOMRegistButton).render(modifyButton);
     }
 
-    DOMCancelButton.style.width = window.innerWidth / 2 - 40 + "px";
-    DOMCancelButton.style.height = "60px";
+    DOMcancleButton.style.width = window.innerWidth / 2 - 40 + "px";
+    DOMcancleButton.style.height = "60px";
 
     DOMRegistButton.style.width = window.innerWidth / 2 - 40 + "px";
     DOMRegistButton.style.height = "60px";
 
-    this.registButtonBox.node.appendChild(DOMCancelButton);
+    this.registButtonBox.node.appendChild(DOMcancleButton);
     this.registButtonBox.node.appendChild(DOMRegistButton);
     this.registButtonBox.setOrigin(0, 0).setScrollFactor(0, 0);
 
@@ -378,8 +379,8 @@ export default class TreeEditScene extends Scene {
       );
     } else {
       this.registButtonBox.setPosition(
-        window.innerWidth / 2 - window.innerWidth / this.cameras.main.zoom / 2,
-        window.innerHeight / 2 - 160 + 80 / this.cameras.main.zoom
+        window.innerWidth / 2 - 240,
+        window.innerHeight / 2 - window.innerHeight / this.cameras.main.zoom / 2 + 80 / this.cameras.main.zoom,
       );
     }
 
