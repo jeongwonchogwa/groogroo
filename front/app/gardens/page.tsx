@@ -289,22 +289,22 @@ const GardenComponent = () => {
               <Image alt="로딩중" src={LoadingGif} width={100} height={60} />
             </div>
           )}
-          {!loading && noMoreData && gardenList.length === 0 && (
-            <div className="h-full w-full flex flex-col justify-center">
-              <div className="flex justify-center">
-                <Image
-                  alt="no_data"
-                  src="/assets/images/no_data.svg"
-                  width={150}
-                  height={350}
-                />
-              </div>
-              <p className="w-full flex justify-center mt-3 font-neoDunggeunmo_Pro text-2xl text-white">
-                정원 정보가 없습니다!
-              </p>
-            </div>
-          )}
         </div>
+        {!loading && noMoreData && gardenList.length === 0 && (
+          <div className="h-full w-full flex flex-col justify-center">
+            <div className="flex justify-center">
+              <Image
+                alt="no_data"
+                src="/assets/images/no_data.svg"
+                width={150}
+                height={350}
+              />
+            </div>
+            <p className="w-full flex justify-center mt-3 font-neoDunggeunmo_Pro text-2xl text-white">
+              정원 정보가 없습니다!
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
