@@ -33,8 +33,8 @@ public class RedisExpirationListener implements MessageListener {
 
             String[] tokens = gardenLikeId.split("/");
 
-            log.info("user id : " + tokens[0]);
-            log.info("garden id : " + tokens[1]);
+//            log.info("user id : " + tokens[0]);
+//            log.info("garden id : " + tokens[1]);
 
             if (!mySQLGardenLikeRepository.existsByUserIdAndGardenId(Long.parseLong(tokens[0]), Long.parseLong(tokens[1]))){
                 // GardenLike 엔티티를 MySQL로 백업
@@ -43,13 +43,14 @@ public class RedisExpirationListener implements MessageListener {
                         .gardenId(Long.parseLong(tokens[1]))
                         .build();
 
-                log.info("Garden Like update to MySQL : User {} like Garden {}", mysqlEntity.getUserId(), mysqlEntity.getGardenId());
+//                log.info("Garden Like update to MySQL : User {} like Garden {}", mysqlEntity.getUserId(), mysqlEntity.getGardenId());
                 mySQLGardenLikeRepository.save(mysqlEntity);
-            }else {
-                log.info("Garden Like info already exists in MySQL : User {} like Garden {}", tokens[0], tokens[1]);
             }
+//            else {
+//                log.info("Garden Like info already exists in MySQL : User {} like Garden {}", tokens[0], tokens[1]);
+//            }
 
-            log.info("GardenLike with ID '{}' has expired at {}", gardenLikeId, LocalDateTime.now());
+//            log.info("GardenLike with ID '{}' has expired at {}", gardenLikeId, LocalDateTime.now());
         }
 
     }
