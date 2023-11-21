@@ -43,6 +43,9 @@ public class NotificationController {
     @Operation(summary = "알림 구독", description = "로그인 상태의 유저가 알림을 구독하는 API")
     @GetMapping(value = "/subscribe/{userId}", produces = "text/event-stream")
     public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId, @PathVariable long userId) {
+
+        log.info("Notification Controller - 알림 구독");
+
         return notificationService.subscribe(userId, lastEventId);
     }
 
