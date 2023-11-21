@@ -12,7 +12,11 @@ import useUserToken from "@/app/hooks/useUserToken";
 import useSearchTree from "@/app/hooks/useSearchTree";
 import { fetchWithTokenCheck } from "@/app/components/FetchWithTokenCheck";
 
-const SearchTreeFruitsPage = ({ params }: { params: { searchTreeId: number } }) => {
+const SearchTreeFruitsPage = ({
+  params,
+}: {
+  params: { searchTreeId: number };
+}) => {
   const userToken = useUserToken();
   const { treeId, loading, error } = useSearchTree(userToken);
 
@@ -43,7 +47,10 @@ const SearchTreeFruitsPage = ({ params }: { params: { searchTreeId: number } }) 
       console.log(error);
     }
   };
-  const { data, isLoading, isError } = useQuery(["searchResultData"], fetchSearch);
+  const { data, isLoading, isError } = useQuery(
+    ["searchResultData"],
+    fetchSearch
+  );
   if (isLoading) {
     return <Loading />;
   }
@@ -59,7 +66,7 @@ const SearchTreeFruitsPage = ({ params }: { params: { searchTreeId: number } }) 
         />
       </div>
       <div className="mx-4 my-4">
-        <SearchFruitMessageContainer data={data.fruits} />
+        <SearchFruitMessageContainer searchTreeId={params.searchTreeId} />
       </div>
     </div>
   );
