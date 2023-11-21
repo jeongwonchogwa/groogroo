@@ -1,6 +1,5 @@
 "use client";
 
-// 너무 거지 같이 만들었어요 미안해요 쓰는 사람 저에게 알려주세요....
 import IconButton from "./IconButton";
 import { Fruit } from "../types";
 import ReportModal from "./ReportModal";
@@ -71,9 +70,12 @@ const MessageContainer = ({
           </span>
         </div>
       </div>
-      {/* 삭제하기 눌렀을때 나오는 모달 */}
       {openDelete && (
-        <DeleteModal id={data.id} handleDeleteModal={handleDeleteModal} />
+        <DeleteModal
+          id={data.id}
+          handleDeleteModal={handleDeleteModal}
+          isSearch={isSearch}
+        />
       )}
       {openReport && dataType === "FRUIT" ? (
         <ReportModal

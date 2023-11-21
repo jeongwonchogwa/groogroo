@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 interface Props {
   handleDeleteModal: () => void;
   id: number;
+  isSearch?: boolean;
 }
 
 const DeleteModal = (props: Props) => {
@@ -31,13 +32,21 @@ const DeleteModal = (props: Props) => {
     },
     {
       onSuccess: (id) => {
-        // 성공 후 캐시 업데이트
-        queryClient.setQueryData(["userTree"], (oldData: any) => {
-          return {
-            ...oldData,
-            fruits: oldData?.fruits?.filter((fruit: any) => fruit.id !== id),
-          };
-        });
+        if (props.isSearch) {
+          queryClient.setQueryData(["searchResultData"], (oldData: any) => {
+            return {
+              ...oldData,
+              fruits: oldData?.fruits?.filter((fruit: any) => fruit.id !== id),
+            };
+          });
+        } else {
+          queryClient.setQueryData(["userTree"], (oldData: any) => {
+            return {
+              ...oldData,
+              fruits: oldData?.fruits?.filter((fruit: any) => fruit.id !== id),
+            };
+          });
+        }
       },
     }
   );
