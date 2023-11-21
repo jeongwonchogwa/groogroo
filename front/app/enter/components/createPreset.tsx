@@ -50,7 +50,6 @@ const CreatePreset = () => {
   };
 
   const handleReCreate = () => {
-    console.log("눌렸니?");
     setIsGenerated(false);
   };
 
@@ -879,7 +878,8 @@ const CreatePreset = () => {
         }
 
         // redirectCheck();
-        redirectHome();
+        // redirectHome();
+        router.push("/home/update?type=preset");
       } else {
         // 처리 실패
         alert("생성한 이미지를 서버에 저장하는 데 실패했습니다.");

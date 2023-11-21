@@ -18,10 +18,10 @@ const UpdateContainer = ({ userTree, data, width }: UpdateContainerProps) => {
   const type = params.get("type");
 
   return (
-    <div className="absolute bottom-0 flex" style={{ width: width - 30 }}>
+    <div className="absolute bottom-0">
       <PixelCard
         content={
-          <div className="bg-white" style={{ width: width - 30 }}>
+          <div className="bg-white" style={{ minWidth: "320px", maxWidth: "420px", width: width - 30 }}>
             {/* 프리셋 */}
             {type === "preset" && userTree ? (
               <UpdatePreset userTree={userTree} data={data} />

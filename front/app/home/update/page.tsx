@@ -101,9 +101,7 @@ const UpdatePage = () => {
             />
           )}
         </div>
-        <div className="w-full h-[60px]">
-          {treeData && <UpdateContainer userTree={treeData} data={presetData[currentIndex]} width={width} />}
-        </div>
+        {treeData && <UpdateContainer userTree={treeData} data={presetData[currentIndex]} width={width} />}
       </div>
     </div>
   );
