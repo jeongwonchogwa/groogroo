@@ -26,11 +26,19 @@ const GardenHeader = (props: Props) => {
   const [menuList, setMenuList] = useState<MenuButton[]>([]);
 
   const onMenuButtonClick = () => {
+    //@ts-ignore
+    props.game.scene.getScene("gardenScene").modalCheck =
+      //@ts-ignore
+      !props.game.scene.getScene("gardenScene").modalCheck;
     setOpenMenu(!openMenu);
     setOpenAlarm(false);
   };
 
   const onAlarmButtonClick = () => {
+    //@ts-ignore
+    props.game.scene.getScene("gardenScene").modalCheck =
+      //@ts-ignore
+      !props.game.scene.getScene("gardenScene").modalCheck;
     setOpenAlarm(!openAlarm);
     setOpenMenu(false);
   };
@@ -84,12 +92,12 @@ const GardenHeader = (props: Props) => {
 
   const kakaoInvite = () => {
     const { Kakao, location } = window;
-  
+
     Kakao.Share.sendCustom({
       templateId: 100953,
       templateArgs: { garden_name: `${props.garden.name}` },
     });
-     
+
     // const { Kakao, location } = window;
     // Kakao.Share.sendDefault({
     //   objectType: "feed",
@@ -157,7 +165,6 @@ const GardenHeader = (props: Props) => {
             },
           },
         ]);
-        
       }
     } else if (props.garden.state === "WAIT") {
       setMenuList([
@@ -165,7 +172,7 @@ const GardenHeader = (props: Props) => {
       ]);
     } else if (props.state === "KICK") {
       setMenuList([{ name: "추방당하셨습니다.", clickEvent: () => {} }]);
-    } else if(props.garden.capacity > props.garden.memberCnt!){
+    } else if (props.garden.capacity > props.garden.memberCnt!) {
       setMenuList([
         {
           name: "참여신청",
@@ -174,12 +181,11 @@ const GardenHeader = (props: Props) => {
           },
         },
       ]);
-    } else if(props.garden.capacity <= props.garden.memberCnt!){
+    } else if (props.garden.capacity <= props.garden.memberCnt!) {
       setMenuList([
         {
           name: "정원이 모두 차 가입할 수 없습니다.",
-          clickEvent: () => {
-          },
+          clickEvent: () => {},
         },
       ]);
     }
@@ -194,9 +200,9 @@ const GardenHeader = (props: Props) => {
         <IconButton
           iconSrc="close"
           onClick={() => {
-            props.game?.destroy(true,false)
+            props.game?.destroy(true, false);
             queryClient.removeQueries({ queryKey: ["getGardenInfo"] });
-            
+
             router.push("../gardens");
           }}
         />
@@ -205,7 +211,7 @@ const GardenHeader = (props: Props) => {
       <div className="flex gap-5">
         <div className="flex flex-col gap-2 h-10 w-10">
           <IconButton iconSrc="bell" onClick={onAlarmButtonClick} />
-          {openAlarm && props.game ? <Alarm game={props.game}/> : null}
+          {openAlarm && props.game ? <Alarm game={props.game} /> : null}
         </div>
         {openAlarm ? null : (
           <div className="flex flex-col gap-2 h-10 w-10 items-end z-40">

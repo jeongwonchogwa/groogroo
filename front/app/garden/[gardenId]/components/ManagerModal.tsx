@@ -28,8 +28,6 @@ const ManagerModal = (props: Props) => {
     yesMessage: string;
   }>();
 
-  const onProcessComplete = () => {};
-
   const onStateChangeButtonClick = (
     id: number,
     name: string,
@@ -95,6 +93,22 @@ const ManagerModal = (props: Props) => {
     setOpenYesNoModal(true);
   };
 
+  const onMemberButtonClick = (id: number, name: string) => {
+    setYesNoModalContent({
+      noFunction: () => {
+        setOpenYesNoModal(false);
+      },
+      yesFunction: () => {
+        fetchMember(id);
+        setOpenYesNoModal(false);
+      },
+      question: `${name}님을 일반멤버로 지정하시겠습니까?`,
+      title: "관리자 해제",
+      yesMessage: "확인",
+    });
+    setOpenYesNoModal(true);
+  };
+
   const fetchMemberList = async () => {
     try {
       const res = await fetchWithTokenCheck(
@@ -127,6 +141,34 @@ const ManagerModal = (props: Props) => {
             targetId: userId,
             gardenId: props.garden.gardenId,
             role: "ADMIN",
+          }),
+        },
+        router
+      );
+      const data = await res.json();
+      if (data.httpStatus === "success") {
+        queryClient.invalidateQueries({ queryKey: ["getMemberListInfo"] });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchMember = async (userId: number) => {
+    try {
+      const res = await fetchWithTokenCheck(
+        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/master`,
+
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            targetId: userId,
+            gardenId: props.garden.gardenId,
+            role: "MEMBER",
           }),
         },
         router
@@ -237,16 +279,53 @@ const ManagerModal = (props: Props) => {
                       <div key={member.userId} className="w-[320px] py-3">
                         <div className="flex justify-between text-2xl gap-10 font-nexonGothic_Medium px-2">
                           <div className="flex gap-2">
-                            {member.gardenRole !== "MEMBER" ? (
-                              <div className="flex items-center text-primary text-sm">{member.gardenRole}</div>
+                            {member.gardenRole === "MASTER" ? (
+                              <div className="flex items-center text-primary text-sm font-bitBit">
+                                M
+                              </div>
+                            ) : null}
+                            {member.gardenRole === "ADMIN" ? (
+                              <div className="flex items-center text-error text-sm font-bitBit">
+                                A
+                              </div>
                             ) : null}
                             {member.treeName}
                           </div>
-                          {member.gardenRole === "MEMBER" ?  (
+                          {member.gardenRole === "ADMIN" &&
+                          props.garden.gardenRole === "MASTER" ? (
+                            <div className="flex gap-5">
+                              <Image
+                                src="/assets/images/down.svg"
+                                alt="강등"
+                                width={20}
+                                height={20}
+                                onClick={() =>
+                                  onMemberButtonClick(
+                                    member.userId,
+                                    member.treeName
+                                  )
+                                }
+                              />
+                              <Image
+                                src="/assets/images/kick.svg"
+                                alt="추방"
+                                width={20}
+                                height={20}
+                                onClick={() =>
+                                  onStateChangeButtonClick(
+                                    member.userId,
+                                    member.treeName,
+                                    "KICK"
+                                  )
+                                }
+                              />
+                            </div>
+                          ) : null}
+                          {member.gardenRole === "MEMBER" ? (
                             <div className="flex gap-5">
                               <Image
                                 src="/assets/images/up.svg"
-                                alt="관리자"
+                                alt="승급"
                                 width={20}
                                 height={20}
                                 onClick={() =>
@@ -270,7 +349,7 @@ const ManagerModal = (props: Props) => {
                                 }
                               />
                             </div>
-                          ):null}
+                          ) : null}
                         </div>
                       </div>
                     );

@@ -17,16 +17,16 @@ export default class Preloader extends Scene {
     //맵 불러오기
     this.load.tilemapTiledJSON(
       "mainMap",
-      "/assets/map" + this.garden.mapType + ".json"
+      "/assets/maps/map" + this.garden.mapType + ".json"
     );
 
     //사용하는 타일맵. 한종류밖에 없음.
-    this.load.image("tileset", "/assets/tileset.png");
+    this.load.image("tileset", "/assets/maps/tileset.png");
     this.load.image(
       "tileset_basic_terrain",
-      "/assets/tileset_basic_terrain.png"
+      "/assets/maps/tileset_basic_terrain.png"
     );
-    
+
     //사용할 브금
     this.load.audio("backgroundMusic1", "/assets/music/왕궁의 정원사.mp3");
     this.load.audio("backgroundMusic2", "/assets/music/인형들의 행진.mp3");

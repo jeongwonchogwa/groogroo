@@ -23,7 +23,7 @@ export default class TreeEditScene extends Scene {
   private rightKey!: HTMLButtonElement;
   private upKey!: HTMLButtonElement;
   private downKey!: HTMLButtonElement;
-  private selectedTreeUrl!: string;
+  private selectedTreeUrl?: string;
   private modifyTreeId!: string;
   private modifyTreeGardenId?: number;
   private garden: Garden;
@@ -171,13 +171,13 @@ export default class TreeEditScene extends Scene {
 
     this.changeTree = (modifyTreeUrl: string) => {
       const imageStyle = {
-        width :"128px",
-        height : "128px"
-      }
-      const image = document.createElement("img")
-      image.style.width = "128px"
-      image.style.height = "128px"
-      image.src = modifyTreeUrl
+        width: "128px",
+        height: "128px",
+      };
+      const image = document.createElement("img");
+      image.style.width = "128px";
+      image.style.height = "128px";
+      image.src = modifyTreeUrl;
       this.textures.addImage("modifyImage", image);
       this.changeCheck = false;
     };
@@ -237,6 +237,10 @@ export default class TreeEditScene extends Scene {
             }
           );
           const Data = await res.json();
+
+          if (Data.httpStatus === "success") {
+            this.selectedTreeUrl = undefined;
+          }
 
           try {
             const res = await fetch(
@@ -484,8 +488,10 @@ export default class TreeEditScene extends Scene {
   }
 
   update() {
-
-    if (this.textures.get("modifyImage").key === "modifyImage" && !this.changeCheck) {
+    if (
+      this.textures.get("modifyImage").key === "modifyImage" &&
+      !this.changeCheck
+    ) {
       if (this.selectedTreeUrl) {
         this.assetSprite.setTexture("modifyImage");
         this.changeCheck = true;
@@ -495,9 +501,9 @@ export default class TreeEditScene extends Scene {
             tree.sprite.setTexture("modifyImage");
             this.changeCheck = true;
           }
-        })
+        });
       }
-    }else{
+    } else {
     }
 
     //에셋 배치시 나무, 꽃 테두리 보여주기.////////////////////////////////

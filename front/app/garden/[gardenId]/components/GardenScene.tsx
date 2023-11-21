@@ -27,6 +27,7 @@ export default class GardenScene extends Scene {
   private myTree!: Tree;
   private likeCheck!: boolean;
   private likeCount!: HTMLDivElement;
+  private swipeCheck!: boolean;
   public modalCheck!: boolean;
   public bgm!:
     | Phaser.Sound.NoAudioSound
@@ -67,10 +68,11 @@ export default class GardenScene extends Scene {
   }
 
   create() {
-
     let bgmCheck = false;
-    //@ts-ignore
-    if (this.sound.sounds.map((sound) => {
+    this.swipeCheck = false;
+    if (
+      //@ts-ignore
+      this.sound.sounds.map((sound) => {
         if (sound.isPlaying) {
           bgmCheck = true;
         }
@@ -198,6 +200,7 @@ export default class GardenScene extends Scene {
             }
           );
           const data = await res.json();
+          console.log(data);
           if (data.httpStatus === "success") {
             this.heartButton.src = "/assets/images/heart_fill.svg";
             this.likeCheck = true;
@@ -229,8 +232,15 @@ export default class GardenScene extends Scene {
         .setScale(0.25)
         .setInteractive()
         //열매 작성 폼 띄워줄거임.
+        .on("pointerdown", () => {
+          this.swipeCheck = false;
+        })
         .on("pointerup", () => {
-          if (!this.modalCheck && this.garden.state === "ACCEPT") {
+          if (
+            !this.modalCheck &&
+            this.garden.state === "ACCEPT" &&
+            !this.swipeCheck
+          ) {
             this.onTreeClick(tree);
             this.modalCheck = true;
           }
@@ -247,28 +257,34 @@ export default class GardenScene extends Scene {
 
           if (i === 0) {
             this.add
-              .image(tree.x! * 16 + 13, tree.y! * 16 + 2, tmpFruit)
-              .setScale(0.2)
+              .image(tree.x! * 16 + 10, tree.y! * 16 + 4, tmpFruit)
+              .setScale(0.15)
               .setOrigin(0, 0)
-              .setDepth(4);
+              .setDepth(7);
           } else if (i === 5) {
             this.add
-              .image(tree.x! * 16 + 3, tree.y! * 16 + 8, tmpFruit)
-              .setScale(0.2)
+              .image(tree.x! * 16 + 17, tree.y! * 16 + 5, tmpFruit)
+              .setScale(0.15)
               .setOrigin(0, 0)
-              .setDepth(4);
+              .setDepth(7);
           } else if (i === 10) {
             this.add
-              .image(tree.x! * 16 + 14, tree.y! * 16 + 12, tmpFruit)
-              .setScale(0.2)
+              .image(tree.x! * 16 + 6, tree.y! * 16 + 12, tmpFruit)
+              .setScale(0.15)
               .setOrigin(0, 0)
-              .setDepth(4);
+              .setDepth(7);
           } else if (i === 15) {
             this.add
-              .image(tree.x! * 16 + 23, tree.y! * 16 + 8, tmpFruit)
-              .setScale(0.2)
+              .image(tree.x! * 16 + 10, tree.y! * 16 + 11, tmpFruit)
+              .setScale(0.15)
               .setOrigin(0, 0)
-              .setDepth(4);
+              .setDepth(7);
+          } else if (i === 20) {
+            this.add
+              .image(tree.x! * 16 + 23, tree.y! * 16 + 13, tmpFruit)
+              .setScale(0.15)
+              .setOrigin(0, 0)
+              .setDepth(7);
           }
         }
       }
@@ -296,8 +312,15 @@ export default class GardenScene extends Scene {
           .setOrigin(0, 0)
           .setInteractive()
           //메세지 띄워주자
+          .on("pointerdown", () => {
+            this.swipeCheck = false;
+          })
           .on("pointerup", () => {
-            if (!this.modalCheck && this.garden.state === "ACCEPT") {
+            if (
+              !this.modalCheck &&
+              this.garden.state === "ACCEPT" &&
+              !this.swipeCheck
+            ) {
               this.onFlowerClick(flower);
               this.modalCheck = true;
             }
@@ -316,7 +339,6 @@ export default class GardenScene extends Scene {
 
     // 맵 screen 사이즈에 맞춰서 zoom수치 설정. 너비/높이 중 더 큰 사이즈에 맞춰서.
     if (window.innerHeight >= window.innerWidth) {
-      
       this.cameras.main.setZoom(window.innerHeight / 320);
     } else {
       this.cameras.main.setZoom(window.innerWidth / 480);
@@ -337,6 +359,7 @@ export default class GardenScene extends Scene {
     });
     // 마우스 드래그 또는 터치 스와이프 시 스크롤 위치 조정
     this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
+      this.swipeCheck = true;
       if (pointer.isDown) {
         const dx = (this.startX - pointer.x) / this.cameras.main.zoom;
         const dy = (this.startY - pointer.y) / this.cameras.main.zoom;
@@ -470,7 +493,7 @@ export default class GardenScene extends Scene {
           "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
         tmpTextBox.appendChild(document.createTextNode(tree.id));
         tmpTextBox.addEventListener("click", () => {
-          this.modalCheck = false
+          this.modalCheck = false;
           treeModalBox.style.display = "none";
           if (
             (window.innerWidth / 2 >
@@ -512,7 +535,6 @@ export default class GardenScene extends Scene {
           const nameText = document.createTextNode(tree.id);
           nameTextBox.appendChild(nameText);
           nameTagBox.node.appendChild(nameTextBox);
-          
 
           this.time.addEvent({
             delay: 4000,
@@ -591,8 +613,10 @@ export default class GardenScene extends Scene {
     registMenuSet.appendChild(registModalBox);
     const onPlusButtonClick = () => {
       if (registModalBox.style.display === "flex") {
+        this.modalCheck = false;
         registModalBox.style.display = "none";
       } else {
+        this.modalCheck = true;
         registModalBox.style.display = "flex";
         treeModalBox.style.display = "none";
       }
