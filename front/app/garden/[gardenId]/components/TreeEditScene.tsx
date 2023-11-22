@@ -324,7 +324,7 @@ export default class TreeEditScene extends Scene {
             }
           );
           const Data = await res.json();
-          console.log(Data);
+
           try {
             const res = await fetch(
               `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${this.garden.gardenId}`,
@@ -337,6 +337,7 @@ export default class TreeEditScene extends Scene {
               }
             );
             const gardenData = await res.json();
+
             //@ts-ignore
             this.game.scene.getScene("preloader").garden =
               gardenData.gardenInfo;
@@ -348,6 +349,7 @@ export default class TreeEditScene extends Scene {
               gardenData.gardenInfo;
             this.scene.stop("treeEditScene");
             this.scene.start("preloader");
+            window.location.reload();
           } catch (err) {
             console.log(err);
           }

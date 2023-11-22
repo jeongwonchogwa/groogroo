@@ -28,6 +28,7 @@ export default class GardenScene extends Scene {
   private likeCheck!: boolean;
   private likeCount!: HTMLDivElement;
   private clickTime!: number;
+  public trees!: Character[];
   public modalCheck!: boolean;
   public bgm!:
     | Phaser.Sound.NoAudioSound
@@ -56,7 +57,7 @@ export default class GardenScene extends Scene {
 
     if (this.garden.mapType === 1) {
       this.bgm = this.sound.add("backgroundMusic1", {
-        volume: 0.05,
+        volume: 0.08,
         loop: true,
       });
     } else if (this.garden.mapType === 2) {
@@ -68,7 +69,6 @@ export default class GardenScene extends Scene {
   }
 
   create() {
-    console.log(this.garden);
     let bgmCheck = false;
     if (
       //@ts-ignore
@@ -224,8 +224,10 @@ export default class GardenScene extends Scene {
     });
 
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
-    const trees: Character[] = [];
+    this.trees = [];
     this.garden.treePos?.forEach((tree) => {
+      console.log("가든씬 treecharacter 생성중", tree.name);
+
       const initialSprite = this.physics.add
         .sprite(0, 0, tree.name)
         .setDepth(3)
@@ -343,7 +345,7 @@ export default class GardenScene extends Scene {
         }
       }
 
-      trees.push({
+      this.trees.push({
         id: tree.name,
         sprite: initialSprite,
         startPosition: { x: tree.x!, y: tree.y! },
@@ -455,7 +457,6 @@ export default class GardenScene extends Scene {
     titleBox.className =
       "text-black font-bitBit flex-col justify-center items-center border-[15px] ";
     titleBox.addEventListener("click", () => {
-      console.log("타이틀클릭");
       this.scene.restart();
     });
     let titleText = document.createElement("div");
@@ -542,8 +543,8 @@ export default class GardenScene extends Scene {
     });
 
     //심겨져있는 나무 확인 목록 생성. 이벤트 등록
-    if (trees.length > 0) {
-      trees.forEach((tree) => {
+    if (this.trees.length > 0) {
+      this.trees.forEach((tree) => {
         let tmpTextBox = document.createElement("div");
         tmpTextBox.className =
           "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
@@ -716,7 +717,7 @@ export default class GardenScene extends Scene {
     //그리드엔진 설정///////////////////////////////////////////////////
     const gridEngineConfig = {
       snapToCell: true,
-      characters: trees.concat(flowers),
+      characters: this.trees.concat(flowers),
     };
     // @ts-ignore
     this.sys.animatedTiles.init(map); //타일 애니메이션 실행.
