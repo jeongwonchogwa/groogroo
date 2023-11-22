@@ -56,12 +56,12 @@ export default class GardenScene extends Scene {
 
     if (this.garden.mapType === 1) {
       this.bgm = this.sound.add("backgroundMusic1", {
-        volume: 0.3,
+        volume: 0.2,
         loop: true,
       });
     } else if (this.garden.mapType === 2) {
       this.bgm = this.sound.add("backgroundMusic2", {
-        volume: 0.3,
+        volume: 0.2,
         loop: true,
       });
     }

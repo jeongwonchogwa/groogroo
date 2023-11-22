@@ -26,6 +26,8 @@ export default class TreeEditScene extends Scene {
   private selectedTreeUrl?: string;
   private modifyTreeId!: string;
   private modifyTreeGardenId?: number;
+  private tmpTime?: string;
+  private modifyTreeUrl?: string;
   private garden: Garden;
   private selectedTreeHandle!: string;
   private currentTime!: string;
@@ -150,8 +152,6 @@ export default class TreeEditScene extends Scene {
         if (tree.name === this.modifyTreeId) this.modifyTreeGardenId = tree.id;
       });
 
-      this.modifyTreeId = this.modifyTreeId;
-
       this.trees.forEach((tree) => {
         if (tree.id === this.modifyTreeId) {
           tree.tileHeight = 0;
@@ -170,16 +170,29 @@ export default class TreeEditScene extends Scene {
     this.moveCheck = false;
 
     this.changeTree = (modifyTreeUrl: string) => {
-      const imageStyle = {
-        width: "128px",
-        height: "128px",
+      this.changeCheck = true;
+      this.tmpTime = "?timestamp=" + new Date().getTime();
+      this.modifyTreeUrl = modifyTreeUrl;
+
+      const image = new Image();
+      image.src = modifyTreeUrl + this.tmpTime;
+      image.crossOrigin = "anonymous";
+      image.onload = () => {
+        this.textures.addSpriteSheet("modifyImage" + this.tmpTime, image, {
+          frameWidth: 128,
+          frameHeight: 128,
+        });
+
+        if (this.selectedTreeUrl) {
+          this.assetSprite.setTexture("modifyImage" + this.tmpTime);
+        } else {
+          this.trees.forEach((tree) => {
+            if (tree.id === this.modifyTreeId) {
+              tree.sprite.setTexture("modifyImage" + this.tmpTime);
+            }
+          });
+        }
       };
-      const image = document.createElement("img");
-      image.style.width = "128px";
-      image.style.height = "128px";
-      image.src = modifyTreeUrl;
-      this.textures.addImage("modifyImage", image);
-      this.changeCheck = false;
     };
 
     //맵 screen 사이즈에 맞춰서 zoom수치 설정. 너비/높이 중 더 큰 사이즈에 맞춰서.
@@ -278,6 +291,22 @@ export default class TreeEditScene extends Scene {
     };
 
     const onModifyButtonClick = async () => {
+      const modifyTreeInfo = [];
+
+      if (this.changeCheck) {
+        modifyTreeInfo.push({
+          id: this.modifyTreeGardenId,
+          imageUrl: this.modifyTreeUrl + this.tmpTime!,
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
+        });
+      } else {
+        modifyTreeInfo.push({
+          id: this.modifyTreeGardenId,
+          x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
+          y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
+        });
+      }
       if (this.defaultSpriteBox.visible) {
         try {
           const res = await fetch(
@@ -289,13 +318,7 @@ export default class TreeEditScene extends Scene {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                trees: [
-                  {
-                    id: this.modifyTreeGardenId,
-                    x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
-                    y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
-                  },
-                ],
+                trees: modifyTreeInfo,
                 flowers: [],
               }),
             }
@@ -380,7 +403,9 @@ export default class TreeEditScene extends Scene {
     } else {
       this.registButtonBox.setPosition(
         window.innerWidth / 2 - 240,
-        window.innerHeight / 2 - window.innerHeight / this.cameras.main.zoom / 2 + 80 / this.cameras.main.zoom,
+        window.innerHeight / 2 -
+          window.innerHeight / this.cameras.main.zoom / 2 +
+          80 / this.cameras.main.zoom
       );
     }
 
@@ -489,24 +514,6 @@ export default class TreeEditScene extends Scene {
   }
 
   update() {
-    if (
-      this.textures.get("modifyImage").key === "modifyImage" &&
-      !this.changeCheck
-    ) {
-      if (this.selectedTreeUrl) {
-        this.assetSprite.setTexture("modifyImage");
-        this.changeCheck = true;
-      } else {
-        this.trees.forEach((tree) => {
-          if (tree.id === this.modifyTreeId) {
-            tree.sprite.setTexture("modifyImage");
-            this.changeCheck = true;
-          }
-        });
-      }
-    } else {
-    }
-
     //에셋 배치시 나무, 꽃 테두리 보여주기.////////////////////////////////
     // this.spriteBox.setX(this.assetSprite.x);
     // this.spriteBox.setY(this.assetSprite.y);

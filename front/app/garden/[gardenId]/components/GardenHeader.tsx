@@ -23,6 +23,7 @@ const GardenHeader = (props: Props) => {
   const [openAlarm, setOpenAlarm] = useState<boolean>(false);
   const [openJoinModal, setOpenJoinModal] = useState<boolean>(false);
   const [openManagerModal, setOpenManagermodal] = useState<boolean>(false);
+  const [isMute, setIsMute] = useState<boolean>(false);
   const [menuList, setMenuList] = useState<MenuButton[]>([]);
 
   const onMenuButtonClick = () => {
@@ -210,14 +211,15 @@ const GardenHeader = (props: Props) => {
         </div>
         <div className="h-10 w-10 z-20">
           <IconButton
-            iconSrc="flower"
+            iconSrc={!isMute ? "speaker_sound" : "speaker_mute"}
             onClick={() => {
-              if(props.game?.sound.mute){
-              props.game!.sound.mute = false;
-            }else{
-              props.game!.sound.mute = true;
-            }
-
+              if (props.game?.sound.mute) {
+                props.game!.sound.mute = false;
+                setIsMute(false);
+              } else {
+                props.game!.sound.mute = true;
+                setIsMute(true);
+              }
             }}
           />
         </div>
