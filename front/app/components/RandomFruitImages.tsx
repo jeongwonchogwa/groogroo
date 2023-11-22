@@ -7,17 +7,14 @@ interface Props {
   isFruitDetail?: boolean;
 }
 
-const RandomFruitImages = ({
-  isFruitDetail = false,
-  fruitsCount,
-  width,
-}: Props) => {
+const RandomFruitImages = ({ isFruitDetail = false, fruitsCount, width }: Props) => {
   const fruitImages = [
     "apple.svg",
+    "banana.svg",
     "cherry.svg",
     "grape.svg",
     "lemon.svg",
-    "lemon.svg",
+    "coconut.svg",
     "orange.svg",
     "peach.svg",
   ];
@@ -26,7 +23,9 @@ const RandomFruitImages = ({
 
   useEffect(() => {
     let imageCount;
-    if (fruitsCount >= 13) {
+    if (fruitsCount >= 19) {
+      imageCount = 5;
+    } else if (fruitsCount >= 14) {
       imageCount = 4;
     } else if (fruitsCount >= 9) {
       imageCount = 3;
@@ -50,26 +49,30 @@ const RandomFruitImages = ({
   const getImageStyle = (count: number) => {
     switch (count) {
       case 1:
-        return `z-20 absolute top-[30px] left-[150px]`;
+        return `z-20 absolute top-[45px] left-[130px]`;
       case 2:
-        return `z-20 absolute top-[90px] left-[60px]`;
+        return `z-20 absolute top-[35px] right-[125px]`;
       case 3:
-        return `z-20 absolute top-[135px] right-[150px]`;
+        return `z-20 absolute top-[110px] left-[95px]`;
       case 4:
-        return `z-20 absolute top-[90px] right-[60px]`;
+        return `z-20 absolute top-[100px] left-[160px]`;
+      case 5:
+        return `z-20 absolute top-[110px] right-[90px]`;
     }
   };
 
   const getSmallImageStyle = (count: number) => {
     switch (count) {
       case 1:
-        return `z-20 absolute top-[7px] left-[110px]`;
+        return `z-20 absolute top-[30px] left-[90px]`;
       case 2:
-        return `z-20 absolute top-[70px] left-[40px]`;
+        return `z-20 absolute top-[35px] right-[75px]`;
       case 3:
-        return `z-20 absolute top-[115px] right-[120px]`;
+        return `z-20 absolute top-[95px] left-[55px]`;
       case 4:
-        return `z-20 absolute top-[70px] right-[40px]`;
+        return `z-20 absolute top-[85px] left-[110px]`;
+      case 5:
+        return `z-20 absolute top-[100px] right-[60px]`;
     }
   };
   return (
@@ -79,13 +82,9 @@ const RandomFruitImages = ({
           key={index}
           src={`/assets/fruits/${image}`}
           alt="열매"
-          width={40}
-          height={40}
-          className={
-            isFruitDetail
-              ? getSmallImageStyle(index + 1)
-              : getImageStyle(index + 1)
-          }
+          width={isFruitDetail ? 32 : 40}
+          height={isFruitDetail ? 32 : 40}
+          className={isFruitDetail ? getSmallImageStyle(index + 1) : getImageStyle(index + 1)}
         />
       ))}
     </>

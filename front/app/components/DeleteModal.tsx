@@ -17,12 +17,9 @@ const DeleteModal = (props: Props) => {
   // 삭제 로직을 useMutation으로 처리
   const { mutate } = useMutation(
     async (id: number) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/fruit/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/fruit/${id}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
         throw new Error("삭제 실패");
@@ -80,7 +77,6 @@ const DeleteModal = (props: Props) => {
               color="error"
               label="삭제"
               onClick={() => {
-                console.log("삭제 클릭");
                 handleDelete(props.id);
                 props.handleDeleteModal();
               }}
