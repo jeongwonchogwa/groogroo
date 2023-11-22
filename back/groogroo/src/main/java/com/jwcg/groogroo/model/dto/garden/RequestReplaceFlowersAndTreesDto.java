@@ -12,7 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestReplaceFlowersAndTreesDto {
-    private String imgUrl;
     private List<TreeDto> trees;
     private List<FlowerDto> flowers;
 }

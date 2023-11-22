@@ -497,7 +497,7 @@ public class GardenService {
             TreeGarden treeGarden = treeGardenRepository.findTreeGardenById(treeDto.getId());
             TreeGarden updatedTreeGarden = TreeGarden.builder()
                     .id(treeGarden.getId())
-                    .imageUrl(request.getImgUrl()==null? treeGarden.getImageUrl():request.getImgUrl())
+                    .imageUrl(treeDto.getImgUrl()==null? treeGarden.getImageUrl():treeDto.getImgUrl())
                     .x(treeDto.getX())
                     .y(treeDto.getY())
                     .build();
