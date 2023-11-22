@@ -4,12 +4,12 @@ import React, { useState, useEffect } from 'react';
 import Button from "../../components/Button";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
-import useUserToken from "@/app/hooks/useUserToken";
+import { userInfoStore } from "@/stores/userInfoStore";
 
 
 const Preset = () => {
 
-	const userToken = useUserToken();
+	const { userToken } = userInfoStore();
 
 	const [imageCount, setImageCount] = useState(8);
 	const [currentImage, setCurrentImage] = useState(0);
