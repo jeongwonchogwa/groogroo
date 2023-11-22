@@ -29,10 +29,10 @@ def remove_background(image_src, image_path, image_filename, type):
         output_image = remove(
                 resized_image,
                 alpha_matting=True,
-                alpha_matting_foreground_threshold=220,
-                alpha_matting_background_threshold=150,
-                alpha_matting_erode_structure_size=10,
-                alpha_matting_base_size=1300,
+                alpha_matting_foreground_threshold=250,
+                alpha_matting_background_threshold=50,
+                alpha_matting_erode_structure_size=5,
+                alpha_matting_base_size=1500,
                 # I = αF + (1−α)B
             )
         print('Dall E - text로 요청 받음')
@@ -40,10 +40,10 @@ def remove_background(image_src, image_path, image_filename, type):
         output_image = remove(
                 resized_image,
                 alpha_matting=True,
-                alpha_matting_foreground_threshold=120,
-                alpha_matting_background_threshold=80, 
+                alpha_matting_foreground_threshold=200,
+                alpha_matting_background_threshold=50, 
                 alpha_matting_erode_structure_size=3, 
-                alpha_matting_base_size=700, 
+                alpha_matting_base_size=1200, 
                 # I = αF + (1−α)B
             )
         print('User 제작 image로 요청 받음')

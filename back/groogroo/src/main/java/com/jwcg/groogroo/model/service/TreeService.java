@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.UriUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -124,7 +123,7 @@ public class TreeService {
         for (Tree tree : trees) {
             ResponseTreeDto responseTreeDto = ResponseTreeDto.builder()
                     .id(tree.getId())
-                    .imageUrl(UriUtils.decode(tree.getImageUrl(), "UTF-8"))
+                    .imageUrl(tree.getImageUrl())
                     .name(tree.getName())
                     .fruitsCount(tree.getFruits().size())
                     .email(tree.getUser().getEmail())
