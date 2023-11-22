@@ -29,8 +29,8 @@ def remove_background(image_src, image_path, image_filename, type):
         output_image = remove(
                 resized_image,
                 alpha_matting=True,
-                alpha_matting_foreground_threshold=250,
-                alpha_matting_background_threshold=50,
+                alpha_matting_foreground_threshold=240,
+                alpha_matting_background_threshold=40,
                 alpha_matting_erode_structure_size=5,
                 alpha_matting_base_size=1500,
                 # I = αF + (1−α)B
@@ -39,11 +39,11 @@ def remove_background(image_src, image_path, image_filename, type):
     elif type == 'image':
         output_image = remove(
                 resized_image
-                # alpha_matting=True,
-                # alpha_matting_foreground_threshold=250,
-                # alpha_matting_background_threshold=20, 
-                # alpha_matting_erode_structure_size=10, 
-                # alpha_matting_base_size=1500, 
+                alpha_matting=True,
+                alpha_matting_foreground_threshold=50,
+                alpha_matting_background_threshold=20, 
+                alpha_matting_erode_structure_size=10, 
+                alpha_matting_base_size=1500, 
                 # I = αF + (1−α)B
             )
         print('User 제작 image로 요청 받음')
