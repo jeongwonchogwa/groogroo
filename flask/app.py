@@ -17,7 +17,7 @@ from rembg import remove
 ##########################################################
 #   배경 제거 및 이미지 resize
 ##########################################################
-def remove_background(image_src, image_path, image_filename):
+def remove_background(image_src, image_path, image_filename, type):
     # 이미지 데이터를 바이트 스트림으로 변환
     image_byte_array = io.BytesIO(image_src)
     # Pillow 이미지로 변환
@@ -25,15 +25,27 @@ def remove_background(image_src, image_path, image_filename):
     # 128x128 나무 크기로 조정
     resized_image = origin_image.resize((128,128), Image.NEAREST)
     # 배경 제거
-    output_image = remove(
-            resized_image,
-            alpha_matting=True,
-            alpha_matting_foreground_threshold=320,
-            alpha_matting_background_threshold=10,
-            alpha_matting_erode_structure_size=10,
-            alpha_matting_base_size=1300,
-            # I = αF + (1−α)B
-        )
+    if type == 'text':    
+        output_image = remove(
+                resized_image,
+                alpha_matting=True,
+                alpha_matting_foreground_threshold=180,
+                alpha_matting_background_threshold=10,
+                alpha_matting_erode_structure_size=10,
+                alpha_matting_base_size=1300,
+                # I = αF + (1−α)B
+            )
+    elif type == 'image':
+        output_image = remove(
+                resized_image,
+                alpha_matting=True,
+                alpha_matting_foreground_threshold=320,
+                alpha_matting_background_threshold=10,
+                alpha_matting_erode_structure_size=10,
+                alpha_matting_base_size=1300,
+                # I = αF + (1−α)B
+            )
+    else: output_image = resized_image
 
     output_image.save(image_path, 'png')
 
@@ -130,7 +142,7 @@ def remove_bg():
             os.makedirs(image_directory)
         image_path = os.path.join(image_directory, image_filename)
 
-        remove_background(image_data, image_path, image_filename)
+        remove_background(image_data, image_path, image_filename, 'image')
 
         with open(image_path, "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
@@ -156,7 +168,6 @@ def make_image():
         print(data)
         user_input = data.get('text')
         user_id = data.get('id')
-
         if user_input:
             if checkValidation(user_input):
 
@@ -196,7 +207,7 @@ def make_image():
                         os.makedirs(image_directory)
                     image_path = os.path.join(image_directory, image_filename)
 
-                    remove_background(image_data, image_path, image_filename)
+                    remove_background(image_data, image_path, image_filename, 'text')
 
                     # 이미지 파일을 열고 base64로 인코딩
                     with open(image_path, "rb") as image_file:
