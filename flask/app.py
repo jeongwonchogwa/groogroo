@@ -28,7 +28,7 @@ def remove_background(image_src, image_path, image_filename):
     output_image = remove(
             resized_image,
             alpha_matting=True,
-            alpha_matting_foreground_threshold=120,
+            alpha_matting_foreground_threshold=180,
             alpha_matting_background_threshold=10,
             alpha_matting_erode_structure_size=10,
             alpha_matting_base_size=1300,
