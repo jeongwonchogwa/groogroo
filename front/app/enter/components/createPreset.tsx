@@ -916,6 +916,7 @@ const CreatePreset = () => {
             label="이미지"
             onClick={() => {
               setSelectedComponent("canvas");
+              setImageData('');
               setInputValue("");
             }}
           />
@@ -924,6 +925,7 @@ const CreatePreset = () => {
             label="텍스트"
             onClick={() => {
               setSelectedComponent("text");
+              setImageData('');
               setIsBlank(true);
             }}
           />
