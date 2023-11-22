@@ -328,6 +328,7 @@ const Create = () => {
               setSelectedComponent("canvas");
               setImageData('');
               setInputValue("");
+              setIsGenerated(false);
             }}
           />
           <SmallButton
@@ -337,6 +338,7 @@ const Create = () => {
               setSelectedComponent("text");
               setImageData('');
               setIsBlank(true);
+              setIsGenerated(false);
             }}
           />
         </div>
