@@ -536,27 +536,27 @@ public class GardenController {
         }
     }
 
-    @Operation(summary = "정꾸!(정원 꾸미기)", description = "정원의 꽃과 나무 제배치하는 API")
+    @Operation(summary = "정꾸!(정원 꾸미기)", description = "정원의 꽃과 나무를 재배치하거나 나무의 이미지 변경하는 API")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "꽃 & 나무 재배치 성공"),
-            @ApiResponse(responseCode = "500", description = "꽃 & 나무 재배치 실패 - 내부 서버 오류"),
+            @ApiResponse(responseCode = "200", description = "정원 꾸미기 성공"),
+            @ApiResponse(responseCode = "500", description = "정원 꾸미기 실패 - 내부 서버 오류"),
     })
     @PostMapping("/decoration")
     public ResponseEntity<Map<String, Object>> replaceFlowersAndTrees(@RequestHeader("Authorization") String token, @RequestBody RequestReplaceFlowersAndTreesDto request) {
         Map<String,Object> response = new HashMap<>();
 
         try {
-            log.info("꽃 & 나무 재배치");
+            log.info("정원 꾸미기");
             gardenService.updateFlowersAndTrees(request);
-            log.info("꽃 & 나무 재배치 성공");
+            log.info("정원 꾸미기  성공");
             response.put("httpStatus", SUCCESS);
-            response.put("message", "꽃 & 나무 재배치 성공");
+            response.put("message", "정원 꾸미기 성공");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             log.info("꽃 & 나무 재배치 실패");
             response.put("httpStatus", FAIL);
-            response.put("message", "꽃 & 나무 재배치 실패");
+            response.put("message", "정원 꾸미기  실패");
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
