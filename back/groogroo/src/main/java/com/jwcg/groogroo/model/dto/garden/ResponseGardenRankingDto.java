@@ -20,4 +20,5 @@ public class ResponseGardenRankingDto {
     private String url;
     private int mapType;
     private String master;
+
 }

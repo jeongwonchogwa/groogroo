@@ -1,5 +1,6 @@
 package com.jwcg.groogroo.model.service;
 
+import com.jwcg.groogroo.exception.CustomException;
 import com.jwcg.groogroo.model.dto.garden.ResponseGardenRankingDto;
 import com.jwcg.groogroo.model.entity.*;
 import com.jwcg.groogroo.repository.GardenLikeRepository;
@@ -9,6 +10,7 @@ import com.jwcg.groogroo.repository.UserGardenRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -187,51 +190,43 @@ public class GardenLikeService {
 
         Pageable pageable = PageRequest.of(page, PAGESIZE, Sort.by(Sort.Order.desc("likes")));
 
-        List<Garden> gardens = gardenRepository.findAll();
-        List<ResponseGardenRankingDto> returnData = new ArrayList<>();
-        log.info("==============리스트 생성 완료=============");
+//        List<Garden> gardens = gardenRepository.findAll();
+//        List<ResponseGardenRankingDto> returnData = new ArrayList<>();
+        log.info("Garden Service - 리스트 조회 시도");
 
-        for (Garden garden : gardens) {
+        try{
+            Page<Object[]> result = gardenRepository.findAllOrderByLikes(pageable);
 
-            log.info("===========순회 : " + garden.getName());
+            log.info("==============리스트 생성 완료=============");
 
-            long likes = getGardenLikes(garden.getId());
+            List<ResponseGardenRankingDto> gardens = result.getContent().stream()
+                    .map(obj -> {
+                        ResponseGardenRankingDto gardenDto = ResponseGardenRankingDto.builder()
+                                .gardenId((Long)obj[0])
+                                .name((String) obj[1])
+                                .description((String) obj[2])
+                                .capacity((Integer) obj[3])
+                                .memberCnt((Integer) obj[4])
+                                .likes((Long) obj[5])
+                                .url((String) obj[6])
+                                .mapType((Integer) obj[7])
+                                .build();
 
-            UserGarden masterGarden = userGardenRepository.findUserGardenByGardenIdAndGardenRole(garden.getId(), GardenRole.MASTER);
+                        UserGarden master = userGardenRepository.findUserGardenByGardenIdAndGardenRole(gardenDto.getGardenId(), GardenRole.MASTER);
+                        if (master != null && master.getUser() != null && master.getUser().getTree() != null) {
+                            gardenDto.setMaster(master.getUser().getTree().getName());
+                        }
 
-            ResponseGardenRankingDto responseGardenRankingDto = ResponseGardenRankingDto.builder()
-                    .gardenId(garden.getId())
-                    .name(garden.getName())
-                    .description(garden.getDescription())
-                    .capacity(garden.getCapacity())
-                    .memberCnt(garden.getMemberCnt())
-                    .likes(likes)
-                    .url(garden.getUrl())
-                    .mapType(garden.getMapType())
-                    .master(masterGarden.getUser().getTree().getName())
-                    .build();
+                        return gardenDto;
+                    })
+                    .collect(Collectors.toList());
 
-            log.info(responseGardenRankingDto.toString());
-
-            returnData.add(responseGardenRankingDto);
+            return new PageImpl<>(gardens, pageable, result.getTotalElements());
+        } catch (Exception e) {
+            log.error("좋아요 랭킹 목록 조회 Error : ", e);
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "좋아요 랭킹 목록 조회 에러");
         }
 
-        int start = (int) pageable.getOffset();
-        // 데이터 없는 페이지 조회 시 빈 리스트 반환
-        if (start >= returnData.size()) {
-            return Page.empty(pageable);
-        }
-
-        int end = Math.min((start + pageable.getPageSize()), returnData.size());
-
-        log.info("start: {}", start);
-        log.info("end: {}", end);
-
-        List<ResponseGardenRankingDto> gardensOnPage = returnData.subList(start, end);
-
-        Collections.sort(gardensOnPage, Comparator.comparingLong(ResponseGardenRankingDto::getLikes).reversed());
-
-        return new PageImpl<>(gardensOnPage, pageable, returnData.size());
     }
 
 }
