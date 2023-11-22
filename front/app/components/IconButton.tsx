@@ -20,7 +20,7 @@ import Move from "/public/assets/images/move.svg";
 import Close from "/public/assets/images/close.svg";
 import Speaker from "/public/assets/images/speaker.svg";
 import SpeakerDisabled from "/public/assets/images/speaker_disabled.svg";
-import SpeakerSound from "/public/assets/images/Speaker_sound.svg";
+import SpeakerSound from "/public/assets/images/speaker_sound.svg";
 import SpeakerMute from "/public/assets/images/speaker_mute.svg";
 
 interface IconButtonProps {
