@@ -425,27 +425,27 @@ const Create = () => {
             <>
               <div className="grid grid-flow-col gap-4">
                 <Button
-                  color="primary"
+                  color={isLoading ? "default" : "primary"}
                   label={credit > 0 ? "다시 생성" : "크레딧부족"}
                   onClick={() => (selectedComponent === "canvas" ? handleReCreate() : handleCreateButtonClick())}
-                  disabled={credit <= 0}
+                  disabled={isLoading || credit <= 0}
                 />
                 <Button color="primary" label="결정하기" onClick={handleSelectButtonClick} />
               </div>
             </>
           ) : selectedComponent === "canvas" ? (
             <Button
-              color={isBlank ? "default" : "primary"}
+              color={isBlank || isLoading ? "default" : "primary"}
               label="생성하기"
               onClick={handleCreateButtonClick}
-              disabled={isBlank}
+              disabled={isLoading || isBlank}
             />
           ) : (
             <Button
-              color={inputValue == "" ? "default" : "primary"}
+              color={isLoading || inputValue == "" ? "default" : "primary"}
               label={credit > 0 ? "생성하기" : "크레딧부족"}
               onClick={handleCreateButtonClick}
-              disabled={inputValue == "" || credit <= 0}
+              disabled={isLoading || inputValue == "" || credit <= 0}
             />
           )}
         </div>
