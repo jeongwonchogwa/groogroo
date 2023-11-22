@@ -330,6 +330,7 @@ const CreatePreset = () => {
               setImageData('');
               setInputValue("");
               setIsGenerated(false);
+              setIsLoading(false);
             }}
           />
           <SmallButton
@@ -340,6 +341,7 @@ const CreatePreset = () => {
               setImageData('');
               setIsBlank(true);
               setIsGenerated(false);
+              setIsLoading(false);
             }}
           />
         </div>

@@ -328,6 +328,7 @@ const Create = () => {
               setSelectedComponent("canvas");
               setImageData('');
               setInputValue("");
+              setIsLoading(false);
               setIsGenerated(false);
             }}
           />
@@ -338,6 +339,7 @@ const Create = () => {
               setSelectedComponent("text");
               setImageData('');
               setIsBlank(true);
+              setIsLoading(false);
               setIsGenerated(false);
             }}
           />
