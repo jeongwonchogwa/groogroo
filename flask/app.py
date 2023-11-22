@@ -29,12 +29,13 @@ def remove_background(image_src, image_path, image_filename, type):
         output_image = remove(
                 resized_image,
                 alpha_matting=True,
-                alpha_matting_foreground_threshold=200,
+                alpha_matting_foreground_threshold=260,
                 alpha_matting_background_threshold=10,
                 alpha_matting_erode_structure_size=10,
                 alpha_matting_base_size=1300,
                 # I = αF + (1−α)B
             )
+        print('Dall E - text로 요청 받음')
     elif type == 'image':
         output_image = remove(
                 resized_image,
@@ -45,7 +46,11 @@ def remove_background(image_src, image_path, image_filename, type):
                 alpha_matting_base_size=1300,
                 # I = αF + (1−α)B
             )
-    else: output_image = resized_image
+        print('User 제작 image로 요청 받음')
+        
+    else: 
+        output_image = resized_image
+        print('익셉션')
 
     output_image.save(image_path, 'png')
 
