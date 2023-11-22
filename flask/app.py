@@ -40,10 +40,10 @@ def remove_background(image_src, image_path, image_filename, type):
         output_image = remove(
                 resized_image,
                 alpha_matting=True,
-                alpha_matting_foreground_threshold=150,
-                alpha_matting_background_threshold=100,
-                alpha_matting_erode_structure_size=10,
-                alpha_matting_base_size=500,
+                alpha_matting_foreground_threshold=120,
+                alpha_matting_background_threshold=80, 
+                alpha_matting_erode_structure_size=3, 
+                alpha_matting_base_size=700, 
                 # I = αF + (1−α)B
             )
         print('User 제작 image로 요청 받음')
