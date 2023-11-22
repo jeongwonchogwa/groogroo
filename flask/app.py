@@ -29,8 +29,8 @@ def remove_background(image_src, image_path, image_filename, type):
         output_image = remove(
                 resized_image,
                 alpha_matting=True,
-                alpha_matting_foreground_threshold=100,
-                alpha_matting_background_threshold=10,
+                alpha_matting_foreground_threshold=220,
+                alpha_matting_background_threshold=150,
                 alpha_matting_erode_structure_size=10,
                 alpha_matting_base_size=1300,
                 # I = αF + (1−α)B
@@ -40,8 +40,8 @@ def remove_background(image_src, image_path, image_filename, type):
         output_image = remove(
                 resized_image,
                 alpha_matting=True,
-                alpha_matting_foreground_threshold=100,
-                alpha_matting_background_threshold=10,
+                alpha_matting_foreground_threshold=150,
+                alpha_matting_background_threshold=200,
                 alpha_matting_erode_structure_size=10,
                 alpha_matting_base_size=1300,
                 # I = αF + (1−α)B
@@ -50,7 +50,7 @@ def remove_background(image_src, image_path, image_filename, type):
         
     else: 
         output_image = resized_image
-        print('익셉션')
+        print('더미')
 
     output_image.save(image_path, 'png')
 
