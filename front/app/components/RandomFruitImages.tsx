@@ -49,15 +49,15 @@ const RandomFruitImages = ({ isFruitDetail = false, fruitsCount, width }: Props)
   const getImageStyle = (count: number) => {
     switch (count) {
       case 1:
-        return `z-20 absolute top-[45px] left-[130px]`;
+        return `z-20 absolute top-[calc(100%-250px)] left-[calc(100%-210px)]`;
       case 2:
-        return `z-20 absolute top-[35px] right-[125px]`;
+        return `z-20 absolute top-[calc(100%-250px)] right-[calc(100%-210px)]`;
       case 3:
-        return `z-20 absolute top-[110px] left-[95px]`;
+        return `z-20 absolute top-[calc(100%-170px)] left-[calc(100%-230px)]`;
       case 4:
-        return `z-20 absolute top-[100px] left-[160px]`;
+        return `z-20 absolute top-[calc(100%-200px)] left-[calc(100%-170px)]`;
       case 5:
-        return `z-20 absolute top-[110px] right-[90px]`;
+        return `z-20 absolute top-[calc(100%-180px)] right-[calc(100%-240px)]`;
     }
   };
 
