@@ -169,32 +169,6 @@ export default class TreeEditScene extends Scene {
     this.cameras.main.setBackgroundColor("#1E7CB8");
     this.moveCheck = false;
 
-    this.changeTree = (modifyTreeUrl: string) => {
-      this.changeCheck = true;
-      this.tmpTime = "?timestamp=" + new Date().getTime();
-      this.modifyTreeUrl = modifyTreeUrl;
-
-      const image = new Image();
-      image.src = modifyTreeUrl + this.tmpTime;
-      image.crossOrigin = "anonymous";
-      image.onload = () => {
-        this.textures.addSpriteSheet("modifyImage" + this.tmpTime, image, {
-          frameWidth: 128,
-          frameHeight: 128,
-        });
-
-        if (this.selectedTreeUrl) {
-          this.assetSprite.setTexture("modifyImage" + this.tmpTime);
-        } else {
-          this.trees.forEach((tree) => {
-            if (tree.id === this.modifyTreeId) {
-              tree.sprite.setTexture("modifyImage" + this.tmpTime);
-            }
-          });
-        }
-      };
-    };
-
     //맵 screen 사이즈에 맞춰서 zoom수치 설정. 너비/높이 중 더 큰 사이즈에 맞춰서.
     if (window.innerHeight > window.innerWidth) {
       this.cameras.main.setZoom(window.innerHeight / 320);
@@ -226,7 +200,34 @@ export default class TreeEditScene extends Scene {
       this.scene.start("gardenScene");
     };
 
-    //나무 등록 API요청////////////////////////////////////////////////////
+    //나무 변경//////////////////////////////////////////////////////////////////////////
+    this.changeTree = (modifyTreeUrl: string) => {
+      this.changeCheck = true;
+      this.tmpTime = "?timestamp=" + new Date().getTime();
+      this.modifyTreeUrl = modifyTreeUrl;
+
+      const image = new Image();
+      image.src = modifyTreeUrl + this.tmpTime;
+      image.crossOrigin = "anonymous";
+      image.onload = () => {
+        this.textures.addSpriteSheet("modifyImage" + this.tmpTime, image, {
+          frameWidth: 128,
+          frameHeight: 128,
+        });
+
+        if (this.selectedTreeUrl) {
+          this.assetSprite.setTexture("modifyImage" + this.tmpTime);
+        } else {
+          this.trees.forEach((tree) => {
+            if (tree.id === this.modifyTreeId) {
+              tree.sprite.setTexture("modifyImage" + this.tmpTime);
+            }
+          });
+        }
+      };
+    };
+
+    //나무 등록////////////////////////////////////////////////////
     const userToken = JSON.parse(sessionStorage.getItem("userInfo")!).state
       .userToken;
     const onRegistButtonClick = async () => {
@@ -349,7 +350,10 @@ export default class TreeEditScene extends Scene {
               gardenData.gardenInfo;
             this.scene.stop("treeEditScene");
             this.scene.start("preloader");
-            window.location.reload();
+
+            if (this.changeCheck) {
+              window.location.reload();
+            }
           } catch (err) {
             console.log(err);
           }

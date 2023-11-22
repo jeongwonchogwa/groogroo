@@ -200,7 +200,6 @@ export default class GardenScene extends Scene {
             }
           );
           const data = await res.json();
-          console.log(data);
           if (data.httpStatus === "success") {
             this.heartButton.src = "/assets/images/heart_fill.svg";
             this.likeCheck = true;
@@ -226,8 +225,6 @@ export default class GardenScene extends Scene {
     //나무sprite 목록 생성./////////////////////////////////////////////////////////
     this.trees = [];
     this.garden.treePos?.forEach((tree) => {
-      console.log("가든씬 treecharacter 생성중", tree.name);
-
       const initialSprite = this.physics.add
         .sprite(0, 0, tree.name)
         .setDepth(3)
@@ -260,6 +257,7 @@ export default class GardenScene extends Scene {
         "silver",
         "silverStar",
         "yellow",
+        "lease",
       ];
       const selectedFruit = [];
 

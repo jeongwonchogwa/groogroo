@@ -55,6 +55,7 @@ export default class Preloader extends Scene {
     this.load.image("silver", "/assets/ornaments/silverOrnament.svg");
     this.load.image("silverStar", "/assets/ornaments/silverStar.svg");
     this.load.image("yellow", "/assets/ornaments/yellowOrnament.svg");
+    this.load.image("lease", "/assets/ornaments/lease.svg");
 
     //정원에 심어져있는 나무들 스프라이트 생성.
     this.garden.treePos?.forEach((tree, index) => {
