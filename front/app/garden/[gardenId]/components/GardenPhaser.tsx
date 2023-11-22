@@ -222,8 +222,8 @@ const GardenPhaser = (props: Props) => {
           </div>
 
           {showFlowerMessage ? (
-            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]">
-              <div className="flex flex-col items-center justify-center gap-10 w-full h-full">
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60] flex flex-col items-center">
+              <div className="flex flex-col items-center justify-center gap-10 w-full h-full max-w-[600px]">
                 <Image
                   alt="currentFlower"
                   src={currentFlower.imageUrl}
@@ -244,7 +244,7 @@ const GardenPhaser = (props: Props) => {
 
           {treeSelect ? (
             treeModify ? (
-              <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]">
+              <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center justify-center z-[60]">
                 <TreeSelect
                   onFormCloseButtonClick={onFormCloseButtonClick}
                   game={game}
@@ -252,7 +252,7 @@ const GardenPhaser = (props: Props) => {
                 />
               </div>
             ) : (
-              <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]">
+              <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center justify-center  z-[60]">
                 <TreeSelect
                   onFormCloseButtonClick={onFormCloseButtonClick}
                   game={game}
@@ -262,7 +262,7 @@ const GardenPhaser = (props: Props) => {
           ) : null}
 
           {flowerSelect ? (
-            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center px-5 z-[60]">
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-center justify-center  z-[60] ">
               <FlowerSelect
                 onFormCloseButtonClick={onFormCloseButtonClick}
                 game={game}
@@ -271,8 +271,8 @@ const GardenPhaser = (props: Props) => {
           ) : null}
 
           {flowerMessageEdit ? (
-            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]">
-              <div className="w-full h-full flex flex-col items-center justify-center gap-5">
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60] flex flex-col items-center">
+              <div className="w-full h-full flex flex-col items-center justify-center gap-5 max-w-[600px]">
                 <Image
                   alt="currentFlower"
                   src={currentFlower.imageUrl}
@@ -290,8 +290,8 @@ const GardenPhaser = (props: Props) => {
             </div>
           ) : null}
           {fruitMessageEdit ? (
-            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60]">
-              <div className="w-full h-full flex flex-col items-center justify-center gap-5">
+            <div className="absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-70 z-[60] flex flex-col items-center">
+              <div className="w-full h-full flex flex-col items-center justify-center gap-5 max-w-[600px]">
                 <div className="flex flex-col items-center justify-center gap-2">
                   <PixelCard
                     content={

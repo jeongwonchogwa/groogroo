@@ -39,7 +39,7 @@ const TreeSelect = (props: Props) => {
     props.onFormCloseButtonClick;
     if (props.modify && props.game) {
       //@ts-ignore
-      props.game.scene.getScene("treeEditScene")!.changeTree(selectedTreeUrl)
+      props.game.scene.getScene("treeEditScene")!.changeTree(selectedTreeUrl);
     } else {
       props.game?.scene.stop("gardenScene");
       props.game?.scene.start("treeEditScene", {
@@ -75,7 +75,7 @@ const TreeSelect = (props: Props) => {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="w-full flex flex-col gap-10 items-center"
+      className="w-full flex flex-col gap-10 items-center max-w-[600px]"
     >
       <div className="font-bitBit text-2xl text-white">
         심을 나무를 고르세요.

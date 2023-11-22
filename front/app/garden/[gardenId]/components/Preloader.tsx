@@ -45,6 +45,17 @@ export default class Preloader extends Scene {
     this.load.image("orange", "/assets/fruits/orange.svg");
     this.load.image("peach", "/assets/fruits/peach.svg");
 
+    //장식
+    this.load.image("blue", "/assets/ornaments/blueOrnament.svg");
+    this.load.image("gold", "/assets/ornaments/goldOrnament.svg");
+    this.load.image("goldStar", "/assets/ornaments/goldStar.svg");
+    this.load.image("green", "/assets/ornaments/greenOrnament.svg");
+    this.load.image("pink", "/assets/ornaments/pinkOrnament.svg");
+    this.load.image("red", "/assets/ornaments/redOrnament.svg");
+    this.load.image("silver", "/assets/ornaments/silverOrnament.svg");
+    this.load.image("silverStar", "/assets/ornaments/silverStar.svg");
+    this.load.image("yellow", "/assets/ornaments/yellowOrnament.svg");
+
     //정원에 심어져있는 나무들 스프라이트 생성.
     this.garden.treePos?.forEach((tree, index) => {
       if (tree.name === "" || null) {
@@ -70,6 +81,7 @@ export default class Preloader extends Scene {
   }
 
   create() {
+    this.scene.stop("preload");
     this.scene.start("gardenScene", { garden: this.garden });
   }
 }

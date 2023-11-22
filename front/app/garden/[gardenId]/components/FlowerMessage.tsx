@@ -24,7 +24,7 @@ const FlowerMessage = (props: Props) => {
   const [openReport, setOpenReport] = useState<boolean>(false);
   const [clickReport, setClickReport] = useState<boolean>(false);
   const [isDeleteable, setIsDeleteable] = useState<boolean>(true);
-  const [content, setContent] = useState<string>("")
+  const [content, setContent] = useState<string>("");
   useEffect(() => {
     const createTime = props.currentFlower.createTime;
     if (createTime?.includes(":")) {
@@ -79,7 +79,7 @@ const FlowerMessage = (props: Props) => {
         if (i > 0) {
           props.onFlowerClick(props.flowerPos[i - 1]);
         } else {
-          props.onFlowerClick(props.flowerPos[props.flowerPos.length-1]);
+          props.onFlowerClick(props.flowerPos[props.flowerPos.length - 1]);
         }
       }
     }
@@ -126,12 +126,14 @@ const FlowerMessage = (props: Props) => {
     }
   };
 
-  const formattedContent = props.currentFlower.content?.split('\n').map((line, index) => (
-    <React.Fragment key={index}>
+  const formattedContent = props.currentFlower.content
+    ?.split("\n")
+    .map((line, index) => (
+      <React.Fragment key={index}>
         {line}
-        {index < props.currentFlower.content!.split('\n').length - 1 && <br />}
-    </React.Fragment>
-));
+        {index < props.currentFlower.content!.split("\n").length - 1 && <br />}
+      </React.Fragment>
+    ));
 
   return (
     <div
@@ -205,7 +207,7 @@ const FlowerMessage = (props: Props) => {
               />
             </div>
           </div>
-          <div className="pl-5 absolute bottom-10 w-[calc(100%-60px)]">
+          <div className="pl-5 absolute bottom-10 w-[calc(100%-60px)] max-w-[540px]">
             <Button
               color="default"
               label="닫기"

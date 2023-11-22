@@ -296,7 +296,7 @@ export default class TreeEditScene extends Scene {
       if (this.changeCheck) {
         modifyTreeInfo.push({
           id: this.modifyTreeGardenId,
-          imageUrl: this.modifyTreeUrl + this.tmpTime!,
+          imgUrl: this.modifyTreeUrl + this.tmpTime!,
           x: this.gridEngine.getPosition(this.selectedTreeHandle).x,
           y: this.gridEngine.getPosition(this.selectedTreeHandle).y,
         });
@@ -324,7 +324,7 @@ export default class TreeEditScene extends Scene {
             }
           );
           const Data = await res.json();
-
+          console.log(Data);
           try {
             const res = await fetch(
               `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/garden/${this.garden.gardenId}`,
