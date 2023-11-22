@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 public class TreeDto {
     private Long id;
+    private String imgUrl;
     private int x;
     private int y;
 }
