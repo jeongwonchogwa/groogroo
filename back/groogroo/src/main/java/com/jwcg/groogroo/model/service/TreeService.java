@@ -123,7 +123,7 @@ public class TreeService {
         for (Tree tree : trees) {
             ResponseTreeDto responseTreeDto = ResponseTreeDto.builder()
                     .id(tree.getId())
-                    .imageUrl(tree.getImageUrl())
+                    .imageUrl(UriUtils.decode(tree.getImageUrl(), "UTF-8"))
                     .name(tree.getName())
                     .fruitsCount(tree.getFruits().size())
                     .email(tree.getUser().getEmail())
