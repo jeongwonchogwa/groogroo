@@ -38,7 +38,7 @@ def remove_background(image_src, image_path, image_filename, type):
         print('Dall E - text로 요청 받음')
     elif type == 'image':
         output_image = remove(
-                resized_image
+                resized_image,
                 alpha_matting=True,
                 alpha_matting_foreground_threshold=50,
                 alpha_matting_background_threshold=20, 
