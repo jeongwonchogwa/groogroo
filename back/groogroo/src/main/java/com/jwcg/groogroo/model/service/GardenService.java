@@ -472,7 +472,7 @@ public class GardenService {
         treeGardenRepository.save(treeGarden);
     }
 
-    // 꽃 & 나무 위치 수정
+    // 꽃 위치 수정 & 나무 위치, 이미지 수정
     @Transactional
     public void updateFlowersAndTrees(RequestReplaceFlowersAndTreesDto request) {
         List<FlowerDto> flowers = request.getFlowers();
@@ -497,7 +497,7 @@ public class GardenService {
             TreeGarden treeGarden = treeGardenRepository.findTreeGardenById(treeDto.getId());
             TreeGarden updatedTreeGarden = TreeGarden.builder()
                     .id(treeGarden.getId())
-                    .imageUrl(treeGarden.getImageUrl())
+                    .imageUrl(treeDto.getImgUrl()==null? treeGarden.getImageUrl():treeDto.getImgUrl())
                     .x(treeDto.getX())
                     .y(treeDto.getY())
                     .build();
