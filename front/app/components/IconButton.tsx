@@ -20,6 +20,9 @@ import Move from "/public/assets/images/move.svg";
 import Close from "/public/assets/images/close.svg";
 import Speaker from "/public/assets/images/speaker.svg";
 import SpeakerDisabled from "/public/assets/images/speaker_disabled.svg";
+import SpeakerSound from "/public/assets/images/speaker_sound.svg";
+import SpeakerMute from "/public/assets/images/speaker_mute.svg";
+
 interface IconButtonProps {
   iconSrc:
     | "bell"
@@ -39,7 +42,9 @@ interface IconButtonProps {
     | "user"
     | "back"
     | "move"
-    | "close";
+    | "close"
+    | "speaker_sound"
+    | "speaker_mute";
   onClick?: () => void;
   rotate?: boolean;
 }
@@ -63,8 +68,8 @@ const iconButtonConfig = {
   back: Back,
   move: Move,
   close: Close,
-  speaker: Speaker,
-  speaker_disabled: SpeakerDisabled,
+  speaker_sound: SpeakerSound,
+  speaker_mute: SpeakerMute,
 };
 
 const IconButton = ({ iconSrc, onClick, rotate }: IconButtonProps) => {

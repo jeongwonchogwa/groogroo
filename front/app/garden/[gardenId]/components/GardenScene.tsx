@@ -56,12 +56,12 @@ export default class GardenScene extends Scene {
 
     if (this.garden.mapType === 1) {
       this.bgm = this.sound.add("backgroundMusic1", {
-        volume: 0.3,
+        volume: 0.05,
         loop: true,
       });
     } else if (this.garden.mapType === 2) {
       this.bgm = this.sound.add("backgroundMusic2", {
-        volume: 0.3,
+        volume: 0.05,
         loop: true,
       });
     }
@@ -248,43 +248,97 @@ export default class GardenScene extends Scene {
 
       //열매 달아주기
       const fruitArr = ["apple", "cherry", "grape", "lemon", "orange", "peach"];
+      const ornamentArr = [
+        "blue",
+        "gold",
+        "goldStar",
+        "green",
+        "pink",
+        "red",
+        "silver",
+        "silverStar",
+        "yellow",
+      ];
       const selectedFruit = [];
 
-      if (tree.fruitCnt! > 0) {
-        for (let i = 0; i < tree.fruitCnt!; i += 5) {
-          let tmpFruit = fruitArr[Math.floor(Math.random() * fruitArr.length)];
-          selectedFruit.push(tmpFruit);
+      if (this.garden.mapType === 1) {
+        if (tree.fruitCnt! > 0) {
+          for (let i = 0; i < tree.fruitCnt!; i += 5) {
+            let tmpFruit =
+              fruitArr[Math.floor(Math.random() * fruitArr.length)];
+            selectedFruit.push(tmpFruit);
 
-          if (i === 0) {
-            this.add
-              .image(tree.x! * 16 + 10, tree.y! * 16 + 4, tmpFruit)
-              .setScale(0.15)
-              .setOrigin(0, 0)
-              .setDepth(7);
-          } else if (i === 5) {
-            this.add
-              .image(tree.x! * 16 + 17, tree.y! * 16 + 5, tmpFruit)
-              .setScale(0.15)
-              .setOrigin(0, 0)
-              .setDepth(7);
-          } else if (i === 10) {
-            this.add
-              .image(tree.x! * 16 + 6, tree.y! * 16 + 12, tmpFruit)
-              .setScale(0.15)
-              .setOrigin(0, 0)
-              .setDepth(7);
-          } else if (i === 15) {
-            this.add
-              .image(tree.x! * 16 + 13, tree.y! * 16 + 11, tmpFruit)
-              .setScale(0.15)
-              .setOrigin(0, 0)
-              .setDepth(7);
-          } else if (i === 20) {
-            this.add
-              .image(tree.x! * 16 + 23, tree.y! * 16 + 13, tmpFruit)
-              .setScale(0.15)
-              .setOrigin(0, 0)
-              .setDepth(7);
+            if (i === 0) {
+              this.add
+                .image(tree.x! * 16 + 10, tree.y! * 16 + 4, tmpFruit)
+                .setScale(0.15)
+                .setOrigin(0, 0)
+                .setDepth(7);
+            } else if (i === 5) {
+              this.add
+                .image(tree.x! * 16 + 17, tree.y! * 16 + 5, tmpFruit)
+                .setScale(0.15)
+                .setOrigin(0, 0)
+                .setDepth(7);
+            } else if (i === 10) {
+              this.add
+                .image(tree.x! * 16 + 6, tree.y! * 16 + 12, tmpFruit)
+                .setScale(0.15)
+                .setOrigin(0, 0)
+                .setDepth(7);
+            } else if (i === 15) {
+              this.add
+                .image(tree.x! * 16 + 13, tree.y! * 16 + 11, tmpFruit)
+                .setScale(0.15)
+                .setOrigin(0, 0)
+                .setDepth(7);
+            } else if (i === 20) {
+              this.add
+                .image(tree.x! * 16 + 23, tree.y! * 16 + 13, tmpFruit)
+                .setScale(0.15)
+                .setOrigin(0, 0)
+                .setDepth(7);
+            }
+          }
+        }
+      } else if (this.garden.mapType === 2) {
+        if (tree.fruitCnt! > 0) {
+          for (let i = 0; i < tree.fruitCnt!; i += 5) {
+            let tmpOrnament =
+              ornamentArr[Math.floor(Math.random() * ornamentArr.length)];
+            selectedFruit.push(tmpOrnament);
+
+            if (i === 0) {
+              this.add
+                .image(tree.x! * 16 + 10, tree.y! * 16 + 4, tmpOrnament)
+                .setScale(0.15)
+                .setOrigin(0, 0)
+                .setDepth(7);
+            } else if (i === 5) {
+              this.add
+                .image(tree.x! * 16 + 17, tree.y! * 16 + 5, tmpOrnament)
+                .setScale(0.15)
+                .setOrigin(0, 0)
+                .setDepth(7);
+            } else if (i === 10) {
+              this.add
+                .image(tree.x! * 16 + 6, tree.y! * 16 + 12, tmpOrnament)
+                .setScale(0.15)
+                .setOrigin(0, 0)
+                .setDepth(7);
+            } else if (i === 15) {
+              this.add
+                .image(tree.x! * 16 + 13, tree.y! * 16 + 11, tmpOrnament)
+                .setScale(0.15)
+                .setOrigin(0, 0)
+                .setDepth(7);
+            } else if (i === 20) {
+              this.add
+                .image(tree.x! * 16 + 23, tree.y! * 16 + 13, tmpOrnament)
+                .setScale(0.15)
+                .setOrigin(0, 0)
+                .setDepth(7);
+            }
           }
         }
       }

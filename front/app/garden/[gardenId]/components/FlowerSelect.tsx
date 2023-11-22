@@ -53,7 +53,7 @@ const FlowerSelect = (props: Props) => {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="w-full flex flex-col gap-10 items-center"
+      className="w-full flex flex-col gap-10 items-center max-w-[600px]"
     >
       <div className="font-bitBit text-2xl text-white">심을 꽃을 고르세요.</div>
       <div className="w-full flex gap-5">
@@ -63,12 +63,12 @@ const FlowerSelect = (props: Props) => {
         <Frame
           content={
             <div className="flex items-center bg-white w-full h-full">
-              <div className="mx-auto h-[400px] flex items-center justify-between">
+              <div className="mx-auto h-[calc(25%)] flex items-center justify-between">
                 <Image
                   alt="flower"
                   src={flowerList[flowerNumber]}
-                  width={200}
-                  height={200}
+                  width={window.innerHeight / 4}
+                  height={window.innerHeight / 4}
                 />
               </div>
             </div>
