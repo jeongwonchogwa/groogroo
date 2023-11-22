@@ -257,6 +257,7 @@ export default class GardenScene extends Scene {
         "silver",
         "silverStar",
         "yellow",
+        "lease",
       ];
       const selectedFruit = [];
 
