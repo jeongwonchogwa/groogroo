@@ -47,16 +47,13 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
 
   const fetchLogout = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_GROOGROO_API_URL}/user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       if (response.status === 200) {
         const responseData = await response.json();
         router.push("/enter");
@@ -118,9 +115,7 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
                   }}
                 />
               </div>
-              {menuOpen && !openAlarm ? (
-                <HomeMenu menuList={menuList}></HomeMenu>
-              ) : null}
+              {menuOpen && !openAlarm ? <HomeMenu menuList={menuList}></HomeMenu> : null}
             </div>
           </div>
         </div>
@@ -155,12 +150,10 @@ const HomeHeader = ({ handlemenu, menuOpen }: HomeHeaderProps) => {
                   }}
                 />
               </Link>
-              <Link
-                href={{ pathname: "/home/update", query: { type: "preset" } }}
-              >
+              <Link href={{ pathname: "/home/update", query: { type: "preset" } }}>
                 <Button
                   color="primary"
-                  label="프리셋 변경하기"
+                  label="나무 변경하기"
                   onClick={() => {
                     onUpdateButtonClick();
                   }}

@@ -75,9 +75,7 @@ const UpdatePreset = ({ data, userTree }: Props) => {
   };
   return (
     <div className="flex flex-col p-2 mt-5">
-      <div className=" text-center  font-neoDunggeunmo_Pro text-2xl">
-        변경할 프리셋을 선택하세요
-      </div>
+      <div className=" text-center  font-neoDunggeunmo_Pro text-2xl">변경할 나무를 선택하세요</div>
       <div className="mt-3 p-6">
         {data.treeUserPresetId === 0 ? (
           <Button color="secondary" label="변경하기" onClick={clickChange} />
