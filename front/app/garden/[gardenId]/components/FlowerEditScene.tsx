@@ -58,7 +58,7 @@ export default class FlowerEditScene extends Scene {
     );
     if (this.selectedFlower) {
       this.load.spritesheet(
-        "selectedFlower",
+        "selectedFlower"+this.selectedFlower,
         `/assets/flowers/flower[${this.selectedFlower}].svg`,
 
         {
@@ -119,7 +119,7 @@ export default class FlowerEditScene extends Scene {
 
     if (this.selectedFlower) {
       this.assetSprite = this.physics.add
-        .sprite(0, 0, "selectedFlower")
+        .sprite(0, 0, "selectedFlower"+this.selectedFlower)
         .setScale(0.25)
         .setDepth(3)
         .setOrigin(0, 0);
