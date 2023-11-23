@@ -512,6 +512,7 @@ export default class GardenScene extends Scene {
     const treeRegistText = document.createTextNode("나무 심기");
     treeRegistTextBox.appendChild(treeRegistText);
     treeRegistTextBox.addEventListener("click", (e) => {
+      this.modalCheck = true;
       e.stopPropagation();
       onPlusButtonClick();
       this.onTreeSelectOpenButtonClick();
