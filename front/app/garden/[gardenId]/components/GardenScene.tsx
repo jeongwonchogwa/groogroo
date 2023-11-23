@@ -511,7 +511,8 @@ export default class GardenScene extends Scene {
       "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
     const treeRegistText = document.createTextNode("나무 심기");
     treeRegistTextBox.appendChild(treeRegistText);
-    treeRegistTextBox.addEventListener("click", () => {
+    treeRegistTextBox.addEventListener("click", (e) => {
+      e.stopPropagation();
       onPlusButtonClick();
       this.onTreeSelectOpenButtonClick();
     });
@@ -521,7 +522,8 @@ export default class GardenScene extends Scene {
       "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
     const flowerRegistText = document.createTextNode("꽃 심기");
     flowerPlantTextBox.appendChild(flowerRegistText);
-    flowerPlantTextBox.addEventListener("click", () => {
+    flowerPlantTextBox.addEventListener("click", (e) => {
+      e.stopPropagation();
       onPlusButtonClick();
       this.onFlowerSelectOpenButtonClick();
       this.modalCheck = true;
@@ -533,7 +535,8 @@ export default class GardenScene extends Scene {
       "flex flex-col bg-white px-3 py-2 w-full font-bitBit text-[18px] text-center";
     const treeModifyText = document.createTextNode("나무 이동");
     treeModifyTextBox.appendChild(treeModifyText);
-    treeModifyTextBox.addEventListener("click", () => {
+    treeModifyTextBox.addEventListener("click", (e) => {
+      e.stopPropagation();
       onPlusButtonClick();
       this.scene.stop("gardenScene");
       this.scene.start("treeEditScene", { modifyTreeId: this.myTree.name });
@@ -647,7 +650,8 @@ export default class GardenScene extends Scene {
 
     this.heartButton = document.createElement("img");
     this.heartButton.className = "w-full h-full";
-    this.heartButton.addEventListener("click", () => {
+    this.heartButton.addEventListener("click", (e) => {
+      e.stopPropagation();
       onHearthButtonClick();
     });
 
@@ -688,7 +692,10 @@ export default class GardenScene extends Scene {
       }
     };
 
-    this.plusButton.addEventListener("click", onPlusButtonClick);
+    this.plusButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      onPlusButtonClick();
+    });
 
     const treeMenuSet = document.createElement("div");
     treeMenuSet.className =
@@ -705,7 +712,10 @@ export default class GardenScene extends Scene {
     rightsideMenu.appendChild(registMenuSet);
     this.footer.node.appendChild(rightsideMenu);
 
-    this.treeButton.addEventListener("click", onTreeButtonClick);
+    this.treeButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      onTreeButtonClick();
+    });
 
     if (this.garden.state !== "ACCEPT") {
       this.plusButton.style.display = "none";
