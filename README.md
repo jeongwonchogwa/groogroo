@@ -132,6 +132,10 @@
 | --------------------------------------------------- | --------------------------------------------------- | --------------------------------------------------- |
 | <img src="./exec/images/회원가입.gif" height="600"> | <img src="./exec/images/나무생성.gif" height="600"> | <img src="./exec/images/정원목록.gif" height="600"> |
 
+| <span style="font-size:20px;">열매 확인</span>      | <span style="font-size:20px;">나무 검색</span>      | <span style="font-size:20px;">정원 생성</span>      |
+| --------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------- |
+| <img src="./exec/images/열매확인.png" height="600"> | <img src="./exec/images/나무검색.png" height="600"> | <img src="./exec/images/정원생성.png" height="600"> |
+
 | <span style="font-size:20px;">정원 조회</span>      | <span style="font-size:20px;">나무/꽃 심기</span>      | <span style="font-size:20px;">열매 달기</span>      |
 | --------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------- |
 | <img src="./exec/images/정원조회.gif" height="600"> | <img src="./exec/images/나무,꽃심기.gif" height="600"> | <img src="./exec/images/열매달기.gif" height="600"> |
