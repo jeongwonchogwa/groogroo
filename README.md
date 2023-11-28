@@ -142,7 +142,7 @@
 
 | <span style="font-size:20px;">관리자 화면</span>       |
 | ------------------------------------------------------ |
-| <img src="./exec/images/관리자페이지.gif" width="900"> |
+| <img src="./exec/images/관리자페이지.gif" width="850"> |
 
 <br/><br/>
 
